@@ -24,8 +24,8 @@
                 :pathname "src/doc"
                 :components
                 ((:file "doc" :depends-on ("class" "asdf"))
-                 (:file "class" :depends-on ("util" "markdown"))
+                 (:file "class" :depends-on ("util"))
                  (:file "util")
                  (:file "asdf" :depends-on ("class"))
-                 (:file "markdown")
-                 (:file "generator" :depends-on ("class"))))))
+                 (:file "generator" :depends-on ("markdown" "class"))
+                 (:file "markdown")))))

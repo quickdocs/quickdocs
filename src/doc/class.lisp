@@ -13,9 +13,7 @@
   (:import-from :clack.doc.util
                 :external-symbol-p
                 :lambda-list->specializers
-                :map-tree)
-  (:import-from :clack.doc.markdown
-                :markdown-escape))
+                :map-tree))
 (in-package :clack.doc.class)
 
 (cl-annot:enable-annot-syntax)

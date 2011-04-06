@@ -9,7 +9,9 @@
 (in-package :cl-user)
 (defpackage clack.doc.generator
   (:use :cl
-        :clack.doc.class))
+        :clack.doc.class)
+  (:import-from :clack.doc.markdown
+                :markdown-escape))
 (in-package :clack.doc.generator)
 
 (defun gendoc (type summary &optional description)
