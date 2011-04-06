@@ -11,7 +11,6 @@
   (:use :cl
         :split-sequence)
   (:import-from :clack.doc.util
-                :class-direct-superclasses
                 :external-symbol-p
                 :lambda-list->specializers
                 :map-tree)
@@ -120,7 +119,7 @@
 (defmethod prepare ((this <doc-class>))
   (let ((class (find-entity this)))
     (setf (class-super-classes this)
-          (loop for super in (class-direct-superclasses class)
+          (loop for super in (c2mop:class-direct-superclasses class)
                 unless (member (type-of super) '(built-in-class eql-specializer))
                   collect (class-name super)))
     (setf (class-slots this)

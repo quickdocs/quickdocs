@@ -23,14 +23,6 @@
     (not (null (member symbol exported :test #'eq)))))
 
 @export
-;; FIXME: works only CCL
-(defun class-direct-superclasses (class)
-  #+ccl
-  (slot-value class 'ccl::direct-superclasses)
-  #-ccl
-  (error "not implemented"))
-
-@export
 (defun lambda-list->specializers (lambda-list)
   (loop for arg in lambda-list
         with args = nil
