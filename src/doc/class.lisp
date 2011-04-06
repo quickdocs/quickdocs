@@ -23,20 +23,13 @@
 
 (defvar *doc-packages* nil)
 
-(defun gendoc (type summary &optional description)
-  (when description
-    (setf description (string-trim #(#\Newline) description)))
-  (format nil "- ~:(~A~): ~A~:[~;~:*<pre>~{~/clack.doc.markdown:markdown-escape/~^<br />~}</pre>~]
-"
-          type summary (and description
-                            (split-sequence #\Newline description))))
-
 (defclass <doc-base> ()
      ((type :initarg :type :initform nil :accessor doc-type)
       (name :initarg :name :accessor doc-name)))
 
 @export
-(defmethod generate-documentation ((this <doc-base>)))
+(defgeneric generate-documentation (doc)
+  (:documentation "Implement this method and tell how to render the class."))
 
 @export
 (defclass <doc-package> (<doc-base>)
@@ -45,18 +38,6 @@
 
 (defmethod find-entity ((this <doc-package>))
   (find-package (doc-name this)))
-
-@export
-(defmethod generate-documentation ((this <doc-package>))
-  (format nil
-          "~2&~A~2&## EXTERNAL SYMBOLS~2%<div class=\"symbol\">~2%~{~A~}</div>"
-         (or (documentation (find-entity this) t)
-             (format nil "# ~A~%" (string-capitalize (doc-name this))))
-         (mapcar #'generate-documentation
-                 (reverse
-                  (remove-if-not
-                   #'externalp
-                   (package-symbols this))))))
 
 @export
 (defun find-package* (package-name &key force)
@@ -114,14 +95,6 @@
             (function-lambda-list this)))
 
 @export
-(defmethod generate-documentation ((this <doc-function>))
-  (gendoc (doc-type this)
-          (format nil "<strong>~(~/clack.doc.markdown:markdown-escape/~)</strong>~:[~;~:* [~{~(~/clack.doc.markdown:markdown-escape/~)~^ ~}]~]"
-                  (doc-name this)
-                  (normalized-lambda-list this))
-          (documentation (doc-name this) 'function)))
-
-@export
 (defclass <doc-method> (<doc-function>)
      ((qualifier :initarg :qualifier :initform nil :accessor method-qualifier)))
 
@@ -135,14 +108,6 @@
                    (lambda-list->specializers (function-lambda-list this)))
       (error "Method not found: ~A ~A"
              (doc-name this) (normalized-lambda-list this))))
-
-@export
-(defmethod generate-documentation ((this <doc-method>))
-  (gendoc (doc-type this)
-          (format nil "<strong>~(~/clack.doc.markdown:markdown-escape/~)</strong>~:[~;~:* [~{~(~/clack.doc.markdown:markdown-escape/~)~^ ~}]~]"
-                  (doc-name this)
-                  (normalized-lambda-list this))
-          (documentation (find-entity this) t)))
 
 @export
 (defclass <doc-class> (<doc-symbol-base>)
@@ -165,44 +130,7 @@
   (find-class (doc-name this)))
 
 @export
-(defmethod generate-documentation ((this <doc-class>))
-  (prepare this)
-  (concatenate
-   'string
-   (gendoc (doc-type this)
-           (format nil "<strong>~(~/clack.doc.markdown:markdown-escape/~)</strong>~:[~;~:* inherits ~(~/clack.doc.markdown:markdown-escape/~)~]"
-                   (doc-name this)
-                   (class-super-classes this)
-                   )
-           (documentation (doc-name this) 'type))
-   (format nil "~:[~;~:*~2&<dl>~{~A~}</dl>~]~%"
-           (mapcar #'generate-documentation
-                   (class-slots this)))))
-
-(defmethod generate-documentation ((this c2mop:standard-direct-slot-definition))
-  (let* ((accessors (intersection (c2mop:slot-definition-readers this)
-                                  (mapcar #'cadr (c2mop:slot-definition-writers this))))
-         (readers (set-difference (c2mop:slot-definition-readers this)
-                                  accessors))
-         (writers (set-difference (mapcar #'cadr (c2mop:slot-definition-writers this))
-                                  accessors)))
-    (format nil
-            "<dt><strong>~(~A~)</strong>~:[~;~:* Accessor:~{ ~(~A~)~}~]~:[~;~:* Reader:~{ ~(~A~)~}~]~:[~;~:* Writer:~{ ~(~A~)~}~]</small></dt>~:[~;~:*<dd>~A</dd>~]"
-            (c2mop:slot-definition-name this)
-            accessors
-            readers
-            writers
-            (documentation this t))))
-
-@export
 (defclass <doc-variable> (<doc-symbol-base>) ())
 
 (defmethod initialize-instance :after ((this <doc-variable>) &key)
   (setf (doc-type this) :variable))
-
-@export
-(defmethod generate-documentation ((this <doc-variable>))
-  (gendoc (doc-type this)
-          (format nil "<strong>~/clack.doc.markdown:markdown-escape/</strong>"
-                  (string-downcase (doc-name this)))
-          (documentation this 'variable)))

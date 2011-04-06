@@ -27,4 +27,5 @@
                  (:file "class" :depends-on ("util" "markdown"))
                  (:file "util")
                  (:file "asdf" :depends-on ("class"))
-                 (:file "markdown")))))
+                 (:file "markdown")
+                 (:file "generator" :depends-on ("class"))))))
