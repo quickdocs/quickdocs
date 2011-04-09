@@ -16,7 +16,9 @@
                 :find-system-packages
                 :doc-name)
   (:import-from :clack.doc.asdf
-                :ensure-system-loaded))
+                :ensure-system-loaded)
+  (:import-from :cl-fad
+                :copy-file))
 (in-package :clack.doc)
 
 (cl-annot:enable-annot-syntax)
@@ -44,4 +46,5 @@
                                     :stream nil))
                :package-list ,(mapcar #'doc-name (reverse packages))))
        stream)))
+  (fad:copy-file (asdf:system-relative-pathname :clack-doc "view/main.css") "main.css" :overwrite t)
   t)

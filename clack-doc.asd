@@ -20,7 +20,8 @@
                :cl-ppcre
                :cl-annot
                :cl-markdown
-               :cl-emb)
+               :cl-emb
+               :cl-fad)
   :components ((:module "src"
                 :pathname "src/doc"
                 :components
