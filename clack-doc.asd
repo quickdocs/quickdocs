@@ -19,7 +19,8 @@
                :split-sequence
                :cl-ppcre
                :cl-annot
-               :cl-markdown)
+               :cl-markdown
+               :cl-emb)
   :components ((:module "src"
                 :pathname "src/doc"
                 :components
@@ -27,5 +28,4 @@
                  (:file "class" :depends-on ("util"))
                  (:file "util")
                  (:file "asdf" :depends-on ("class"))
-                 (:file "generator" :depends-on ("markdown" "class"))
-                 (:file "markdown")))))
+                 (:file "generator" :depends-on ("class"))))))

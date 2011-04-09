@@ -9,61 +9,56 @@
 (in-package :cl-user)
 (defpackage clack.doc.generator
   (:use :cl
-        :clack.doc.class)
-  (:import-from :clack.doc.markdown
-                :markdown-escape))
+        :clack.doc.class
+        :split-sequence)
+  (:import-from :cl-markdown
+                :markdown))
 (in-package :clack.doc.generator)
 
-(defun gendoc (type summary &optional description)
-  (when description
-    (setf description (string-trim #(#\Newline) description)))
-  (format nil "- ~:(~A~): ~A~:[~;~:*<pre>~{~/clack.doc.markdown:markdown-escape/~^<br />~}</pre>~]
-"
-          type summary (and description
-                            (split-sequence #\Newline description))))
+(defvar template-path (asdf:system-relative-pathname :clack-doc "view/"))
 
 @export
 (defmethod generate-documentation ((this <doc-package>))
-  (format nil
-          "~2&~A~2&## EXTERNAL SYMBOLS~2%<div class=\"symbol\">~2%~{~A~}</div>"
-         (or (documentation (find-entity this) t)
-             (format nil "# ~A~%" (string-capitalize (doc-name this))))
-         (mapcar #'generate-documentation
-                 (reverse
-                  (remove-if-not
-                   #'externalp
-                   (package-symbols this))))))
+  (emb:execute-emb
+   (merge-pathnames "package.tmpl" template-path)
+   :env `(:name ,(doc-name this)
+          :doc ,(nth-value 1 (markdown (documentation (find-entity this) t) :stream nil))
+          :symbol-list
+          ,(mapcar #'generate-documentation
+            (reverse
+             (remove-if-not
+              #'externalp
+              (package-symbols this)))))))
 
 @export
 (defmethod generate-documentation ((this <doc-function>))
-  (gendoc (doc-type this)
-          (format nil "<strong>~(~/clack.doc.markdown:markdown-escape/~)</strong>~:[~;~:* [~{~(~/clack.doc.markdown:markdown-escape/~)~^ ~}]~]"
-                  (doc-name this)
-                  (normalized-lambda-list this))
-          (documentation (doc-name this) 'function)))
+  (emb:execute-emb
+   (merge-pathnames "function.tmpl" template-path)
+   :env `(:type ,(doc-type this)
+          :name ,(doc-name this)
+          :lambda-list ,(normalized-lambda-list this)
+          :doc ,(documentation (doc-name this) 'function))))
 
 @export
 (defmethod generate-documentation ((this <doc-method>))
-  (gendoc (doc-type this)
-          (format nil "<strong>~(~/clack.doc.markdown:markdown-escape/~)</strong>~:[~;~:* [~{~(~/clack.doc.markdown:markdown-escape/~)~^ ~}]~]"
-                  (doc-name this)
-                  (normalized-lambda-list this))
-          (documentation (find-entity this) t)))
+  (emb:execute-emb
+   (merge-pathnames "function.tmpl" template-path)
+   :env `(:type ,(doc-type this)
+          :name ,(doc-name this)
+          :lambda-list ,(normalized-lambda-list this)
+          :doc ,(documentation (find-entity this) t))))
 
 @export
 (defmethod generate-documentation ((this <doc-class>))
   (prepare this)
-  (concatenate
-   'string
-   (gendoc (doc-type this)
-           (format nil "<strong>~(~/clack.doc.markdown:markdown-escape/~)</strong>~:[~;~:* inherits ~(~/clack.doc.markdown:markdown-escape/~)~]"
-                   (doc-name this)
-                   (class-super-classes this)
-                   )
-           (documentation (doc-name this) 'type))
-   (format nil "~:[~;~:*~2&<dl>~{~A~}</dl>~]~%"
-           (mapcar #'generate-documentation
-                   (class-slots this)))))
+  (emb:execute-emb
+   (merge-pathnames "class.tmpl" template-path)
+   :env `(:type ,(doc-type this)
+          :name ,(doc-name this)
+          :super-class-list ,(class-super-classes this)
+          :doc ,(documentation (doc-name this) 'type)
+          :slot-list ,(mapcar #'generate-documentation
+                              (class-slots this)))))
 
 (defmethod generate-documentation ((this c2mop:standard-direct-slot-definition))
   (let* ((accessors (intersection (c2mop:slot-definition-readers this)
@@ -82,7 +77,8 @@
 
 @export
 (defmethod generate-documentation ((this <doc-variable>))
-  (gendoc (doc-type this)
-          (format nil "<strong>~/clack.doc.markdown:markdown-escape/</strong>"
-                  (string-downcase (doc-name this)))
-          (documentation this 'variable)))
+  (emb:execute-emb
+   (merge-pathnames "variable.tmpl" template-path)
+   :env `(:type ,(doc-type this)
+          :name ,(doc-name this)
+          :doc ,(documentation this 'variable))))

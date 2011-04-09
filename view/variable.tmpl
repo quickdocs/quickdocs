@@ -1,0 +1,6 @@
+<%= (string-capitalize (getf env :type)) %>: <strong><% @var name %></strong>
+<% @if doc %>
+<pre>
+  <% @var doc %>
+</pre>
+<% @endif %>

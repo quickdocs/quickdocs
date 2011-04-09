@@ -13,7 +13,13 @@
   (:import-from :clack.doc.util
                 :external-symbol-p
                 :lambda-list->specializers
-                :map-tree))
+                :map-tree)
+  (:export :doc-name
+           :doc-type
+           :package-systems
+           :package-symbols
+           :class-slots
+           :class-super-classes))
 (in-package :clack.doc.class)
 
 (cl-annot:enable-annot-syntax)
@@ -33,6 +39,7 @@
      ((systems :initform nil :accessor package-systems)
       (symbols :initform nil :accessor package-symbols)))
 
+@export
 (defmethod find-entity ((this <doc-package>))
   (find-package (doc-name this)))
 
@@ -82,9 +89,11 @@
   (unless (doc-type this)
     (setf (doc-type this) :function)))
 
+@export
 (defmethod find-entity ((this <doc-function>))
   (symbol-function (doc-name this)))
 
+@export
 (defmethod normalized-lambda-list ((this <doc-function>))
   (map-tree #'(lambda (obj) (if (keywordp obj)
                             (format nil "~S" obj)
@@ -98,6 +107,7 @@
 (defmethod initialize-instance :after ((this <doc-method>) &key)
   (setf (doc-type this) :method))
 
+@export
 (defmethod find-entity ((this <doc-method>))
   (or (find-method (symbol-function (doc-name this))
                    ;; FIXME: ugly
@@ -114,6 +124,7 @@
 (defmethod initialize-instance :after ((this <doc-class>) &key)
   (setf (doc-type this) :class))
 
+@export
 (defmethod prepare ((this <doc-class>))
   (let ((class (find-entity this)))
     (setf (class-super-classes this)
@@ -123,6 +134,7 @@
     (setf (class-slots this)
           (c2mop:class-direct-slots class))))
 
+@export
 (defmethod find-entity ((this <doc-class>))
   (find-class (doc-name this)))
 
