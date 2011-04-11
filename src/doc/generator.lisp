@@ -54,7 +54,7 @@
   (emb:execute-emb
    (merge-pathnames "class.tmpl" template-path)
    :env `(:type ,(doc-type this)
-          :name ,(doc-name this)
+          :name ,(string-downcase (doc-name this))
           :super-class-list ,(class-super-classes this)
           :doc ,(documentation (doc-name this) 'type)
           :slot-list ,(mapcar #'generate-documentation
