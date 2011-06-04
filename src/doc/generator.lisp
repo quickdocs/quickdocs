@@ -15,6 +15,8 @@
                 :markdown))
 (in-package :clack.doc.generator)
 
+(cl-annot:enable-annot-syntax)
+
 (defvar template-path (asdf:system-relative-pathname :clack-doc "view/"))
 
 @export
