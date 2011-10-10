@@ -14,13 +14,19 @@
   #+clozure (ccl:proclaimed-special-p symbol))
 
 @export
-(defun external-symbol-p (symbol &optional pkg)
+(defmethod external-symbol-p ((symb symbol) &optional pkg)
   (let* (exported
          (exported (do-external-symbols (s (or pkg
-                                               (symbol-package symbol))
+                                               (symbol-package symb))
                                            exported)
                      (push s exported))))
-    (not (null (member symbol exported :test #'eq)))))
+    (not (null (member symb exported :test #'eq)))))
+
+@export
+(defmethod external-symbol-p ((symb cons) &optional pkg)
+  (if (eq (car symb) 'cl:setf)
+      (external-symbol-p (cadr symb) pkg)
+      (error "Invalid symbol.")))
 
 @export
 (defun lambda-list->specializers (lambda-list)
