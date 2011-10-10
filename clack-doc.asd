@@ -21,7 +21,8 @@
                :cl-annot
                :cl-markdown
                :cl-emb
-               :cl-fad)
+               :cl-fad
+               :xmls)
   :components ((:module "src"
                 :pathname "src/doc"
                 :components

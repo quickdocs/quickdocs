@@ -18,7 +18,14 @@
   (:import-from :clack.doc.asdf
                 :ensure-system-loaded)
   (:import-from :cl-fad
-                :copy-file))
+                :copy-file)
+  (:import-from :xmls
+                :parse)
+  (:import-from :cl-ppcre
+                :scan
+                :regex-replace-all)
+  (:import-from :cl-emb
+                :url-encode))
 (in-package :clack.doc)
 
 (cl-annot:enable-annot-syntax)
@@ -47,7 +54,7 @@
                :long-description ,(ppcre:regex-replace-all "(<h\\d+>([^<]+))" long-description
                                    (lambda (match whole name)
                                      (format nil "<a name=\"~A\"></a>~A"
-                                             (clack.util.hunchentoot:url-encode name)
+                                             (cl-emb::url-encode name)
                                              whole))
                                    :simple-calls t)
                :toc ,(parse-toc long-description)
@@ -65,6 +72,6 @@
        (dotimes (i (* 4 (- (parse-integer (subseq (car tag) 1)) 2)))
          (princ " " str))
        (princ "- " str)
-       (format str "[~A](#~A)" (third tag) (clack.util.hunchentoot:url-encode (third tag)))
+       (format str "[~A](#~A)" (third tag) (cl-emb::url-encode (third tag)))
        (fresh-line str)
         finally (return (nth-value 1 (markdown (get-output-stream-string str) :stream nil)))))
