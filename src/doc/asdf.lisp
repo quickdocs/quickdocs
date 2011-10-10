@@ -33,10 +33,7 @@
     (let ((macroexpand-hook *macroexpand-hook*))
       (setf *macroexpand-hook*
             (lambda (fun form env)
-              (when (and (consp form)
-                         (or (symbolp (second form))
-                             (stringp (second form))
-                             (consp (second form))))
+              (when (consp form)
                 (case (first form)
                   (cl:defpackage
                    (register-package-system
