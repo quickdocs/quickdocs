@@ -23,7 +23,7 @@
 (defmethod generate-documentation ((this <doc-package>))
   (emb:execute-emb
    (merge-pathnames "package.tmpl" template-path)
-   :env `(:name ,(doc-name this)
+   :env `(:name ,(string-capitalize (doc-name this))
           :doc ,(nth-value 1 (markdown (documentation (find-entity this) t) :stream nil))
           :symbol-list
           ,(mapcar #'generate-documentation
