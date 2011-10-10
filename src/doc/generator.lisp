@@ -24,7 +24,9 @@
   (emb:execute-emb
    (merge-pathnames "package.tmpl" template-path)
    :env `(:name ,(string-capitalize (doc-name this))
-          :doc ,(nth-value 1 (markdown (documentation (find-entity this) t) :stream nil))
+          :doc ,(let ((doc (or (documentation (find-entity this) t)
+                               (format nil "# ~:(~A~)" (doc-name this)))))
+                  (nth-value 1 (markdown doc :stream nil)))
           :symbol-list
           ,(mapcar #'generate-documentation
             (reverse
