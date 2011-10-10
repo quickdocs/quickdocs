@@ -1,9 +1,20 @@
 @charset "UTF-8";
 
 body {
-  margin: 0 150px;
   line-height: 150%;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+a:link {
+	color: #005585;
+}
+
+a:visited {
+	color: #485270;
+}
+
+a:hover {
+	color: #b83800;
 }
 
 code {
@@ -73,4 +84,23 @@ dt strong {
 
 dd {
   font-size: small;
+}
+
+.container {
+  width: 940px;
+  margin: 0 auto;
+}
+
+.sidebar {
+  float: left;
+  width: 220px;
+}
+
+.content {
+  margin-left: 240px;
+}
+
+.sidebar h2 {
+  border: none;
+  padding: 0;
 }

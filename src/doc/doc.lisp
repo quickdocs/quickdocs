@@ -27,7 +27,10 @@
 (defmethod generate-documentation ((system asdf:system))
   (ensure-system-loaded system)
   (let ((packages (find-system-packages system))
-        (*print-case* :downcase))
+        (*print-case* :downcase)
+        (long-description (nth-value 1
+                                     (markdown (ignore-errors (slot-value system 'asdf::long-description))
+                                               :stream nil))))
     (loop for pkg in (reverse packages)
           do (with-open-file (stream (format nil "~(~A~).html" (doc-name pkg))
                                      :direction :output
@@ -41,10 +44,27 @@
         (asdf:system-relative-pathname :clack-doc "view/system.tmpl")
         :env `(:name ,(string-capitalize (slot-value system 'asdf::name))
                :description ,(ignore-errors (slot-value system 'asdf::description))
-               :long-description ,(nth-value 1
-                                   (markdown (ignore-errors (slot-value system 'asdf::long-description))
-                                    :stream nil))
+               :long-description ,(ppcre:regex-replace-all "(<h\\d+>([^<]+))" long-description
+                                   (lambda (match whole name)
+                                     (format nil "<a name=\"~A\"></a>~A"
+                                             (clack.util.hunchentoot:url-encode name)
+                                             whole))
+                                   :simple-calls t)
+               :toc ,(parse-toc long-description)
                :package-list ,(mapcar #'doc-name (reverse packages))))
        stream)))
   (fad:copy-file (asdf:system-relative-pathname :clack-doc "view/main.css") "main.css" :overwrite t)
   t)
+
+(defun parse-toc (xml)
+  (loop for tag in (cddr (xmls:parse (format nil "<body>~A</body>" xml)))
+        with str = (make-string-output-stream)
+        if (and (not (string-equal "h1" (car tag)))
+                (ppcre:scan "^h\\d+$" (car tag)))
+          do
+       (dotimes (i (* 4 (- (parse-integer (subseq (car tag) 1)) 2)))
+         (princ " " str))
+       (princ "- " str)
+       (format str "[~A](#~A)" (third tag) (clack.util.hunchentoot:url-encode (third tag)))
+       (fresh-line str)
+        finally (return (nth-value 1 (markdown (get-output-stream-string str) :stream nil)))))

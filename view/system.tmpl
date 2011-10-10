@@ -7,7 +7,12 @@
   <link rel="stylesheet" href="./main.css" type="text/css" media="screen, tv, print" charset="UTF-8" />
 </head>
 <body>
-
+<div class="container">
+<div class="sidebar">
+  <h2>Table of Contents</h2>
+<% @var toc %>
+</div>
+<div class="content">
 <% @var long-description %>
 
 <h2>API Reference</h2>
@@ -21,6 +26,7 @@
   </li>
 <% @endloop %>
 </ul>
-
+</div>
+</div>
 </body>
 </html>
