@@ -39,7 +39,7 @@
       (write-string
        (emb:execute-emb
         (asdf:system-relative-pathname :clack-doc "view/system.tmpl")
-        :env `(:name ,(slot-value system 'asdf::name)
+        :env `(:name ,(string-capitalize (slot-value system 'asdf::name))
                :description ,(ignore-errors (slot-value system 'asdf::description))
                :long-description ,(nth-value 1
                                    (markdown (ignore-errors (slot-value system 'asdf::long-description))
