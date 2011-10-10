@@ -8,7 +8,8 @@
 
 (in-package :cl-user)
 (defpackage clack.doc
-  (:use :cl)
+  (:use :cl
+        :anaphora)
   (:import-from :cl-markdown
                 :markdown)
   (:import-from :clack.doc.class
@@ -22,8 +23,7 @@
   (:import-from :xmls
                 :parse)
   (:import-from :cl-ppcre
-                :scan
-                :regex-replace-all)
+                :scan-to-strings)
   (:import-from :cl-emb
                 :url-encode))
 (in-package :clack.doc)
@@ -51,27 +51,27 @@
         (asdf:system-relative-pathname :clack-doc "view/system.tmpl")
         :env `(:name ,(string-capitalize (slot-value system 'asdf::name))
                :description ,(ignore-errors (slot-value system 'asdf::description))
-               :long-description ,(ppcre:regex-replace-all "(<h\\d+>([^<]+))" long-description
-                                   (lambda (match whole name)
-                                     (format nil "<a name=\"~A\"></a>~A"
-                                             (cl-emb::url-encode name)
-                                             whole))
-                                   :simple-calls t)
-               :toc ,(parse-toc long-description)
+               :sections ,(xml->sections long-description)
                :package-list ,(mapcar #'doc-name (reverse packages))))
        stream)))
   (fad:copy-file (asdf:system-relative-pathname :clack-doc "view/main.css") "main.css" :overwrite t)
   t)
 
-(defun parse-toc (xml)
-  (loop for tag in (cddr (xmls:parse (format nil "<body>~A</body>" xml)))
-        with str = (make-string-output-stream)
-        if (and (not (string-equal "h1" (car tag)))
-                (ppcre:scan "^h\\d+$" (car tag)))
-          do
-       (dotimes (i (* 4 (- (parse-integer (subseq (car tag) 1)) 2)))
-         (princ " " str))
-       (princ "- " str)
-       (format str "[~A](#~A)" (third tag) (cl-emb::url-encode (third tag)))
-       (fresh-line str)
-        finally (return (nth-value 1 (markdown (get-output-stream-string str) :stream nil)))))
+(defun header-tag-p (tag)
+  (awhen (nth-value 1 (ppcre:scan-to-strings "^h(\\d+)$" (car tag)))
+    (parse-integer (aref it 0))))
+
+(defun xml->sections (xml)
+  (loop with current-section = nil
+        with current = nil
+        for tag in (cddr (xmls:parse (format nil "<dummy>~A</dummy>" xml) :compress-whitespace nil))
+        for level = (header-tag-p tag)
+        if level
+          ;; new section
+          collect `(:level ,(getf current :level) :title ,(getf current :title) :body ,(apply #'concatenate 'string (mapcar (lambda (tag) (xmls:write-xml tag nil)) (reverse current-section)))) into sections
+          and do (setf current-section nil)
+          and do (setf current `(:level ,level :title ,(third tag)))
+        else
+          do (push tag current-section)
+        finally
+     (return (cdr `(,@sections (:level ,(getf current :level) :title ,(getf current :title) :body ,(apply #'concatenate 'string (mapcar (lambda (tag) (xmls:write-xml tag nil)) (reverse current-section)))))))))

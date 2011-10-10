@@ -10,10 +10,21 @@
 <div class="container">
 <div class="sidebar">
   <h2>Table of Contents</h2>
-<% @var toc %>
+  <% (let ((level 1))
+       (dolist (sec (getf env :sections))
+         (when (< 1 (getf sec :level))
+           (cond
+             ((< level (getf sec :level)) (write-string "<ul>"))
+             ((> level (getf sec :level)) (write-string "</ul>")))
+           (setf level (getf sec :level))
+           (format t "<li><a href=\"#~A\">~A</a></li>" (emb::url-encode (getf sec :title)) (getf sec :title))))) %>
 </div>
 <div class="content">
-<% @var long-description %>
+  <% @loop sections %>
+    <a name="<% @var title -escape uri %>"></a>
+    <h<% @var level %>><% @var title %></h<% @var level %>>
+    <% @var body %>
+  <% @endloop %>
 
 <h2>API Reference</h2>
 
