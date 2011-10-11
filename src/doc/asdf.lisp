@@ -27,7 +27,8 @@
            append (asdf-component-files c)))))
 
 (defun asdf-system-reload (system)
-  (let (*error-output*)
+  (let ((*error-output*
+         (make-string-output-stream)))
     #+quicklisp (ql:quickload (slot-value system 'asdf::name) :verbose nil)
     #-quicklisp (asdf:oos 'asdf:load-op system :verbose nil)
     (let ((macroexpand-hook *macroexpand-hook*))
