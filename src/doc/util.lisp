@@ -28,14 +28,21 @@
       (external-symbol-p (cadr symb) pkg)
       (error "Invalid symbol.")))
 
+(defun intern-eql-specializer* (object)
+  #+ccl (ccl:intern-eql-specializer object)
+  #+sbcl (sb-mop:intern-eql-specializer object)
+  #+(or clisp ecl) (clos:intern-eql-specializer object)
+  #+(or allegro abcl) (mop:intern-eql-specializer object)
+  #+cmu (pcl:intern-eql-specializer object)
+  #+lispworks `(eql ,object))
+
 @export
 (defun lambda-list->specializers (lambda-list)
   (loop for arg in lambda-list
         with args = nil
         if (listp arg)
           do (if (and (listp (cadr arg)) (eq (caadr arg) 'eql))
-                 ;; FIXME: works only CCL
-                 (push (ccl:intern-eql-specializer (eval (cadadr arg))) args)
+                 (push (intern-eql-specializer* (eval (cadadr arg))) args)
                  (push (find-class (cadr arg)) args))
         else if (find arg lambda-list-keywords)
                return (nreverse args)
