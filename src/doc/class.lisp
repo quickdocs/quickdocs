@@ -8,8 +8,7 @@
 
 (in-package :cl-user)
 (defpackage clack.doc.class
-  (:use :cl
-        :split-sequence)
+  (:use :cl)
   (:import-from :clack.doc.util
                 :external-symbol-p
                 :lambda-list->specializers
@@ -19,7 +18,8 @@
            :package-systems
            :package-symbols
            :class-slots
-           :class-super-classes))
+           :class-super-classes
+           :function-lambda-list))
 (in-package :clack.doc.class)
 
 (cl-annot:enable-annot-syntax)
@@ -109,7 +109,7 @@
 
 @export
 (defmethod find-entity ((this <doc-method>))
-  (or (find-method (symbol-function (doc-name this))
+  (or (find-method (eval `(function ,(doc-name this)))
                    ;; FIXME: ugly
                    (and (method-qualifier this) (list (method-qualifier this)))
                    (lambda-list->specializers (function-lambda-list this)))

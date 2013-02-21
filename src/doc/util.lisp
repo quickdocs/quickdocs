@@ -57,3 +57,9 @@
               ((listp e) (map-tree f e))
               (t (funcall f e))))
           tree))
+
+@export
+(defun slot-value* (instance slot-name)
+  (if (slot-boundp instance slot-name)
+      (slot-value instance slot-name)
+      nil))

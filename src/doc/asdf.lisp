@@ -65,7 +65,10 @@
                       :type :class))
                   (cl:defstruct
                    (make-instance '<doc-class>
-                      :name (second form)
+                      :name (let ((name-and-options (second form)))
+                              (if (listp name-and-options)
+                                  (car name-and-options)
+                                  name-and-options))
                       :type :struct))
                   (cl:defconstant
                    (make-instance '<doc-variable>

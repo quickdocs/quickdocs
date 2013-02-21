@@ -16,13 +16,8 @@
   :author "Eitarow Fukamachi"
   :license "LLGPL"
   :depends-on (:closer-mop
-               :split-sequence
                :cl-ppcre
-               :cl-annot
-               :cl-markdown
-               :cl-emb
-               :cl-fad
-               :xmls)
+               :cl-annot)
   :components ((:module "src"
                 :pathname "src/doc"
                 :components
@@ -30,4 +25,4 @@
                  (:file "class" :depends-on ("util"))
                  (:file "util")
                  (:file "asdf" :depends-on ("class"))
-                 (:file "generator" :depends-on ("class"))))))
+                 (:file "generator" :depends-on ("class" "asdf" "util"))))))
