@@ -29,6 +29,7 @@
                :cl-fad
                :yason
                :drakma
+               :memoize
 
                ;; for server
                :clack

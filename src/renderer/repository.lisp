@@ -19,6 +19,8 @@
                 :octets-to-string)
   (:import-from :alexandria
                 :when-let)
+  (:import-from :org.tfeb.hax.memoize
+                :memoize-function)
   (:import-from :clack.doc.util
                 :slurp-file))
 (in-package :clack.doc.repository)
@@ -89,6 +91,7 @@
           ((or (null homepage) (string= homepage "")) nil)
           ((ppcre:scan "^[^:]+://" homepage) homepage)
           (t (concatenate 'string "http://" homepage)))))))
+(memoize-function 'request-homepage-url :test 'equal)
 
 @export
 (defun repos-homepage (project-name)
