@@ -67,15 +67,19 @@
 
 (setf (route *app* "/search")
       #'(lambda (params)
-          (let* ((query (or (getf params :|q|) ""))
-                 (re (ppcre:create-scanner (ppcre:quote-meta-chars query)))
+          (let* ((query (if (string= "" (getf params :|q|))
+                            nil
+                            (getf params :|q|)))
+                 (re (ppcre:create-scanner (ppcre:quote-meta-chars (or (getf params :|q|) ""))))
                  (releases
                   (remove-if-not
                    #'(lambda (release)
                        (ppcre:scan re (slot-value release 'ql-dist:project-name)))
                    (ql-dist:provided-releases t))))
             (render-with-layout
-             :title "Search Results | ClackDoc"
+             :title (if query
+                        "Search Results | ClackDoc"
+                        "All Projects | ClackDoc")
              :query query
              :content
              (emb:execute-emb
@@ -83,7 +87,7 @@
               :env `(:releases ,(mapcar #'(lambda (release)
                                             (slot-value release 'ql-dist:project-name))
                                  releases)
-                     :query ,(getf params :|q|)))))))
+                     :query ,query))))))
 
 (let (handler)
   @export
