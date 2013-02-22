@@ -26,7 +26,12 @@
                :cl-markdown
                :cl-fad
                :alexandria
-               :flexi-streams)
+               :flexi-streams
+
+               ;; for server
+               :clack
+               :ningle
+               )
   :components ((:module "parser"
                 :pathname "src/parser"
                 :components
@@ -38,4 +43,9 @@
                 :pathname "src/renderer"
                 :components
                 ((:file "renderer" :depends-on ("readme"))
-                 (:file "readme")))))
+                 (:file "readme")))
+               (:module "server"
+                :pathname "src/server"
+                :depends-on ("renderer")
+                :components
+                ((:file "server")))))
