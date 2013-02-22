@@ -40,7 +40,7 @@
   (when-let (source (project-source-file project-name))
     (let ((data (slurp-file source)))
       (nth-value 0
-                 (ppcre:scan-to-strings "(\\S+?)\\s*?$" data)))))
+                 (ppcre:scan-to-strings "(\\S+?://\\S+?)\\s*?$" data)))))
 
 (defun url-domain (url)
   (aref (nth-value 1 (ppcre:scan-to-strings "^[^:]+?://([^/]+)" url))

@@ -39,8 +39,10 @@
 
 (setf (route *app* "/project/:project-name")
       #'(lambda (params)
-          (render-documentation
-           (ql-dist:find-release (getf params :project-name)))))
+          (let ((release (ql-dist:find-release (getf params :project-name))))
+            (if release
+                (render-documentation release)
+                '(404 () ("not found"))))))
 
 (let (handler)
   @export

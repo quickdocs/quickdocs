@@ -11,6 +11,8 @@
   (:use :cl)
   (:import-from :emb
                 :execute-emb)
+  (:import-from :alexandria
+                :when-let)
   (:import-from :clack.doc.readme
                 :find-system-readme
                 :readme->html)
@@ -36,6 +38,7 @@
 
 @export
 (defmethod render-documentation ((this ql-dist:release))
+  (ql-dist:ensure-installed this)
   (let ((project-name (slot-value this 'ql-dist:project-name))
         (systems (ql-dist:provided-systems this))
         authors maintainers licenses)
@@ -66,8 +69,10 @@
             :archive-url (slot-value this 'ql-dist::archive-url)
             :project-url (project-url project-name)
             :homepage (repos-homepage project-name)
-            :readme (readme->html
-                     (car (find-system-readme (asdf:find-system (slot-value (car systems) 'ql-dist:name)))))
+            :readme (when-let (readme
+                               (find-system-readme (asdf:find-system (slot-value (car systems) 'ql-dist:name))))
+                      (readme->html
+                       (car readme)))
             :authors authors
             :maintainer maintainers
             :licenses licenses)))))
