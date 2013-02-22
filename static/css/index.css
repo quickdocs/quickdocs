@@ -65,6 +65,7 @@ header {
   z-index: -1000;
   background-color: #1d304e;
   background: -webkit-gradient(linear, left top, left bottom, from(rgb(29, 48, 78)), to(rgb(20, 32, 56)));
+  background: -moz-linear-gradient(-90deg, rgb(29, 48, 78), rgb(20, 32, 56));
 }
 
 #background-yellow {
@@ -76,4 +77,5 @@ header {
   z-index: -1000;
   background-color: #ddebb9;
   background: -webkit-gradient(linear, left top, left bottom, from(rgb(221, 235, 185)), to(rgb(146, 156, 124)));
+  background: -moz-linear-gradient(-90deg, rgb(221, 235, 185), rgb(146, 156, 124));
 }
