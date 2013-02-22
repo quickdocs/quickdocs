@@ -15,13 +15,27 @@
   :version "0.1-SNAPSHOT"
   :author "Eitarow Fukamachi"
   :license "LLGPL"
-  :depends-on (:closer-mop
+  :depends-on (:cl-annot
+
+               ;; for parser
+               :closer-mop
                :cl-ppcre
-               :cl-annot)
+
+               ;; for renderer
+               :cl-emb
+               :cl-markdown
+               :cl-fad
+               :alexandria
+               :flexi-streams)
   :components ((:module "parser"
                 :pathname "src/parser"
                 :components
                 ((:file "class" :depends-on ("util"))
                  (:file "util")
                  (:file "asdf" :depends-on ("class"))
-                 (:file "parser" :depends-on ("class" "asdf" "util"))))))
+                 (:file "parser" :depends-on ("class" "asdf" "util"))))
+               (:module "renderer"
+                :pathname "src/renderer"
+                :components
+                ((:file "renderer" :depends-on ("readme"))
+                 (:file "readme")))))

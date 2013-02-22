@@ -3,28 +3,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title><% @var name %></title>
-  <link rel="stylesheet" href="./main.css" type="text/css" media="screen, tv, print" charset="UTF-8" />
+  <title><% @var title %></title>
 </head>
 <body>
-
 <div class="container">
+  <div id="header">
+  </div>
 
-<% @var doc %>
+  <div id="content">
+    <% @var content -escape raw %>
+  </div>
 
-<h2>EXTERNAL SYMBOLS</h2>
-
-<div class="symbol">
-  <ul>
-<% @loop symbol-list %>
-<li>
-  <%= env %>
-</li>
-<% @endloop %>
-  </ul>
+  <div id="footer">
+  </div>
 </div>
-
-</div>
-
 </body>
 </html>

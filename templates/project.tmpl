@@ -1,0 +1,30 @@
+<h2 class="project-name"><% @var name %></h2>
+
+<span class="ql-version"><% @var ql-version %></span>
+
+<% @if readme %>
+<div class="readme">
+  <% @var readme -escape raw %>
+</div>
+<% @endif %>
+
+<dl class="information">
+  <% @if authors %>
+  <dt>Author</dt>
+  <dd><% @with authors %><% @include _list %><% @endwith %></dd>
+  <% @endif %>
+  <% @if maintainers %>
+  <dt>Maintainer</dt>
+  <dd><% @with maintainers %><% @include _list %><% @endwith %></dd>
+  <% @endif %>
+  <% @if licenses %>
+  <dt>Licenses</dt>
+  <dd><% @with licenses %><% @include _list %><% @endwith %></dd>
+  <% @endif %>
+</dl>
+
+<h3>Links</h3>
+
+<ul>
+  <li><a href="./<% @var name %>/api">API Reference</a></li>
+</ul>
