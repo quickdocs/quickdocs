@@ -47,8 +47,12 @@
 (defmethod render-documentation ((this ql-dist:release))
   (ql-dist:ensure-installed this)
   (let ((project-name (slot-value this 'ql-dist:project-name))
-        (systems (ql-dist:provided-systems this))
-        authors maintainers licenses)
+        (systems (sort (ql-dist:provided-systems this)
+                       #'(lambda (a b)
+                           (string< (slot-value a 'ql-dist:name)
+                                    (slot-value b 'ql-dist:name)))))
+        authors maintainers licenses
+        dependencies)
     (loop for ql-system in systems
           for system = (ignore-errors (asdf:find-system
                                        (slot-value ql-system 'ql-dist:name)))
@@ -64,7 +68,17 @@
                (when (slot-boundp system 'asdf::licence)
                  (pushnew (slot-value system 'asdf::licence)
                           licenses
-                          :test #'string=)))
+                          :test #'string=))
+               (when (slot-boundp system 'asdf::load-dependencies)
+                 (setf dependencies
+                       (append dependencies (slot-value system 'asdf::load-dependencies)))))
+    (setf dependencies
+          (loop with dist = (ql-dist:dist "quicklisp")
+                with results = nil
+                for system-name in (remove-duplicates dependencies)
+                for release = (slot-value (ql-dist:find-system-in-dist (string-downcase system-name) dist) 'ql-dist:release)
+                do (pushnew (slot-value release 'ql-dist:project-name) results)
+                finally (return (reverse results))))
     (list
      :title project-name
      :content
@@ -80,6 +94,7 @@
                                (find-system-readme (asdf:find-system (slot-value (car systems) 'ql-dist:name))))
                       (readme->html
                        (car readme)))
-            :authors authors
-            :maintainer maintainers
-            :licenses licenses)))))
+            :dependencies (remove-duplicates dependencies :test #'eq)
+            :authors (reverse authors)
+            :maintainer (reverse maintainers)
+            :licenses (reverse licenses))))))

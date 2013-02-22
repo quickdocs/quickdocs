@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+section {
+  margin-bottom: 40px;
+}
+
 /**
  *  Header
  */
@@ -106,7 +110,6 @@ header .search-query strong {
   background-color: #f1f1f1;
   line-height: 200%;
   padding: 15px;
-  margin-bottom: 50px;
 }
 
 .information dt {
