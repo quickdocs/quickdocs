@@ -2,18 +2,25 @@
   <h2 class="project-name"><% @var name %></h2>
   <span class="ql-version"><% @var ql-version %></span>
   <div class="header-links">
+    <% @if homepage %>
+    <a href="<% @var homepage %>">Website</a>
+    <% @endif %>
+    <% @if project-url %>
+    <a href="<% @var project-url %>">Source Code</a>
+    <% @endif %>
     <a href="<% @var archive-url %>" title="Download a tarball from Quicklisp">Download</a>
   </div>
 </header>
 
 <% @if readme %>
 <section class="readme">
-  <div class="readme-body">
-  <% @var readme -escape raw %>
-  </div>
+  <div class="readme-body"><% @var readme -escape raw %></div>
 </section>
 <% @endif %>
 
+<% (when (or (getf env :authors)
+             (getf env :maintainers)
+             (getf env :licenses)) %>
 <section class="information">
   <dl>
     <% @if authors %>
@@ -30,6 +37,7 @@
     <% @endif %>
   </dl>
 </section>
+<% ) %>
 
 <h3>Links</h3>
 

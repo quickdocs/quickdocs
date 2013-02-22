@@ -16,6 +16,8 @@
   :author "Eitarow Fukamachi"
   :license "LLGPL"
   :depends-on (:cl-annot
+               :flexi-streams
+               :alexandria
 
                ;; for parser
                :closer-mop
@@ -25,8 +27,8 @@
                :cl-emb
                :cl-markdown
                :cl-fad
-               :alexandria
-               :flexi-streams
+               :yason
+               :drakma
 
                ;; for server
                :clack
@@ -42,8 +44,9 @@
                (:module "renderer"
                 :pathname "src/renderer"
                 :components
-                ((:file "renderer" :depends-on ("readme"))
-                 (:file "readme")))
+                ((:file "renderer" :depends-on ("readme" "repository"))
+                 (:file "readme")
+                 (:file "repository")))
                (:module "server"
                 :pathname "src/server"
                 :depends-on ("renderer")

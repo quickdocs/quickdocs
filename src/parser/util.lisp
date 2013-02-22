@@ -1,6 +1,11 @@
 (in-package :cl-user)
 (defpackage clack.doc.util
-  (:use :cl))
+  (:use :cl)
+  (:import-from :alexandria
+                :copy-stream)
+  (:import-from :flexi-streams
+                :octets-to-string
+                :with-output-to-sequence))
 (in-package :clack.doc.util)
 
 (cl-annot:enable-annot-syntax)
@@ -63,3 +68,11 @@
   (if (slot-boundp instance slot-name)
       (slot-value instance slot-name)
       nil))
+
+@export
+(defun slurp-file (file)
+  (with-open-file (in file :element-type '(unsigned-byte 8))
+    (flex:octets-to-string
+     (flex:with-output-to-sequence (out)
+      (alexandria:copy-stream in out :finish-output t))
+     :external-format :utf-8)))

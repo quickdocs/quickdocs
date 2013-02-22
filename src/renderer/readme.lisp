@@ -13,11 +13,8 @@
                 :markdown)
   (:import-from :cl-fad
                 :list-directory)
-  (:import-from :alexandria
-                :copy-stream)
-  (:import-from :flexi-streams
-                :octets-to-string
-                :with-output-to-sequence))
+  (:import-from :clack.doc.util
+                :slurp-file))
 (in-package :clack.doc.readme)
 
 (cl-annot:enable-annot-syntax)
@@ -41,10 +38,3 @@
        (with-output-to-string (s)
          (cl-markdown:markdown readme-file :stream s)))
       (t (slurp-file readme-file)))))
-
-(defun slurp-file (file)
-  (with-open-file (in file :element-type '(unsigned-byte 8))
-    (flex:octets-to-string
-     (flex:with-output-to-sequence (out)
-      (alexandria:copy-stream in out :finish-output t))
-     :external-format :utf-8)))

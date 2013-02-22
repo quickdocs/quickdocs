@@ -13,7 +13,10 @@
                 :execute-emb)
   (:import-from :clack.doc.readme
                 :find-system-readme
-                :readme->html))
+                :readme->html)
+  (:import-from :clack.doc.repository
+                :project-url
+                :repos-homepage))
 (in-package :clack.doc.renderer)
 
 (cl-annot:enable-annot-syntax)
@@ -61,6 +64,8 @@
             :ql-version (ql-dist:version
                          (slot-value this 'ql-dist:dist))
             :archive-url (slot-value this 'ql-dist::archive-url)
+            :project-url (project-url project-name)
+            :homepage (repos-homepage project-name)
             :readme (readme->html
                      (car (find-system-readme (asdf:find-system (slot-value (car systems) 'ql-dist:name)))))
             :authors authors
