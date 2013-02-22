@@ -27,6 +27,7 @@ header {
   font-size: 64px;
   color: white;
   cursor: default;
+  text-shadow: 0 -2px 2px rgb(54, 72, 117);
 }
 
 .search-form input[type="text"] {
@@ -55,7 +56,7 @@ header {
   margin-top: 10px;
 }
 
-#background {
+#background-blue {
   position: absolute;
   top: 0;
   left: 0;
@@ -63,4 +64,16 @@ header {
   height: 50%;
   z-index: -1000;
   background-color: #1d304e;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgb(29, 48, 78)), to(rgb(20, 32, 56)));
+}
+
+#background-yellow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  z-index: -1000;
+  background-color: #ddebb9;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgb(221, 235, 185)), to(rgb(146, 156, 124)));
 }
