@@ -1,0 +1,94 @@
+@charset "UTF-8";
+
+/**
+ *  Header
+ */
+#global-header {
+  width: 100%;
+  color: white;
+  background-color: #1d304e;
+  text-shadow: 1px 1px 3px black;
+  font-size: 24px;
+  padding: 10px 15px;
+}
+
+header {
+  margin: 10px 0 30px;
+}
+
+header h2 {
+  float: left;
+  font-size: 40px;
+}
+
+header .ql-version {
+  display: inline-block;
+  margin: 3px 0 0 10px;
+  font-style: italic;
+  color: #ccc;
+}
+
+header .header-links {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+header .header-links a {
+  display: inline-block;
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: white;
+  background-color: #6fbf42;
+}
+
+/**
+ *  Content
+ */
+#content {
+  position: relative;
+  width: 800px;
+  margin: 30px auto;
+}
+
+#content h3 {
+  font-size: 32px;
+  margin: 10px 0 20px;
+}
+
+.information {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.information dt {
+  clear: left;
+  float: left;
+  margin: 0 0 0.8em;
+  width: 7.5em;
+  padding-left: 5px;
+  color: #000;
+  font-weight: bold;
+}
+
+.information dd {
+  margin-bottom: 0.8em;
+  margin-left: 7.5em;
+}
+
+/**
+ *  Footer
+ */
+#global-footer {
+  position: relative;
+  width: 800px;
+  text-align: center;
+  padding: 50px 0;
+  margin: 0 auto;
+}
+
+#global-footer .lisp-logo {
+  position: absolute;
+  top: 35px;
+  right: 0;
+}

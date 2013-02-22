@@ -1,0 +1,37 @@
+@charset "UTF-8";
+
+.readme-body {
+  margin: 0 10px 10px;
+  padding: 0 15px 15px;
+  line-height: 1.6;
+}
+
+.readme-body h1,
+.readme-body h2,
+.readme-body h3,
+.readme-body h4,
+.readme-body h5,
+.readme-body h6 {
+  margin: 20px 0 10px;
+}
+
+.readme-body h1 {
+  font-size: 28px;
+}
+
+.readme-body h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+}
+
+.readme-body h3 {
+  font-size: 18px;
+}
+
+.readme-body code {
+  display: block;
+  color: white;
+  background-color: black;
+  border-radius: 8px;
+  padding: 15px;
+}

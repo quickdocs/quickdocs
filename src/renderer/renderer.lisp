@@ -60,6 +60,7 @@
             :name project-name
             :ql-version (ql-dist:version
                          (slot-value this 'ql-dist:dist))
+            :archive-url (slot-value this 'ql-dist::archive-url)
             :readme (readme->html
                      (car (find-system-readme (asdf:find-system (slot-value (car systems) 'ql-dist:name)))))
             :authors authors

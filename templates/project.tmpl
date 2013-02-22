@@ -1,27 +1,35 @@
-<h2 class="project-name"><% @var name %></h2>
-
-<span class="ql-version"><% @var ql-version %></span>
+<header>
+  <h2 class="project-name"><% @var name %></h2>
+  <span class="ql-version"><% @var ql-version %></span>
+  <div class="header-links">
+    <a href="<% @var archive-url %>" title="Download a tarball from Quicklisp">Download</a>
+  </div>
+</header>
 
 <% @if readme %>
-<div class="readme">
+<section class="readme">
+  <div class="readme-body">
   <% @var readme -escape raw %>
-</div>
+  </div>
+</section>
 <% @endif %>
 
-<dl class="information">
-  <% @if authors %>
-  <dt>Author</dt>
-  <dd><% @with authors %><% @include _list %><% @endwith %></dd>
-  <% @endif %>
-  <% @if maintainers %>
-  <dt>Maintainer</dt>
-  <dd><% @with maintainers %><% @include _list %><% @endwith %></dd>
-  <% @endif %>
-  <% @if licenses %>
-  <dt>Licenses</dt>
-  <dd><% @with licenses %><% @include _list %><% @endwith %></dd>
-  <% @endif %>
-</dl>
+<section class="information">
+  <dl>
+    <% @if authors %>
+    <dt>Author</dt>
+    <dd><% @with authors %><% @include _list %><% @endwith %></dd>
+    <% @endif %>
+    <% @if maintainers %>
+    <dt>Maintainer</dt>
+    <dd><% @with maintainers %><% @include _list %><% @endwith %></dd>
+    <% @endif %>
+    <% @if licenses %>
+    <dt>Licenses</dt>
+    <dd><% @with licenses %><% @include _list %><% @endwith %></dd>
+    <% @endif %>
+  </dl>
+</section>
 
 <h3>Links</h3>
 
