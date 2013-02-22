@@ -3,12 +3,12 @@
   <span class="ql-version"><% @var ql-version %></span>
   <div class="header-links">
     <% @if homepage %>
-    <a href="<% @var homepage %>">Website</a>
+    <a href="<% @var homepage %>" class="lsf-icon" title="web">Website</a>
     <% @endif %>
     <% @if project-url %>
-    <a href="<% @var project-url %>">Source Code</a>
+    <a href="<% @var project-url %>" class="lsf-icon" title="file">Source Code</a>
     <% @endif %>
-    <a href="<% @var archive-url %>" title="Download a tarball from Quicklisp">Download</a>
+    <a href="<% @var archive-url %>" class="lsf-icon" title="download">Download</a>
   </div>
 </header>
 

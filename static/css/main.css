@@ -48,7 +48,7 @@ header .ql-version {
 
 header .header-links {
   position: absolute;
-  top: 0;
+  top: -7px;
   right: 0;
 }
 
@@ -58,6 +58,8 @@ header .header-links a {
   border-radius: 8px;
   color: white;
   background-color: #6fbf42;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgb(111, 191, 66)), to(rgb(74, 127, 44)));
+  text-decoration: none;
 }
 
 header .search-query {
