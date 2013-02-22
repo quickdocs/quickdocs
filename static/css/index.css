@@ -39,12 +39,15 @@ header {
 
 .search-form input[type="submit"] {
   margin: 0;
+  width: 29px;
   height: 29px;
   border: none;
   border-radius: 4px;
   color: white;
   background-color: #6fbf42;
   cursor: pointer;
+  font-size: 20px;
+  vertical-align: bottom;
 }
 
 .distribution-counts {

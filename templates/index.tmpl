@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <title><% @var title %></title>
+  <link rel="stylesheet" type="text/css" href="/css/LigatureSymbols/style.css" />
   <link rel="stylesheet" type="text/css" href="/css/base.css" />
   <link rel="stylesheet" type="text/css" href="/css/footer.css" />
   <link rel="stylesheet" type="text/css" href="/css/index.css" />
 </head>
-<body>
+<body onLoad="document['search-form'].q.focus()">
 <div id="container">
   <div id="content">
     <header>
       <h1 class="logo large-logo">ClackDoc</h1>
     </header>
 
-    <form class="search-form" method="get" action="/search">
+    <form class="search-form" name="search-form" method="get" action="/search">
       <input type="text" name="q" value="<% @var query %>" placeholder="Search for projects" />
-      <input type="submit" value="Search" />
+      <input type="submit" class="lsf" value="search" />
     </form>
 
     <% @with count %>

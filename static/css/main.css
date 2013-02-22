@@ -28,6 +28,20 @@
 
 #global-header .search-form input[type="text"] {
   width: 200px;
+  height: 20px;
+  padding-left: 4px;
+}
+
+#global-header .search-form input[type="submit"] {
+  width: 25px;
+  height: 26px;
+  border: none;
+  color: white;
+  background-color: #6fbf42;
+  cursor: pointer;
+  font-size: 20px;
+  vertical-align: bottom;
+  margin-left: -6px;
 }
 
 header {
@@ -64,7 +78,7 @@ header .header-links a {
 
 header .search-query {
   display: inline-block;
-  margin: 3px 0 0 10px;
+  margin: 6px 0 0 10px;
   color: #888;
 }
 
@@ -88,20 +102,29 @@ header .search-query strong {
 
 .information {
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-top: 3px solid #BBB;
+  background-color: #f1f1f1;
+  line-height: 200%;
+  padding: 15px;
+  margin-bottom: 50px;
 }
 
 .information dt {
-  clear: left;
-  float: left;
-  margin: 0 0 0.8em;
-  width: 7.5em;
-  padding-left: 5px;
-  color: #000;
+  color: #666;
   font-weight: bold;
+  font-size: 90%;
 }
 
 .information dd {
-  margin-bottom: 0.8em;
-  margin-left: 7.5em;
+  color: #888;
+  font-size: 80%;
+}
+
+.search-results-summary {
+  margin-left: 5px;
+  color: #888;
+}
+
+.search-results-summary strong {
+  color: #666;
 }
