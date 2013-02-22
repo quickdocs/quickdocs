@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title><% @var title %></title>
+  <link rel="stylesheet" type="text/css" href="/css/base.css" />
+  <link rel="stylesheet" type="text/css" href="/css/footer.css" />
+  <link rel="stylesheet" type="text/css" href="/css/index.css" />
+</head>
+<body>
+<div id="container">
+  <div id="content">
+    <header>
+      <h1 class="logo large-logo">ClackDoc</h1>
+    </header>
+
+    <form class="search-form" method="get" action="/search">
+      <input type="text" name="q" value="<% @var query %>" placeholder="Search for projects" />
+      <input type="submit" value="Search" />
+    </form>
+
+    <% @with count %>
+    <p class="distribution-counts"><%= (format nil "~:D" (getf env :releases)) %> projects / <%= (format nil "~:D" (getf env :systems)) %> systems</p>
+    <% @endwith %>
+
+    <% @include footer %>
+  </div>
+  <div id="background"></div>
+</div>
+</body>
+</html>

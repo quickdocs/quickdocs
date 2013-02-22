@@ -39,6 +39,15 @@
 
 (defvar *app* (make-instance '<app>))
 
+(setf (route *app* "/")
+      #'(lambda (params)
+          (declare (ignore params))
+          (emb:execute-emb
+           (template-path "index.tmpl")
+           :env `(:count
+                  (:releases ,(length (ql-dist:provided-releases t))
+                   :systems  ,(length (ql-dist:provided-systems t)))))))
+
 (setf (route *app* "/project/:project-name")
       #'(lambda (params)
           (let ((release (ql-dist:find-release (getf params :project-name))))

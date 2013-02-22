@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+/**
+ *  Footer
+ */
+#global-footer {
+  position: relative;
+  width: 800px;
+  text-align: center;
+  padding: 50px 0;
+  margin: 0 auto;
+}
+
+#global-footer .lisp-logo {
+  position: absolute;
+  top: 35px;
+  right: 0;
+}

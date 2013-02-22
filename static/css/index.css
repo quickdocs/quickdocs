@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+html, body {
+  height: 100%;
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  display: table;
+}
+
+#content {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+
+header {
+  width: 100%;
+  padding: 50px 0;
+  margin-top: 100px;
+  text-align: center;
+}
+
+.large-logo {
+  font-size: 64px;
+  color: white;
+  cursor: default;
+}
+
+.search-form input[type="text"] {
+  width: 350px;
+  height: 25px;
+  padding-left: 5px;
+  border-radius: 4px;
+  border: 1px solid #BCBCBC;
+}
+
+.search-form input[type="submit"] {
+  margin: 0;
+  height: 29px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  background-color: #6fbf42;
+  cursor: pointer;
+}
+
+.distribution-counts {
+  color: #888;
+  margin-top: 10px;
+}
+
+#background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  z-index: -1000;
+  background-color: #1d304e;
+}

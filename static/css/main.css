@@ -12,8 +12,12 @@
   padding: 10px 15px;
 }
 
-#global-header .logo {
-  font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
+#global-header .logo a {
+  color: white;
+}
+
+#global-header .logo a:hover {
+  text-decoration: none;
 }
 
 #global-header .search-form {
@@ -22,7 +26,7 @@
   right: 15px;
 }
 
-#global-header .search-form input {
+#global-header .search-form input[type="text"] {
   width: 200px;
 }
 
@@ -98,21 +102,4 @@ header .search-query strong {
 .information dd {
   margin-bottom: 0.8em;
   margin-left: 7.5em;
-}
-
-/**
- *  Footer
- */
-#global-footer {
-  position: relative;
-  width: 800px;
-  text-align: center;
-  padding: 50px 0;
-  margin: 0 auto;
-}
-
-#global-footer .lisp-logo {
-  position: absolute;
-  top: 35px;
-  right: 0;
 }
