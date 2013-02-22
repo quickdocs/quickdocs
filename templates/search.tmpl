@@ -1,0 +1,19 @@
+<header>
+  <h2>Search Results</h2>
+  <% @if query %>
+  <div class="search-query">for <strong><% @var query %></strong></span>
+  <% @endif %>
+  <br />
+</header>
+
+<p><%=
+      (format nil "<strong>~:D</strong> project~:P ~:*~[are~;is~:;are~] found." (length (getf env :releases)))
+   %></p>
+
+<% @if releases %>
+<ul class="search-results">
+<% @loop releases %>
+  <li><a href="/project/<%= (emb::escape-for-xml env) %>"><%= (emb::escape-for-xml env) %></a></li>
+<% @endloop %>
+</ul>
+<% @endif %>

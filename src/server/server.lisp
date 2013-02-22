@@ -20,7 +20,9 @@
   (:import-from :clack.middleware.static
                 :<clack-middleware-static>)
   (:import-from :clack.doc.renderer
-                :render-documentation))
+                :render-documentation
+                :template-path
+                :render-with-layout))
 (in-package :clack.doc.server)
 
 (cl-annot:enable-annot-syntax)
@@ -43,6 +45,26 @@
             (if release
                 (render-documentation release)
                 '(404 () ("not found"))))))
+
+(setf (route *app* "/search")
+      #'(lambda (params)
+          (let* ((query (or (getf params :|q|) ""))
+                 (re (ppcre:create-scanner (ppcre:quote-meta-chars query)))
+                 (releases
+                  (remove-if-not
+                   #'(lambda (release)
+                       (ppcre:scan re (slot-value release 'ql-dist:project-name)))
+                   (ql-dist:provided-releases t))))
+            (render-with-layout
+             :title "Search Results | ClackDoc"
+             :query query
+             :content
+             (emb:execute-emb
+              (template-path "search.tmpl")
+              :env `(:releases ,(mapcar #'(lambda (release)
+                                            (slot-value release 'ql-dist:project-name))
+                                 releases)
+                     :query ,(getf params :|q|)))))))
 
 (let (handler)
   @export

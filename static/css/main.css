@@ -16,6 +16,16 @@
   font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
 }
 
+#global-header .search-form {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+}
+
+#global-header .search-form input {
+  width: 200px;
+}
+
 header {
   margin: 10px 0 30px;
 }
@@ -44,6 +54,16 @@ header .header-links a {
   border-radius: 8px;
   color: white;
   background-color: #6fbf42;
+}
+
+header .search-query {
+  display: inline-block;
+  margin: 3px 0 0 10px;
+  color: #888;
+}
+
+header .search-query strong {
+  color: #333;
 }
 
 /**

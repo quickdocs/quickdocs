@@ -23,18 +23,25 @@
 
 (cl-annot:enable-annot-syntax)
 
+@export
 (defparameter *template-path*
               (asdf:system-relative-pathname :clack-doc "templates/"))
 
+@export
 (defun template-path (filename)
   (merge-pathnames filename *template-path*))
 
-(defmethod render-documentation :around (ql-dist)
-  (declare (ignore ql-dist))
+@export
+(defun render-with-layout (&rest env &key title content &allow-other-keys)
+  (declare (ignore title content))
   (let ((emb:*escape-type* :html))
     (emb:execute-emb
      (template-path "layout.tmpl")
-     :env (call-next-method))))
+     :env env)))
+
+(defmethod render-documentation :around (ql-dist)
+  (declare (ignore ql-dist))
+  (apply #'render-with-layout (call-next-method)))
 
 @export
 (defmethod render-documentation ((this ql-dist:release))
