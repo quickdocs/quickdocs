@@ -131,3 +131,11 @@ header .search-query strong {
 .search-results-summary strong {
   color: #666;
 }
+
+/**
+ *  Error Message
+ */
+
+.error-message {
+  text-align: center;
+}

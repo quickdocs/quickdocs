@@ -11,7 +11,8 @@
   (:use :cl)
   (:import-from :ningle
                 :<app>
-                :route)
+                :route
+                :next-route)
   (:import-from :clack
                 :clackup
                 :stop)
@@ -39,6 +40,15 @@
 
 (defvar *app* (make-instance '<app>))
 
+(setf (route *app* "*")
+      #'(lambda (params)
+          (declare (ignore params))
+          (or (next-route)
+              `(404
+                (:content-type "text/html")
+                (,(render-with-layout :title "ClackDoc"
+                                      :content (emb:execute-emb (template-path "404.tmpl"))))))))
+
 (setf (route *app* "/")
       #'(lambda (params)
           (declare (ignore params))
@@ -53,7 +63,7 @@
           (let ((release (ql-dist:find-release (getf params :project-name))))
             (if release
                 (render-documentation release)
-                '(404 () ("not found"))))))
+                (next-route)))))
 
 (setf (route *app* "/search")
       #'(lambda (params)
