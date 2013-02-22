@@ -12,6 +12,10 @@
   padding: 10px 15px;
 }
 
+#global-header .logo {
+  font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
+}
+
 header {
   margin: 10px 0 30px;
 }
