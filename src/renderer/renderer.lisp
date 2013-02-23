@@ -73,12 +73,16 @@
           (loop with dist = (ql-dist:dist "quicklisp")
                 with results = nil
                 for system-name in (remove-duplicates dependencies)
-                for release = (slot-value (ql-dist:find-system-in-dist (string-downcase system-name) dist) 'ql-dist:release)
-                for dependency-name = (slot-value release 'ql-dist:project-name)
-                when (notany #'(lambda (system)
-                                 (string-equal (slot-value system 'ql-dist:name)
-                                               dependency-name))
-                               systems)
+                for system-dist = (ql-dist:find-system-in-dist (string-downcase system-name) dist)
+                for release = (and system-dist
+                                   (slot-value system-dist 'ql-dist:release))
+                for dependency-name = (and release
+                                           (slot-value release 'ql-dist:project-name))
+                when (and system-dist
+                          (notany #'(lambda (system)
+                                      (string-equal (slot-value system 'ql-dist:name)
+                                                    dependency-name))
+                                  systems))
                   do (pushnew dependency-name results)
                 finally (return (reverse results))))
     (list
@@ -115,7 +119,10 @@
      :content
      (emb:execute-emb (template-path "api.tmpl")
       :env `(:name ,project-name
-             :system-list ,(remove-if #'null (mapcar #'parse-documentation systems))
+             :system-list ,(remove-if #'null
+                            (mapcar #'(lambda (system)
+                                        (ignore-errors (parse-documentation system)))
+                             systems))
              :archive-url ,(slot-value this 'ql-dist::archive-url)
              :project-url ,(project-url project-name)
              :homepage ,(repos-homepage project-name))))))

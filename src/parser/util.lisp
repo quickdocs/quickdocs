@@ -20,12 +20,13 @@
 
 @export
 (defmethod external-symbol-p ((symb symbol) &optional pkg)
-  (let* (exported
-         (exported (do-external-symbols (s (or pkg
-                                               (symbol-package symb))
-                                           exported)
-                     (push s exported))))
-    (not (null (member symb exported :test #'eq)))))
+  (when (symbol-package symb)
+    (let* (exported
+           (exported (do-external-symbols (s (or pkg
+                                                 (symbol-package symb))
+                                             exported)
+                       (push s exported))))
+      (not (null (member symb exported :test #'eq))))))
 
 @export
 (defmethod external-symbol-p ((symb cons) &optional pkg)

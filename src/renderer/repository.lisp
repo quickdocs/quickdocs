@@ -83,7 +83,7 @@
           ((or (null homepage) (string= homepage "")) nil)
           ((ppcre:scan "^[^:]+://" homepage) homepage)
           (t (concatenate 'string "http://" homepage)))))))
-(memoize-function 'request-homepage-url :test 'equal)
+(memoize-function 'request-homepage-url :test #'equal)
 
 @export
 (defun repos-homepage (project-name)
