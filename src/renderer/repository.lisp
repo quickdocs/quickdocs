@@ -12,7 +12,8 @@
   (:import-from :alexandria
                 :when-let)
   (:import-from :org.tfeb.hax.memoize
-                :memoize-function)
+                :memoize-function
+                :function-memoized-p)
   (:import-from :quickdocs.util
                 :slurp-file))
 (in-package :quickdocs.repository)
@@ -83,7 +84,8 @@
           ((or (null homepage) (string= homepage "")) nil)
           ((ppcre:scan "^[^:]+://" homepage) homepage)
           (t (concatenate 'string "http://" homepage)))))))
-(memoize-function 'request-homepage-url :test #'equal)
+(unless (function-memoized-p 'request-homepage-url)
+  (memoize-function 'request-homepage-url :test #'equal))
 
 @export
 (defun repos-homepage (project-name)
