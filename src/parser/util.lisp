@@ -1,12 +1,12 @@
 (in-package :cl-user)
-(defpackage clack.doc.util
+(defpackage quickdocs.util
   (:use :cl)
   (:import-from :alexandria
                 :copy-stream)
   (:import-from :flexi-streams
                 :octets-to-string
                 :with-output-to-sequence))
-(in-package :clack.doc.util)
+(in-package :quickdocs.util)
 
 (cl-annot:enable-annot-syntax)
 

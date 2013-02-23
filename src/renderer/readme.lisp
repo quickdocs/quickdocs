@@ -1,13 +1,5 @@
-#|
-  This file is a part of Clack package.
-  URL: http://github.com/fukamachi/clack
-  Copyright (c) 2011 Eitarow Fukamachi <e.arrows@gmail.com>
-
-  Clack is freely distributable under the LLGPL License.
-|#
-
 (in-package :cl-user)
-(defpackage clack.doc.readme
+(defpackage quickdocs.readme
   (:use :cl)
   (:import-from :cl-markdown
                 :markdown)
@@ -19,9 +11,9 @@
                 :shell-command)
   (:import-from :alexandria
                 :when-let)
-  (:import-from :clack.doc.util
+  (:import-from :quickdocs.util
                 :slurp-file))
-(in-package :clack.doc.readme)
+(in-package :quickdocs.readme)
 
 (cl-annot:enable-annot-syntax)
 

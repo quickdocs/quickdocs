@@ -1,22 +1,14 @@
-#|
-  This file is a part of Clack package.
-  URL: http://github.com/fukamachi/clack
-  Copyright (c) 2011 Eitarow Fukamachi <e.arrows@gmail.com>
-
-  Clack is freely distributable under the LLGPL License.
-|#
-
 (in-package :cl-user)
-(defpackage clack.doc.parser
+(defpackage quickdocs.parser
   (:use :cl
-        :clack.doc.class)
+        :quickdocs.class)
   (:import-from :alexandria
                 :when-let)
-  (:import-from :clack.doc.asdf
+  (:import-from :quickdocs.asdf
                 :ensure-system-loaded)
-  (:import-from :clack.doc.util
+  (:import-from :quickdocs.util
                 :slot-value*))
-(in-package :clack.doc.parser)
+(in-package :quickdocs.parser)
 
 (cl-annot:enable-annot-syntax)
 

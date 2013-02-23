@@ -1,13 +1,5 @@
-#|
-  This file is a part of Clack package.
-  URL: http://github.com/fukamachi/clack
-  Copyright (c) 2011 Eitarow Fukamachi <e.arrows@gmail.com>
-
-  Clack is freely distributable under the LLGPL License.
-|#
-
 (in-package :cl-user)
-(defpackage clack.doc.repository
+(defpackage quickdocs.repository
   (:use :cl)
   (:import-from :fad
                 :file-exists-p)
@@ -21,14 +13,14 @@
                 :when-let)
   (:import-from :org.tfeb.hax.memoize
                 :memoize-function)
-  (:import-from :clack.doc.util
+  (:import-from :quickdocs.util
                 :slurp-file))
-(in-package :clack.doc.repository)
+(in-package :quickdocs.repository)
 
 (cl-annot:enable-annot-syntax)
 
 (defparameter *quicklisp-projects-directory*
-              (asdf:system-relative-pathname :clack-doc
+              (asdf:system-relative-pathname :quickdocs
                #P"modules/quicklisp-projects/"))
 
 (defun project-source-file (project-name)

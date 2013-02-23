@@ -1,15 +1,7 @@
-#|
-  This file is a part of Clack package.
-  URL: http://github.com/fukamachi/clack
-  Copyright (c) 2011 Eitarow Fukamachi <e.arrows@gmail.com>
-
-  Clack is freely distributable under the LLGPL License.
-|#
-
 (in-package :cl-user)
-(defpackage clack.doc.class
+(defpackage quickdocs.class
   (:use :cl)
-  (:import-from :clack.doc.util
+  (:import-from :quickdocs.util
                 :external-symbol-p
                 :lambda-list->specializers
                 :map-tree)
@@ -20,7 +12,7 @@
            :class-slots
            :class-super-classes
            :function-lambda-list))
-(in-package :clack.doc.class)
+(in-package :quickdocs.class)
 
 (cl-annot:enable-annot-syntax)
 

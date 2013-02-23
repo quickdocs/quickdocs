@@ -7,11 +7,11 @@
 |#
 
 (in-package :cl-user)
-(defpackage clack-doc-asd
+(defpackage quickdocs-asd
   (:use :cl :asdf))
-(in-package :clack-doc-asd)
+(in-package :quickdocs-asd)
 
-(defsystem clack-doc
+(defsystem quickdocs
   :version "0.1-SNAPSHOT"
   :author "Eitarow Fukamachi"
   :license "LLGPL"

@@ -1,8 +1,4 @@
-# ClackDoc - Documentation Generator for Common Lisp
-
-## Usage
-
-    (clack.doc:generate-documentation (asdf:find-system :clack))
+# Quickdocs
 
 ## Author
 

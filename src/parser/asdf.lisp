@@ -1,16 +1,8 @@
-#|
-  This file is a part of Clack package.
-  URL: http://github.com/fukamachi/clack
-  Copyright (c) 2011 Eitarow Fukamachi <e.arrows@gmail.com>
-
-  Clack is freely distributable under the LLGPL License.
-|#
-
 (in-package :cl-user)
-(defpackage clack.doc.asdf
+(defpackage quickdocs.asdf
   (:use :cl
-        :clack.doc.class))
-(in-package :clack.doc.asdf)
+        :quickdocs.class))
+(in-package :quickdocs.asdf)
 
 (cl-annot:enable-annot-syntax)
 

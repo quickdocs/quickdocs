@@ -1,13 +1,5 @@
-#|
-  This file is a part of Clack package.
-  URL: http://github.com/fukamachi/clack
-  Copyright (c) 2011 Eitarow Fukamachi <e.arrows@gmail.com>
-
-  Clack is freely distributable under the LLGPL License.
-|#
-
 (in-package :cl-user)
-(defpackage clack.doc.server
+(defpackage quickdocs.server
   (:use :cl)
   (:import-from :ningle
                 :<app>
@@ -20,12 +12,12 @@
                 :builder)
   (:import-from :clack.middleware.static
                 :<clack-middleware-static>)
-  (:import-from :clack.doc.renderer
+  (:import-from :quickdocs.renderer
                 :render-documentation
                 :render-api-reference
                 :template-path
                 :render-with-layout))
-(in-package :clack.doc.server)
+(in-package :quickdocs.server)
 
 (cl-annot:enable-annot-syntax)
 
@@ -36,7 +28,7 @@
             (when (ppcre:scan "^(?:/static/|/images/|/css/|/js/|/robot\\.txt$|/favicon.ico$)" path)
               (ppcre:regex-replace "^/static" path "")))
     :root (asdf:system-relative-pathname
-           :clack-doc #p"static/"))
+           :quickdocs #p"static/"))
    app))
 
 (defvar *app* (make-instance '<app>))
@@ -47,7 +39,7 @@
           (or (next-route)
               `(404
                 (:content-type "text/html")
-                (,(render-with-layout :title "ClackDoc"
+                (,(render-with-layout :title "Quickdocs"
                                       :content (emb:execute-emb (template-path "404.tmpl"))))))))
 
 (setf (route *app* "/")
@@ -94,8 +86,8 @@
                    (ql-dist:provided-releases t))))
             (render-with-layout
              :title (if query
-                        "Search Results | ClackDoc"
-                        "All Projects | ClackDoc")
+                        "Search Results | Quickdocs"
+                        "All Projects | Quickdocs")
              :query query
              :content
              (emb:execute-emb

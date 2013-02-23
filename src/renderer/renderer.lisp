@@ -1,33 +1,25 @@
-#|
-  This file is a part of Clack package.
-  URL: http://github.com/fukamachi/clack
-  Copyright (c) 2011 Eitarow Fukamachi <e.arrows@gmail.com>
-
-  Clack is freely distributable under the LLGPL License.
-|#
-
 (in-package :cl-user)
-(defpackage clack.doc.renderer
+(defpackage quickdocs.renderer
   (:use :cl)
   (:import-from :emb
                 :execute-emb)
   (:import-from :alexandria
                 :when-let)
-  (:import-from :clack.doc.readme
+  (:import-from :quickdocs.readme
                 :find-system-readme
                 :readme->html)
-  (:import-from :clack.doc.repository
+  (:import-from :quickdocs.repository
                 :project-url
                 :repos-homepage)
-  (:import-from :clack.doc.parser
+  (:import-from :quickdocs.parser
                 :parse-documentation))
-(in-package :clack.doc.renderer)
+(in-package :quickdocs.renderer)
 
 (cl-annot:enable-annot-syntax)
 
 @export
 (defparameter *template-path*
-              (asdf:system-relative-pathname :clack-doc "templates/"))
+              (asdf:system-relative-pathname :quickdocs "templates/"))
 
 @export
 (defun template-path (filename)
@@ -119,7 +111,7 @@
   (let ((project-name (slot-value this 'ql-dist:project-name))
         (systems (find-systems-in-release this)))
     (list
-     :title (format nil "API Reference | ~A | ClackDoc" project-name)
+     :title (format nil "API Reference | ~A | Quickdocs" project-name)
      :content
      (emb:execute-emb (template-path "api.tmpl")
       :env `(:name ,project-name
