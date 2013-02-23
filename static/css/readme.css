@@ -17,16 +17,16 @@
 }
 
 .readme-body h1 {
-  font-size: 28px;
+  font-size: 28px !important;
 }
 
 .readme-body h2 {
-  font-size: 24px;
+  font-size: 24px !important;
   border-bottom: 1px solid #ccc;
 }
 
 .readme-body h3 {
-  font-size: 18px;
+  font-size: 18px !important;
 }
 
 .readme-body code {
