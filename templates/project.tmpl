@@ -1,5 +1,5 @@
 <header>
-  <h2 class="project-name"><a href="/project/<% @var name -escape uri %>"><% @var name %></a></h2>
+  <h2 class="project-name"><a href="/<% @var name -escape uri %>"><% @var name %></a></h2>
   <span class="subtitle ql-version"><% @var ql-version %></span>
   <% @include header-links.tmpl %>
 </header>
@@ -37,7 +37,7 @@
 <% @if dependencies %>
 <ul>
   <% @loop dependencies %>
-  <li><a href="/project/<%= (emb::escape-for-xml env) %>"><%= (emb::escape-for-xml env) %></a></li>
+  <li><a href="/<%= (emb::escape-for-xml env) %>"><%= (emb::escape-for-xml env) %></a></li>
   <% @endloop %>
 </ul>
 <% @else %>
@@ -48,7 +48,7 @@
 <section class="links">
 <h3>Links</h3>
 <ul>
-  <li><a href="/project/<% @var name -escape uri %>/api">API Reference</a></li>
+  <li><a href="/<% @var name -escape uri %>/api">API Reference</a></li>
   <% @if homepage %>
   <li><a href="<% @var homepage %>">Website</a></li>
   <% @endif %>

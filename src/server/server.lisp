@@ -55,21 +55,21 @@
                    :systems  ,(length (ql-dist:provided-systems t)))
                   :dist-version ,(slot-value (ql-dist:dist "quicklisp") 'ql-dist:version)))))
 
-(setf (route *app* "/project/:project-name")
+(setf (route *app* "/:project-name")
       #'(lambda (params)
           (let ((release (ql-dist:find-release (getf params :project-name))))
             (if release
                 (render-documentation release)
                 (next-route)))))
 
-(setf (route *app* "/project/:project-name/api")
+(setf (route *app* "/:project-name/api")
       #'(lambda (params)
           (let ((release (ql-dist:find-release (getf params :project-name))))
             (if release
                 (render-api-reference release)
                 (next-route)))))
 
-(setf (route *app* "/search")
+(setf (route *app* "/-/search")
       #'(lambda (params)
           (let ((query (if (string= "" (getf params :|q|))
                            nil

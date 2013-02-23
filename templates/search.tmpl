@@ -17,7 +17,7 @@
 <% @if releases %>
 <ul class="search-results">
 <% @loop releases %>
-  <li><a href="/project/<%= (emb::escape-for-xml env) %>"><%= (emb::escape-for-xml env) %></a></li>
+  <li><a href="/<%= (emb::escape-for-xml env) %>"><%= (emb::escape-for-xml env) %></a></li>
 <% @endloop %>
 </ul>
 <% @endif %>
