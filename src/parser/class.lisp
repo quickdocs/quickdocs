@@ -114,7 +114,8 @@
       (super-classes :initarg :superclasses :initform nil :accessor class-super-classes)))
 
 (defmethod initialize-instance :after ((this <doc-class>) &key)
-  (setf (doc-type this) :class))
+  (unless (slot-boundp this 'type)
+    (setf (doc-type this) :class)))
 
 @export
 (defmethod prepare ((this <doc-class>))

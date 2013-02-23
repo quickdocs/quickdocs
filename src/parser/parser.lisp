@@ -70,7 +70,9 @@
     :slot-list ,(mapcar #'parse-documentation
                  (class-slots this))))
 
-(defmethod parse-documentation ((this c2mop:standard-direct-slot-definition))
+#+(or sbcl ccl)
+(defmethod parse-documentation ((this #+sbcl sb-mop:slot-definition
+                                      #+ccl  ccl:slot-definition))
   (let* ((accessors (intersection (c2mop:slot-definition-readers this)
                                   (mapcar #'cadr (c2mop:slot-definition-writers this))))
          (readers (set-difference (c2mop:slot-definition-readers this)
