@@ -45,6 +45,7 @@
                  (:file "parser" :depends-on ("class" "asdf" "util"))))
                (:module "renderer"
                 :pathname "src/renderer"
+                :depends-on ("parser")
                 :components
                 ((:file "renderer" :depends-on ("readme" "repository"))
                  (:file "readme")

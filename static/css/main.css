@@ -4,6 +4,13 @@ section {
   margin-bottom: 40px;
 }
 
+#content h1 {
+  font-size: 32px;
+}
+#content h2 {
+  font-size: 20px;
+}
+
 /**
  *  Header
  */
@@ -54,10 +61,11 @@ header {
 
 header h2 {
   float: left;
-  font-size: 40px;
+  font-size: 40px !important;
+  margin: 0 !important;
 }
 
-header .ql-version {
+header .subtitle {
   display: inline-block;
   margin: 3px 0 0 10px;
   font-style: italic;
@@ -139,4 +147,95 @@ header .search-query strong {
 
 .error-message {
   text-align: center;
+}
+
+/**
+ *  API Reference
+ */
+
+.api .package {
+  margin-left: 10px;
+  border-bottom: 2px solid #CCC;
+}
+
+.api ul {
+  padding-left: 3px;
+  list-style: none;
+}
+
+.api ul li {
+  margin: 10px 0 30px;
+}
+
+.api code.symbol-name {
+  font-weight: bold;
+  color: #444;
+  font-size: 120%;
+}
+
+.lambda-list {
+  display: inline-block;
+  margin-left: 10px;
+  color: #555;
+}
+
+.api .lambda-list .symbol-name {
+  font-size: 95%;
+}
+
+.api .lambda-list .keyword {
+  color: #777;
+  font-style: italic;
+  font-size: 90%;
+}
+
+.api dl {
+  margin: 8px 0 0 15px;
+  font-size: 90%;
+}
+
+.api .symbol-type {
+  position: absolute;
+  display: inline-block;
+  left: -55px;
+  width: 50px;
+  padding: 0 5px;
+  text-align: center;
+  background-color: #AAA;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 75%;
+}
+
+.api .symbol-type.class {
+  background-color: #555;
+}
+
+.api .slot-list .label {
+  font-style: italic;
+  color: #555;
+}
+
+.docstring {
+  margin: 5px 0 10px 0;
+  white-space: pre-wrap;
+  font-size: 90%;
+  padding: 5px 15px;
+  border: 1px solid #ccc;
+  color: #555;
+  background-color: #eee;
+  border-radius: 6px;
+  line-height: 1.5;
+}
+
+.api dl .docstring {
+  margin-top: 0;
+  line-height: 1.3;
+  font-size: 100%;
+  background: none;
+  border: none;
+}
+
+.description {
+  margin: 15px 0 10px 10px;
 }

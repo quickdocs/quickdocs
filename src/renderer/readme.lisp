@@ -17,6 +17,8 @@
   (:import-from :trivial-shell
                 :get-env-var
                 :shell-command)
+  (:import-from :alexandria
+                :when-let)
   (:import-from :clack.doc.util
                 :slurp-file))
 (in-package :clack.doc.readme)
@@ -41,7 +43,7 @@
         stdout)))
 
 @export
-(defun find-system-readme (system)
+(defmethod find-system-readme ((system asdf:system))
   (remove-if-not
    #'(lambda (path)
        (let ((filename (file-namestring path)))
@@ -49,6 +51,13 @@
               (string= "README" (subseq filename 0 6)))))
    (fad:list-directory
     (slot-value system 'asdf::absolute-pathname))))
+
+@export
+(defmethod find-system-readme ((system ql-dist:system))
+  (when-let (asdf-system
+             (ignore-errors
+               (asdf:find-system (slot-value system 'ql-dist:name))))
+    (find-system-readme asdf-system)))
 
 @export
 (defun readme->html (readme-file)

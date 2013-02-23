@@ -15,6 +15,15 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6 {
+  margin: 20px 0 10px;
+}
+
 a:link {
 	color: #005585;
   text-decoration: none;

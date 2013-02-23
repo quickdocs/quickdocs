@@ -1,0 +1,18 @@
+<a name="package-<%= (emb::escape-for-xml (getf env :name)) %>"></a>
+<h2><% @var name %></h2>
+<% @if documentation %>
+<div class="docstring"><% @with documentation %><% @include _trim %><% @endwith %></div>
+<% @endif %>
+<ul>
+  <% @loop symbol-list %>
+  <li>
+    <% (cond ((find (getf env :type) '(:variable :constant)) %>
+    <% @include variable.tmpl %>
+    <% )     ((find (getf env :type) '(:struct :class)) %>
+    <% @include class.tmpl %>
+    <% )     ((find (getf env :type) '(:function :method :macro)) %>
+    <% @include function.tmpl %>
+    <% )) %>
+  </li>
+  <% @endloop %>
+</ul>

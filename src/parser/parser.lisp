@@ -10,6 +10,8 @@
 (defpackage clack.doc.parser
   (:use :cl
         :clack.doc.class)
+  (:import-from :alexandria
+                :when-let)
   (:import-from :clack.doc.asdf
                 :ensure-system-loaded)
   (:import-from :clack.doc.util
@@ -21,7 +23,8 @@
 @export
 (defmethod parse-documentation ((system asdf:system))
   (ensure-system-loaded system)
-  `(:system ,(slot-value* system 'asdf::name)
+  `(:type :system
+    :name ,(slot-value* system 'asdf::name)
     :author ,(slot-value* system 'asdf::author)
     :maintainer ,(slot-value* system 'asdf::maintainer)
     :version ,(slot-value* system 'asdf::version)
@@ -34,8 +37,15 @@
       (reverse (find-system-packages system)))))
 
 @export
+(defmethod parse-documentation ((system ql-dist:system))
+  (when-let (asdf-system (ignore-errors
+                           (asdf:find-system (slot-value system 'ql-dist:name))))
+    (parse-documentation asdf-system)))
+
+@export
 (defmethod parse-documentation ((this <doc-package>))
-  `(:package ,(doc-name this)
+  `(:type :package
+    :name ,(doc-name this)
     :documentation ,(documentation (find-entity this) t)
     :symbol-list
     ,(mapcar #'parse-documentation
@@ -46,20 +56,23 @@
 
 @export
 (defmethod parse-documentation ((this <doc-function>))
-  `(,(doc-type this) ,(doc-name this)
+  `(:type ,(doc-type this)
+    :name ,(doc-name this)
     :lambda-list ,(function-lambda-list this)
     :documentation ,(documentation (doc-name this) 'function)))
 
 @export
 (defmethod parse-documentation ((this <doc-method>))
-  `(,(doc-type this) ,(doc-name this)
+  `(:type ,(doc-type this)
+    :name ,(doc-name this)
     :lambda-list ,(normalized-lambda-list this)
     :documentation ,(documentation (find-entity this) t)))
 
 @export
 (defmethod parse-documentation ((this <doc-class>))
   (prepare this)
-  `(,(doc-type this) ,(doc-name this)
+  `(:type ,(doc-type this)
+    :name,(doc-name this)
     :super-class-list ,(class-super-classes this)
     :documentation ,(documentation (doc-name this) 'type)
     :slot-list ,(mapcar #'parse-documentation
@@ -72,7 +85,8 @@
                                   accessors))
          (writers (set-difference (mapcar #'cadr (c2mop:slot-definition-writers this))
                                   accessors)))
-    `(:class-slot ,(c2mop:slot-definition-name this)
+    `(:type :class-slot
+      :name ,(c2mop:slot-definition-name this)
       :accessors ,accessors
       :readers ,readers
       :writers ,writers
@@ -80,5 +94,6 @@
 
 @export
 (defmethod parse-documentation ((this <doc-variable>))
-  `(,(doc-type this) ,(doc-name this)
+  `(:type ,(doc-type this)
+    :name ,(doc-name this)
     :documentation ,(documentation this 'variable)))

@@ -1,0 +1,28 @@
+<header>
+  <h2 class="project-name"><a href="/project/<% @var name -escape uri %>"><% @var name %></a></h2>
+  <span class="subtitle">API Reference</span>
+  <% @include header-links.tmpl %>
+</header>
+
+<div class="toc">
+  <ul>
+    <% @loop system-list %>
+      <li><a href="#system-<%= (emb::escape-for-xml (getf env :name)) %>"><% @var name %></a></li>
+    <% @endloop %>
+  </ul>
+</div>
+
+<article class="api">
+  <% @loop system-list %>
+    <a name="system-<%= (emb::escape-for-xml (getf env :name)) %>"></a>
+    <h1><% @var name %></h1>
+    <% @if description %>
+    <p class="description"><% @with description %><% @include _trim %><% @endwith %></p>
+    <% @endif %>
+    <% @loop package-list %>
+      <section class="package">
+        <% @include package.tmpl %>
+      </section>
+    <% @endloop %>
+  <% @endloop %>
+</article>

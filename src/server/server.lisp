@@ -22,6 +22,7 @@
                 :<clack-middleware-static>)
   (:import-from :clack.doc.renderer
                 :render-documentation
+                :render-api-reference
                 :template-path
                 :render-with-layout))
 (in-package :clack.doc.server)
@@ -63,6 +64,13 @@
           (let ((release (ql-dist:find-release (getf params :project-name))))
             (if release
                 (render-documentation release)
+                (next-route)))))
+
+(setf (route *app* "/project/:project-name/api")
+      #'(lambda (params)
+          (let ((release (ql-dist:find-release (getf params :project-name))))
+            (if release
+                (render-api-reference release)
                 (next-route)))))
 
 (setf (route *app* "/search")

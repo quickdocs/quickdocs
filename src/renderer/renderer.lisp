@@ -18,7 +18,9 @@
                 :readme->html)
   (:import-from :clack.doc.repository
                 :project-url
-                :repos-homepage))
+                :repos-homepage)
+  (:import-from :clack.doc.parser
+                :parse-documentation))
 (in-package :clack.doc.renderer)
 
 (cl-annot:enable-annot-syntax)
@@ -39,6 +41,12 @@
      (template-path "layout.tmpl")
      :env env)))
 
+(defun find-systems-in-release (release)
+  (sort (ql-dist:provided-systems release)
+        #'(lambda (a b)
+            (string< (slot-value a 'ql-dist:name)
+                     (slot-value b 'ql-dist:name)))))
+
 (defmethod render-documentation :around (ql-dist)
   (declare (ignore ql-dist))
   (apply #'render-with-layout (call-next-method)))
@@ -47,10 +55,7 @@
 (defmethod render-documentation ((this ql-dist:release))
   (ql-dist:ensure-installed this)
   (let ((project-name (slot-value this 'ql-dist:project-name))
-        (systems (sort (ql-dist:provided-systems this)
-                       #'(lambda (a b)
-                           (string< (slot-value a 'ql-dist:name)
-                                    (slot-value b 'ql-dist:name)))))
+        (systems (find-systems-in-release this))
         authors maintainers licenses
         dependencies)
     (loop for ql-system in systems
@@ -96,10 +101,29 @@
             :project-url (project-url project-name)
             :homepage (repos-homepage project-name)
             :readme (when-let (readme
-                               (find-system-readme (asdf:find-system (slot-value (car systems) 'ql-dist:name))))
+                               (find-system-readme (car systems)))
                       (readme->html
                        (car readme)))
             :dependencies (remove-duplicates dependencies :test #'eq)
             :authors (reverse authors)
             :maintainer (reverse maintainers)
             :licenses (reverse licenses))))))
+
+@export
+(defmethod render-api-reference :around (release)
+  (declare (ignore release))
+  (apply #'render-with-layout (call-next-method)))
+
+@export
+(defmethod render-api-reference ((this ql-dist:release))
+  (let ((project-name (slot-value this 'ql-dist:project-name))
+        (systems (find-systems-in-release this)))
+    (list
+     :title (format nil "API Reference | ~A | ClackDoc" project-name)
+     :content
+     (emb:execute-emb (template-path "api.tmpl")
+      :env `(:name ,project-name
+             :system-list ,(remove-if #'null (mapcar #'parse-documentation systems))
+             :archive-url ,(slot-value this 'ql-dist::archive-url)
+             :project-url ,(project-url project-name)
+             :homepage ,(repos-homepage project-name))))))

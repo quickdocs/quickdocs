@@ -1,15 +1,7 @@
 <header>
-  <h2 class="project-name"><% @var name %></h2>
-  <span class="ql-version"><% @var ql-version %></span>
-  <div class="header-links">
-    <% @if homepage %>
-    <a href="<% @var homepage %>" class="lsf-icon" title="web">Website</a>
-    <% @endif %>
-    <% @if project-url %>
-    <a href="<% @var project-url %>" class="lsf-icon" title="file">Source Code</a>
-    <% @endif %>
-    <a href="<% @var archive-url %>" class="lsf-icon" title="download">Download</a>
-  </div>
+  <h2 class="project-name"><a href="/project/<% @var name -escape uri %>"><% @var name %></a></h2>
+  <span class="subtitle ql-version"><% @var ql-version %></span>
+  <% @include header-links.tmpl %>
 </header>
 
 <% @if readme %>
@@ -25,15 +17,15 @@
   <dl>
     <% @if authors %>
     <dt>Author</dt>
-    <dd><% @with authors %><% @include _list %><% @endwith %></dd>
+    <dd><% @with authors %><% @include _list-comma %><% @endwith %></dd>
     <% @endif %>
     <% @if maintainers %>
     <dt>Maintainer</dt>
-    <dd><% @with maintainers %><% @include _list %><% @endwith %></dd>
+    <dd><% @with maintainers %><% @include _list-comma %><% @endwith %></dd>
     <% @endif %>
     <% @if licenses %>
     <dt>Licenses</dt>
-    <dd><% @with licenses %><% @include _list %><% @endwith %></dd>
+    <dd><% @with licenses %><% @include _list-comma %><% @endwith %></dd>
     <% @endif %>
   </dl>
 </section>
@@ -51,4 +43,17 @@
 <% @else %>
 <em>None.</em>
 <% @endif %>
+</section>
+
+<section class="links">
+<h3>Links</h3>
+<ul>
+  <li><a href="/project/<% @var name -escape uri %>/api">API Reference</a></li>
+  <% @if homepage %>
+  <li><a href="<% @var homepage %>">Website</a></li>
+  <% @endif %>
+  <% @if project-url %>
+  <li><a href="<% @var project-url %>">Source Code</a></li>
+  <% @endif %>
+</ul>
 </section>

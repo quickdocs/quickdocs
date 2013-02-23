@@ -10,15 +10,6 @@
   white-space: pre-wrap;
 }
 
-.readme-body h1,
-.readme-body h2,
-.readme-body h3,
-.readme-body h4,
-.readme-body h5,
-.readme-body h6 {
-  margin: 20px 0 10px;
-}
-
 .readme-body h1 {
   font-size: 28px !important;
 }
