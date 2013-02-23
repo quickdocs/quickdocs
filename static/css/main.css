@@ -93,6 +93,7 @@ header .search-query {
   display: inline-block;
   margin: 6px 0 0 10px;
   color: #888;
+  font-size: 25px;
 }
 
 header .search-query strong {

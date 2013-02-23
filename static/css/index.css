@@ -27,7 +27,7 @@ header {
   font-size: 64px;
   color: white;
   cursor: default;
-  text-shadow: 0 -2px 2px rgb(54, 72, 117);
+  text-shadow: 0 2px 2px black;
 }
 
 .search-form input[type="text"] {
