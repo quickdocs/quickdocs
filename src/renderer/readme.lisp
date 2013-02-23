@@ -28,11 +28,11 @@
        (format nil "~A ~A" *pandoc-path* file)
        :input "")
     (declare (ignore stderr))
-    (if code
+    (if (= 0 code)
+        stdout
         ;; fallback to CL-Markdown
         (with-output-to-string (s)
-          (cl-markdown:markdown file :stream s))
-        stdout)))
+          (cl-markdown:markdown file :stream s)))))
 
 @export
 (defmethod find-system-readme ((system asdf:system))
