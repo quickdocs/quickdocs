@@ -21,6 +21,8 @@
       <input type="submit" class="lsf" value="search" />
     </form>
 
+    <div class="dist-version">Quicklisp: <% @var dist-version %></div>
+
     <% @with count %>
     <p class="distribution-counts"><%= (format nil "~:D" (getf env :releases)) %> projects / <%= (format nil "~:D" (getf env :systems)) %> systems</p>
     <% @endwith %>

@@ -57,7 +57,8 @@
            (template-path "index.tmpl")
            :env `(:count
                   (:releases ,(length (ql-dist:provided-releases t))
-                   :systems  ,(length (ql-dist:provided-systems t)))))))
+                   :systems  ,(length (ql-dist:provided-systems t)))
+                  :dist-version ,(slot-value (ql-dist:dist "quicklisp") 'ql-dist:version)))))
 
 (setf (route *app* "/project/:project-name")
       #'(lambda (params)

@@ -51,9 +51,13 @@ header {
   vertical-align: bottom;
 }
 
+.dist-version {
+  margin-top: 10px;
+  color: #888;
+}
+
 .distribution-counts {
   color: #888;
-  margin-top: 10px;
 }
 
 #background-blue {
