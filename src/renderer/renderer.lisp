@@ -82,7 +82,7 @@
                   do (pushnew dependency-name results)
                 finally (return (reverse results))))
     (list
-     :title project-name
+     :title (format nil "~A | Quickdocs" project-name)
      :content
      (emb:execute-emb (template-path "project.tmpl")
       :env (list
