@@ -35,6 +35,9 @@
                ;; for server
                :clack
                :ningle
+
+               ;; for search
+               :split-sequence
                )
   :components ((:module "parser"
                 :pathname "src/parser"
@@ -52,6 +55,10 @@
                  (:file "repository")))
                (:module "server"
                 :pathname "src/server"
-                :depends-on ("renderer")
+                :depends-on ("renderer" "search")
                 :components
-                ((:file "server")))))
+                ((:file "server")))
+               (:module "search"
+                :pathname "src/search"
+                :components
+                ((:file "search")))))

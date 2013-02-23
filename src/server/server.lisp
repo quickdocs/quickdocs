@@ -16,7 +16,10 @@
                 :render-documentation
                 :render-api-reference
                 :template-path
-                :render-with-layout))
+                :render-with-layout)
+  (:import-from :quickdocs.search
+                :search-projects
+                :sort-by-download-count))
 (in-package :quickdocs.server)
 
 (cl-annot:enable-annot-syntax)
@@ -68,22 +71,9 @@
 
 (setf (route *app* "/search")
       #'(lambda (params)
-          (let* ((query (if (string= "" (getf params :|q|))
-                            nil
-                            (getf params :|q|)))
-                 (re (mapcar
-                      #'(lambda (q)
-                          (ppcre:create-scanner (ppcre:quote-meta-chars q)))
-                      (and query
-                           (ppcre:split "\\s+" query))))
-                 (releases
-                  (remove-if-not
-                   #'(lambda (release)
-                       (let ((project-name (slot-value release 'ql-dist:project-name)))
-                         (every #'(lambda (re)
-                                    (ppcre:scan re project-name))
-                                re)))
-                   (ql-dist:provided-releases t))))
+          (let ((query (if (string= "" (getf params :|q|))
+                           nil
+                           (getf params :|q|))))
             (render-with-layout
              :title (if query
                         "Search Results | Quickdocs"
@@ -94,7 +84,7 @@
               (template-path "search.tmpl")
               :env `(:releases ,(mapcar #'(lambda (release)
                                             (slot-value release 'ql-dist:project-name))
-                                 releases)
+                                 (sort (search-projects query) #'sort-by-download-count))
                      :query ,query))))))
 
 (let (handler)
