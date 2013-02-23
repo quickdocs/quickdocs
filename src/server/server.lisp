@@ -99,8 +99,9 @@
 
 (let (handler)
   @export
-  (defun start-server ()
-    (setf handler (clackup (build *app*))))
+  (defun start-server (&rest args)
+    (setf handler
+          (apply #'clackup (build *app*) args)))
 
   @export
   (defun stop-server ()
