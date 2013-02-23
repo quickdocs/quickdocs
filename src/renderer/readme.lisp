@@ -12,12 +12,33 @@
   (:import-from :cl-markdown
                 :markdown)
   (:import-from :cl-fad
-                :list-directory)
+                :list-directory
+                :pathname-as-directory)
+  (:import-from :trivial-shell
+                :get-env-var
+                :shell-command)
   (:import-from :clack.doc.util
                 :slurp-file))
 (in-package :clack.doc.readme)
 
 (cl-annot:enable-annot-syntax)
+
+(defparameter *pandoc-path*
+              (merge-pathnames #P".cabal/bin/pandoc"
+                               (fad:pathname-as-directory
+                                (trivial-shell:get-env-var "HOME"))))
+
+(defun parse-markdown (file)
+  (multiple-value-bind (stdout stderr code)
+      (trivial-shell:shell-command
+       (format nil "~A ~A" *pandoc-path* file)
+       :input "")
+    (declare (ignore stderr))
+    (if code
+        ;; fallback to CL-Markdown
+        (with-output-to-string (s)
+          (cl-markdown:markdown file :stream s))
+        stdout)))
 
 @export
 (defun find-system-readme (system)
@@ -35,6 +56,5 @@
     (cond
       ((find ext '("md" "markdown" "mkdn")
              :test #'string-equal)
-       (with-output-to-string (s)
-         (cl-markdown:markdown readme-file :stream s)))
+       (parse-markdown readme-file))
       (t (slurp-file readme-file)))))

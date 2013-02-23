@@ -26,6 +26,7 @@
                ;; for renderer
                :cl-emb
                :cl-markdown
+               :trivial-shell
                :cl-fad
                :yason
                :drakma
