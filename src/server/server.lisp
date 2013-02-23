@@ -70,11 +70,18 @@
           (let* ((query (if (string= "" (getf params :|q|))
                             nil
                             (getf params :|q|)))
-                 (re (ppcre:create-scanner (ppcre:quote-meta-chars (or (getf params :|q|) ""))))
+                 (re (mapcar
+                      #'(lambda (q)
+                          (ppcre:create-scanner (ppcre:quote-meta-chars q)))
+                      (and query
+                           (ppcre:split "\\s+" query))))
                  (releases
                   (remove-if-not
                    #'(lambda (release)
-                       (ppcre:scan re (slot-value release 'ql-dist:project-name)))
+                       (let ((project-name (slot-value release 'ql-dist:project-name)))
+                         (every #'(lambda (re)
+                                    (ppcre:scan re project-name))
+                                re)))
                    (ql-dist:provided-releases t))))
             (render-with-layout
              :title (if query
