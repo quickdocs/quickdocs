@@ -56,5 +56,7 @@
     (cond
       ((find ext '("md" "markdown" "mkdn")
              :test #'string-equal)
-       (parse-markdown readme-file))
-      (t (slurp-file readme-file)))))
+       (format nil "<div class=\"markdown\">~A</div>"
+               (parse-markdown readme-file)))
+      (t (format nil "<div class=\"plain-text\">~A</div>"
+                 (emb::escape-for-xml (slurp-file readme-file)))))))

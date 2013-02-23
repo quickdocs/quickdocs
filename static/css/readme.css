@@ -4,6 +4,9 @@
   margin: 0 10px 10px;
   padding: 0 15px 15px;
   line-height: 1.6;
+}
+
+.readme-body .plain-text {
   white-space: pre-wrap;
 }
 
@@ -29,10 +32,23 @@
   font-size: 18px !important;
 }
 
-.readme-body code {
-  display: block;
+.readme-body code,
+.readme-body pre {
   color: white;
   background-color: black;
-  border-radius: 8px;
+}
+
+.readme-body code {
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 90%;
+}
+
+.readme-body pre {
   padding: 15px;
+  border-radius: 8px;
+}
+
+.readme-body pre code {
+  padding: 0;
 }
