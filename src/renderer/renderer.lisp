@@ -77,7 +77,12 @@
                 with results = nil
                 for system-name in (remove-duplicates dependencies)
                 for release = (slot-value (ql-dist:find-system-in-dist (string-downcase system-name) dist) 'ql-dist:release)
-                do (pushnew (slot-value release 'ql-dist:project-name) results)
+                for dependency-name = (slot-value release 'ql-dist:project-name)
+                when (notany #'(lambda (system)
+                                 (string-equal (slot-value system 'ql-dist:name)
+                                               dependency-name))
+                               systems)
+                  do (pushnew dependency-name results)
                 finally (return (reverse results))))
     (list
      :title project-name
