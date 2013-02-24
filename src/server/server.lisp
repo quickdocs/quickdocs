@@ -89,7 +89,7 @@
 
 (let (handler)
   @export
-  (defun start-server (&rest args)
+  (defun start-server (&rest args &key port server debug &allow-other-keys)
     (setf handler
           (apply #'clackup (build *app*) args)))
 
