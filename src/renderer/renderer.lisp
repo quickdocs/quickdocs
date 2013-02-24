@@ -4,7 +4,8 @@
   (:import-from :emb
                 :execute-emb)
   (:import-from :alexandria
-                :when-let)
+                :when-let
+                :ensure-list)
   (:import-from :quickdocs.readme
                 :find-system-readme
                 :readme->html)
@@ -55,20 +56,23 @@
                                        (slot-value ql-system 'ql-dist:name)))
           when system
             do (when (slot-boundp system 'asdf::author)
-                 (pushnew (slot-value system 'asdf::author)
-                          authors
-                          :test #'string=))
+                 (setf authors
+                       (append (ensure-list (slot-value system 'asdf::author))
+                               authors)))
                (when (slot-boundp system 'asdf::maintainer)
-                 (pushnew (slot-value system 'asdf::maintainer)
-                          maintainers
-                          :test #'string=))
+                 (setf maintainers
+                       (append (ensure-list (slot-value system 'asdf::maintainer))
+                               maintainers)))
                (when (slot-boundp system 'asdf::licence)
-                 (pushnew (slot-value system 'asdf::licence)
-                          licenses
-                          :test #'string=))
+                 (setf licenses
+                       (append (ensure-list (slot-value system 'asdf::licence))
+                               licenses)))
                (when (slot-boundp system 'asdf::load-dependencies)
                  (setf dependencies
                        (append dependencies (slot-value system 'asdf::load-dependencies)))))
+    (setf authors (remove-duplicates authors :test #'string=))
+    (setf maintainers (remove-duplicates maintainers :test #'string=))
+    (setf licenses (remove-duplicates licenses :test #'string=))
     (setf dependencies
           (loop with dist = (ql-dist:dist "quicklisp")
                 with results = nil
