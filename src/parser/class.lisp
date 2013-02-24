@@ -23,10 +23,6 @@
       (name :initarg :name :accessor doc-name)))
 
 @export
-(defgeneric generate-documentation (doc)
-  (:documentation "Implement this method and tell how to render the class."))
-
-@export
 (defclass <doc-package> (<doc-base>)
      ((systems :initform nil :accessor package-systems)
       (symbols :initform nil :accessor package-symbols)))
