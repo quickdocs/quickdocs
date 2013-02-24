@@ -119,7 +119,7 @@
   (let ((project-name (slot-value this 'ql-dist:project-name))
         (systems (find-systems-in-release this)))
     (list
-     :title (format nil "API Reference | ~A | Quickdocs" project-name)
+     :title (format nil "~A | API Reference | Quickdocs" project-name)
      :content
      (emb:execute-emb (template-path "api.tmpl")
       :env `(:name ,project-name
