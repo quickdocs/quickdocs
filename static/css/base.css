@@ -40,6 +40,7 @@ a:hover {
 
 pre {
   margin: 15px 0;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
 }
 
 code {

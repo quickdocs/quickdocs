@@ -23,19 +23,19 @@
   font-size: 18px !important;
 }
 
-.readme-body code,
-.readme-body pre {
+.readme-body .markdown code,
+.readme-body .markdown pre {
   color: white;
   background-color: black;
 }
 
-.readme-body code {
+.readme-body .markdown code {
   padding: 5px;
   border-radius: 5px;
   font-size: 90%;
 }
 
-.readme-body pre {
+.readme-body .markdown pre {
   padding: 15px;
   border-radius: 8px;
 }

@@ -59,5 +59,5 @@
              :test #'string-equal)
        (format nil "<div class=\"markdown\">~A</div>"
                (parse-markdown readme-file)))
-      (t (format nil "<div class=\"plain-text\">~A</div>"
+      (t (format nil "<div class=\"plain-text\"><pre>~A</pre></div>"
                  (emb::escape-for-xml (slurp-file readme-file)))))))
