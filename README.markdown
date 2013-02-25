@@ -4,8 +4,8 @@
 
 ## Build
 
+    make setup
     make
-    make LISP=ccl
 
 ## Author
 

@@ -7,10 +7,12 @@ all: bin
 
 bin: parse render
 
-setup:
-	git submodule update --init
-	mkdir -p $(PROJECT_ROOT)/bin
+setup: ensure_bin_dir
 	chmod a+w $(PROJECT_ROOT)/bin
+	git submodule update --init
+
+ensure_bin_dir:
+	mkdir -p $(PROJECT_ROOT)/bin
 
 start: bin
 	$(call $(LISP), \
@@ -18,12 +20,12 @@ start: bin
 		(quickdocs.server:start-server :mode :production :debug nil :server :fcgi :port $(SERVER_PORT)) \
 		(swank:create-server :port $(SWANK_PORT) :style :spawn :dont-close t))
 
-parse: setup
+parse: ensure_bin_dir
 	$(call $(LISP)-save,bin/parse,main, \
 		(ql:quickload :quickdocs), \
 		(defun main () (prin1 (handler-bind ((error (function continue))) (quickdocs.parser:parse-documentation (asdf:find-system (cadr $($(LISP)_argv))))))))
 
-render: setup
+render: ensure_bin_dir
 	$(call $(LISP)-save,bin/render,main, \
 		(ql:quickload :quickdocs), \
 		(defun main () (prin1 (handler-bind ((error (function continue))) (quickdocs.renderer:render-api-reference (ql-dist:find-release (cadr $($(LISP)_argv))))))))

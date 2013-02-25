@@ -4,10 +4,8 @@
   (:import-from :cl-markdown
                 :markdown)
   (:import-from :cl-fad
-                :list-directory
-                :pathname-as-directory)
+                :list-directory)
   (:import-from :trivial-shell
-                :get-env-var
                 :shell-command)
   (:import-from :alexandria
                 :when-let)
@@ -19,8 +17,7 @@
 
 (defparameter *pandoc-path*
               (merge-pathnames #P".cabal/bin/pandoc"
-                               (fad:pathname-as-directory
-                                (trivial-shell:get-env-var "HOME"))))
+                               (user-homedir-pathname)))
 
 (defun parse-markdown (file)
   (multiple-value-bind (stdout stderr code)
