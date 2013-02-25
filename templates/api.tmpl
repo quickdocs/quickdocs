@@ -4,6 +4,7 @@
   <% @include header-links.tmpl %>
 </header>
 
+<% @if system-list %>
 <div class="toc">
   <ul>
     <% @loop system-list %>
@@ -26,3 +27,6 @@
     <% @endloop %>
   <% @endloop %>
 </article>
+<% @else %>
+<p class="error-message">Error has occured while parsing this library (or its dependencies). Wait patiently, or report <a href="https://github.com/quickdocs/issues">issues</a> to hasten my bug-fixing.</p>
+<% @endif %>

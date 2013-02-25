@@ -240,3 +240,7 @@ header .search-query strong {
 .description {
   margin: 15px 0 10px 10px;
 }
+
+.error-message {
+  text-align: left;
+}
