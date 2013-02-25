@@ -32,6 +32,9 @@
 
 @export
 (defmethod parse-documentation ((system ql-dist:system))
+  (unless (ql-dist:installedp system)
+    (with-ignoring-all-streams
+        (ql-dist:install system)))
   (when-let (asdf-system (with-ignoring-all-streams
                              (asdf:find-system (slot-value system 'ql-dist:name))))
     (parse-documentation asdf-system)))
