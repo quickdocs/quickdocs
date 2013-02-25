@@ -19,64 +19,59 @@
            append (asdf-component-files c)))))
 
 (defun asdf-system-reload (system)
-  (let ((*error-output*
-         (make-string-output-stream))
-        (null-stream
-         (open #p"/dev/null" :direction :output :if-exists :overwrite)))
-    (let ((*standard-output* null-stream))
-      #+quicklisp (ql:quickload (slot-value system 'asdf::name) :verbose nil)
-      #-quicklisp (asdf:oos 'asdf:load-op system :verbose nil))
-    (let ((macroexpand-hook *macroexpand-hook*))
-      (setf *macroexpand-hook*
-            (lambda (fun form env)
-              (when (consp form)
-                (case (first form)
-                  (cl:defpackage
-                   (register-package-system
-                    (princ-to-string (second form))
-                    (slot-value system 'asdf::name)))
-                  ((cl:defun cl:defmacro)
-                   (make-instance '<doc-function>
-                      :name (second form)
-                      :type (if (eq (first form) 'cl:defun)
-                                :function
-                                :macro)
-                      :lambda-list (third form)))
-                  (cl:defgeneric
-                   (make-instance '<doc-function>
-                      :name (second form)
-                      :type :generic
-                      :lambda-list (third form)))
-                  (cl:defmethod
-                   (make-instance '<doc-method>
-                      :name (second form)
-                      :qualifier (unless (listp (third form)) (third form))
-                      :lambda-list (if (listp (third form))
-                                       (third form)
-                                       (fourth form))))
-                  (cl:defclass
-                   (make-instance '<doc-class>
-                      :name (second form)
-                      :type :class))
-                  (cl:defstruct
-                   (make-instance '<doc-class>
-                      :name (let ((name-and-options (second form)))
-                              (if (listp name-and-options)
-                                  (car name-and-options)
-                                  name-and-options))
-                      :type :struct))
-                  (cl:defconstant
-                   (make-instance '<doc-variable>
-                      :name (second form)
-                      :type :constant))
-                  ((cl:defparameter cl:defvar)
-                   (make-instance '<doc-variable>
-                      :name (second form)
-                      :type :variable))))
-              (funcall macroexpand-hook fun form env)))
-      (map nil #'load (asdf-component-files system))
-      (setf *macroexpand-hook* macroexpand-hook)
-      t)))
+  #+quicklisp (ql:quickload (slot-value system 'asdf::name) :verbose nil)
+  #-quicklisp (asdf:oos 'asdf:load-op system :verbose nil)
+  (let ((macroexpand-hook *macroexpand-hook*))
+    (setf *macroexpand-hook*
+          (lambda (fun form env)
+            (when (consp form)
+              (case (first form)
+                (cl:defpackage
+                 (register-package-system
+                  (princ-to-string (second form))
+                  (slot-value system 'asdf::name)))
+                ((cl:defun cl:defmacro)
+                 (make-instance '<doc-function>
+                    :name (second form)
+                    :type (if (eq (first form) 'cl:defun)
+                              :function
+                              :macro)
+                    :lambda-list (third form)))
+                (cl:defgeneric
+                 (make-instance '<doc-function>
+                    :name (second form)
+                    :type :generic
+                    :lambda-list (third form)))
+                (cl:defmethod
+                 (make-instance '<doc-method>
+                    :name (second form)
+                    :qualifier (unless (listp (third form)) (third form))
+                    :lambda-list (if (listp (third form))
+                                     (third form)
+                                     (fourth form))))
+                (cl:defclass
+                 (make-instance '<doc-class>
+                    :name (second form)
+                    :type :class))
+                (cl:defstruct
+                 (make-instance '<doc-class>
+                    :name (let ((name-and-options (second form)))
+                            (if (listp name-and-options)
+                                (car name-and-options)
+                                name-and-options))
+                    :type :struct))
+                (cl:defconstant
+                 (make-instance '<doc-variable>
+                    :name (second form)
+                    :type :constant))
+                ((cl:defparameter cl:defvar)
+                 (make-instance '<doc-variable>
+                    :name (second form)
+                    :type :variable))))
+            (funcall macroexpand-hook fun form env)))
+    (map nil #'load (asdf-component-files system))
+    (setf *macroexpand-hook* macroexpand-hook)
+    t))
 
 @export
 (defun ensure-system-loaded (system &key force)

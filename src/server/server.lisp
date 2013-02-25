@@ -67,7 +67,13 @@
       #'(lambda (params)
           (let ((release (ql-dist:find-release (getf params :project-name))))
             (if release
-                (render-api-reference release)
+                (if (eq *app-env* :production)
+                    (trivial-shell:shell-command
+                     (format nil "~A ~A"
+                      (asdf:system-relative-pathname :quickdocs #P"bin/render")
+                      (getf params :project-name))
+                     :input "")
+                    (render-api-reference release))
                 (next-route)))))
 
 (setf (route *app* "/-/search")

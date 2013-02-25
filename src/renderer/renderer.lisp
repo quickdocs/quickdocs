@@ -6,6 +6,8 @@
   (:import-from :alexandria
                 :when-let
                 :ensure-list)
+  (:import-from :trivial-backtrace
+                :print-backtrace)
   (:import-from :quickdocs.readme
                 :find-system-readme
                 :readme->html)
@@ -117,14 +119,23 @@
 @export
 (defmethod render-api-reference ((this ql-dist:release))
   (let ((project-name (slot-value this 'ql-dist:project-name))
-        (systems (find-systems-in-release this)))
+        (systems (find-systems-in-release this))
+        errors)
     (list
      :title (format nil "~A | API Reference | Quickdocs" project-name)
      :content
      (emb:execute-emb (template-path "api.tmpl")
       :env `(:name ,project-name
              :system-list ,(remove-if #'null
-                            (mapcar #'parse-documentation systems))
+                            (mapcar #'(lambda (system)
+                                        (handler-case (parse-documentation system)
+                                          (error (e)
+                                            (print-backtrace e :output *error-output*)
+                                            (push (format nil "~A: ~A"
+                                                          (slot-value system 'ql-dist:name)
+                                                          e) errors)
+                                            nil))) systems))
+             :errors ,(nreverse errors)
              :archive-url ,(slot-value this 'ql-dist::archive-url)
              :project-url ,(project-url project-name)
              :homepage ,(repos-homepage project-name))))))

@@ -4,6 +4,16 @@
   <% @include header-links.tmpl %>
 </header>
 
+<% @if errors %>
+<section class="error">
+<p class="error-message">Error has occured while parsing this library (or its dependencies). Wait patiently, or report <a href="https://github.com/quickdocs/issues">issues</a> to hasten my bug-fixing.</p>
+
+<pre class="error-detail"><% @loop errors %>
+<%= (emb::escape-for-xml env) %>
+<% @endloop %></pre>
+</section>
+<% @endif %>
+
 <% @if system-list %>
 <div class="toc">
   <ul>
@@ -27,6 +37,4 @@
     <% @endloop %>
   <% @endloop %>
 </article>
-<% @else %>
-<p class="error-message">Error has occured while parsing this library (or its dependencies). Wait patiently, or report <a href="https://github.com/quickdocs/issues">issues</a> to hasten my bug-fixing.</p>
 <% @endif %>

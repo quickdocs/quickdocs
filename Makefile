@@ -28,7 +28,7 @@ parse: ensure_bin_dir
 render: ensure_bin_dir
 	$(call $(LISP)-save,bin/render,main, \
 		(ql:quickload :quickdocs), \
-		(defun main () (prin1 (handler-bind ((error (function continue))) (quickdocs.renderer:render-api-reference (ql-dist:find-release (cadr $($(LISP)_argv))))))))
+		(defun main () (princ (handler-bind ((error (function continue))) (quickdocs.renderer:render-api-reference (ql-dist:find-release (cadr $($(LISP)_argv))))))))
 
 #
 # Lisp Implementation

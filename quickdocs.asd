@@ -31,6 +31,7 @@
                :yason
                :drakma
                :memoize
+               :trivial-backtrace
 
                ;; for server
                :clack

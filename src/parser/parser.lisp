@@ -14,7 +14,11 @@
 
 @export
 (defmethod parse-documentation ((system asdf:system))
-  (ensure-system-loaded system)
+  (let* ((null-stream (open #p"/dev/null" :direction :output :if-exists :overwrite))
+         (*standard-output* null-stream)
+         (*error-output* null-stream)
+         (*debug-io* null-stream))
+    (ensure-system-loaded system))
   `(:type :system
     :name ,(slot-value* system 'asdf::name)
     :author ,(slot-value* system 'asdf::author)
