@@ -109,6 +109,7 @@
 104 cl-gtk2
 ")
 
+@export
 (defvar *ql-download-stats-hash*
     (let ((hash (make-hash-table :test 'equal)))
       (loop for line in (split-sequence #\Newline
@@ -132,7 +133,10 @@
      #'(lambda (release)
          (let ((project-name (slot-value release 'ql-dist:project-name)))
            (every #'(lambda (re)
-                      (ppcre:scan re project-name))
+                      (or (ppcre:scan re project-name)
+                          (some #'(lambda (system)
+                                    (ppcre:scan re (slot-value system 'ql-dist:name)))
+                                (ql-dist:provided-systems release))))
                   re)))
      (ql-dist:provided-releases t))))
 

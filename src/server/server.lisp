@@ -5,6 +5,8 @@
                 :<app>
                 :route
                 :next-route)
+  (:import-from :alexandria
+                :when-let)
   (:import-from :clack
                 :clackup
                 :stop)
@@ -12,14 +14,21 @@
                 :builder)
   (:import-from :clack.middleware.static
                 :<clack-middleware-static>)
+  (:import-from :quickdocs.quicklisp
+                :ql-release-version)
   (:import-from :quickdocs.renderer
                 :render-documentation
                 :render-api-reference
                 :template-path
                 :render-with-layout)
+  (:import-from :quickdocs.util
+                :slurp-file)
+  (:import-from :quickdocs.readme
+                :find-system-readme)
   (:import-from :quickdocs.search
                 :search-projects
-                :sort-by-download-count))
+                :sort-by-download-count
+                :*ql-download-stats-hash*))
 (in-package :quickdocs.server)
 
 (cl-annot:enable-annot-syntax)
@@ -89,9 +98,15 @@
              :content
              (emb:execute-emb
               (template-path "search.tmpl")
-              :env `(:releases ,(mapcar #'(lambda (release)
-                                            (slot-value release 'ql-dist:project-name))
-                                 (sort (search-projects query) #'sort-by-download-count))
+              :env `(:releases ,(loop for release in (sort (search-projects query) #'sort-by-download-count)
+                                      for project-name = (slot-value release 'ql-dist:project-name)
+                                      collect `(:name ,project-name
+                                                :ql-version ,(ql-release-version release)
+                                                :download-count
+                                                ,(gethash project-name *ql-download-stats-hash*)
+                                                :readme ,(when-let (readme
+                                                                    (find-system-readme (car (ql-dist:provided-systems release))))
+                                                           (slurp-file (car readme)))))
                      :query ,query))))))
 
 (let (handler)

@@ -15,9 +15,20 @@
 <% @endif %>
 
 <% @if releases %>
-<ul class="search-results">
+<ul class="search-result-container">
 <% @loop releases %>
-  <li><a href="/<%= (emb::url-encode env) %>"><%= (emb::escape-for-xml env) %></a></li>
+  <li class="search-result">
+    <span class="project-name">
+      <a href="/<% @var name -escape uri %>"><% @var name %></a>
+    </span>
+    <span class="ql-version">
+      <% @var ql-version %>
+    </span>
+    <p class="readme-body"><% @var readme -escape xml %></p>
+    <% @if download-count %>
+    <div class="download-count"><span class="lsf">download</span>&nbsp;<%= (emb::escape-for-xml (format nil "~:D" (getf env :download-count))) %></div>
+    <% @endif %>
+  </li>
 <% @endloop %>
 </ul>
 <% @endif %>

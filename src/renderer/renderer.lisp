@@ -8,6 +8,8 @@
                 :ensure-list)
   (:import-from :trivial-backtrace
                 :print-backtrace)
+  (:import-from :quickdocs.quicklisp
+                :ql-release-version)
   (:import-from :quickdocs.readme
                 :find-system-readme
                 :readme->html)
@@ -97,8 +99,7 @@
      (emb:execute-emb (template-path "project.tmpl")
       :env (list
             :name project-name
-            :ql-version (ql-dist:version
-                         (slot-value this 'ql-dist:dist))
+            :ql-version (ql-release-version this)
             :archive-url (slot-value this 'ql-dist::archive-url)
             :project-url (project-url project-name)
             :homepage (repos-homepage project-name)

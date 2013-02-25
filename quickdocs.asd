@@ -40,7 +40,9 @@
                ;; for search
                :split-sequence
                )
-  :components ((:module "parser"
+  :components ((:file "quicklisp"
+                :pathname "src/quicklisp")
+               (:module "parser"
                 :pathname "src/parser"
                 :components
                 ((:file "class" :depends-on ("util"))
@@ -49,14 +51,14 @@
                  (:file "parser" :depends-on ("class" "asdf" "util"))))
                (:module "renderer"
                 :pathname "src/renderer"
-                :depends-on ("parser")
+                :depends-on ("parser" "quicklisp")
                 :components
                 ((:file "renderer" :depends-on ("readme" "repository"))
                  (:file "readme")
                  (:file "repository")))
                (:module "server"
                 :pathname "src/server"
-                :depends-on ("renderer" "search")
+                :depends-on ("renderer" "search" "quicklisp")
                 :components
                 ((:file "server")))
                (:module "search"
