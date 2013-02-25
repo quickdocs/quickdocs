@@ -7,19 +7,16 @@
   (:import-from :quickdocs.asdf
                 :ensure-system-loaded)
   (:import-from :quickdocs.util
-                :slot-value*))
+                :slot-value*
+                :with-ignoring-all-streams))
 (in-package :quickdocs.parser)
 
 (cl-annot:enable-annot-syntax)
 
 @export
 (defmethod parse-documentation ((system asdf:system))
-  (let* ((null-stream (open #p"/dev/null" :direction :output :if-exists :overwrite))
-         (*standard-output* null-stream)
-         (*error-output* null-stream)
-         (*debug-io* null-stream)
-         (*trace-output* null-stream))
-    (ensure-system-loaded system))
+  (with-ignoring-all-streams
+      (ensure-system-loaded system))
   `(:type :system
     :name ,(slot-value* system 'asdf::name)
     :author ,(slot-value* system 'asdf::author)
@@ -35,8 +32,8 @@
 
 @export
 (defmethod parse-documentation ((system ql-dist:system))
-  (when-let (asdf-system (ignore-errors
-                           (asdf:find-system (slot-value system 'ql-dist:name))))
+  (when-let (asdf-system (with-ignoring-all-streams
+                             (asdf:find-system (slot-value system 'ql-dist:name))))
     (parse-documentation asdf-system)))
 
 @export

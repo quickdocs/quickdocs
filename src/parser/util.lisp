@@ -77,3 +77,19 @@
      (flex:with-output-to-sequence (out)
       (alexandria:copy-stream in out :finish-output t))
      :external-format :utf-8)))
+
+@export
+(defmacro with-ignoring-streams (streams &body body)
+  (let ((null-stream (gensym "NULL-STREAM")))
+    `(let* ((,null-stream (open #P "/dev/null" :direction :output :if-exists :overwrite))
+            ,@(loop for stream in streams
+                    collect (list stream null-stream)))
+       ,@body)))
+
+@export
+(defmacro with-ignoring-all-streams (&body body)
+  `(with-ignoring-streams (*standard-output*
+                           *error-output*
+                           *debug-io*
+                           *trace-output*)
+     ,@body))
