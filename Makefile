@@ -7,21 +7,23 @@ all: bin
 
 bin: parse render
 
+setup:
+	git submodule update --init
+	mkdir -p $(PROJECT_ROOT)/bin
+	chmod a+w $(PROJECT_ROOT)/bin
+
 start: bin
 	$(call $(LISP), \
 		(ql:quickload :quickdocs) (ql:quickload :swank), \
 		(quickdocs.server:start-server :mode :production :debug nil :server :fcgi :port $(SERVER_PORT)) \
 		(swank:create-server :port $(SWANK_PORT) :style :spawn :dont-close t))
 
-.mkbindir:
-	mkdir -p bin
-
-parse: .mkbindir
+parse: setup
 	$(call $(LISP)-save,bin/parse,main, \
 		(ql:quickload :quickdocs), \
 		(defun main () (prin1 (handler-bind ((error (function continue))) (quickdocs.parser:parse-documentation (asdf:find-system (cadr $($(LISP)_argv))))))))
 
-render: .mkbindir
+render: setup
 	$(call $(LISP)-save,bin/render,main, \
 		(ql:quickload :quickdocs), \
 		(defun main () (prin1 (handler-bind ((error (function continue))) (quickdocs.renderer:render-api-reference (ql-dist:find-release (cadr $($(LISP)_argv))))))))
@@ -40,7 +42,7 @@ endef
 
 define sbcl-save
 	$(call sbcl, $3, $4 \
-		(sb-ext:save-lisp-and-die "$1" :executable t :toplevel (quote $2)))
+		(sb-ext:save-lisp-and-die "$(PROJECT_ROOT)/$1" :executable t :toplevel (quote $2)))
 endef
 
 ccl_argv=ccl:*command-line-argument-list*
@@ -54,5 +56,5 @@ endef
 
 define ccl-save
 	$(call ccl, $3, $4 \
-		(ccl:save-application #P"$1" :toplevel-function (function $2) :prepend-kernel t))
+		(ccl:save-application #P"$(PROJECT_ROOT)/$1" :toplevel-function (function $2) :prepend-kernel t))
 endef
