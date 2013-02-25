@@ -1,5 +1,12 @@
 # Quickdocs
 
+- http://quickdocs.org/
+
+## Build
+
+    make
+    make LISP=ccl
+
 ## Author
 
 * Eitarow Fukamachi (e.arrows@gmail.com)

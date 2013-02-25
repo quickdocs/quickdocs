@@ -124,9 +124,7 @@
      (emb:execute-emb (template-path "api.tmpl")
       :env `(:name ,project-name
              :system-list ,(remove-if #'null
-                            (mapcar #'(lambda (system)
-                                        (ignore-errors (parse-documentation system)))
-                             systems))
+                            (mapcar #'parse-documentation systems))
              :archive-url ,(slot-value this 'ql-dist::archive-url)
              :project-url ,(project-url project-name)
              :homepage ,(repos-homepage project-name))))))

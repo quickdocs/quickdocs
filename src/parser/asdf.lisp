@@ -20,9 +20,12 @@
 
 (defun asdf-system-reload (system)
   (let ((*error-output*
-         (make-string-output-stream)))
-    #+quicklisp (ql:quickload (slot-value system 'asdf::name) :verbose nil)
-    #-quicklisp (asdf:oos 'asdf:load-op system :verbose nil)
+         (make-string-output-stream))
+        (null-stream
+         (open #p"/dev/null" :direction :output :if-exists :overwrite)))
+    (let ((*standard-output* null-stream))
+      #+quicklisp (ql:quickload (slot-value system 'asdf::name) :verbose nil)
+      #-quicklisp (asdf:oos 'asdf:load-op system :verbose nil))
     (let ((macroexpand-hook *macroexpand-hook*))
       (setf *macroexpand-hook*
             (lambda (fun form env)
@@ -81,7 +84,6 @@
            (find system *asdf-registered-system* :test #'equal))
       (values t nil)
       (progn
-        (format t "Loading system ~A..." system)
         (asdf-system-reload system)
         (push system *asdf-registered-system*)
         (values t t))))

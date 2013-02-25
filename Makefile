@@ -1,0 +1,58 @@
+LISP=sbcl
+SERVER_PORT=8080
+SWANK_PORT=4005
+PROJECT_ROOT=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+
+all: bin
+
+bin: parse render
+
+start: bin
+	$(call $(LISP), \
+		(ql:quickload :quickdocs) (ql:quickload :swank), \
+		(quickdocs.server:start-server :mode :production :debug nil :server :fcgi :port $(SERVER_PORT)) \
+		(swank:create-server :port $(SWANK_PORT) :style :spawn :dont-close t))
+
+.mkbindir:
+	mkdir -p bin
+
+parse: .mkbindir
+	$(call $(LISP)-save,bin/parse,main, \
+		(ql:quickload :quickdocs), \
+		(defun main () (prin1 (handler-bind ((error (function continue))) (quickdocs.parser:parse-documentation (asdf:find-system (cadr $($(LISP)_argv))))))))
+
+render: .mkbindir
+	$(call $(LISP)-save,bin/render,main, \
+		(ql:quickload :quickdocs), \
+		(defun main () (prin1 (handler-bind ((error (function continue))) (quickdocs.renderer:render-api-reference (ql-dist:find-release (cadr $($(LISP)_argv))))))))
+
+#
+# Lisp Implementation
+
+sbcl_argv=sb-ext:*posix-argv*
+
+define sbcl
+	sbcl --noinform --disable-debugger \
+		--eval '(pushnew #P"$(PROJECT_ROOT)/" asdf:*central-registry*)' \
+		--eval '(progn $1)' \
+		--eval '(progn $2)'
+endef
+
+define sbcl-save
+	$(call sbcl, $3, $4 \
+		(sb-ext:save-lisp-and-die "$1" :executable t :toplevel (quote $2)))
+endef
+
+ccl_argv=ccl:*command-line-argument-list*
+
+define ccl
+	ccl --quiet --batch \
+		--eval '(pushnew #P"$(PROJECT_ROOT)/" asdf:*central-registry*)' \
+		--eval '(progn $1)' \
+		--eval '(progn $2)'
+endef
+
+define ccl-save
+	$(call ccl, $3, $4 \
+		(ccl:save-application #P"$1" :toplevel-function (function $2) :prepend-kernel t))
+endef

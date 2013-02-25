@@ -34,6 +34,7 @@
            :quickdocs #p"static/"))
    app))
 
+(defvar *app-env* nil)
 (defvar *app* (make-instance '<app>))
 
 (setf (route *app* "*")
@@ -89,9 +90,13 @@
 
 (let (handler)
   @export
-  (defun start-server (&rest args &key port server debug &allow-other-keys)
-    (setf handler
-          (apply #'clackup (build *app*) args)))
+  (defun start-server (&rest args &key mode port server debug &allow-other-keys)
+    (let ((args (loop for (key val) on args by #'cddr
+                      unless (eq key :mode)
+                        append (list key val))))
+      (setf *app-env* mode)
+      (setf handler
+            (apply #'clackup (build *app*) args))))
 
   @export
   (defun stop-server ()
