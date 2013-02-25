@@ -126,7 +126,7 @@
 
   (let ((re (mapcar
              #'(lambda (q)
-                 (ppcre:create-scanner (ppcre:quote-meta-chars q)))
+                 (ppcre:create-scanner (ppcre:quote-meta-chars q) :case-insensitive-mode t))
              (ppcre:split "\\s+" query))))
     (remove-if-not
      #'(lambda (release)
