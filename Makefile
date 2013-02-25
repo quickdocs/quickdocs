@@ -14,7 +14,9 @@ setup: ensure_bin_dir
 ensure_bin_dir:
 	mkdir -p $(PROJECT_ROOT)/bin
 
-start: bin
+start: start-server bin
+
+start-server:
 	$(call $(LISP), \
 		(ql:quickload :quickdocs) (ql:quickload :swank), \
 		(quickdocs.server:start-server :mode :production :debug nil :server :fcgi :port $(SERVER_PORT)) \
