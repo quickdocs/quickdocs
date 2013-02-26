@@ -4,7 +4,8 @@
   (:import-from :ningle
                 :<app>
                 :route
-                :next-route)
+                :next-route
+                :*response*)
   (:import-from :alexandria
                 :when-let)
   (:import-from :clack
@@ -12,6 +13,8 @@
                 :stop)
   (:import-from :clack.builder
                 :builder)
+  (:import-from :clack.response
+                :headers)
   (:import-from :clack.middleware.static
                 :<clack-middleware-static>)
   (:import-from :quickdocs.quicklisp
@@ -50,6 +53,7 @@
 (setf (route *app* "*")
       #'(lambda (params)
           (declare (ignore params))
+          (setf (headers *response* :content-type) "text/html")
           (or (next-route)
               `(404
                 (:content-type "text/html")
@@ -112,6 +116,7 @@
 (let (handler)
   @export
   (defun start-server (&rest args &key mode port server debug &allow-other-keys)
+    (declare (ignorable mode port server debug))
     (let ((args (loop for (key val) on args by #'cddr
                       unless (eq key :mode)
                         append (list key val))))
