@@ -118,7 +118,8 @@
 (setf (route *app* "/:project-name")
       #'(lambda (params)
           (redirect *response*
-                    (format nil "/~A/" (getf params :project-name)))
+                    (format nil "/~A/" (getf params :project-name))
+                    301)
           ""))
 
 (let (handler)
