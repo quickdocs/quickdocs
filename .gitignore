@@ -5,3 +5,6 @@
 *.lx64fsl
 *.x86f
 bin/*
+
+config.py
+*.py[cod]
