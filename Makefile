@@ -43,8 +43,9 @@ define sbcl
 endef
 
 define sbcl-save
-	$(call sbcl, $3, $4 \
-		(sb-ext:save-lisp-and-die "$(PROJECT_ROOT)/$1" :executable t :toplevel (quote $2)))
+	$(call sbcl, \
+		(setf ql:*local-project-directories* nil) $3, \
+		$4 (sb-ext:save-lisp-and-die "$(PROJECT_ROOT)/$1" :executable t :toplevel (quote $2)))
 endef
 
 ccl_argv=ccl:*command-line-argument-list*
@@ -57,6 +58,7 @@ define ccl
 endef
 
 define ccl-save
-	$(call ccl, $3, $4 \
-		(ccl:save-application #P"$(PROJECT_ROOT)/$1" :toplevel-function (function $2) :prepend-kernel t))
+	$(call ccl, \
+		(setf ql:*local-project-directories* nil) $3, \
+		$4 (ccl:save-application #P"$(PROJECT_ROOT)/$1" :toplevel-function (function $2) :prepend-kernel t))
 endef
