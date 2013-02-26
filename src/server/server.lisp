@@ -42,8 +42,8 @@
   (builder
    (<clack-middleware-static>
     :path (lambda (path)
-            (when (ppcre:scan "^(?:/static/|/images/|/css/|/js/|/html/|/robot\\.txt$|/favicon.ico$)" path)
-              (ppcre:regex-replace "^/static" path "")))
+            (when (ppcre:scan "^(?:/images/|/css/|/js/|/html/|/robot\\.txt$|/favicon.ico$)" path)
+              path))
     :root (asdf:system-relative-pathname
            :quickdocs #p"static/"))
    app))
