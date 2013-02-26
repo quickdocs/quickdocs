@@ -1,7 +1,9 @@
 (in-package :cl-user)
 (defpackage quickdocs.asdf
   (:use :cl
-        :quickdocs.class))
+        :quickdocs.class)
+  (:import-from :trivial-backtrace
+                :print-backtrace))
 (in-package :quickdocs.asdf)
 
 (cl-annot:enable-annot-syntax)
@@ -69,9 +71,15 @@
                     :name (second form)
                     :type :variable))))
             (funcall macroexpand-hook fun form env)))
-    (map nil #'load (asdf-component-files system))
-    (setf *macroexpand-hook* macroexpand-hook)
-    t))
+    (loop with errors = nil
+          for file in (asdf-component-files system)
+          do (handler-case (load file)
+               (error (e)
+                 (print-backtrace e :output *error-output*)
+                 (push e errors)))
+          finally
+       (setf *macroexpand-hook* macroexpand-hook)
+       (return (values (null errors) (nreverse errors))))))
 
 @export
 (defun ensure-system-loaded (system &key force)

@@ -8,15 +8,17 @@
                 :ensure-system-loaded)
   (:import-from :quickdocs.util
                 :slot-value*
-                :with-ignoring-all-streams))
+                :with-ignoring-streams))
 (in-package :quickdocs.parser)
 
 (cl-annot:enable-annot-syntax)
 
 @export
 (defmethod parse-documentation ((system asdf:system))
-  (with-ignoring-all-streams
-      (ensure-system-loaded system))
+  (with-ignoring-streams (*standard-output*
+                          *debug-io*
+                          *trace-output*)
+    (ensure-system-loaded system))
   `(:type :system
     :name ,(slot-value* system 'asdf::name)
     :author ,(slot-value* system 'asdf::author)
@@ -33,10 +35,14 @@
 @export
 (defmethod parse-documentation ((system ql-dist:system))
   (unless (ql-dist:installedp system)
-    (with-ignoring-all-streams
-        (ql-dist:install system)))
-  (when-let (asdf-system (with-ignoring-all-streams
-                             (asdf:find-system (slot-value system 'ql-dist:name))))
+    (with-ignoring-streams (*standard-output*
+                            *debug-io*
+                            *trace-output*)
+      (ql-dist:install system)))
+  (when-let (asdf-system (with-ignoring-streams (*standard-output*
+                                                 *debug-io*
+                                                 *trace-output*)
+                           (asdf:find-system (slot-value system 'ql-dist:name))))
     (parse-documentation asdf-system)))
 
 @export
