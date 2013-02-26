@@ -32,21 +32,24 @@
           (cl-markdown:markdown file :stream s)))))
 
 @export
-(defmethod find-system-readme ((system asdf:system))
+(defmethod find-system-readme ((system asdf:system) &optional base-directory)
   (remove-if-not
    #'(lambda (path)
        (let ((filename (file-namestring path)))
          (and (>= (length filename) 6)
               (string= "README" (subseq filename 0 6)))))
    (fad:list-directory
-    (slot-value system 'asdf::absolute-pathname))))
+    (or base-directory
+        (slot-value system 'asdf::absolute-pathname)))))
 
 @export
-(defmethod find-system-readme ((system ql-dist:system))
+(defmethod find-system-readme ((system ql-dist:system) &optional base-directory)
   (when-let (asdf-system
              (ignore-errors
                (asdf:find-system (slot-value system 'ql-dist:name))))
-    (find-system-readme asdf-system)))
+    (find-system-readme asdf-system
+                        (or base-directory
+                            (ql-dist:base-directory (slot-value system 'ql-dist:release))))))
 
 @export
 (defun readme->html (readme-file)
