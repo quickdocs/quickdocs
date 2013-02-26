@@ -23,8 +23,16 @@
 (cl-annot:enable-annot-syntax)
 
 @export
+(defparameter *static-path*
+              (asdf:system-relative-pathname :quickdocs "static/html/"))
+
+@export
 (defparameter *template-path*
               (asdf:system-relative-pathname :quickdocs "templates/"))
+
+@export
+(defun static-path (filename)
+  (merge-pathnames filename *static-path*))
 
 @export
 (defun template-path (filename)

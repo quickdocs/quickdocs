@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <title>Quickdocs</title>
+  <link rel="stylesheet" type="text/css" href="/css/LigatureSymbols/style.css" />
+  <link rel="stylesheet" type="text/css" href="/css/base.css" />
+  <link rel="stylesheet" type="text/css" href="/css/footer.css" />
+  <link rel="stylesheet" type="text/css" href="/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="/css/error.css" />
+</head>
+<body>
+<div id="container">
+  <% @include header %>
+
+  <div id="content">
+    <% @var content -escape raw %>
+  </div>
+
+  <% @include footer %>
+</div>
+</body>
+</html>

@@ -19,6 +19,7 @@
   (:import-from :quickdocs.renderer
                 :render-documentation
                 :render-api-reference
+                :static-path
                 :template-path
                 :render-with-layout)
   (:import-from :quickdocs.util
@@ -37,7 +38,7 @@
   (builder
    (<clack-middleware-static>
     :path (lambda (path)
-            (when (ppcre:scan "^(?:/static/|/images/|/css/|/js/|/robot\\.txt$|/favicon.ico$)" path)
+            (when (ppcre:scan "^(?:/static/|/images/|/css/|/js/|/html/|/robot\\.txt$|/favicon.ico$)" path)
               (ppcre:regex-replace "^/static" path "")))
     :root (asdf:system-relative-pathname
            :quickdocs #p"static/"))
@@ -52,8 +53,7 @@
           (or (next-route)
               `(404
                 (:content-type "text/html")
-                (,(render-with-layout :title "Quickdocs"
-                                      :content (emb:execute-emb (template-path "404.tmpl"))))))))
+                ,(static-path "404.html")))))
 
 (setf (route *app* "/")
       #'(lambda (params)
