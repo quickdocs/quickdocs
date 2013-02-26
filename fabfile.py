@@ -1,11 +1,7 @@
 from fabric.api import sudo, run, env, cd
-import config
+from config import *
 
-env.hosts = config.hosts
-env.user = config.user
-env.directory = config.directory
-
-project_name = config.__dict__.get('project_name', 'quickdocs')
+env.project_name = default_project_name
 
 
 def update():
@@ -14,7 +10,7 @@ def update():
 
 
 def restart():
-    sudo('supervisorctl restart %s' % project_name)
+    sudo('supervisorctl restart %s' % env.project_name)
 
 
 def setup():
