@@ -88,7 +88,10 @@
     (setf dependencies
           (loop with dist = (ql-dist:dist "quicklisp")
                 with results = nil
-                for system-name in (remove-duplicates dependencies)
+                for dependency in (remove-duplicates dependencies)
+                for system-name = (if (listp dependency)
+                                      (cadr dependency)
+                                      dependency)
                 for system-dist = (ql-dist:find-system-in-dist (string-downcase system-name) dist)
                 for release = (and system-dist
                                    (slot-value system-dist 'ql-dist:release))
