@@ -37,7 +37,7 @@
 <% @if dependencies %>
 <ul>
   <% @loop dependencies %>
-  <li><a href="/<%= (emb::escape-for-xml env) %>/"><%= (emb::escape-for-xml env) %></a></li>
+  <li><a href="/<%= (emb::url-encode env) %>/"><%= (emb::escape-for-xml env) %></a></li>
   <% @endloop %>
 </ul>
 <% @else %>
