@@ -84,11 +84,14 @@
           (let ((release (ql-dist:find-release (getf params :project-name))))
             (if release
                 (if (eq *app-env* :production)
-                    (trivial-shell:shell-command
-                     (format nil "~A ~A"
-                      (asdf:system-relative-pathname :quickdocs #P"bin/render")
-                      (getf params :project-name))
-                     :input "")
+                    (multiple-value-bind (stdout stderr)
+                        (trivial-shell:shell-command
+                         (format nil "~A ~A"
+                          (asdf:system-relative-pathname :quickdocs #P"bin/render")
+                          (getf params :project-name))
+                         :input "")
+                      (princ stderr *error-output*)
+                      stdout)
                     (render-api-reference release))
                 (next-route)))))
 
