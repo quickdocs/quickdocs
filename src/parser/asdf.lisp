@@ -70,15 +70,16 @@
                     :name (second form)
                     :type :variable))))
             (funcall macroexpand-hook fun form env)))
-    (loop with errors = nil
-          for file in (asdf-component-files system)
-          do (handler-case (load file)
-               (error (e)
-                 (print-backtrace e :output *error-output*)
-                 (push e errors)))
-          finally
-       (setf *macroexpand-hook* macroexpand-hook)
-       (return (values (null errors) (nreverse errors))))))
+    (handler-bind ((warning 'muffle-warning))
+      (loop with errors = nil
+            for file in (asdf-component-files system)
+            do (handler-case (load file)
+                 (error (e)
+                   (print-backtrace e :output *error-output*)
+                   (push e errors)))
+            finally
+         (setf *macroexpand-hook* macroexpand-hook)
+         (return (values (null errors) (nreverse errors)))))))
 
 @export
 (defun ensure-system-loaded (system &key force)
