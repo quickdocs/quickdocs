@@ -2,7 +2,7 @@ LISP=sbcl
 SERVER_PORT=8080
 SWANK_PORT=4005
 PROJECT_ROOT=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-ERROR_LOG=NIL
+ERROR_LOG=/dev/null
 
 all: bin
 
@@ -18,7 +18,7 @@ ensure_bin_dir:
 start:
 	$(call $(LISP), \
 		(ql:quickload :quickdocs) (ql:quickload :swank), \
-		(quickdocs.server:start-server :mode :production :debug nil :server :fcgi :port $(SERVER_PORT) :error-log $(ERROR_LOG)) \
+		(quickdocs.server:start-server :mode :production :debug nil :server :fcgi :port $(SERVER_PORT) :error-log "$(ERROR_LOG)") \
 		(swank:create-server :port $(SWANK_PORT) :style :spawn :dont-close t))
 
 parse: ensure_bin_dir
