@@ -101,4 +101,4 @@
 (defmethod parse-documentation ((this <doc-variable>))
   `(:type ,(doc-type this)
     :name ,(doc-name this)
-    :documentation ,(documentation this 'variable)))
+    :documentation ,(documentation (doc-name this) 'variable)))
