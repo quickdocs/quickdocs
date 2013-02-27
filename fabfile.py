@@ -27,3 +27,11 @@ def deploy():
     update()
     restart()
     bin()
+
+
+def tail_access():
+    run('tail -f /var/log/nginx/%s_access.log' % env.project_name)
+
+
+def tail_error():
+    run('tail -n 100 -f /var/log/apps/%s_error.log' % env.project_name)
