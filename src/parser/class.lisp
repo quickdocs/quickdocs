@@ -22,6 +22,10 @@
      ((type :initarg :type :initform nil :accessor doc-type)
       (name :initarg :name :accessor doc-name)))
 
+(defmethod print-object ((doc <doc-base>) stream)
+  (print-unreadable-object (doc stream :type t)
+    (format stream "~(~A~)~:[~;~:* [~(~A~)]~]" (doc-name doc) (doc-type doc))))
+
 @export
 (defclass <doc-package> (<doc-base>)
      ((systems :initform nil :accessor package-systems)
