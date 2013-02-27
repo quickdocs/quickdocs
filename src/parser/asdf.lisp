@@ -45,12 +45,11 @@
                     :type :generic
                     :lambda-list (third form)))
                 (cl:defmethod
-                 (make-instance '<doc-method>
-                    :name (second form)
-                    :qualifier (unless (listp (third form)) (third form))
-                    :lambda-list (if (listp (third form))
-                                     (third form)
-                                     (fourth form))))
+                 (let ((lambda-list-pos (position-if #'listp (cddr form))))
+                   (make-instance '<doc-method>
+                      :name (second form)
+                      :qualifier (subseq (cddr form) 0 lambda-list-pos)
+                      :lambda-list (nth lambda-list-pos (cddr form)))))
                 (cl:defclass
                  (make-instance '<doc-class>
                     :name (second form)

@@ -102,8 +102,7 @@
 @export
 (defmethod find-entity ((this <doc-method>))
   (or (find-method (eval `(function ,(doc-name this)))
-                   ;; FIXME: ugly
-                   (and (method-qualifier this) (list (method-qualifier this)))
+                   (method-qualifier this)
                    (lambda-list->specializers (function-lambda-list this)))
       (error "Method not found: ~A ~A"
              (doc-name this) (normalized-lambda-list this))))
