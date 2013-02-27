@@ -60,7 +60,8 @@
                 :pathname "src/server"
                 :depends-on ("renderer" "search" "quicklisp")
                 :components
-                ((:file "server")))
+                ((:file "server" :depends-on ("app"))
+                 (:file "app")))
                (:module "search"
                 :pathname "src/search"
                 :components

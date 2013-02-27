@@ -2,7 +2,6 @@
 (defpackage quickdocs.server
   (:use :cl)
   (:import-from :ningle
-                :<app>
                 :route
                 :next-route
                 :*response*)
@@ -18,6 +17,9 @@
                 :redirect)
   (:import-from :clack.middleware.static
                 :<clack-middleware-static>)
+  (:import-from :quickdocs.app
+                :<app>
+                :error-log)
   (:import-from :quickdocs.quicklisp
                 :ql-release-version)
   (:import-from :quickdocs.renderer
@@ -124,11 +126,12 @@
 
 (let (handler)
   @export
-  (defun start-server (&rest args &key mode port server debug &allow-other-keys)
-    (declare (ignorable mode port server debug))
+  (defun start-server (&rest args &key mode port server debug error-log &allow-other-keys)
+    (declare (ignorable mode port server debug error-log))
     (let ((args (loop for (key val) on args by #'cddr
-                      unless (eq key :mode)
+                      unless (find key '(:mode :error-log))
                         append (list key val))))
+      (setf (error-log *app*) error-log)
       (setf *app-env* mode)
       (setf handler
             (apply #'clackup (build *app*) args))))
