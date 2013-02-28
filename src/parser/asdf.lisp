@@ -10,15 +10,13 @@
 
 (defvar *asdf-registered-system* nil)
 
-@export
-(defun asdf-component-files (comp)
+(defun asdf-components (comp)
   (etypecase comp
-    (asdf::cl-source-file
-     (list (slot-value comp 'asdf::absolute-pathname)))
+    (asdf::source-file (list comp))
     (asdf::static-file nil)
     (asdf::component
      (loop for c in (slot-value comp 'asdf::components)
-           append (asdf-component-files c)))))
+           append (asdf-components c)))))
 
 (defun asdf-system-reload (system)
   #+quicklisp (ql:quickload (slot-value system 'asdf::name) :verbose nil)
@@ -76,8 +74,8 @@
             (funcall macroexpand-hook fun form env)))
     (handler-bind ((warning 'muffle-warning))
       (loop with errors = nil
-            for file in (asdf-component-files system)
-            do (handler-case (load file)
+            for comp in (asdf-components system)
+            do (handler-case (asdf:perform (make-instance 'asdf:load-source-op) comp)
                  (error (e)
                    (print-backtrace e :output *error-output*)
                    (push e errors)))
