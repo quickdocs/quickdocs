@@ -49,7 +49,6 @@ define sbcl-save
 		(defun main () \
 			(setf sb-impl::*default-external-format* :utf-8) \
 			(setf sb-alien::*default-c-string-external-format* :utf-8) \
-			(sb-posix::putenv #.(format nil "SBCL_HOME=~A" (sb-posix:getenv "SBCL_HOME"))) \
 			$3) \
 		(sb-ext:save-lisp-and-die "$(PROJECT_ROOT)/$1" :executable t :toplevel (quote main)))
 endef
