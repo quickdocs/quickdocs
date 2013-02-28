@@ -86,7 +86,7 @@
                 (if (eq *app-env* :production)
                     (multiple-value-bind (stdout stderr)
                         (trivial-shell:shell-command
-                         (format nil "~A ~A"
+                         (format nil "LANG=en_US.UTF-8 ~A ~A"
                           (asdf:system-relative-pathname :quickdocs #P"bin/render")
                           (getf params :project-name))
                          :input "")
