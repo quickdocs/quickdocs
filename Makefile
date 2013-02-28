@@ -22,14 +22,14 @@ start:
 		(swank:create-server :port $(SWANK_PORT) :style :spawn :dont-close t))
 
 parse: ensure_bin_dir
-	$(call $(LISP)-save,bin/parse,main, \
+	$(call $(LISP)-save,bin/parse, \
 		(ql:quickload :quickdocs), \
-		(defun main () (prin1 (handler-bind ((error (function continue))) (quickdocs.parser:parse-documentation (asdf:find-system (cadr $($(LISP)_argv))))))))
+		(prin1 (handler-bind ((error (function continue))) (quickdocs.parser:parse-documentation (asdf:find-system (cadr $($(LISP)_argv)))))))
 
 render: ensure_bin_dir
-	$(call $(LISP)-save,bin/render,main, \
+	$(call $(LISP)-save,bin/render, \
 		(ql:quickload :quickdocs), \
-		(defun main () (princ (handler-bind ((error (function continue))) (quickdocs.renderer:render-api-reference (ql-dist:find-release (cadr $($(LISP)_argv))))))))
+		(princ (handler-bind ((error (function continue))) (quickdocs.renderer:render-api-reference (ql-dist:find-release (cadr $($(LISP)_argv)))))))
 
 #
 # Lisp Implementation
@@ -45,8 +45,9 @@ endef
 
 define sbcl-save
 	$(call sbcl, \
-		(setf ql:*local-project-directories* nil) $3, \
-		$4 (sb-ext:save-lisp-and-die "$(PROJECT_ROOT)/$1" :executable t :toplevel (quote $2)))
+		(setf ql:*local-project-directories* nil) $2, \
+		(defun main () (sb-posix::putenv #.(format nil "SBCL_HOME=~A" (sb-posix:getenv "SBCL_HOME"))) $3) \
+		(sb-ext:save-lisp-and-die "$(PROJECT_ROOT)/$1" :executable t :toplevel (quote main)))
 endef
 
 ccl_argv=ccl:*command-line-argument-list*
@@ -60,6 +61,7 @@ endef
 
 define ccl-save
 	$(call ccl, \
-		(setf ql:*local-project-directories* nil) $3, \
-		$4 (ccl:save-application #P"$(PROJECT_ROOT)/$1" :toplevel-function (function $2) :prepend-kernel t))
+		(setf ql:*local-project-directories* nil) $2, \
+		(defun main () $3) \
+		(ccl:save-application #P"$(PROJECT_ROOT)/$1" :toplevel-function (function main) :prepend-kernel t))
 endef
