@@ -1,11 +1,11 @@
-<span class="lambda-list">[<%
+<span class="lambda-list"><%
   (loop for symbol in env
         for symbol-name = (princ-to-string symbol)
         if (char= (aref symbol-name 0) #\&)
-          collect (format nil "<span class=\"keyword\">~A</span>"
+          collect (format nil "<span class=\"keyword\">~(~A~)</span>"
                           (emb::escape-for-xml symbol-name)) into el
         else
-          collect (format nil "<span class=\"symbol-name\">~A</span>"
+          collect (format nil "<code class=\"symbol-name\">~(~A~)</code>"
                           (emb::escape-for-xml symbol-name)) into el
         finally (format t "~{~A~^&nbsp;~}" el))
-%>]</span>
+%></span>

@@ -81,10 +81,13 @@
 @export
 (defmacro with-ignoring-streams (streams &body body)
   (let ((null-stream (gensym "NULL-STREAM")))
-    `(let* ((,null-stream (open #P "/dev/null" :direction :output :if-exists :overwrite))
-            ,@(loop for stream in streams
-                    collect (list stream null-stream)))
-       ,@body)))
+    `(with-open-file (,null-stream
+                      #P"/dev/null"
+                      :direction :output
+                      :if-exists :overwrite)
+       (let (,@(loop for stream in streams
+                     collect (list stream null-stream)))
+         ,@body))))
 
 @export
 (defmacro with-ignoring-all-streams (&body body)

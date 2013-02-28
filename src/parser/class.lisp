@@ -121,7 +121,8 @@
   (let ((class (find-entity this)))
     (setf (class-super-classes this)
           (loop for super in (c2mop:class-direct-superclasses class)
-                unless (member (type-of super) '(built-in-class eql-specializer))
+                unless (or (eq (class-name super) 'standard-object)
+                           (member (type-of super) '(built-in-class eql-specializer)))
                   collect (class-name super)))
     (setf (class-slots this)
           (c2mop:class-direct-slots class))))
@@ -134,4 +135,11 @@
 (defclass <doc-variable> (<doc-symbol-base>) ())
 
 (defmethod initialize-instance :after ((this <doc-variable>) &key)
-  (setf (doc-type this) :variable))
+  (unless (doc-type this)
+    (setf (doc-type this) :variable)))
+
+@export
+(defclass <doc-type> (<doc-function>) ())
+
+(defmethod initialize-instance :after ((this <doc-type>) &key)
+  (setf (doc-type this) :type))

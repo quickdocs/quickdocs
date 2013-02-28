@@ -30,16 +30,16 @@
 }
 
 .readme-body .markdown code {
-  padding: 5px;
-  border-radius: 5px;
+  padding: 2px;
+  border-radius: 3px;
   font-size: 90%;
 }
 
 .readme-body .markdown pre {
   padding: 15px;
-  border-radius: 8px;
+  border-radius: 5px;
 }
 
 .readme-body pre code {
-  padding: 0;
+  padding: 0 !important;
 }

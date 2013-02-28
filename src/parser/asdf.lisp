@@ -68,7 +68,11 @@
                 ((cl:defparameter cl:defvar)
                  (make-instance '<doc-variable>
                     :name (second form)
-                    :type :variable))))
+                    :type :variable))
+                (cl:deftype
+                 (make-instance '<doc-type>
+                    :name (second form)
+                    :lambda-list (third form)))))
             (funcall macroexpand-hook fun form env)))
     (handler-bind ((warning 'muffle-warning))
       (loop with errors = nil

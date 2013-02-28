@@ -1,5 +1,3 @@
-<span class="symbol-type label function"><% @with type %><% @include _string-capitalize %><% @endwith %></span>&nbsp;<code class="symbol-name"><% @var name %></code>
+<span class="symbol-type label <% @with type %><% @include _string-downcase %><% @endwith %>"><% @with type %><% @include _string-capitalize %><% @endwith %></span>&nbsp;<code class="symbol-name"><% @var name %></code>
 <% @with lambda-list %><% @include lambda-list %><% @endwith %>
-<% @if documentation %>
-<div class="docstring"><% @with documentation %><% @include _trim %><% @endwith %></div>
-<% @endif %>
+<% @with documentation %><% @include docstring %><% @endwith %>

@@ -18,7 +18,14 @@
 <div class="toc">
   <ul>
     <% @loop system-list %>
-      <li><a href="#system-<%= (emb::escape-for-xml (getf env :name)) %>"><% @var name %></a></li>
+      <li><a href="#system-<% @var name -escape uri %>"><% @var name %></a></li>
+      <% @if package-list %>
+      <ul>
+      <% @loop package-list %>
+        <li><a href="#package-<% @var name -escape uri %>"><% @var name %></a></li>
+      <% @endloop %>
+      </ul>
+      <% @endif %>
     <% @endloop %>
   </ul>
 </div>

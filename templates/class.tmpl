@@ -1,7 +1,5 @@
-<span class="symbol-type label class"><% @with type %><% @include _string-capitalize %><% @endwith %></span>&nbsp;<code class="symbol-name"><% @with name %><% @include _string %><% @endwith %></code> inherits (<code class="symbol-name"><% @with super-class-list %><% @include _list-comma %><% @endwith %></code>)
-<% @if documentation %>
-<div class="docstring"><% @with documentation %><% @include _trim %><% @endwith %></div>
-<% @endif %>
+<span class="symbol-type label class"><% @with type %><% @include _string-capitalize %><% @endwith %></span>&nbsp;<code class="symbol-name"><% @with name %><% @include _string %><% @endwith %></code><% @if super-class-list %> inherits (<code class="symbol-name"><% @with super-class-list %><% @include _list-comma %><% @endwith %></code>)<% @endif %>
+<% @with documentation %><% @include docstring %><% @endwith %>
 <dl class="slot-list">
 <% @loop slot-list %>
   <dt>
@@ -16,6 +14,8 @@
     <span class="label">Writer:</span> <code class="symbol-name"><% @with writers %><% @include _list %><% @endwith %></code>
     <% @endif %>
   </dt>
-  <% @if documentation %><dd><pre class="docstring"><% @var documentation %></pre></dd><% @endif %>
+  <% @if documentation %>
+  <dd><% @with documentation %><% @include docstring %><% @endwith %></dd>
+  <% @endif %>
 <% @endloop %>
 </dl>

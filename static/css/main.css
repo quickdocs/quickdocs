@@ -81,7 +81,7 @@ header .header-links {
 header .header-links a {
   display: inline-block;
   padding: 10px 15px;
-  border-radius: 8px;
+  border-radius: 4px;
   color: white;
   background-color: #6fbf42;
   background: -webkit-gradient(linear, left top, left bottom, from(rgb(111, 191, 66)), to(rgb(74, 127, 44)));
@@ -146,8 +146,12 @@ header .search-query strong {
  *  API Reference
  */
 
+.toc ul {
+  margin-top: 0;
+}
+
 .api .package {
-  margin-left: 10px;
+  margin: 10px 0 0 10px;
   border-bottom: 2px solid #CCC;
 }
 
@@ -157,7 +161,7 @@ header .search-query strong {
 }
 
 .api ul li {
-  margin: 10px 0 30px;
+  margin: 30px 0;
 }
 
 .api code.symbol-name {
@@ -174,6 +178,7 @@ header .search-query strong {
 
 .api .lambda-list .symbol-name {
   font-size: 95%;
+  font-weight: normal;
 }
 
 .api .lambda-list .keyword {
@@ -201,7 +206,27 @@ header .search-query strong {
 }
 
 .api .symbol-type.class {
-  background-color: #555;
+  background-color: #e09952;
+}
+
+.api .symbol-type.function {
+  background-color: #4d77cb;
+}
+
+.api .symbol-type.method {
+  background-color: #1d479b;
+}
+
+.api .symbol-type.macro {
+  background-color: #9933cc;
+}
+
+.api .symbol-type.variable {
+  background-color: #34b27d;
+}
+
+.api .symbol-type.constant {
+  background-color: #54d29d;
 }
 
 .api .slot-list .label {
@@ -211,14 +236,15 @@ header .search-query strong {
 
 .docstring {
   margin: 5px 0 10px 0;
-  white-space: pre-wrap;
   font-size: 90%;
-  padding: 5px 15px;
-  border: 1px solid #ccc;
+  padding: 5px 15px 5px 5px;
   color: #555;
-  background-color: #eee;
-  border-radius: 6px;
   line-height: 1.5;
+}
+
+.docstring pre {
+  white-space: pre-wrap;
+  margin: 0;
 }
 
 .api dl .docstring {
