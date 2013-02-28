@@ -1,6 +1,8 @@
 (in-package :cl-user)
 (defpackage quickdocs.class
   (:use :cl)
+  (:import-from :alexandria
+                :when-let)
   (:import-from :quickdocs.util
                 :external-symbol-p
                 :lambda-list->specializers
@@ -67,7 +69,10 @@
       (package :initarg :package :initform (princ-to-string (package-name *package*)) :accessor symbol-package*)))
 
 (defmethod initialize-instance :after ((this <doc-symbol-base>) &key)
-  (push this (package-symbols (find-package* (symbol-package* this)))))
+  ;; Ignoring this symbol when its package isn't contained in the current system.
+  ;; As the result, some packages with the aim to inject or to override a package of other systems are ignored now.
+  (when-let (pkg (find-package* (symbol-package* this)))
+    (push this (package-symbols pkg))))
 
 @export
 (defmethod externalp ((this <doc-symbol-base>))
