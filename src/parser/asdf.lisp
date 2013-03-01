@@ -75,11 +75,12 @@
     (handler-bind ((warning 'muffle-warning))
       (loop with errors = nil
             for comp in (asdf-components system)
-            do (handler-case (asdf:perform
-                              (make-instance (typecase comp
-                                               (asdf:cl-source-file 'asdf:load-source-op)
-                                               (t 'asdf:load-op)))
-                              comp)
+            do (handler-case (typecase comp
+                               (asdf:cl-source-file
+                                (asdf:perform (make-instance 'asdf:compile-op) comp)
+                                (asdf:perform (make-instance 'asdf:load-source-op) comp))
+                               (asdf:c-source-file
+                                (asdf:perform (make-instance 'asdf:load-op) comp)))
                  (error (e)
                    (print-backtrace e :output *error-output*)
                    (push e errors)))
