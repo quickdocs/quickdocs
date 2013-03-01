@@ -53,9 +53,10 @@
                 :pathname "src/renderer"
                 :depends-on ("parser" "quicklisp")
                 :components
-                ((:file "renderer" :depends-on ("readme" "repository"))
+                ((:file "renderer" :depends-on ("readme" "repository" "category"))
                  (:file "readme")
-                 (:file "repository")))
+                 (:file "repository")
+                 (:file "category")))
                (:module "server"
                 :pathname "src/server"
                 :depends-on ("renderer" "search" "quicklisp")

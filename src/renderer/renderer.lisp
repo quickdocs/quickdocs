@@ -17,7 +17,9 @@
                 :project-url
                 :repos-homepage)
   (:import-from :quickdocs.parser
-                :parse-documentation))
+                :parse-documentation)
+  (:import-from :quickdocs.category
+                :project-categories))
 (in-package :quickdocs.renderer)
 
 (cl-annot:enable-annot-syntax)
@@ -118,6 +120,7 @@
                                (find-system-readme (car systems)))
                       (readme->html
                        (car readme)))
+            :categories (project-categories project-name)
             :dependencies (remove-duplicates dependencies :test #'eq)
             :authors (reverse authors)
             :maintainer (reverse maintainers)

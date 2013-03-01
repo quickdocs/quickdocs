@@ -12,7 +12,8 @@
 
 <% (when (or (getf env :authors)
              (getf env :maintainers)
-             (getf env :licenses)) %>
+             (getf env :licenses)
+             (getf env :categories)) %>
 <section class="information">
   <dl>
     <% @if authors %>
@@ -26,6 +27,10 @@
     <% @if licenses %>
     <dt>Licenses</dt>
     <dd><% @with licenses %><% @include _list-comma %><% @endwith %></dd>
+    <% @endif %>
+    <% @if categories %>
+    <dt>Categories</dt>
+    <dd><%= (format nil "~{~{<a href=\"/search?q=~A\" class=\"category\">~A</a>~}~^, ~}" (mapcar #'(lambda (cat) (list (drakma::url-encode cat :utf-8) (emb::escape-for-xml cat))) (getf env :categories))) %></dd>
     <% @endif %>
   </dl>
 </section>
