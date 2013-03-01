@@ -1,7 +1,11 @@
 (in-package :cl-user)
 (defpackage quickdocs.search
   (:use :cl
-        :split-sequence))
+        :split-sequence)
+  (:import-from :alexandria
+                :ensure-list)
+  (:import-from :quickdocs.category
+                :*category-db*))
 (in-package :quickdocs.search)
 
 (cl-annot:enable-annot-syntax)
@@ -125,6 +129,21 @@
             (string= query ""))
     (return-from search-projects (ql-dist:provided-releases t)))
 
+  (append
+   (ensure-list (search-exact-project query))
+   (sort (search-by-name query) #'sort-by-download-count)
+   (sort (search-by-categories query) #'sort-by-download-count)))
+
+@export
+(defun search-exact-project (query)
+  (find-if
+   #'(lambda (release)
+       (string= query
+                (slot-value release 'ql-dist:project-name)))
+   (ql-dist:provided-releases t)))
+
+@export
+(defun search-by-name (query)
   (let ((re (mapcar
              #'(lambda (q)
                  (ppcre:create-scanner (ppcre:quote-meta-chars q) :case-insensitive-mode t))
@@ -133,12 +152,22 @@
      #'(lambda (release)
          (let ((project-name (slot-value release 'ql-dist:project-name)))
            (every #'(lambda (re)
-                      (or (ppcre:scan re project-name)
-                          (some #'(lambda (system)
-                                    (ppcre:scan re (slot-value system 'ql-dist:name)))
-                                (ql-dist:provided-systems release))))
+                      (ppcre:scan re project-name))
                   re)))
      (ql-dist:provided-releases t))))
+
+@export
+(defun search-by-categories (word)
+  (loop with scanner = (ppcre:create-scanner (ppcre:quote-meta-chars word) :case-insensitive-mode t)
+        for (project . categories) in *category-db*
+        if (find-if
+                #'(lambda (category)
+                    (or (string-equal category word)
+                        (ppcre:scan scanner category)))
+                categories)
+          collect project into project-names
+        finally
+     (return (mapcar #'ql-dist:find-release project-names))))
 
 @export
 (defun sort-by-download-count (a b)

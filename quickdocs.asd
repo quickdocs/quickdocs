@@ -65,5 +65,6 @@
                  (:file "app")))
                (:module "search"
                 :pathname "src/search"
+                :depends-on ("renderer") ; quickdocs.category
                 :components
                 ((:file "search")))))

@@ -34,7 +34,6 @@
                 :find-system-readme)
   (:import-from :quickdocs.search
                 :search-projects
-                :sort-by-download-count
                 :*ql-download-stats-hash*))
 (in-package :quickdocs.server)
 
@@ -108,7 +107,7 @@
              :content
              (emb:execute-emb
               (template-path "search.tmpl")
-              :env `(:releases ,(loop for release in (sort (search-projects query) #'sort-by-download-count)
+              :env `(:releases ,(loop for release in (search-projects query)
                                       for project-name = (slot-value release 'ql-dist:project-name)
                                       collect `(:name ,project-name
                                                 :ql-version ,(ql-release-version release)
