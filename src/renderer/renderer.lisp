@@ -69,15 +69,21 @@
           for system = (ignore-errors (asdf:find-system
                                        (slot-value ql-system 'ql-dist:name)))
           when system
-            do (when (slot-boundp system 'asdf::author)
+            do (when (and (slot-boundp system 'asdf::author)
+                          (slot-value system 'asdf::author)
+                          (not (string= (slot-value system 'asdf::author) "")))
                  (setf authors
                        (append (ensure-list (slot-value system 'asdf::author))
                                authors)))
-               (when (slot-boundp system 'asdf::maintainer)
+               (when (and (slot-boundp system 'asdf::maintainer)
+                          (slot-value system 'asdf::maintainer)
+                          (not (string= (slot-value system 'asdf::maintainer) "")))
                  (setf maintainers
                        (append (ensure-list (slot-value system 'asdf::maintainer))
                                maintainers)))
-               (when (slot-boundp system 'asdf::licence)
+               (when (and (slot-boundp system 'asdf::licence)
+                          (slot-value system 'asdf::licence)
+                          (not (string= (slot-value system 'asdf::licence) "")))
                  (setf licenses
                        (append (ensure-list (slot-value system 'asdf::licence))
                                licenses)))
