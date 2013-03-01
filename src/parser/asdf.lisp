@@ -60,13 +60,19 @@
                                 name-and-options))
                     :type :struct))
                 (cl:defconstant
-                 (make-instance '<doc-variable>
-                    :name (second form)
-                    :type :constant))
+                 (apply #'make-instance '<doc-variable>
+                        `(:name ,(second form)
+                          :type :constant
+                          ,@(if (= (length form) 2)
+                                nil
+                                (list :initial-value (third form))))))
                 ((cl:defparameter cl:defvar)
-                 (make-instance '<doc-variable>
-                    :name (second form)
-                    :type :variable))
+                 (apply #'make-instance '<doc-variable>
+                        `(:name ,(second form)
+                          :type :variable
+                          ,@(if (= (length form) 2)
+                                nil
+                                (list :initial-value (third form))))))
                 (cl:deftype
                  (make-instance '<doc-type>
                     :name (second form)

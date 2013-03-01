@@ -9,6 +9,8 @@
                 :map-tree)
   (:export :doc-name
            :doc-type
+           :doc-variable-initial-value
+           :initial-value-boundp
            :package-systems
            :package-symbols
            :class-slots
@@ -137,7 +139,12 @@
   (find-class (doc-name this)))
 
 @export
-(defclass <doc-variable> (<doc-symbol-base>) ())
+(defclass <doc-variable> (<doc-symbol-base>)
+     ((initial-value :initarg :initial-value
+                     :reader doc-variable-initial-value)))
+
+(defmethod initial-value-boundp ((this <doc-variable>))
+  (slot-boundp this 'initial-value))
 
 (defmethod initialize-instance :after ((this <doc-variable>) &key)
   (unless (doc-type this)

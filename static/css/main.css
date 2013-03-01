@@ -172,7 +172,7 @@ header .search-query strong {
 
 .lambda-list {
   display: inline-block;
-  margin-left: 10px;
+  margin-left: 8px;
   color: #555;
 }
 
@@ -185,6 +185,17 @@ header .search-query strong {
   color: #777;
   font-style: italic;
   font-size: 90%;
+}
+
+.api .initial-value {
+  color: #777;
+  font-size: 95%;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.api .initial-value.unbound {
+  font-style: italic;
 }
 
 .api dl {

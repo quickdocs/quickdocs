@@ -101,4 +101,7 @@
 (defmethod parse-documentation ((this <doc-variable>))
   `(:type ,(doc-type this)
     :name ,(doc-name this)
-    :documentation ,(documentation (doc-name this) 'variable)))
+    :documentation ,(documentation (doc-name this) 'variable)
+    ,@(if (initial-value-boundp this)
+          (list :initial-value (doc-variable-initial-value this))
+          nil)))
