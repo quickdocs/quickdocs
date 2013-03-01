@@ -6,7 +6,8 @@
   (:import-from :yason
                 :parse)
   (:import-from :drakma
-                :http-request)
+                :http-request
+                :url-encode)
   (:import-from :flexi-streams
                 :octets-to-string)
   (:import-from :alexandria
@@ -91,9 +92,12 @@
 (defun repos-homepage (project-name)
   (multiple-value-bind (url domain)
       (project-url project-name)
-    (when-let (args (cond
-                      ((string= domain "github.com")
-                       (list (github-repos-api url) "homepage"))
-                      ((string= domain "butbucket.org")
-                       (list (bitbucket-repos-api url) "website"))))
-      (apply #'request-homepage-url args))))
+    (if (string= domain "common-lisp.net")
+        (format nil "http://common-lisp.net/project/~A/"
+                (drakma:url-encode project-name :utf-8))
+        (when-let (args (cond
+                          ((string= domain "github.com")
+                           (list (github-repos-api url) "homepage"))
+                          ((string= domain "butbucket.org")
+                           (list (bitbucket-repos-api url) "website"))))
+          (apply #'request-homepage-url args)))))
