@@ -35,8 +35,11 @@
 (defun project-repository-url (project-name)
   (when-let (source (project-source-file project-name))
     (let ((data (slurp-file source)))
-      (nth-value 0
-                 (ppcre:scan-to-strings "(\\S+?://\\S+?)\\s*?$" data)))))
+      (if (string= (subseq data 0 12) "ediware-http")
+          (format nil "http://weitz.de/files/~A.tar.gz"
+                  (drakma:url-encode project-name :utf-8))
+          (nth-value 0
+                     (ppcre:scan-to-strings "(\\S+?://\\S+?)\\s*?$" data))))))
 
 (defun url-domain (url)
   (aref (nth-value 1 (ppcre:scan-to-strings "^[^:]+?://([^/]+)" url))
@@ -92,12 +95,16 @@
 (defun repos-homepage (project-name)
   (multiple-value-bind (url domain)
       (project-url project-name)
-    (if (string= domain "common-lisp.net")
-        (format nil "http://common-lisp.net/project/~A/"
-                (drakma:url-encode project-name :utf-8))
-        (when-let (args (cond
-                          ((string= domain "github.com")
-                           (list (github-repos-api url) "homepage"))
-                          ((string= domain "butbucket.org")
-                           (list (bitbucket-repos-api url) "website"))))
-          (apply #'request-homepage-url args)))))
+    (cond
+      ((string= domain "common-lisp.net")
+       (format nil "http://common-lisp.net/project/~A/"
+               (drakma:url-encode project-name :utf-8)))
+      ((string= domain "weitz.de")
+       (format nil "http://weitz.de/~A/"
+               (drakma:url-encode project-name :utf-8)))
+      (t (when-let (args (cond
+                           ((string= domain "github.com")
+                            (list (github-repos-api url) "homepage"))
+                           ((string= domain "butbucket.org")
+                            (list (bitbucket-repos-api url) "website"))))
+           (apply #'request-homepage-url args))))))
