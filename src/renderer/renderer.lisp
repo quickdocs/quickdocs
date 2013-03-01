@@ -71,19 +71,22 @@
           when system
             do (when (and (slot-boundp system 'asdf::author)
                           (slot-value system 'asdf::author)
-                          (not (string= (slot-value system 'asdf::author) "")))
+                          (or (not (stringp (slot-value system 'asdf::author)))
+                              (not (string= (slot-value system 'asdf::author) ""))))
                  (setf authors
                        (append (ensure-list (slot-value system 'asdf::author))
                                authors)))
                (when (and (slot-boundp system 'asdf::maintainer)
                           (slot-value system 'asdf::maintainer)
-                          (not (string= (slot-value system 'asdf::maintainer) "")))
+                          (or (not (stringp (slot-value system 'asdf::maintainer)))
+                              (not (string= (slot-value system 'asdf::maintainer) ""))))
                  (setf maintainers
                        (append (ensure-list (slot-value system 'asdf::maintainer))
                                maintainers)))
                (when (and (slot-boundp system 'asdf::licence)
                           (slot-value system 'asdf::licence)
-                          (not (string= (slot-value system 'asdf::licence) "")))
+                          (or (not (stringp (slot-value system 'asdf::licence)))
+                              (not (string= (slot-value system 'asdf::licence) ""))))
                  (setf licenses
                        (append (ensure-list (slot-value system 'asdf::licence))
                                licenses)))
