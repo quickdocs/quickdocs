@@ -78,7 +78,7 @@
             do (handler-case (typecase comp
                                (asdf:cl-source-file
                                 (asdf:perform (make-instance 'asdf:compile-op) comp)
-                                (asdf:perform (make-instance 'asdf:load-source-op) comp))
+                                (asdf:perform (make-instance 'asdf:load-op) comp))
                                (asdf:c-source-file
                                 (asdf:perform (make-instance 'asdf:load-op) comp)))
                  (error (e)
