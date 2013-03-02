@@ -1,100 +1,136 @@
 @charset "UTF-8";
-section {
-  margin-bottom: 40px;
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
 }
-#content h1 {
-  font-size: 32px;
+body {
+  line-height: 150%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-#content h2 {
-  font-size: 20px;
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6 {
+  margin: 20px 0 10px;
 }
-/**
- *  Header
- */
-#global-header {
-  width: 100%;
-  color: white;
-  background-color: #1d304e;
-  text-shadow: 1px 1px 3px black;
-  font-size: 24px;
-  padding: 10px 15px;
-}
-#global-header .logo a {
-  color: white;
-}
-#global-header .logo a:hover {
+a:link {
+  color: #005585;
   text-decoration: none;
 }
-#global-header .search-form {
-  position: absolute;
-  top: 5px;
-  right: 15px;
+a:visited {
+  color: #485270;
 }
-#global-header .search-form input[type="text"] {
-  width: 200px;
-  height: 20px;
-  padding-left: 4px;
+a:hover {
+  color: #b83800;
+  text-decoration: underline;
 }
-#global-header .search-form input[type="submit"] {
-  width: 25px;
-  height: 26px;
-  border: none;
-  color: white;
-  background-color: #6fbf42;
-  cursor: pointer;
-  font-size: 20px;
-  vertical-align: bottom;
-  margin-left: -6px;
+pre {
+  margin: 15px 0;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
 }
-header {
-  margin: 10px 0 30px;
+code {
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
 }
-header h2 {
-  float: left;
-  font-size: 40px !important;
-  margin: 0 !important;
+ul {
+  margin: 15px 0;
+  padding-left: 30px;
 }
-header .subtitle {
-  display: inline-block;
-  margin: 3px 0 0 10px;
-  font-style: italic;
-  color: #ccc;
-}
-header .header-links {
-  position: absolute;
-  top: -7px;
-  right: 0;
-}
-header .header-links a {
-  display: inline-block;
-  padding: 10px 15px;
-  border-radius: 4px;
-  color: white;
-  background-color: #6fbf42;
-  background: -webkit-gradient(linear, left top, left bottom, from(#6fbf42), to(#4a7f2c));
-  background: -moz-linear-gradient(-90deg, #6fbf42, #4a7f2c);
-  text-decoration: none;
-}
-header .search-query {
-  display: inline-block;
-  margin: 6px 0 0 10px;
-  color: #888;
-  font-size: 25px;
-}
-header .search-query strong {
-  color: #333;
+.logo {
+  font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
 }
 /**
- *  Content
+ *  Footer
  */
-#content {
+#global-footer {
   position: relative;
   width: 800px;
-  margin: 30px auto;
+  text-align: center;
+  padding: 50px 0;
+  margin: 0 auto;
 }
-#content h3 {
-  font-size: 32px;
-  margin: 10px 0 20px;
+#global-footer .lisp-logo {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  width: 150px;
+  height: 50px;
+  background-image: url(/images/lisp-logo150x50.png);
+}
+.page-index #global-footer .lisp-logo {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 100px;
+  height: 71px;
+  background-image: url(/images/lisp-logo-transparent.png);
 }
 .information {
   border: 1px solid #ccc;
@@ -112,6 +148,41 @@ header .search-query strong {
   color: #888;
   font-size: 80%;
 }
+.readme-body {
+  margin: 0 10px 10px;
+  padding: 0 15px 15px;
+  line-height: 1.6;
+}
+.readme-body .plain-text {
+  white-space: pre-wrap;
+}
+.readme-body h1 {
+  font-size: 28px !important;
+}
+.readme-body h2 {
+  font-size: 24px !important;
+  border-bottom: 1px solid #ccc;
+}
+.readme-body h3 {
+  font-size: 18px !important;
+}
+.readme-body pre code {
+  padding: 0 !important;
+}
+.readme-body .markdown code,
+.readme-body .markdown pre {
+  color: white;
+  background-color: black;
+}
+.readme-body .markdown code {
+  padding: 2px;
+  border-radius: 3px;
+  font-size: 90%;
+}
+.readme-body .markdown pre {
+  padding: 15px;
+  border-radius: 5px;
+}
 .search-results-summary {
   margin-left: 5px;
   color: #888;
@@ -119,9 +190,38 @@ header .search-query strong {
 .search-results-summary strong {
   color: #666;
 }
-/**
- *  API Reference
- */
+.search-result {
+  position: relative;
+  padding: 15px;
+  list-style: none;
+  clear: both;
+  line-height: 100%;
+  border-bottom: 2px solid #eee;
+  width: 100%;
+}
+.search-result .project-name {
+  font-size: 130%;
+}
+.search-result .ql-version {
+  font-style: italic;
+  color: #999;
+  font-size: 80%;
+}
+.search-result .download-count {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  color: #2075a5;
+}
+.search-result .readme-body {
+  margin: 7px 60px 0 10px;
+  color: #AAA;
+  font-size: 80%;
+  max-height: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .toc ul {
   margin-top: 0;
 }
@@ -141,7 +241,7 @@ header .search-query strong {
   color: #444;
   font-size: 120%;
 }
-.lambda-list {
+.api .lambda-list {
   display: inline-block;
   margin-left: 8px;
   color: #555;
@@ -167,6 +267,13 @@ header .search-query strong {
 .api dl {
   margin: 8px 0 0 15px;
   font-size: 90%;
+}
+.api dl .docstring {
+  margin-top: 0;
+  line-height: 1.3;
+  font-size: 100%;
+  background: none;
+  border: none;
 }
 .api .symbol-type {
   position: absolute;
@@ -202,62 +309,114 @@ header .search-query strong {
   font-style: italic;
   color: #555;
 }
-.docstring {
+.api .docstring {
   margin: 5px 0 10px 0;
   font-size: 90%;
   padding: 5px 15px 5px 5px;
   color: #555;
   line-height: 1.5;
 }
-.docstring pre {
+.api .docstring pre {
   white-space: pre-wrap;
   margin: 0;
 }
-.api dl .docstring {
-  margin-top: 0;
-  line-height: 1.3;
-  font-size: 100%;
-  background: none;
-  border: none;
+.api .description {
+  margin: 15px 0 10px 10px !important;
 }
-.description {
-  margin: 15px 0 10px 10px;
+section {
+  margin-bottom: 40px;
+}
+#content {
+  position: relative;
+  width: 800px;
+  margin: 30px auto;
+}
+#content h1 {
+  font-size: 32px;
+}
+#content h2 {
+  font-size: 20px;
+}
+#content h3 {
+  font-size: 32px;
+  margin: 10px 0 20px;
+}
+/**
+ *  Header
+ */
+#global-header {
+  width: 100%;
+  color: white;
+  background-color: #1d304e;
+  text-shadow: 1px 1px 3px black;
+  padding: 10px 15px;
+}
+#global-header .logo a {
+  font-size: 24px;
+  color: white;
+}
+#global-header .logo a:hover {
+  text-decoration: none;
+}
+.search-form {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+}
+.search-form input[type="text"] {
+  width: 200px;
+  height: 20px;
+  padding-left: 4px;
+}
+.search-form input[type="submit"] {
+  width: 25px;
+  height: 26px;
+  border: none;
+  color: white;
+  background-color: #6fbf42;
+  cursor: pointer;
+  font-size: 20px;
+  vertical-align: bottom;
+  margin-left: -6px;
+}
+header {
+  margin: 10px 0 30px;
+}
+header h2 {
+  float: left;
+  font-size: 40px !important;
+  margin: 0 !important;
+}
+header .subtitle {
+  display: inline-block;
+  margin: 3px 0 0 10px;
+  font-style: italic;
+  color: #ccc;
+}
+header .header-links {
+  position: absolute;
+  top: -7px;
+  right: 0;
+}
+header .header-links a {
+  display: inline-block;
+  padding: 10px 15px;
+  border-radius: 4px;
+  color: white;
+  background-color: #6fbf42;
+  background: -webkit-gradient(linear, left top, left bottom, from(#6fbf42), to(#4e872e));
+  background: -moz-linear-gradient(top, #6fbf42, #4e872e);
+  text-decoration: none;
+}
+header .search-query {
+  display: inline-block;
+  margin: 6px 0 0 10px;
+  color: #888;
+  font-size: 25px;
+}
+header .search-query strong {
+  color: #333;
 }
 .error-message {
   text-align: left;
-}
-/**
- * Search
- */
-.search-result {
-  position: relative;
-  padding: 15px;
-  list-style: none;
-  clear: both;
-  line-height: 100%;
-  border-bottom: 2px solid #eee;
-  width: 100%;
-}
-.search-result .project-name {
-  font-size: 130%;
-}
-.search-result .ql-version {
-  font-style: italic;
-  color: #999;
-  font-size: 80%;
-}
-.search-result .download-count {
-  position: absolute;
-  top: 15px;
-  right: 25px;
-  color: #2075a5;
-}
-.search-result .readme-body {
-  margin: 7px 60px 0 10px;
-  color: #AAA;
-  font-size: 80%;
-  max-height: 5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }

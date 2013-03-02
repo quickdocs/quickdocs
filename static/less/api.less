@@ -1,0 +1,111 @@
+@charset "UTF-8";
+
+.toc ul {
+  margin-top: 0;
+}
+
+.api {
+  .package {
+    margin: 10px 0 0 10px;
+    border-bottom: 2px solid #CCC;
+  }
+  ul {
+    padding-left: 3px;
+    list-style: none;
+    li {
+      margin: 30px 0;
+    }
+  }
+  code.symbol-name {
+    font-weight: bold;
+    color: #444;
+    font-size: 120%;
+  }
+  .lambda-list {
+    display: inline-block;
+    margin-left: 8px;
+    color: #555;
+    .symbol-name {
+      font-size: 95%;
+      font-weight: normal;
+    }
+    .keyword {
+      color: #777;
+      font-style: italic;
+      font-size: 90%;
+    }
+  }
+  .initial-value {
+    color: #777;
+    font-size: 95%;
+    display: inline-block;
+    margin-left: 8px;
+    &.unbound {
+      font-style: italic;
+    }
+  }
+
+  dl {
+    margin: 8px 0 0 15px;
+    font-size: 90%;
+    .docstring {
+      margin-top: 0;
+      line-height: 1.3;
+      font-size: 100%;
+      background: none;
+      border: none;
+    }
+  }
+
+  .symbol-type {
+    position: absolute;
+    display: inline-block;
+    left: -55px;
+    width: 50px;
+    padding: 0 5px;
+    text-align: center;
+    background-color: #AAA;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 75%;
+    &.class {
+      background-color: #e09952;
+    }
+    &.function {
+      background-color: #4d77cb;
+    }
+    &.method {
+      background-color: #1d479b;
+    }
+    &.macro {
+      background-color: #9933cc;
+    }
+    &.variable {
+      background-color: #34b27d;
+    }
+    &.constant {
+      background-color: #54d29d;
+    }
+  }
+
+  .slot-list .label {
+    font-style: italic;
+    color: #555;
+  }
+
+  .docstring {
+    margin: 5px 0 10px 0;
+    font-size: 90%;
+    padding: 5px 15px 5px 5px;
+    color: #555;
+    line-height: 1.5;
+    pre {
+      white-space: pre-wrap;
+      margin: 0;
+    }
+  }
+
+  .description {
+    margin: 15px 0 10px 10px !important;
+  }
+}

@@ -1,14 +1,29 @@
 @charset "UTF-8";
 
+@import "mixin.less";
+@import "variables.less";
+
+@import "base.less";
+@import "footer.less";
+@import "project.less";
+@import "search.less";
+@import "api.less";
+
 section {
   margin-bottom: 40px;
 }
 
-#content h1 {
-  font-size: 32px;
-}
-#content h2 {
-  font-size: 20px;
+#content {
+  position: relative;
+  width: 800px;
+  margin: 30px auto;
+
+  h1 { font-size: 32px; }
+  h2 { font-size: 20px; }
+  h3 {
+    font-size: 32px;
+    margin: 10px 0 20px;
+  }
 }
 
 /**
@@ -19,298 +34,80 @@ section {
   color: white;
   background-color: #1d304e;
   text-shadow: 1px 1px 3px black;
-  font-size: 24px;
   padding: 10px 15px;
+  .logo a {
+    font-size: 24px;
+    color: white;
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }
 
-#global-header .logo a {
-  color: white;
-}
-
-#global-header .logo a:hover {
-  text-decoration: none;
-}
-
-#global-header .search-form {
+.search-form {
   position: absolute;
   top: 5px;
   right: 15px;
-}
 
-#global-header .search-form input[type="text"] {
-  width: 200px;
-  height: 20px;
-  padding-left: 4px;
-}
-
-#global-header .search-form input[type="submit"] {
-  width: 25px;
-  height: 26px;
-  border: none;
-  color: white;
-  background-color: #6fbf42;
-  cursor: pointer;
-  font-size: 20px;
-  vertical-align: bottom;
-  margin-left: -6px;
+  input[type="text"] {
+    width: 200px;
+    height: 20px;
+    padding-left: 4px;
+  }
+  input[type="submit"] {
+    width: 25px;
+    height: 26px;
+    border: none;
+    color: white;
+    background-color: @button-green;
+    cursor: pointer;
+    font-size: 20px;
+    vertical-align: bottom;
+    margin-left: -6px;
+  }
 }
 
 header {
   margin: 10px 0 30px;
-}
 
-header h2 {
-  float: left;
-  font-size: 40px !important;
-  margin: 0 !important;
-}
+  h2 {
+    float: left;
+    font-size: 40px !important;
+    margin: 0 !important;
+  }
+  .subtitle {
+    display: inline-block;
+    margin: 3px 0 0 10px;
+    font-style: italic;
+    color: #ccc;
+  }
+  .header-links {
+    position: absolute;
+    top: -7px;
+    right: 0;
 
-header .subtitle {
-  display: inline-block;
-  margin: 3px 0 0 10px;
-  font-style: italic;
-  color: #ccc;
-}
+    a {
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 4px;
+      color: white;
+      background-color: @button-green;
+      .vertical-gradient(@button-green, darken(@button-green, 15%));
+      text-decoration: none;
+    }
+  }
 
-header .header-links {
-  position: absolute;
-  top: -7px;
-  right: 0;
-}
-
-header .header-links a {
-  display: inline-block;
-  padding: 10px 15px;
-  border-radius: 4px;
-  color: white;
-  background-color: #6fbf42;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgb(111, 191, 66)), to(rgb(74, 127, 44)));
-  background: -moz-linear-gradient(-90deg, rgb(111, 191, 66), rgb(74, 127, 44));
-  text-decoration: none;
-}
-
-header .search-query {
-  display: inline-block;
-  margin: 6px 0 0 10px;
-  color: #888;
-  font-size: 25px;
-}
-
-header .search-query strong {
-  color: #333;
-}
-
-/**
- *  Content
- */
-#content {
-  position: relative;
-  width: 800px;
-  margin: 30px auto;
-}
-
-#content h3 {
-  font-size: 32px;
-  margin: 10px 0 20px;
-}
-
-.information {
-  border: 1px solid #ccc;
-  border-top: 3px solid #BBB;
-  background-color: #f1f1f1;
-  line-height: 200%;
-  padding: 15px;
-}
-
-.information dt {
-  color: #666;
-  font-weight: bold;
-  font-size: 90%;
-}
-
-.information dd {
-  color: #888;
-  font-size: 80%;
-}
-
-.search-results-summary {
-  margin-left: 5px;
-  color: #888;
-}
-
-.search-results-summary strong {
-  color: #666;
-}
-
-/**
- *  API Reference
- */
-
-.toc ul {
-  margin-top: 0;
-}
-
-.api .package {
-  margin: 10px 0 0 10px;
-  border-bottom: 2px solid #CCC;
-}
-
-.api ul {
-  padding-left: 3px;
-  list-style: none;
-}
-
-.api ul li {
-  margin: 30px 0;
-}
-
-.api code.symbol-name {
-  font-weight: bold;
-  color: #444;
-  font-size: 120%;
-}
-
-.lambda-list {
-  display: inline-block;
-  margin-left: 8px;
-  color: #555;
-}
-
-.api .lambda-list .symbol-name {
-  font-size: 95%;
-  font-weight: normal;
-}
-
-.api .lambda-list .keyword {
-  color: #777;
-  font-style: italic;
-  font-size: 90%;
-}
-
-.api .initial-value {
-  color: #777;
-  font-size: 95%;
-  display: inline-block;
-  margin-left: 8px;
-}
-
-.api .initial-value.unbound {
-  font-style: italic;
-}
-
-.api dl {
-  margin: 8px 0 0 15px;
-  font-size: 90%;
-}
-
-.api .symbol-type {
-  position: absolute;
-  display: inline-block;
-  left: -55px;
-  width: 50px;
-  padding: 0 5px;
-  text-align: center;
-  background-color: #AAA;
-  color: #fff;
-  border-radius: 4px;
-  font-size: 75%;
-}
-
-.api .symbol-type.class {
-  background-color: #e09952;
-}
-
-.api .symbol-type.function {
-  background-color: #4d77cb;
-}
-
-.api .symbol-type.method {
-  background-color: #1d479b;
-}
-
-.api .symbol-type.macro {
-  background-color: #9933cc;
-}
-
-.api .symbol-type.variable {
-  background-color: #34b27d;
-}
-
-.api .symbol-type.constant {
-  background-color: #54d29d;
-}
-
-.api .slot-list .label {
-  font-style: italic;
-  color: #555;
-}
-
-.docstring {
-  margin: 5px 0 10px 0;
-  font-size: 90%;
-  padding: 5px 15px 5px 5px;
-  color: #555;
-  line-height: 1.5;
-}
-
-.docstring pre {
-  white-space: pre-wrap;
-  margin: 0;
-}
-
-.api dl .docstring {
-  margin-top: 0;
-  line-height: 1.3;
-  font-size: 100%;
-  background: none;
-  border: none;
-}
-
-.description {
-  margin: 15px 0 10px 10px;
+  .search-query {
+    display: inline-block;
+    margin: 6px 0 0 10px;
+    color: #888;
+    font-size: 25px;
+    strong {
+      color: #333;
+    }
+  }
 }
 
 .error-message {
   text-align: left;
-}
-
-/**
- * Search
- */
-
-.search-result {
-  position: relative;
-  padding: 15px;
-  list-style: none;
-  clear: both;
-  line-height: 100%;
-  border-bottom: 2px solid #eee;
-  width: 100%
-}
-
-.search-result .project-name {
-  font-size: 130%;
-}
-
-.search-result .ql-version {
-  font-style: italic;
-  color: #999;
-  font-size: 80%;
-}
-
-.search-result .download-count {
-  position: absolute;
-  top: 15px;
-  right: 25px;
-  color: #2075a5;
-}
-
-.search-result .readme-body {
-  margin: 7px 60px 0 10px;
-  color: #AAA;
-  font-size: 80%;
-  max-height: 5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }

@@ -1,5 +1,138 @@
 @charset "UTF-8";
 html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+body {
+  line-height: 150%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6 {
+  margin: 20px 0 10px;
+}
+a:link {
+  color: #005585;
+  text-decoration: none;
+}
+a:visited {
+  color: #485270;
+}
+a:hover {
+  color: #b83800;
+  text-decoration: underline;
+}
+pre {
+  margin: 15px 0;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+code {
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+ul {
+  margin: 15px 0;
+  padding-left: 30px;
+}
+.logo {
+  font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
+}
+/**
+ *  Footer
+ */
+#global-footer {
+  position: relative;
+  width: 800px;
+  text-align: center;
+  padding: 50px 0;
+  margin: 0 auto;
+}
+#global-footer .lisp-logo {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  width: 150px;
+  height: 50px;
+  background-image: url(/images/lisp-logo150x50.png);
+}
+.page-index #global-footer .lisp-logo {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 100px;
+  height: 71px;
+  background-image: url(/images/lisp-logo-transparent.png);
+}
+html,
 body {
   height: 100%;
 }
@@ -65,8 +198,8 @@ header .subtitle {
   height: 50%;
   z-index: -1000;
   background-color: #1d304e;
-  background: -webkit-gradient(linear, left top, left bottom, from(#1d304e), to(#142038));
-  background: -moz-linear-gradient(-90deg, #1d304e, #142038);
+  background: -webkit-gradient(linear, left top, left bottom, from(#1d304e), to(#152238));
+  background: -moz-linear-gradient(top, #1d304e, #152238);
 }
 #background-yellow {
   position: absolute;
@@ -77,5 +210,5 @@ header .subtitle {
   z-index: -1000;
   background-color: #ddebb9;
   background: -webkit-gradient(linear, left top, left bottom, from(#ddebb9), to(#929c7c));
-  background: -moz-linear-gradient(-90deg, #ddebb9, #929c7c);
+  background: -moz-linear-gradient(top, #ddebb9, #929c7c);
 }

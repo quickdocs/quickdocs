@@ -1,5 +1,11 @@
 @charset "UTF-8";
 
+@import "mixin.less";
+@import "variables.less";
+
+@import "base.less";
+@import "footer.less";
+
 html, body {
   height: 100%;
 }
@@ -21,13 +27,12 @@ header {
   padding: 50px 0;
   margin-top: 100px;
   text-align: center;
-}
-
-header .subtitle {
-  display: inline-block;
-  color: rgba(255, 255, 255, 0.6);
-  margin-left: 60px;
-  font-size: 16px;
+  .subtitle {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.6);
+    margin-left: 60px;
+    font-size: 16px;
+  }
 }
 
 .large-logo {
@@ -37,25 +42,27 @@ header .subtitle {
   text-shadow: 0 2px 2px black;
 }
 
-.search-form input[type="text"] {
-  width: 350px;
-  height: 25px;
-  padding-left: 5px;
-  border-radius: 4px;
-  border: 1px solid #BCBCBC;
-}
+.search-form {
+  input[type="text"] {
+    width: 350px;
+    height: 25px;
+    padding-left: 5px;
+    border-radius: 4px;
+    border: 1px solid #BCBCBC;
+  }
 
-.search-form input[type="submit"] {
-  margin: 0;
-  width: 29px;
-  height: 29px;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  background-color: #6fbf42;
-  cursor: pointer;
-  font-size: 20px;
-  vertical-align: bottom;
+  input[type="submit"] {
+    margin: 0;
+    width: 29px;
+    height: 29px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    background-color: @button-green;
+    cursor: pointer;
+    font-size: 20px;
+    vertical-align: bottom;
+  }
 }
 
 .dist-version {
@@ -74,9 +81,8 @@ header .subtitle {
   width: 100%;
   height: 50%;
   z-index: -1000;
-  background-color: #1d304e;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgb(29, 48, 78)), to(rgb(20, 32, 56)));
-  background: -moz-linear-gradient(-90deg, rgb(29, 48, 78), rgb(20, 32, 56));
+  background-color: @lisp-blue;
+  .vertical-gradient(@lisp-blue, darken(@lisp-blue, 6%));
 }
 
 #background-yellow {
@@ -86,7 +92,6 @@ header .subtitle {
   width: 100%;
   height: 50%;
   z-index: -1000;
-  background-color: #ddebb9;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgb(221, 235, 185)), to(rgb(146, 156, 124)));
-  background: -moz-linear-gradient(-90deg, rgb(221, 235, 185), rgb(146, 156, 124));
+  background-color: @lisp-yellow;
+  .vertical-gradient(@lisp-yellow, rgb(146, 156, 124));
 }
