@@ -25,6 +25,7 @@
                ;; for server
                :clack
                :ningle
+               :local-time
 
                ;; for search
                :split-sequence

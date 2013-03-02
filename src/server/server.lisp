@@ -7,6 +7,9 @@
                 :*response*)
   (:import-from :alexandria
                 :when-let)
+  (:import-from :local-time
+                :timestamp-to-unix
+                :now)
   (:import-from :clack
                 :clackup
                 :stop)
@@ -49,6 +52,7 @@
 
 (defvar *app-env* nil)
 (defvar *app* (make-instance '<app>))
+(defvar *deploy-time* nil)
 
 (setf (route *app* "*")
       #'(lambda (params)
@@ -131,6 +135,8 @@
                         append (list key val))))
       (setf (error-log *app*) error-log)
       (setf *app-env* mode)
+      (setf *deploy-time*
+            (local-time:timestamp-to-unix (local-time:now)))
       (setf handler
             (apply #'clackup (build *app*) args))))
 
