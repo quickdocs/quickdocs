@@ -4,6 +4,7 @@
   <% @include header-links.tmpl %>
 </header>
 
+<article>
 <% @if readme %>
 <section class="readme">
   <div class="readme-body"><% @var readme -escape raw %></div>
@@ -36,7 +37,7 @@
 </section>
 <% ) %>
 
-<section>
+<aside class="dependencies">
 <h3>Dependencies</h3>
 
 <% @if dependencies %>
@@ -48,9 +49,9 @@
 <% @else %>
 <em>None.</em>
 <% @endif %>
-</section>
+</aside>
 
-<section class="links">
+<aside class="links">
 <h3>Links</h3>
 <ul>
   <li><a href="/<% @var name -escape uri %>/api">API Reference</a></li>
@@ -61,4 +62,5 @@
   <li><a href="<% @var project-url %>">Source Code</a></li>
   <% @endif %>
 </ul>
-</section>
+</aside>
+</article>

@@ -15,7 +15,7 @@
 <% @endif %>
 
 <% @if system-list %>
-<div class="toc">
+<nav class="toc">
   <ul>
     <% @loop system-list %>
       <li><a href="#system-<% @var name -escape uri %>"><% @var name %></a></li>
@@ -28,20 +28,24 @@
       <% @endif %>
     <% @endloop %>
   </ul>
-</div>
+</nav>
 
-<article class="api">
+<div class="api">
   <% @loop system-list %>
-    <a name="system-<%= (emb::escape-for-xml (getf env :name)) %>"></a>
-    <h1><% @var name %></h1>
-    <% @if description %>
-    <p class="description"><% @with description %><% @include _trim %><% @endwith %></p>
-    <% @endif %>
+  <article class="system">
+    <header>
+      <a name="system-<%= (emb::escape-for-xml (getf env :name)) %>"></a>
+      <h1><% @var name %></h1>
+      <% @if description %>
+      <p class="description"><% @with description %><% @include _trim %><% @endwith %></p>
+      <% @endif %>
+    </header>
     <% @loop package-list %>
       <section class="package">
         <% @include package.tmpl %>
       </section>
     <% @endloop %>
+  </article>
   <% @endloop %>
-</article>
+</div>
 <% @endif %>
