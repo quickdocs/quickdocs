@@ -52,7 +52,7 @@ $(document).on('scroll', Quickdocs.updateBreadcrumbHeader);
 $(document).on('click', 'a[href^=#]', function(e) {
     var speed = 300;
     var href = $(this).attr("href");
-    href = href.replace('.', '\\.');
+    href = href.replace(/\./g, '\\.');
     var target = $(href == "#" || href == "" ? 'html' : href);
     if (target) {
         var position = target.offset().top;
