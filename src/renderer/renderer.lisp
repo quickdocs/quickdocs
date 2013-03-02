@@ -54,59 +54,44 @@
      (template-path *layout-template*)
      :env env)))
 
-(defmethod render-documentation :around (ql-dist)
-  (declare (ignore ql-dist))
-  (apply #'render-with-layout (call-next-method)))
-
 @export
 (defmethod render-documentation ((this ql-dist:release))
   (ql-dist:ensure-installed this)
   (let ((project-name (slot-value this 'ql-dist:project-name)))
-    (list
-     :title (format nil "~A | Quickdocs" project-name)
-     :content
-     (emb:execute-emb (template-path "project.tmpl")
-      :env (list
-            :name project-name
-            :ql-version (ql-release-version this)
-            :archive-url (slot-value this 'ql-dist::archive-url)
-            :project-url (project-url project-name)
-            :homepage (repos-homepage project-name)
-            :readme (project-readme-in-html (car (sorted-provided-systems this)))
-            :categories (project-categories project-name)
-            :dependencies (mapcar #'ql-dist:project-name (dependency-projects this))
-            :authors (merged-slot-values this 'asdf::author)
-            :maintainer (merged-slot-values this 'asdf::maintainer)
-            :licenses (merged-slot-values this 'asdf::licence))))))
-
-@export
-(defmethod render-api-reference :around (release)
-  (declare (ignore release))
-  (apply #'render-with-layout (call-next-method)))
+    (emb:execute-emb (template-path "project.tmpl")
+     :env (list
+           :name project-name
+           :ql-version (ql-release-version this)
+           :archive-url (slot-value this 'ql-dist::archive-url)
+           :project-url (project-url project-name)
+           :homepage (repos-homepage project-name)
+           :readme (project-readme-in-html (car (sorted-provided-systems this)))
+           :categories (project-categories project-name)
+           :dependencies (mapcar #'ql-dist:project-name (dependency-projects this))
+           :authors (merged-slot-values this 'asdf::author)
+           :maintainer (merged-slot-values this 'asdf::maintainer)
+           :licenses (merged-slot-values this 'asdf::licence)))))
 
 @export
 (defmethod render-api-reference ((this ql-dist:release))
   (let ((project-name (slot-value this 'ql-dist:project-name))
         (systems (sorted-provided-systems this))
         errors)
-    (list
-     :title (format nil "~A | API Reference | Quickdocs" project-name)
-     :content
-     (emb:execute-emb (template-path "api.tmpl")
-      :env `(:name ,project-name
-             :system-list
-             ,(remove-if #'null
-               (mapcar #'(lambda (system)
-                           (handler-case (parse-documentation system)
-                             (error (e)
-                               (print-backtrace e :output *error-output*)
-                               (push (format nil "~A: ~A"
-                                             (slot-value system 'ql-dist:name)
-                                             e)
-                                     errors)
-                               nil)))
-                systems))
-             :errors ,(nreverse errors)
-             :archive-url ,(slot-value this 'ql-dist::archive-url)
-             :project-url ,(project-url project-name)
-             :homepage ,(repos-homepage project-name))))))
+    (emb:execute-emb (template-path "api.tmpl")
+     :env `(:name ,project-name
+            :system-list
+            ,(remove-if #'null
+              (mapcar #'(lambda (system)
+                          (handler-case (parse-documentation system)
+                            (error (e)
+                              (print-backtrace e :output *error-output*)
+                              (push (format nil "~A: ~A"
+                                            (slot-value system 'ql-dist:name)
+                                            e)
+                                    errors)
+                              nil)))
+               systems))
+            :errors ,(nreverse errors)
+            :archive-url ,(slot-value this 'ql-dist::archive-url)
+            :project-url ,(project-url project-name)
+            :homepage ,(repos-homepage project-name)))))

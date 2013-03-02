@@ -5,7 +5,7 @@
   <link rel="shortcut icon" href="/favicon.ico" />
   <title><% @var title %></title>
   <link rel="stylesheet" type="text/css" href="/css/LigatureSymbols/style.css" />
-  <link rel="stylesheet" type="text/css" href="/css/main.css?<%= quickdocs.server::*deploy-time* %>" />
+  <link rel="stylesheet" type="text/css" href="/css/main.css<% @if deploy-time %>?<% @var deploy-time -escape raw %><% @endif %>" />
 </head>
 <body>
 <div id="container">

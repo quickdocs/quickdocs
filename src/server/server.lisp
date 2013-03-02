@@ -52,6 +52,7 @@
 
 (defvar *app-env* nil)
 (defvar *app* (make-instance '<app>))
+
 (defvar *deploy-time* nil)
 
 (setf (route *app* "*")
@@ -71,29 +72,37 @@
            :env `(:count
                   (:releases ,(length (ql-dist:provided-releases t))
                    :systems  ,(length (ql-dist:provided-systems t)))
-                  :dist-version ,(slot-value (ql-dist:dist "quicklisp") 'ql-dist:version)))))
+                  :dist-version ,(slot-value (ql-dist:dist "quicklisp") 'ql-dist:version)
+                  :deploy-time ,*deploy-time*))))
 
 (setf (route *app* "/:project-name/")
       #'(lambda (params)
           (let ((release (ql-dist:find-release (getf params :project-name))))
             (if release
-                (render-documentation release)
+                (render-with-layout
+                 :title (format nil "~A | Quickodcs" (getf params :project-name))
+                 :deploy-time *deploy-time*
+                 :content (render-documentation release))
                 (next-route)))))
 
 (setf (route *app* "/:project-name/api")
       #'(lambda (params)
           (let ((release (ql-dist:find-release (getf params :project-name))))
             (if release
-                (if (eq *app-env* :production)
-                    (multiple-value-bind (stdout stderr)
-                        (trivial-shell:shell-command
-                         (format nil "LANG=en_US.UTF-8 ~A ~A"
-                          (asdf:system-relative-pathname :quickdocs #P"bin/render")
-                          (getf params :project-name))
-                         :input "")
-                      (princ stderr *error-output*)
-                      stdout)
-                    (render-api-reference release))
+                (render-with-layout
+                 :title (format nil "~A | API Reference | Quickdocs" (getf params :project-name))
+                 :deploy-time *deploy-time*
+                 :content
+                 (if (eq *app-env* :production)
+                     (multiple-value-bind (stdout stderr)
+                         (trivial-shell:shell-command
+                          (format nil "LANG=en_US.UTF-8 ~A ~A"
+                           (asdf:system-relative-pathname :quickdocs #P"bin/render")
+                           (getf params :project-name))
+                          :input "")
+                       (princ stderr *error-output*)
+                       stdout)
+                     (render-api-reference release)))
                 (next-route)))))
 
 (setf (route *app* "/search")
@@ -105,6 +114,7 @@
              :title (if query
                         "Search Results | Quickdocs"
                         "All Projects | Quickdocs")
+             :deploy-time *deploy-time*
              :query query
              :content
              (emb:execute-emb
