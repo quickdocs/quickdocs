@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage quickdocs.repository
+(defpackage quickdocs.renderer.repository
   (:use :cl)
   (:import-from :fad
                 :file-exists-p)
@@ -15,9 +15,9 @@
   (:import-from :org.tfeb.hax.memoize
                 :memoize-function
                 :function-memoized-p)
-  (:import-from :quickdocs.util
+  (:import-from :quickdocs.renderer.util
                 :slurp-file))
-(in-package :quickdocs.repository)
+(in-package :quickdocs.renderer.repository)
 
 (cl-annot:enable-annot-syntax)
 

@@ -1,9 +1,9 @@
 (in-package :cl-user)
-(defpackage :quickdocs.category
+(defpackage quickdocs.renderer.category
   (:use :cl)
-  (:import-from :quickdocs.util
+  (:import-from :quickdocs.renderer.util
                 :slurp-file))
-(in-package :quickdocs.category)
+(in-package :quickdocs.renderer.category)
 
 (cl-annot:enable-annot-syntax)
 

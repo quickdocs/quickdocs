@@ -1,10 +1,10 @@
 (in-package :cl-user)
-(defpackage quickdocs.asdf
+(defpackage quickdocs.parser.asdf
   (:use :cl
-        :quickdocs.class)
+        :quickdocs.parser.class)
   (:import-from :trivial-backtrace
                 :print-backtrace))
-(in-package :quickdocs.asdf)
+(in-package :quickdocs.parser.asdf)
 
 (cl-annot:enable-annot-syntax)
 

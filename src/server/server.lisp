@@ -17,9 +17,6 @@
                 :redirect)
   (:import-from :clack.middleware.static
                 :<clack-middleware-static>)
-  (:import-from :quickdocs.app
-                :<app>
-                :error-log)
   (:import-from :quickdocs.quicklisp
                 :ql-release-version)
   (:import-from :quickdocs.renderer
@@ -28,13 +25,14 @@
                 :static-path
                 :template-path
                 :render-with-layout)
-  (:import-from :quickdocs.util
-                :slurp-file)
-  (:import-from :quickdocs.readme
-                :find-system-readme)
+  (:import-from :quickdocs.renderer.readme
+                :project-readme)
   (:import-from :quickdocs.search
                 :search-projects
-                :*ql-download-stats-hash*))
+                :*ql-download-stats-hash*)
+  (:import-from :quickdocs.server.app
+                :<app>
+                :error-log))
 (in-package :quickdocs.server)
 
 (cl-annot:enable-annot-syntax)
@@ -113,9 +111,7 @@
                                                 :ql-version ,(ql-release-version release)
                                                 :download-count
                                                 ,(gethash project-name *ql-download-stats-hash*)
-                                                :readme ,(when-let (readme
-                                                                    (find-system-readme (car (ql-dist:provided-systems release))))
-                                                           (slurp-file (car readme)))))
+                                                :readme ,(project-readme (car (ql-dist:provided-systems release)))))
                      :query ,query))))))
 
 ;; Redirect to a project page.

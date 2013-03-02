@@ -1,12 +1,7 @@
 (in-package :cl-user)
-(defpackage quickdocs.util
-  (:use :cl)
-  (:import-from :alexandria
-                :copy-stream)
-  (:import-from :flexi-streams
-                :octets-to-string
-                :with-output-to-sequence))
-(in-package :quickdocs.util)
+(defpackage quickdocs.parser.util
+  (:use :cl))
+(in-package :quickdocs.parser.util)
 
 (cl-annot:enable-annot-syntax)
 
@@ -32,7 +27,9 @@
 (defmethod external-symbol-p ((symb cons) &optional pkg)
   (if (eq (car symb) 'cl:setf)
       (external-symbol-p (cadr symb) pkg)
-      (error "Invalid symbol.")))
+      (error 'simple-error ;; TODO: make a specific condition.
+             :format-control "Invalid symbol: ~A"
+             :format-arguments (list symb))))
 
 (defun intern-eql-specializer* (object)
   #+ccl (ccl:intern-eql-specializer object)
@@ -69,14 +66,6 @@
   (if (slot-boundp instance slot-name)
       (slot-value instance slot-name)
       nil))
-
-@export
-(defun slurp-file (file)
-  (with-open-file (in file :element-type '(unsigned-byte 8))
-    (flex:octets-to-string
-     (flex:with-output-to-sequence (out)
-      (alexandria:copy-stream in out :finish-output t))
-     :external-format :utf-8)))
 
 @export
 (defmacro with-ignoring-streams (streams &body body)

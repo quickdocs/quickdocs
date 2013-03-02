@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage quickdocs.readme
+(defpackage quickdocs.renderer.readme
   (:use :cl)
   (:import-from :cl-markdown
                 :markdown)
@@ -9,9 +9,9 @@
                 :shell-command)
   (:import-from :alexandria
                 :when-let)
-  (:import-from :quickdocs.util
+  (:import-from :quickdocs.renderer.util
                 :slurp-file))
-(in-package :quickdocs.readme)
+(in-package :quickdocs.renderer.readme)
 
 (cl-annot:enable-annot-syntax)
 
@@ -31,7 +31,6 @@
         (with-output-to-string (s)
           (cl-markdown:markdown file :stream s)))))
 
-@export
 (defmethod find-system-readme ((system asdf:system) &optional base-directory)
   (remove-if-not
    #'(lambda (path)
@@ -42,7 +41,6 @@
     (or base-directory
         (slot-value system 'asdf::absolute-pathname)))))
 
-@export
 (defmethod find-system-readme ((system ql-dist:system) &optional base-directory)
   (when-let (asdf-system
              (ignore-errors
@@ -51,7 +49,6 @@
                         (or base-directory
                             (ql-dist:base-directory (slot-value system 'ql-dist:release))))))
 
-@export
 (defun readme->html (readme-file)
   (let ((ext (pathname-type readme-file)))
     (cond
@@ -61,3 +58,15 @@
                (parse-markdown readme-file)))
       (t (format nil "<div class=\"plain-text\"><pre>~A</pre></div>"
                  (emb::escape-for-xml (slurp-file readme-file)))))))
+
+@export
+(defun project-readme (system)
+  (when-let (readme
+             (find-system-readme system))
+    (slurp-file (car readme))))
+
+@export
+(defun project-readme-in-html (system)
+  (when-let (readme
+             (find-system-readme system))
+    (readme->html (car readme))))

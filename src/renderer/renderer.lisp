@@ -8,17 +8,20 @@
                 :ensure-list)
   (:import-from :trivial-backtrace
                 :print-backtrace)
-  (:import-from :quickdocs.quicklisp
-                :ql-release-version)
-  (:import-from :quickdocs.readme
-                :find-system-readme
-                :readme->html)
-  (:import-from :quickdocs.repository
-                :project-url
-                :repos-homepage)
   (:import-from :quickdocs.parser
                 :parse-documentation)
-  (:import-from :quickdocs.category
+  (:import-from :quickdocs.quicklisp
+                :ql-release-version)
+  (:import-from :quickdocs.model.project
+                :sorted-provided-systems
+                :merged-slot-values
+                :dependency-projects)
+  (:import-from :quickdocs.renderer.readme
+                :project-readme-in-html)
+  (:import-from :quickdocs.renderer.repository
+                :project-url
+                :repos-homepage)
+  (:import-from :quickdocs.renderer.category
                 :project-categories))
 (in-package :quickdocs.renderer)
 
@@ -33,6 +36,9 @@
               (asdf:system-relative-pathname :quickdocs "templates/"))
 
 @export
+(defparameter *layout-template* #P"layout.tmpl")
+
+@export
 (defun static-path (filename)
   (merge-pathnames filename *static-path*))
 
@@ -45,14 +51,8 @@
   (declare (ignore title content))
   (let ((emb:*escape-type* :html))
     (emb:execute-emb
-     (template-path "layout.tmpl")
+     (template-path *layout-template*)
      :env env)))
-
-(defun find-systems-in-release (release)
-  (sort (ql-dist:provided-systems release)
-        #'(lambda (a b)
-            (string< (slot-value a 'ql-dist:name)
-                     (slot-value b 'ql-dist:name)))))
 
 (defmethod render-documentation :around (ql-dist)
   (declare (ignore ql-dist))
@@ -61,60 +61,7 @@
 @export
 (defmethod render-documentation ((this ql-dist:release))
   (ql-dist:ensure-installed this)
-  (let ((project-name (slot-value this 'ql-dist:project-name))
-        (systems (find-systems-in-release this))
-        authors maintainers licenses
-        dependencies)
-    (loop for ql-system in systems
-          for system = (ignore-errors (asdf:find-system
-                                       (slot-value ql-system 'ql-dist:name)))
-          when system
-            do (when (and (slot-boundp system 'asdf::author)
-                          (slot-value system 'asdf::author)
-                          (or (not (stringp (slot-value system 'asdf::author)))
-                              (not (string= (slot-value system 'asdf::author) ""))))
-                 (setf authors
-                       (append (ensure-list (slot-value system 'asdf::author))
-                               authors)))
-               (when (and (slot-boundp system 'asdf::maintainer)
-                          (slot-value system 'asdf::maintainer)
-                          (or (not (stringp (slot-value system 'asdf::maintainer)))
-                              (not (string= (slot-value system 'asdf::maintainer) ""))))
-                 (setf maintainers
-                       (append (ensure-list (slot-value system 'asdf::maintainer))
-                               maintainers)))
-               (when (and (slot-boundp system 'asdf::licence)
-                          (slot-value system 'asdf::licence)
-                          (or (not (stringp (slot-value system 'asdf::licence)))
-                              (not (string= (slot-value system 'asdf::licence) ""))))
-                 (setf licenses
-                       (append (ensure-list (slot-value system 'asdf::licence))
-                               licenses)))
-               (when (slot-boundp system 'asdf::load-dependencies)
-                 (setf dependencies
-                       (append dependencies (slot-value system 'asdf::load-dependencies)))))
-    (setf authors (remove-duplicates authors :test #'string=))
-    (setf maintainers (remove-duplicates maintainers :test #'string=))
-    (setf licenses (remove-duplicates licenses :test #'string=))
-    (setf dependencies
-          (loop with dist = (ql-dist:dist "quicklisp")
-                with results = nil
-                for dependency in (remove-duplicates dependencies)
-                for system-name = (if (listp dependency)
-                                      (cadr dependency)
-                                      dependency)
-                for system-dist = (ql-dist:find-system-in-dist (string-downcase system-name) dist)
-                for release = (and system-dist
-                                   (slot-value system-dist 'ql-dist:release))
-                for dependency-name = (and release
-                                           (slot-value release 'ql-dist:project-name))
-                when (and system-dist
-                          (notany #'(lambda (system)
-                                      (string-equal (slot-value system 'ql-dist:name)
-                                                    dependency-name))
-                                  systems))
-                  do (pushnew dependency-name results)
-                finally (return (reverse results))))
+  (let ((project-name (slot-value this 'ql-dist:project-name)))
     (list
      :title (format nil "~A | Quickdocs" project-name)
      :content
@@ -125,15 +72,12 @@
             :archive-url (slot-value this 'ql-dist::archive-url)
             :project-url (project-url project-name)
             :homepage (repos-homepage project-name)
-            :readme (when-let (readme
-                               (find-system-readme (car systems)))
-                      (readme->html
-                       (car readme)))
+            :readme (project-readme-in-html (car (sorted-provided-systems this)))
             :categories (project-categories project-name)
-            :dependencies (remove-duplicates dependencies :test #'eq)
-            :authors (reverse authors)
-            :maintainer (reverse maintainers)
-            :licenses (reverse licenses))))))
+            :dependencies (mapcar #'ql-dist:project-name (dependency-projects this))
+            :authors (merged-slot-values this 'asdf::author)
+            :maintainer (merged-slot-values this 'asdf::maintainer)
+            :licenses (merged-slot-values this 'asdf::licence))))))
 
 @export
 (defmethod render-api-reference :around (release)
@@ -143,22 +87,25 @@
 @export
 (defmethod render-api-reference ((this ql-dist:release))
   (let ((project-name (slot-value this 'ql-dist:project-name))
-        (systems (find-systems-in-release this))
+        (systems (sorted-provided-systems this))
         errors)
     (list
      :title (format nil "~A | API Reference | Quickdocs" project-name)
      :content
      (emb:execute-emb (template-path "api.tmpl")
       :env `(:name ,project-name
-             :system-list ,(remove-if #'null
-                            (mapcar #'(lambda (system)
-                                        (handler-case (parse-documentation system)
-                                          (error (e)
-                                            (print-backtrace e :output *error-output*)
-                                            (push (format nil "~A: ~A"
-                                                          (slot-value system 'ql-dist:name)
-                                                          e) errors)
-                                            nil))) systems))
+             :system-list
+             ,(remove-if #'null
+               (mapcar #'(lambda (system)
+                           (handler-case (parse-documentation system)
+                             (error (e)
+                               (print-backtrace e :output *error-output*)
+                               (push (format nil "~A: ~A"
+                                             (slot-value system 'ql-dist:name)
+                                             e)
+                                     errors)
+                               nil)))
+                systems))
              :errors ,(nreverse errors)
              :archive-url ,(slot-value this 'ql-dist::archive-url)
              :project-url ,(project-url project-name)

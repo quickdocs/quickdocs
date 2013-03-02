@@ -4,7 +4,7 @@
         :split-sequence)
   (:import-from :alexandria
                 :ensure-list)
-  (:import-from :quickdocs.category
+  (:import-from :quickdocs.renderer.category
                 :*category-db*))
 (in-package :quickdocs.search)
 

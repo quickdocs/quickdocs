@@ -1,11 +1,3 @@
-#|
-  This file is a part of Clack package.
-  URL: http://github.com/fukamachi/clack
-  Copyright (c) 2011 Eitarow Fukamachi <e.arrows@gmail.com>
-
-  Clack is freely distributable under the LLGPL License.
-|#
-
 (in-package :cl-user)
 (defpackage quickdocs-asd
   (:use :cl :asdf))
@@ -14,14 +6,11 @@
 (defsystem quickdocs
   :version "0.1-SNAPSHOT"
   :author "Eitarow Fukamachi"
-  :license "LLGPL"
   :depends-on (:cl-annot
                :flexi-streams
                :alexandria
 
-               ;; for parser
-               :closer-mop
-               :cl-ppcre
+               :quickdocs-parser
 
                ;; for renderer
                :cl-emb
@@ -42,21 +31,19 @@
                )
   :components ((:file "quicklisp"
                 :pathname "src/quicklisp")
-               (:module "parser"
-                :pathname "src/parser"
+               (:module "model"
+                :pathname "src/model"
                 :components
-                ((:file "class" :depends-on ("util"))
-                 (:file "util")
-                 (:file "asdf" :depends-on ("class"))
-                 (:file "parser" :depends-on ("class" "asdf" "util"))))
+                ((:file "project")))
                (:module "renderer"
                 :pathname "src/renderer"
-                :depends-on ("parser" "quicklisp")
+                :depends-on ("quicklisp" "model")
                 :components
                 ((:file "renderer" :depends-on ("readme" "repository" "category"))
-                 (:file "readme")
-                 (:file "repository")
-                 (:file "category")))
+                 (:file "readme" :depends-on ("util"))
+                 (:file "repository" :depends-on ("util"))
+                 (:file "category" :depends-on ("util"))
+                 (:file "util")))
                (:module "server"
                 :pathname "src/server"
                 :depends-on ("renderer" "search" "quicklisp")
@@ -65,6 +52,6 @@
                  (:file "app")))
                (:module "search"
                 :pathname "src/search"
-                :depends-on ("renderer") ; quickdocs.category
+                :depends-on ("renderer") ; quickdocs.renderer.category
                 :components
                 ((:file "search")))))

@@ -1,10 +1,10 @@
 (in-package :cl-user)
-(defpackage quickdocs.app
+(defpackage quickdocs.server.app
   (:use :cl)
   (:import-from :clack
                 :call)
   (:export :error-log))
-(in-package :quickdocs.app)
+(in-package :quickdocs.server.app)
 
 (cl-annot:enable-annot-syntax)
 

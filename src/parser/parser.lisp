@@ -1,12 +1,12 @@
 (in-package :cl-user)
 (defpackage quickdocs.parser
   (:use :cl
-        :quickdocs.class)
+        :quickdocs.parser.class)
   (:import-from :alexandria
                 :when-let)
-  (:import-from :quickdocs.asdf
+  (:import-from :quickdocs.parser.asdf
                 :ensure-system-loaded)
-  (:import-from :quickdocs.util
+  (:import-from :quickdocs.parser.util
                 :slot-value*
                 :with-ignoring-streams))
 (in-package :quickdocs.parser)

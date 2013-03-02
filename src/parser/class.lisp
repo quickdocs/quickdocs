@@ -1,9 +1,12 @@
 (in-package :cl-user)
-(defpackage quickdocs.class
+(defpackage quickdocs.parser.class
   (:use :cl)
   (:import-from :alexandria
                 :when-let)
-  (:import-from :quickdocs.util
+  (:import-from :c2mop
+                :class-direct-superclasses
+                :class-direct-slots)
+  (:import-from :quickdocs.parser.util
                 :external-symbol-p
                 :lambda-list->specializers
                 :map-tree)
@@ -16,7 +19,7 @@
            :class-slots
            :class-super-classes
            :function-lambda-list))
-(in-package :quickdocs.class)
+(in-package :quickdocs.parser.class)
 
 (cl-annot:enable-annot-syntax)
 
