@@ -34,8 +34,7 @@
   <% @loop system-list %>
   <article class="system">
     <header>
-      <a name="system-<%= (emb::escape-for-xml (getf env :name)) %>"></a>
-      <h1><% @var name %></h1>
+      <h1 id="system-<%= (emb::escape-for-xml (getf env :name)) %>"><% @var name %></h1>
       <% @if description %>
       <p class="description"><% @with description %><% @include _trim %><% @endwith %></p>
       <% @endif %>
@@ -49,3 +48,8 @@
   <% @endloop %>
 </div>
 <% @endif %>
+<div class="breadcrumb-header-container" style="display: none">
+  <a href="#global-header" class="lsf-icon top-link" title="arrowup"><% @var name %></a>
+  <div class="breadcrumb-header">
+  </div>
+</div>

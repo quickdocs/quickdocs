@@ -7,3 +7,10 @@
   background: -webkit-gradient(linear, left top, right top, from(@from), to(@to));
   background: -moz-linear-gradient(left, @from, @to);
 }
+
+.transition-duration(@duration:0.3s) {
+  transition-duration: @duration;
+  -moz-transition-duration: @duration;
+  -webkit-transition-duration: @duration;
+  -o-transition-duration: @duration;
+}

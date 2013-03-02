@@ -111,3 +111,39 @@ header {
 .error-message {
   text-align: left;
 }
+
+.breadcrumb-header-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-left: 15px;
+  .vertical-gradient(#3c404b, darken(#3c404b, 10%));
+  font-size: 80%;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+  a {
+    display: inline-block;
+    color: #d0d0d0;
+    padding: 2px 10px;
+    text-decoration: none;
+    text-shadow: 0 -1px 1px black;
+    .transition-duration(0.2s);
+    &:hover {
+      color: #fff;
+      background: lighten(#3c404b, 5%);
+    }
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(0, 0, 0, 0.3);
+    &.top-link {
+      float: left;
+    }
+  }
+  .breadcrumb-header {
+    float: left;
+    display: inline-block;
+    .current a {
+      color: #f0f0f0;
+      font-weight: bold;
+    }
+  }
+}
