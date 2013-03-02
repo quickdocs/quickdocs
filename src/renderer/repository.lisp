@@ -38,8 +38,7 @@
       (if (string= (subseq data 0 12) "ediware-http")
           (format nil "http://weitz.de/files/~A.tar.gz"
                   (drakma:url-encode project-name :utf-8))
-          (nth-value 0
-                     (ppcre:scan-to-strings "(\\S+?://\\S+?)\\s*?$" data))))))
+          (ppcre:scan-to-strings "\\S+?://\\S+" data)))))
 
 (defun url-domain (url)
   (aref (nth-value 1 (ppcre:scan-to-strings "^[^:]+?://([^/]+)" url))
