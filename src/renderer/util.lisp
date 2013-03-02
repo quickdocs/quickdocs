@@ -15,5 +15,4 @@
   (with-open-file (in file :element-type '(unsigned-byte 8))
     (flex:octets-to-string
      (flex:with-output-to-sequence (out)
-      (alexandria:copy-stream in out :finish-output t))
-     :external-format :utf-8)))
+      (alexandria:copy-stream in out :finish-output t)))))
