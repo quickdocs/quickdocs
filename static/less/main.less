@@ -1,13 +1,16 @@
 @charset "UTF-8";
+
 section {
   margin-bottom: 40px;
 }
+
 #content h1 {
   font-size: 32px;
 }
 #content h2 {
   font-size: 20px;
 }
+
 /**
  *  Header
  */
@@ -19,22 +22,27 @@ section {
   font-size: 24px;
   padding: 10px 15px;
 }
+
 #global-header .logo a {
   color: white;
 }
+
 #global-header .logo a:hover {
   text-decoration: none;
 }
+
 #global-header .search-form {
   position: absolute;
   top: 5px;
   right: 15px;
 }
+
 #global-header .search-form input[type="text"] {
   width: 200px;
   height: 20px;
   padding-left: 4px;
 }
+
 #global-header .search-form input[type="submit"] {
   width: 25px;
   height: 26px;
@@ -46,44 +54,52 @@ section {
   vertical-align: bottom;
   margin-left: -6px;
 }
+
 header {
   margin: 10px 0 30px;
 }
+
 header h2 {
   float: left;
   font-size: 40px !important;
   margin: 0 !important;
 }
+
 header .subtitle {
   display: inline-block;
   margin: 3px 0 0 10px;
   font-style: italic;
   color: #ccc;
 }
+
 header .header-links {
   position: absolute;
   top: -7px;
   right: 0;
 }
+
 header .header-links a {
   display: inline-block;
   padding: 10px 15px;
   border-radius: 4px;
   color: white;
   background-color: #6fbf42;
-  background: -webkit-gradient(linear, left top, left bottom, from(#6fbf42), to(#4a7f2c));
-  background: -moz-linear-gradient(-90deg, #6fbf42, #4a7f2c);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgb(111, 191, 66)), to(rgb(74, 127, 44)));
+  background: -moz-linear-gradient(-90deg, rgb(111, 191, 66), rgb(74, 127, 44));
   text-decoration: none;
 }
+
 header .search-query {
   display: inline-block;
   margin: 6px 0 0 10px;
   color: #888;
   font-size: 25px;
 }
+
 header .search-query strong {
   color: #333;
 }
+
 /**
  *  Content
  */
@@ -92,10 +108,12 @@ header .search-query strong {
   width: 800px;
   margin: 30px auto;
 }
+
 #content h3 {
   font-size: 32px;
   margin: 10px 0 20px;
 }
+
 .information {
   border: 1px solid #ccc;
   border-top: 3px solid #BBB;
@@ -103,71 +121,88 @@ header .search-query strong {
   line-height: 200%;
   padding: 15px;
 }
+
 .information dt {
   color: #666;
   font-weight: bold;
   font-size: 90%;
 }
+
 .information dd {
   color: #888;
   font-size: 80%;
 }
+
 .search-results-summary {
   margin-left: 5px;
   color: #888;
 }
+
 .search-results-summary strong {
   color: #666;
 }
+
 /**
  *  API Reference
  */
+
 .toc ul {
   margin-top: 0;
 }
+
 .api .package {
   margin: 10px 0 0 10px;
   border-bottom: 2px solid #CCC;
 }
+
 .api ul {
   padding-left: 3px;
   list-style: none;
 }
+
 .api ul li {
   margin: 30px 0;
 }
+
 .api code.symbol-name {
   font-weight: bold;
   color: #444;
   font-size: 120%;
 }
+
 .lambda-list {
   display: inline-block;
   margin-left: 8px;
   color: #555;
 }
+
 .api .lambda-list .symbol-name {
   font-size: 95%;
   font-weight: normal;
 }
+
 .api .lambda-list .keyword {
   color: #777;
   font-style: italic;
   font-size: 90%;
 }
+
 .api .initial-value {
   color: #777;
   font-size: 95%;
   display: inline-block;
   margin-left: 8px;
 }
+
 .api .initial-value.unbound {
   font-style: italic;
 }
+
 .api dl {
   margin: 8px 0 0 15px;
   font-size: 90%;
 }
+
 .api .symbol-type {
   position: absolute;
   display: inline-block;
@@ -180,28 +215,36 @@ header .search-query strong {
   border-radius: 4px;
   font-size: 75%;
 }
+
 .api .symbol-type.class {
   background-color: #e09952;
 }
+
 .api .symbol-type.function {
   background-color: #4d77cb;
 }
+
 .api .symbol-type.method {
   background-color: #1d479b;
 }
+
 .api .symbol-type.macro {
   background-color: #9933cc;
 }
+
 .api .symbol-type.variable {
   background-color: #34b27d;
 }
+
 .api .symbol-type.constant {
   background-color: #54d29d;
 }
+
 .api .slot-list .label {
   font-style: italic;
   color: #555;
 }
+
 .docstring {
   margin: 5px 0 10px 0;
   font-size: 90%;
@@ -209,10 +252,12 @@ header .search-query strong {
   color: #555;
   line-height: 1.5;
 }
+
 .docstring pre {
   white-space: pre-wrap;
   margin: 0;
 }
+
 .api dl .docstring {
   margin-top: 0;
   line-height: 1.3;
@@ -220,15 +265,19 @@ header .search-query strong {
   background: none;
   border: none;
 }
+
 .description {
   margin: 15px 0 10px 10px;
 }
+
 .error-message {
   text-align: left;
 }
+
 /**
  * Search
  */
+
 .search-result {
   position: relative;
   padding: 15px;
@@ -236,22 +285,26 @@ header .search-query strong {
   clear: both;
   line-height: 100%;
   border-bottom: 2px solid #eee;
-  width: 100%;
+  width: 100%
 }
+
 .search-result .project-name {
   font-size: 130%;
 }
+
 .search-result .ql-version {
   font-style: italic;
   color: #999;
   font-size: 80%;
 }
+
 .search-result .download-count {
   position: absolute;
   top: 15px;
   right: 25px;
   color: #2075a5;
 }
+
 .search-result .readme-body {
   margin: 7px 60px 0 10px;
   color: #AAA;
