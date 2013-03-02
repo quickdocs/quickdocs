@@ -225,9 +225,14 @@ ul {
 .toc ul {
   margin-top: 0;
 }
+.api .system {
+  margin-top: 35px;
+  padding-left: 5px;
+  border-bottom: 2px solid #CCC;
+}
 .api .package {
   margin: 10px 0 0 10px;
-  border-bottom: 2px solid #CCC;
+  border-top: 1px dotted #CCC;
 }
 .api ul {
   padding-left: 3px;
