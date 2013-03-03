@@ -121,32 +121,30 @@
 
   .symbol-type {
     position: absolute;
+    left: -70px;
     display: inline-block;
-    left: -65px;
+    padding-right: 10px;
+    font-size: 85%;
+    text-align: right;
     width: 50px;
-    padding: 0 5px;
-    text-align: center;
-    background-color: #AAA;
-    color: #fff;
-    border-radius: 4px;
-    font-size: 75%;
+    border-right: 3px solid;
     &.class {
-      background-color: #e09952;
+      border-color: fade(#e09952, 70%);
     }
     &.function {
-      background-color: #4d77cb;
+      border-color: fade(#4d77cb, 70%);
     }
     &.method {
-      background-color: darken(#4d77cb, 15%);
+      border-color: fade(darken(#4d77cb, 15%), 70%);
     }
     &.macro {
-      background-color: #9933cc;
+      border-color: fade(#9933cc, 70%);
     }
     &.variable {
-      background-color: #34b27d;
+      border-color: fade(#34b27d, 70%);
     }
     &.constant {
-      background-color: lighten(#34b27d, 15%);
+      border-color: fade(lighten(#34b27d, 15%), 70%);
     }
   }
 
