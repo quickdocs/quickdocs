@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png" />
   <script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
   <script type="text/javascript" src="/js/underscore-min.js"></script>
-  <script type="text/javascript" src="/js/quickdocs.js"></script>
+  <script type="text/javascript" src="/js/quickdocs.js<% @if deploy-time %>?<% @var deploy-time -escape raw %><% @endif %>"></script>
 </head>
 <body>
 <div id="container">
