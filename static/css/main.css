@@ -336,12 +336,12 @@ ul {
 }
 .api .symbol-type {
   position: absolute;
-  left: -70px;
+  left: -78px;
   display: inline-block;
   padding-right: 10px;
   font-size: 85%;
   text-align: right;
-  width: 50px;
+  width: 60px;
   border-right: 3px solid;
 }
 .api .symbol-type.class {
