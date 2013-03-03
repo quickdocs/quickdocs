@@ -7,15 +7,21 @@
 
 .toc-systems {
   margin-left: 20px;
-  dd {
-    margin-left: 20px;
+  header h2 {
+    font-size: 120% !important;
   }
-  .one-line-description {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #777;
-    font-size: 90%;
+  dl {
+    margin-left: @toc-width;
+    dd {
+      margin-left: 20px;
+    }
+    .one-line-description {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #777;
+      font-size: 90%;
+    }
   }
 }
 

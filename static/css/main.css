@@ -230,10 +230,16 @@ ul {
 .toc-systems {
   margin-left: 20px;
 }
-.toc-systems dd {
+.toc-systems header h2 {
+  font-size: 120% !important;
+}
+.toc-systems dl {
+  margin-left: 200px;
+}
+.toc-systems dl dd {
   margin-left: 20px;
 }
-.toc-systems .one-line-description {
+.toc-systems dl .one-line-description {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

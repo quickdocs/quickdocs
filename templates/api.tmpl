@@ -15,6 +15,7 @@
 <% @endif %>
 
 <nav class="toc-systems">
+  <header><h2>Systems</h2></header>
   <dl>
     <% @loop system-list %>
     <dt><a href="#system-<%= (emb::escape-for-xml (getf env :name)) %>"><% @var name %></a></dt>
