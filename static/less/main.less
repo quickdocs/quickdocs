@@ -34,7 +34,7 @@ section {
   color: white;
   background-color: #1d304e;
   text-shadow: 1px 1px 3px black;
-  padding: 10px 15px;
+  padding: 6px 15px;
   .logo a {
     font-size: 24px;
     color: white;
@@ -51,18 +51,22 @@ section {
 
   input[type="text"] {
     width: 200px;
-    height: 20px;
+    height: 26px;
     padding-left: 4px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
   }
   input[type="submit"] {
-    width: 25px;
+    width: 26px;
     height: 26px;
     border: none;
     color: white;
     background-color: @button-green;
     cursor: pointer;
     font-size: 20px;
-    vertical-align: bottom;
+    vertical-align: middle;
+    font-weight: normal;
     margin-left: -6px;
   }
 }
