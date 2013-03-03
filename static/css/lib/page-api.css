@@ -19,7 +19,6 @@
   font-size: 90%;
 }
 .system {
-  position: relative;
   padding-left: 220px;
   margin-top: 35px;
   padding-bottom: 40px;
@@ -27,8 +26,8 @@
 }
 .toc {
   position: absolute;
-  top: 20px;
   left: 10px;
+  margin-top: 20px;
 }
 .toc h3 {
   font-size: 100% !important;

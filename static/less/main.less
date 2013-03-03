@@ -118,36 +118,56 @@ header {
 
 .breadcrumb-header-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding-left: 15px;
-  .vertical-gradient(#3c404b, darken(#3c404b, 10%));
+  top: 10px;
+  left: 10px;
+  padding: 0;
+  margin: 0;
   font-size: 80%;
-  font-family: Consolas, "Liberation Mono", Courier, monospace;
-  a {
+  list-style: none;
+  .transition-duration(0.2s);
+  opacity: 0.5;
+  &:hover {
+    opacity: 0.7 !important;
+  }
+  li {
     display: inline-block;
-    color: #d0d0d0;
-    padding: 2px 10px;
-    text-decoration: none;
-    text-shadow: 0 -1px 1px black;
-    .transition-duration(0.2s);
-    &:hover {
-      color: #fff;
-      background: lighten(#3c404b, 5%);
-    }
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-right: 1px solid rgba(0, 0, 0, 0.3);
-    &.top-link {
-      float: left;
+    float: left;
+    margin: 0;
+    padding: 0;
+    &.package-name.current:before {
+      content: ">";
+      color: #ccc;
     }
   }
-  .breadcrumb-header {
-    float: left;
-    display: inline-block;
-    .current a {
-      color: #f0f0f0;
-      font-weight: bold;
+  a {
+    &.top-link {
+      font-size: 140%;
+    }
+    height: 25px;
+    padding: 0 10px;
+    text-decoration: none;
+    color: #555;
+    .transition-duration(0.2s);
+    &:hover {
+      color: black;
+    }
+  }
+}
+
+.pager-link-container {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  font-size: 80%;
+  .pager-link {
+    cursor: pointer;
+    text-decoration: none;
+    opacity: 0.5;
+    .transition-duration(0.2s);
+    color: #555;
+    margin-left: 5px;
+    &:hover {
+      opacity: 1;
     }
   }
 }
