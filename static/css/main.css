@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@charset "UTF-8";
 html,
 body,
 div,
@@ -106,6 +107,7 @@ ul {
 .logo {
   font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
 }
+@charset "UTF-8";
 /**
  *  Footer
  */
@@ -132,6 +134,7 @@ ul {
   height: 71px;
   background-image: url(/images/lisp-logo-transparent.png);
 }
+@charset "UTF-8";
 .information {
   border: 1px solid #ccc;
   border-top: 3px solid #BBB;
@@ -183,6 +186,7 @@ ul {
   padding: 15px;
   border-radius: 5px;
 }
+@charset "UTF-8";
 .search-results-summary {
   margin-left: 5px;
   color: #888;
@@ -222,6 +226,7 @@ ul {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+@charset "UTF-8";
 .toc ul {
   margin-top: 0;
 }
@@ -336,6 +341,7 @@ ul {
 }
 .api .description {
   margin: 15px 0 10px 10px !important;
+  display: block;
 }
 section {
   margin-bottom: 40px;

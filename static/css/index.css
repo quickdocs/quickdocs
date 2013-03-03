@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@charset "UTF-8";
 html,
 body,
 div,
@@ -106,6 +107,7 @@ ul {
 .logo {
   font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
 }
+@charset "UTF-8";
 /**
  *  Footer
  */

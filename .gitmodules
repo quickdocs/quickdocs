@@ -1,9 +1,6 @@
 [submodule "modules/quicklisp-projects"]
 	path = modules/quicklisp-projects
 	url = git://github.com/quicklisp/quicklisp-projects.git
-[submodule "less.js"]
-	path = less.js
-	url = git://github.com/cloudhead/less.js.git
 [submodule "modules/less.js"]
 	path = modules/less.js
-	url = git://github.com/cloudhead/less.js.git
+	url = git://github.com/suzak/less.js.git

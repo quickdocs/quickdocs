@@ -8,3 +8,5 @@ bin/*
 
 config.py
 *.py[cod]
+
+tmp
