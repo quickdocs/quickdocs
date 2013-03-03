@@ -362,6 +362,9 @@ ul {
 .api .symbol-type.constant {
   border-color: rgba(98, 209, 162, 0.7);
 }
+.api .symbol-type.type {
+  border-color: #AAA;
+}
 .api .slot-list .label {
   font-style: italic;
   color: #555;
