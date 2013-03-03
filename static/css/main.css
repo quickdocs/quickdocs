@@ -227,14 +227,14 @@ ul {
   text-overflow: ellipsis;
 }
 @charset "UTF-8";
-.toc-systems {
+.toc-systems header {
   margin-left: 10px;
 }
 .toc-systems header h2 {
   font-size: 120% !important;
 }
 .toc-systems dl {
-  margin-left: 200px;
+  margin-left: 220px;
 }
 .toc-systems dl dd {
   margin-left: 20px;
