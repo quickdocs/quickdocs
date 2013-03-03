@@ -227,26 +227,57 @@ ul {
   text-overflow: ellipsis;
 }
 @charset "UTF-8";
-.toc ul {
-  margin-top: 0;
+.toc-systems {
+  margin-left: 20px;
 }
-.api .system {
+.toc-systems dd {
+  margin-left: 20px;
+}
+.toc-systems .one-line-description {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #777;
+  font-size: 90%;
+}
+.system {
+  position: relative;
+  padding-left: 220px;
   margin-top: 35px;
-  padding-left: 5px;
   padding-bottom: 40px;
-  border-bottom: 2px solid #CCC;
-}
-.api .system h1 {
-  margin-top: -40px;
-  padding-top: 40px;
-}
-.api .package {
-  margin: 10px 0 0 10px;
   border-top: 1px dotted #CCC;
 }
-.api .package h2 {
-  margin-top: -30px;
-  padding-top: 30px;
+.toc {
+  position: absolute;
+  top: 20px;
+  left: 10px;
+}
+.toc h3 {
+  font-size: 100% !important;
+  margin: 0 auto 5px !important;
+}
+.toc ul {
+  margin-top: 0;
+  font-size: 90%;
+  padding: 0;
+  width: 200px;
+}
+.toc ul.toc-systems {
+  list-style: none;
+}
+.toc ul.toc-packages {
+  list-style: inherit;
+}
+.toc ul li {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.api {
+  padding-left: 10px;
+}
+.api .package {
+  border-top: 1px dotted #CCC;
 }
 .api ul {
   padding-left: 3px;
@@ -294,10 +325,13 @@ ul {
   background: none;
   border: none;
 }
+.api .symbol {
+  position: relative;
+}
 .api .symbol-type {
   position: absolute;
   display: inline-block;
-  left: -55px;
+  left: -65px;
   width: 50px;
   padding: 0 5px;
   text-align: center;
@@ -313,7 +347,7 @@ ul {
   background-color: #4d77cb;
 }
 .api .symbol-type.method {
-  background-color: #1d479b;
+  background-color: #2e539d;
 }
 .api .symbol-type.macro {
   background-color: #9933cc;
@@ -322,26 +356,38 @@ ul {
   background-color: #34b27d;
 }
 .api .symbol-type.constant {
-  background-color: #54d29d;
+  background-color: #62d1a2;
 }
 .api .slot-list .label {
   font-style: italic;
   color: #555;
 }
 .api .docstring {
-  margin: 5px 0 10px 0;
+  margin: 5px 0 10px 30px;
   font-size: 90%;
-  padding: 5px 15px 5px 5px;
-  color: #555;
+  color: #333;
   line-height: 1.5;
 }
 .api .docstring pre {
   white-space: pre-wrap;
   margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .api .description {
   margin: 15px 0 10px 10px !important;
-  display: block;
+}
+.error {
+  margin-bottom: 20px;
+  padding: 15px;
+  font-size: 100%;
+  border: 1px solid #fbeed5;
+  color: #c09853;
+  background-color: #fcf8e3;
+  border-radius: 4px;
+}
+.error .error-detail {
+  margin-bottom: 0;
+  overflow: scroll;
 }
 section {
   margin-bottom: 40px;

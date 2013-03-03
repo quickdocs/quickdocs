@@ -2,7 +2,7 @@
 <% @with documentation %><% @include docstring %><% @endwith %>
 <ul>
   <% @loop symbol-list %>
-  <li>
+  <li class="symbol">
     <% (cond ((find (getf env :type) '(:variable :constant)) %>
     <% @include variable.tmpl %>
     <% )     ((find (getf env :type) '(:struct :class)) %>

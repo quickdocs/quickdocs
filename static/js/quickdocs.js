@@ -26,7 +26,7 @@ Quickdocs.updateBreadcrumbHeader = function() {
                         .text(currentSystem));
         $('.breadcrumb-header').append(systemLink);
 
-        var packageEl = Quickdocs.getCurrentScrollEl($el.children('.package'));
+        var packageEl = Quickdocs.getCurrentScrollEl($el.find('.package'));
         if (packageEl) {
             var currentPackage = $(packageEl).find('h2').text();
 
@@ -57,11 +57,20 @@ $(document).on('click', 'a[href^=#]', function(e) {
     if (target) {
         var position = target.offset().top;
         $(/safari/i.test(navigator.userAgent) ? 'body' : 'html').animate({
-            scrollTop: position
+            scrollTop: position - 40
         }, speed, 'swing');
         return false;
     }
     return true;
+});
+
+$(document).on('click', '.error-open-detail', function(e) {
+    var detail = $(this).hide().closest('.error').find('.error-detail');
+
+    var height = detail.height();
+    detail.css({
+        height: 0
+    }).show().animate({'height': height}, 200);
 });
 
 }).call(this, jQuery, Quickdocs);

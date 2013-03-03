@@ -6,48 +6,53 @@
 
 <% @if errors %>
 <section class="error">
-<p class="error-message">Error has occured while parsing this library (or its dependencies). Wait patiently, or report <a href="https://github.com/quickdocs/issues">issues</a> to hasten my bug-fixing.</p>
+<p class="error-message">Error has occured while parsing this library (or its dependencies). Wait patiently, or report <a href="https://github.com/quickdocs/issues">issues</a> to hasten my bug-fixing. <a class="error-open-detail" href="#">&gt;&gt; See detail</a></p>
 
-<pre class="error-detail"><% @loop errors %>
+<pre class="error-detail" style="display:none"><% @loop errors %>
 <%= (emb::escape-for-xml env) %>
 <% @endloop %></pre>
 </section>
 <% @endif %>
 
-<% @if system-list %>
-<nav class="toc">
-  <ul>
+<nav class="toc-systems">
+  <dl>
     <% @loop system-list %>
-      <li><a href="#system-<% @var name -escape uri %>"><% @var name %></a></li>
-      <% @if package-list %>
-      <ul>
-      <% @loop package-list %>
-        <li><a href="#package-<% @var name -escape uri %>"><% @var name %></a></li>
-      <% @endloop %>
-      </ul>
-      <% @endif %>
+    <dt><a href="#system-<%= (emb::escape-for-xml (getf env :name)) %>"><% @var name %></a></dt>
+    <% @if description %>
+    <dd class="one-line-description"><% @with description %><% @include _trim %><% @endwith %></dd>
+    <% @endif %>
     <% @endloop %>
-  </ul>
+  </dl>
 </nav>
 
-<div class="api">
-  <% @loop system-list %>
-  <article class="system">
-    <header>
-      <h1 id="system-<%= (emb::escape-for-xml (getf env :name)) %>"><% @var name %></h1>
-      <% @if description %>
-      <p class="description"><% @with description %><% @include _trim %><% @endwith %></p>
-      <% @endif %>
-    </header>
+<% @loop system-list %>
+<article class="system">
+  <nav class="toc">
+  <h3>Package Index</h3>
+  <ul class="toc-packages">
+    <% @loop package-list %>
+      <li><a href="#package-<% @var name -escape uri %>" title="<% @var name %>"><% @var name %></a></li>
+    <% @endloop %>
+  </ul>
+  </nav>
+
+  <header>
+    <h1 id="system-<%= (emb::escape-for-xml (getf env :name)) %>"><% @var name %></h1>
+    <% @if description %>
+    <p class="description"><% @with description %><% @include _trim %><% @endwith %></p>
+    <% @endif %>
+  </header>
+
+  <div class="api">
     <% @loop package-list %>
       <section class="package">
         <% @include package.tmpl %>
       </section>
     <% @endloop %>
-  </article>
-  <% @endloop %>
-</div>
-<% @endif %>
+  </div>
+</article>
+<% @endloop %>
+
 <div class="breadcrumb-header-container" style="display: none">
   <a href="#global-header" class="lsf-icon top-link" title="arrowup"><% @var name %></a>
   <div class="breadcrumb-header">

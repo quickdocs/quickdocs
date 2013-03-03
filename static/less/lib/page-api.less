@@ -1,27 +1,63 @@
 @charset "UTF-8";
 
-.toc ul {
-  margin-top: 0;
+@import "variables.less";
+
+@section-margin: 10px;
+@toc-width: 200px;
+
+.toc-systems {
+  margin-left: 20px;
+  dd {
+    margin-left: 20px;
+  }
+  .one-line-description {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #777;
+    font-size: 90%;
+  }
+}
+
+.system {
+  position: relative;
+  padding-left: @toc-width + 20;
+  margin-top: 35px;
+  padding-bottom: 40px;
+  border-top: 1px dotted #CCC;
+}
+
+.toc {
+  position: absolute;
+  top: 20px;
+  left: @section-margin;
+  h3 {
+    font-size: 100% !important;
+    margin: 0 auto 5px !important;
+  }
+  ul {
+    &.toc-systems {
+      list-style: none;
+    }
+    &.toc-packages {
+      list-style: inherit;
+    }
+    margin-top: 0;
+    font-size: 90%;
+    padding: 0;
+    width: @toc-width;
+    li {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 }
 
 .api {
-  .system {
-    margin-top: 35px;
-    padding-left: 5px;
-    padding-bottom: 40px;
-    border-bottom: 2px solid #CCC;
-    h1 {
-      margin-top: -40px;
-      padding-top: 40px;
-    }
-  }
+  padding-left: @section-margin;
   .package {
-    margin: 10px 0 0 10px;
     border-top: 1px dotted #CCC;
-    h2 {
-      margin-top: -30px;
-      padding-top: 30px;
-    }
   }
   ul {
     padding-left: 3px;
@@ -71,10 +107,14 @@
     }
   }
 
+  .symbol {
+    position: relative;
+  }
+
   .symbol-type {
     position: absolute;
     display: inline-block;
-    left: -55px;
+    left: -65px;
     width: 50px;
     padding: 0 5px;
     text-align: center;
@@ -89,7 +129,7 @@
       background-color: #4d77cb;
     }
     &.method {
-      background-color: #1d479b;
+      background-color: darken(#4d77cb, 15%);
     }
     &.macro {
       background-color: #9933cc;
@@ -98,7 +138,7 @@
       background-color: #34b27d;
     }
     &.constant {
-      background-color: #54d29d;
+      background-color: lighten(#34b27d, 15%);
     }
   }
 
@@ -108,19 +148,32 @@
   }
 
   .docstring {
-    margin: 5px 0 10px 0;
+    margin: 5px 0 10px 30px;
     font-size: 90%;
-    padding: 5px 15px 5px 5px;
-    color: #555;
+    color: #333;
     line-height: 1.5;
     pre {
       white-space: pre-wrap;
       margin: 0;
+      font-family: @normal-font-family;
     }
   }
 
   .description {
     margin: 15px 0 10px 10px !important;
-    display: block;
+  }
+}
+
+.error {
+  margin-bottom: 20px;
+  padding: 15px;
+  font-size: 100%;
+  border: 1px solid #fbeed5;
+  color: #c09853;
+  background-color: #fcf8e3;
+  border-radius: 4px;
+  .error-detail {
+    margin-bottom: 0;
+    overflow: scroll;
   }
 }
