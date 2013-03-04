@@ -22,7 +22,7 @@
 (defun parse-markdown (file)
   (multiple-value-bind (stdout stderr code)
       (trivial-shell:shell-command
-       (format nil "~A ~A" *pandoc-path* file)
+       (format nil "timeout 5 ~A ~A" *pandoc-path* file)
        :input "")
     (declare (ignore stderr))
     (if (= 0 code)
