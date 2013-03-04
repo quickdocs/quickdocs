@@ -6,7 +6,10 @@
   (:import-from :cl-fad
                 :list-directory)
   (:import-from :trivial-shell
-                :shell-command)
+                :shell-command
+                :with-timeout)
+  (:import-from :trivial-timeout
+                :timeout-error)
   (:import-from :alexandria
                 :when-let)
   (:import-from :quickdocs.renderer.util
@@ -19,11 +22,18 @@
               (merge-pathnames #P".cabal/bin/pandoc"
                                (user-homedir-pathname)))
 
+(defun shell-command-with-timeout (command &key (seconds 5) (input ""))
+  (handler-case
+      (with-timeout (seconds)
+        (shell-command command :input input))
+    (timeout-error (e)
+      (format *error-output* "~A: ~A" e command)
+      (values nil nil 1))))
+
 (defun parse-markdown (file)
   (multiple-value-bind (stdout stderr code)
-      (trivial-shell:shell-command
-       (format nil "~A ~A" *pandoc-path* file)
-       :input "")
+      (shell-command-with-timeout
+       (format nil "~A ~A" *pandoc-path* file))
     (declare (ignore stderr))
     (if (= 0 code)
         stdout
