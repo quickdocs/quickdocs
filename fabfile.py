@@ -10,7 +10,7 @@ def update():
 
 
 def restart():
-    sudo('supervisorctl restart %s' % env.project_name)
+    sudo('supervisorctl restart %s' % env.project_name, shell=False)
 
 
 def setup():
