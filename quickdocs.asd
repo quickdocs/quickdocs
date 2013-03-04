@@ -21,7 +21,6 @@
                :drakma
                :memoize
                :trivial-backtrace
-               :trivial-timeout
 
                ;; for server
                :clack
