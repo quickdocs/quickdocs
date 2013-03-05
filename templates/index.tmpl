@@ -1,35 +1,85 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
   <meta charset="UTF-8" />
   <link rel="shortcut icon" href="/favicon.ico" />
   <title>Quickdocs</title>
   <link rel="stylesheet" type="text/css" href="/css/LigatureSymbols/style.css" />
   <link rel="stylesheet" type="text/css" href="/css/index.css<% @if deploy-time %>?<% @var deploy-time -escape raw %><% @endif %>" />
+  <link rel="apple-touch-icon" sizes="57x57"   href="/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon" sizes="72x72"   href="/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png" />
+  <script type="text/javascript" src="/js/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="/js/underscore-min.js"></script>
+  <script type="text/javascript" src="/js/quickdocs.js<% @if deploy-time %>?<% @var deploy-time -escape raw %><% @endif %>"></script>
 </head>
-<body class="page-index" onLoad="document['search-form'].q.focus()">
+<body>
 <div id="container">
+  <% @include header.tmpl %>
+
   <div id="content">
-    <header>
-      <h1 class="logo large-logo">Quickdocs</h1>
-      <span class="subtitle">All Lisp library documents are ready</span>
-    </header>
 
-    <form class="search-form" name="search-form" method="get" action="/search">
-      <input type="text" name="q" value="<% @var query %>" placeholder="Search for projects" />
-      <input type="submit" class="lsf" value="search" />
-    </form>
-
-    <div class="dist-version">Quicklisp: <% @var dist-version %></div>
-
-    <% @with count %>
-    <p class="distribution-counts"><%= (format nil "~:D" (getf env :releases)) %> projects / <%= (format nil "~:D" (getf env :systems)) %> systems</p>
-    <% @endwith %>
-
-    <% @include footer %>
+<section class="search-libraries">
+  <h2>Library Documentation Hosting<br/>for Common Lisp</h2>
+  <div class="categories">
+    <h3>Search by Categories</h3>
+    <ul>
+      <li><a href="/search?q=web" class="lsf-icon" title="web">Web development</a></li>
+      <li><a href="/search?q=graphic" class="lsf-icon" title="image">Graphics</a></li>
+      <li><a href="/search?q=GUI" class="lsf-icon" title="tile">GUI</a></li>
+      <li><a href="/search?q=system+programming" class="lsf-icon" title="setup">System &amp; Low-level</a></li>
+      <li><a href="/search?q=test" class="lsf-icon" title="check">Testing framework</a></li>
+      <li><a href="/search?q=database" class="lsf-icon" title="server">Database</a></li>
+      <li><a href="/search?q=utilities" class="lsf-icon" title="twinkle">Utility Collection</a></li>
+      <li><a href="/search?q=concurrency" class="lsf-icon" title="shuffle">Concurrency</a></li>
+    </ul>
   </div>
-  <div id="background-blue"></div>
-  <div id="background-yellow"></div>
+</section>
+
+<section class="catch">
+  <div class="catch-copy">
+    Documentations<br/>
+    of All Common Lisp Projects<br/>
+    are <strong>Ready</strong>, and <strong>Up-to-Date</strong>.
+  </div>
+  <img class="screen-shot" src="/images/screen-shot.png" />
+</section>
+
+<section class="teasers">
+  <div class="teaser">
+    <div class="lsf teaser-icon">network</div>
+    <h3>In the same place, same appearance</h3>
+    <p>Don't waste your time to look around for documentations. All documentations are here, in the same appearance.</p>
+  </div>
+  <div class="teaser">
+    <div class="lsf teaser-icon">time</div>
+    <h3>Always Up-to-Date</h3>
+    <p>All documentations are generated automatically. They would be automatically updated soon after monthly Quicklisp updates.</p>
+  </div>
+  <div class="teaser">
+    <div class="lsf teaser-icon">code</div>
+    <h3>Code is eloquently</h3>
+    <p>Other documentation generators destroy code structures, split them by their types, and arrange them in arphabetical order.</p>
+<p>While it may be easy to use as an index, it is not suitable for a quick look at the overview of a library.</p>
+    <p>Quickdocs respects to the code and keeps the structure of source code.</p>
+  </div>
+</section>
+
+<footer id="global-footer">
+  <a href="#global-header" class="back-to-top-link lsf-icon" title="arrowup">Back to Top</a>
+<div class="dist-version">
+  Quicklisp: <% @var dist-version %><br/>
+(<% @with count %>
+<%= (format nil "~:D" (getf env :releases)) %> projects / <%= (format nil "~:D" (getf env :systems)) %> systems
+<% @endwith %>)
+</div>
+
+  <small>&copy; 2013 <a href="http://fukamachi.github.com/">Eitarow Fukamachi</a></small>
+  <div class="lisp-logo"></div>
+</footer>
+
+  </div>
 </div>
 </body>
 </html>

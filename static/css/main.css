@@ -71,6 +71,7 @@ td {
   background: transparent;
 }
 body {
+  color: #333;
   line-height: 150%;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -108,6 +109,49 @@ ul {
   font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
 }
 @charset "UTF-8";
+#global-header {
+  width: 100%;
+  height: 39px;
+  color: white;
+  background-color: #1d304e;
+  text-shadow: 1px 1px 3px black;
+}
+#global-header .logo {
+  padding: 6px 15px;
+}
+#global-header .logo a {
+  font-size: 24px;
+  color: white;
+}
+#global-header .logo a:hover {
+  text-decoration: none;
+}
+#global-header .search-form {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+}
+#global-header .search-form input[type="text"] {
+  width: 300px;
+  height: 26px;
+  padding-left: 4px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+#global-header .search-form input[type="submit"] {
+  width: 26px;
+  height: 26px;
+  border: none;
+  color: white;
+  background-color: #6fbf42;
+  cursor: pointer;
+  font-size: 20px;
+  vertical-align: middle;
+  font-weight: normal;
+  margin-left: -6px;
+}
+@charset "UTF-8";
 /**
  *  Footer
  */
@@ -125,14 +169,6 @@ ul {
   width: 150px;
   height: 50px;
   background-image: url(/images/lisp-logo150x50.png);
-}
-.page-index #global-footer .lisp-logo {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 100px;
-  height: 71px;
-  background-image: url(/images/lisp-logo-transparent.png);
 }
 @charset "UTF-8";
 .information {
@@ -419,45 +455,6 @@ section {
 /**
  *  Header
  */
-#global-header {
-  width: 100%;
-  color: white;
-  background-color: #1d304e;
-  text-shadow: 1px 1px 3px black;
-  padding: 6px 15px;
-}
-#global-header .logo a {
-  font-size: 24px;
-  color: white;
-}
-#global-header .logo a:hover {
-  text-decoration: none;
-}
-.search-form {
-  position: absolute;
-  top: 5px;
-  right: 15px;
-}
-.search-form input[type="text"] {
-  width: 200px;
-  height: 26px;
-  padding-left: 4px;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-}
-.search-form input[type="submit"] {
-  width: 26px;
-  height: 26px;
-  border: none;
-  color: white;
-  background-color: #6fbf42;
-  cursor: pointer;
-  font-size: 20px;
-  vertical-align: middle;
-  font-weight: normal;
-  margin-left: -6px;
-}
 header {
   margin: 10px 0 30px;
 }

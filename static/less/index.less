@@ -4,94 +4,159 @@
 @import "lib/variables.less";
 
 @import "lib/base.less";
+@import "lib/header.less";
 @import "lib/footer.less";
 
-html, body {
-  height: 100%;
+@left-padding: 80px;
+
+body {
+  min-width: 1100px;
 }
 
-#container {
-  width: 100%;
-  height: 100%;
-  display: table;
-}
-
-#content {
-  display: table-cell;
-  text-align: center;
-  vertical-align: middle;
-}
-
-header {
-  width: 100%;
-  padding: 50px 0;
-  margin-top: 100px;
-  text-align: center;
-  .subtitle {
-    display: inline-block;
-    color: rgba(255, 255, 255, 0.6);
-    margin-left: 60px;
-    font-size: 16px;
+.catch {
+  position: relative;
+  max-width: 1180px;
+  height: 350px;
+  margin: 100px auto;
+  .catch-copy {
+    padding: @left-padding 80px;
+    font-size: 200%;
+    line-height: 140%;
+    font-weight: 500;
+    letter-spacing: -1px;
+    strong {
+      font-weight: bold;
+    }
+  }
+  .screen-shot {
+    position: absolute;
+    right: 0;
+    top: -40px;
   }
 }
 
-.large-logo {
-  font-size: 64px;
+.search-libraries {
+  text-align: center;
+  background-color: #333;
+  box-shadow: 0 0 80px 10px fade(darken(@lisp-blue, 20%), 50%) inset;
+  margin: 0 auto;
+  padding: 30px @left-padding;
   color: white;
-  cursor: default;
-  text-shadow: 0 2px 2px black;
-}
 
-.search-form {
-  input[type="text"] {
-    width: 350px;
-    height: 25px;
-    padding-left: 5px;
-    border-radius: 4px;
-    border: 1px solid #BCBCBC;
+  h2 {
+    font-size: 150%;
+    line-height: 130%;
   }
 
-  input[type="submit"] {
-    margin: 0;
-    width: 29px;
-    height: 29px;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    background-color: @button-green;
-    cursor: pointer;
-    font-size: 20px;
-    vertical-align: bottom;
+  .search-form {
+    input[type="text"] {
+      width: 350px;
+      height: 25px;
+      padding-left: 5px;
+      border-radius: 4px;
+      border: 1px solid #BCBCBC;
+    }
+    input[type="submit"] {
+      margin: 0;
+      width: 29px;
+      height: 29px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      background-color: @button-green;
+      cursor: pointer;
+      font-size: 20px;
+      vertical-align: bottom;
+    }
+  }
+
+  .categories {
+    height: 135px;
+    width: 840px;
+    margin: 0 auto;
+    h3 {
+      color: #efefef;
+      text-align: left;
+      margin-bottom: 5px !important;
+    }
+    ul {
+      margin-top: 0;
+      padding: 0;
+      list-style: none;
+      li {
+        float: left;
+        a {
+          display: inline-block;
+          width: 180px;
+          margin: 5px;
+          padding: 10px;
+          background-color: lighten(@lisp-blue, 20%);
+          border-radius: 4px;
+          color: #efefef;
+          &:hover {
+            .transition-duration(0.1s);
+            background-color: lighten(@lisp-blue, 25%);
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+.teasers {
+  margin: 0 auto 80px;
+  padding: 0 @left-padding;
+  .teaser {
+    width: 540px;
+    margin: 0 auto;
+    position: relative;
+    padding-left: 60px;
+    p {
+      margin-bottom: 15px;
+    }
+    .teaser-icon {
+      font-size: 300%;
+      position: absolute;
+      top: 8px;
+      left: 0;
+    }
   }
 }
 
 .dist-version {
-  margin-top: 10px;
   color: #888;
+  margin: 0 0 25px;
 }
 
-.distribution-counts {
-  color: #888;
-}
-
-#background-blue {
-  position: absolute;
-  top: 0;
-  left: 0;
+#global-footer {
+  position: relative;
+  margin-top: 30px;
   width: 100%;
-  height: 50%;
-  z-index: -1000;
-  background-color: @lisp-blue;
-  .vertical-gradient(@lisp-blue, darken(@lisp-blue, 6%));
-}
-
-#background-yellow {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 50%;
-  z-index: -1000;
-  background-color: @lisp-yellow;
-  .vertical-gradient(@lisp-yellow, rgb(146, 156, 124));
+  background-color: darken(@lisp-yellow, 5%);
+  .vertical-gradient(lighten(@lisp-yellow, 5%), darken(@lisp-yellow, 5%));
+  .back-to-top-link {
+    text-decoration: none;
+    display: inline-block;
+    position: absolute;
+    top: -18px;
+    right: @left-padding;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 80%;
+    color: white;
+    background-color: rgb(240, 146, 0);
+    .transition-duration(0.1s);
+    &:hover {
+      background-color: lighten(rgb(240, 146, 0), 3%);
+    }
+  }
+  .lisp-logo {
+    position: absolute;
+    top: 60px;
+    right: 50px;
+    width: 100px;
+    height: 71px;
+    background-image: url(/images/lisp-logo-transparent.png);
+  }
 }

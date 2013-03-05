@@ -71,6 +71,7 @@ td {
   background: transparent;
 }
 body {
+  color: #333;
   line-height: 150%;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -108,6 +109,49 @@ ul {
   font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
 }
 @charset "UTF-8";
+#global-header {
+  width: 100%;
+  height: 39px;
+  color: white;
+  background-color: #1d304e;
+  text-shadow: 1px 1px 3px black;
+}
+#global-header .logo {
+  padding: 6px 15px;
+}
+#global-header .logo a {
+  font-size: 24px;
+  color: white;
+}
+#global-header .logo a:hover {
+  text-decoration: none;
+}
+#global-header .search-form {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+}
+#global-header .search-form input[type="text"] {
+  width: 300px;
+  height: 26px;
+  padding-left: 4px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+#global-header .search-form input[type="submit"] {
+  width: 26px;
+  height: 26px;
+  border: none;
+  color: white;
+  background-color: #6fbf42;
+  cursor: pointer;
+  font-size: 20px;
+  vertical-align: middle;
+  font-weight: normal;
+  margin-left: -6px;
+}
+@charset "UTF-8";
 /**
  *  Footer
  */
@@ -126,54 +170,50 @@ ul {
   height: 50px;
   background-image: url(/images/lisp-logo150x50.png);
 }
-.page-index #global-footer .lisp-logo {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 100px;
-  height: 71px;
-  background-image: url(/images/lisp-logo-transparent.png);
-}
-html,
 body {
-  height: 100%;
+  min-width: 1100px;
 }
-#container {
-  width: 100%;
-  height: 100%;
-  display: table;
+.catch {
+  position: relative;
+  max-width: 1180px;
+  height: 350px;
+  margin: 100px auto;
 }
-#content {
-  display: table-cell;
+.catch .catch-copy {
+  padding: 80px 80px;
+  font-size: 200%;
+  line-height: 140%;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+.catch .catch-copy strong {
+  font-weight: bold;
+}
+.catch .screen-shot {
+  position: absolute;
+  right: 0;
+  top: -40px;
+}
+.search-libraries {
   text-align: center;
-  vertical-align: middle;
-}
-header {
-  width: 100%;
-  padding: 50px 0;
-  margin-top: 100px;
-  text-align: center;
-}
-header .subtitle {
-  display: inline-block;
-  color: rgba(255, 255, 255, 0.6);
-  margin-left: 60px;
-  font-size: 16px;
-}
-.large-logo {
-  font-size: 64px;
+  background-color: #333;
+  box-shadow: 0 0 80px 10px rgba(1, 2, 4, 0.5) inset;
+  margin: 0 auto;
+  padding: 30px 80px;
   color: white;
-  cursor: default;
-  text-shadow: 0 2px 2px black;
 }
-.search-form input[type="text"] {
+.search-libraries h2 {
+  font-size: 150%;
+  line-height: 130%;
+}
+.search-libraries .search-form input[type="text"] {
   width: 350px;
   height: 25px;
   padding-left: 5px;
   border-radius: 4px;
   border: 1px solid #BCBCBC;
 }
-.search-form input[type="submit"] {
+.search-libraries .search-form input[type="submit"] {
   margin: 0;
   width: 29px;
   height: 29px;
@@ -185,32 +225,96 @@ header .subtitle {
   font-size: 20px;
   vertical-align: bottom;
 }
+.search-libraries .categories {
+  height: 135px;
+  width: 840px;
+  margin: 0 auto;
+}
+.search-libraries .categories h3 {
+  color: #efefef;
+  text-align: left;
+  margin-bottom: 5px !important;
+}
+.search-libraries .categories ul {
+  margin-top: 0;
+  padding: 0;
+  list-style: none;
+}
+.search-libraries .categories ul li {
+  float: left;
+}
+.search-libraries .categories ul li a {
+  display: inline-block;
+  width: 180px;
+  margin: 5px;
+  padding: 10px;
+  background-color: #395e98;
+  border-radius: 4px;
+  color: #efefef;
+}
+.search-libraries .categories ul li a:hover {
+  transition-duration: 0.1s;
+  -moz-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  background-color: #4069ab;
+  text-decoration: none;
+}
+.teasers {
+  margin: 0 auto 80px;
+  padding: 0 80px;
+}
+.teasers .teaser {
+  width: 540px;
+  margin: 0 auto;
+  position: relative;
+  padding-left: 60px;
+}
+.teasers .teaser p {
+  margin-bottom: 15px;
+}
+.teasers .teaser .teaser-icon {
+  font-size: 300%;
+  position: absolute;
+  top: 8px;
+  left: 0;
+}
 .dist-version {
-  margin-top: 10px;
   color: #888;
+  margin: 0 0 25px;
 }
-.distribution-counts {
-  color: #888;
-}
-#background-blue {
-  position: absolute;
-  top: 0;
-  left: 0;
+#global-footer {
+  position: relative;
+  margin-top: 30px;
   width: 100%;
-  height: 50%;
-  z-index: -1000;
-  background-color: #1d304e;
-  background: -webkit-gradient(linear, left top, left bottom, from(#1d304e), to(#152238));
-  background: -moz-linear-gradient(top, #1d304e, #152238);
+  background-color: #d3e5a5;
+  background: -webkit-gradient(linear, left top, left bottom, from(#e7f1cd), to(#d3e5a5));
+  background: -moz-linear-gradient(top, #e7f1cd, #d3e5a5);
 }
-#background-yellow {
+#global-footer .back-to-top-link {
+  text-decoration: none;
+  display: inline-block;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 50%;
-  z-index: -1000;
-  background-color: #ddebb9;
-  background: -webkit-gradient(linear, left top, left bottom, from(#ddebb9), to(#929c7c));
-  background: -moz-linear-gradient(top, #ddebb9, #929c7c);
+  top: -18px;
+  right: 80px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 80%;
+  color: white;
+  background-color: #f09200;
+  transition-duration: 0.1s;
+  -moz-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+}
+#global-footer .back-to-top-link:hover {
+  background-color: #ff9b00;
+}
+#global-footer .lisp-logo {
+  position: absolute;
+  top: 60px;
+  right: 50px;
+  width: 100px;
+  height: 71px;
+  background-image: url(/images/lisp-logo-transparent.png);
 }

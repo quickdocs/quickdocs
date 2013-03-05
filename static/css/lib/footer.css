@@ -17,11 +17,3 @@
   height: 50px;
   background-image: url(/images/lisp-logo150x50.png);
 }
-.page-index #global-footer .lisp-logo {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 100px;
-  height: 71px;
-  background-image: url(/images/lisp-logo-transparent.png);
-}
