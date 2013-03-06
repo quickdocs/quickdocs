@@ -35,7 +35,7 @@
 (defun project-repository-url (project-name)
   (when-let (source (project-source-file project-name))
     (let ((data (slurp-file source)))
-      (if (string= (subseq data 0 12) "ediware-http")
+      (if (ppcre:scan "^ediware-http" data)
           (format nil "http://weitz.de/files/~A.tar.gz"
                   (drakma:url-encode project-name :utf-8))
           (ppcre:scan-to-strings "\\S+?://\\S+" data)))))
