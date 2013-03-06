@@ -19,8 +19,14 @@
            append (asdf-components c)))))
 
 (defun asdf-system-reload (system)
-  #+quicklisp (ql:quickload (slot-value system 'asdf::name) :verbose nil)
-  #-quicklisp (asdf:oos 'asdf:load-op system :verbose nil)
+  (handler-bind
+      ((error (lambda (e)
+                (let ((restart (find-restart 'asdf:try-recompiling)))
+                  (if restart
+                      (invoke-restart restart)
+                      (signal e))))))
+    #+quicklisp (ql:quickload (slot-value system 'asdf::name) :verbose nil)
+    #-quicklisp (asdf:oos 'asdf:load-op system :verbose nil))
   (let ((macroexpand-hook *macroexpand-hook*))
     (setf *macroexpand-hook*
           (lambda (fun form env)
