@@ -3,7 +3,7 @@
 <ul>
   <% @loop symbol-list %>
   <li class="symbol">
-    <% (cond ((not (getf env :externalp)) %>
+    <% (cond ((not (getf (getf env :symbol) :externalp)) %>
     <% ) ((find (getf env :type) '(:variable :constant)) %>
     <% @include variable.tmpl %>
     <% )     ((find (getf env :type) '(:struct :class)) %>

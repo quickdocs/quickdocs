@@ -103,7 +103,6 @@
             :system-list
             ,(remove-if #'null
               (mapcar #'(lambda (system)
-                          (princ system) (fresh-line)
                           (if-let (cache (and use-cache
                                               (parse-cache system)))
                             cache

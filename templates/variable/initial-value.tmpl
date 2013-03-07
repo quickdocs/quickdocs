@@ -3,6 +3,6 @@
   <%= (emb::escape-for-xml
         (if (eq initial-value unbound)
             "#<Unbound>"
-            (prin1-to-string initial-value))) %>
+            (prin1-to-string (read-from-string initial-value)))) %>
 </span>
 <% ) %>

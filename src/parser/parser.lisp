@@ -115,5 +115,6 @@
     :symbol ,(serialize-symbol (doc-name this))
     :documentation ,(documentation (doc-name this) 'variable)
     ,@(if (initial-value-boundp this)
-          (list :initial-value (doc-variable-initial-value this))
+          `(:initial-value
+            ,(prin1-to-string (doc-variable-initial-value this)))
           nil)))
