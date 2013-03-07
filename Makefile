@@ -24,16 +24,14 @@ start:
 parse: ensure_bin_dir
 	$(call $(LISP)-save,bin/parse, \
 		(ql:quickload :quickdocs), \
-		(prin1 (let ((retry-recompile 0) (retry-continue 0)) \
-			(handler-bind ( \
-			(error (lambda (e) (if (and (< retry-recompile 5) (find-restart (quote asdf:try-recompiling))) (progn (incf retry-recompile) (invoke-restart (quote asdf:try-recompiling))) (signal e)))) \
-			(error (lambda (e) (if (and (< retry-continue  5) (find-restart (quote continue))) (progn (incf retry-continue) (invoke-restart (quote continue))) (signal e))))) \
-			(quickdocs.parser:parse-documentation (asdf:find-system (cadr $($(LISP)_argv))))))))
+		(prin1 (quickdocs.parser.util:with-retrying 5 \
+			(quickdocs.parser:parse-documentation (asdf:find-system (cadr $($(LISP)_argv)))))))
 
 render: ensure_bin_dir
 	$(call $(LISP)-save,bin/render, \
 		(ql:quickload :quickdocs), \
-		(princ (handler-bind ((error (function continue))) (quickdocs.renderer:render-api-reference (ql-dist:find-release (cadr $($(LISP)_argv)))))))
+		(princ (quickdocs.parser.util:with-retrying 5 \
+			(quickdocs.renderer:render-api-reference (ql-dist:find-release (cadr $($(LISP)_argv))) :use-cache t :continue-on-error t))))
 
 #
 # Lisp Implementation

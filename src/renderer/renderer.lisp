@@ -5,11 +5,14 @@
                 :execute-emb)
   (:import-from :alexandria
                 :when-let
+                :if-let
                 :ensure-list)
   (:import-from :trivial-backtrace
                 :print-backtrace)
   (:import-from :quickdocs.parser
                 :parse-documentation)
+  (:import-from :quickdocs.parser.util
+                :with-retrying)
   (:import-from :quickdocs.quicklisp
                 :ql-release-version)
   (:import-from :quickdocs.model.project
@@ -22,7 +25,9 @@
                 :project-url
                 :repos-homepage)
   (:import-from :quickdocs.renderer.category
-                :project-categories))
+                :project-categories)
+  (:import-from :quickdocs.renderer.util
+                :slurp-file))
 (in-package :quickdocs.renderer)
 
 (cl-annot:enable-annot-syntax)
@@ -36,6 +41,10 @@
               (asdf:system-relative-pathname :quickdocs "templates/"))
 
 @export
+(defparameter *data-path*
+              (asdf:system-relative-pathname :quickdocs "data/"))
+
+@export
 (defparameter *layout-template* #P"layout.tmpl")
 
 @export
@@ -45,6 +54,10 @@
 @export
 (defun template-path (filename)
   (merge-pathnames filename *template-path*))
+
+@export
+(defun data-path (filename)
+  (merge-pathnames filename *data-path*))
 
 @export
 (defun render-with-layout (&rest env &key title content &allow-other-keys)
@@ -72,8 +85,16 @@
            :maintainer (merged-slot-values this 'asdf::maintainer)
            :licenses (merged-slot-values this 'asdf::licence)))))
 
+(defun parse-cache (system)
+  (let* ((release (ql-dist:release system))
+         (path (data-path (format nil "parse/~A/~A"
+                                  (ql-dist:project-name release)
+                                  (ql-dist:name system)))))
+    (when (fad:file-exists-p path)
+      (read-from-string (slurp-file path)))))
+
 @export
-(defmethod render-api-reference ((this ql-dist:release))
+(defmethod render-api-reference ((this ql-dist:release) &key use-cache continue-on-error)
   (let ((project-name (slot-value this 'ql-dist:project-name))
         (systems (sorted-provided-systems this))
         errors)
@@ -82,14 +103,21 @@
             :system-list
             ,(remove-if #'null
               (mapcar #'(lambda (system)
-                          (handler-case (parse-documentation system)
-                            (error (e)
-                              (print-backtrace e :output *error-output*)
-                              (push (format nil "~A: ~A"
-                                            (slot-value system 'ql-dist:name)
-                                            e)
-                                    errors)
-                              nil)))
+                          (princ system) (fresh-line)
+                          (if-let (cache (and use-cache
+                                              (parse-cache system)))
+                            cache
+                            (handler-case (with-retrying 5 (parse-documentation system))
+                              (error (e)
+                                (if continue-on-error
+                                    (progn
+                                      (print-backtrace e :output *error-output*)
+                                      (push (format nil "~A: ~A"
+                                                    (slot-value system 'ql-dist:name)
+                                                    e)
+                                            errors)
+                                      nil)
+                                    (signal e))))))
                systems))
             :errors ,(nreverse errors)
             :archive-url ,(slot-value this 'ql-dist::archive-url)

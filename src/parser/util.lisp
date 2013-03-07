@@ -1,6 +1,8 @@
 (in-package :cl-user)
 (defpackage quickdocs.parser.util
-  (:use :cl))
+  (:use :cl)
+  (:import-from :alexandria
+                :with-gensyms))
 (in-package :quickdocs.parser.util)
 
 (cl-annot:enable-annot-syntax)
@@ -85,3 +87,19 @@
                            *debug-io*
                            *trace-output*)
      ,@body))
+
+@export
+(defmacro with-retrying (retry-count &body body)
+  (with-gensyms (retry-recompile retry-continue)
+    `(let ((,retry-recompile ,retry-count) (,retry-continue ,retry-count))
+       (handler-bind
+           ((error (lambda (e)
+                     (if (and (> ,retry-recompile 0)
+                              (find-restart 'asdf:try-recompiling))
+                         (progn (decf ,retry-recompile) (invoke-restart 'asdf:try-recompiling))
+                         (signal e))))
+            (error (lambda (e)
+                     (if (and (> ,retry-continue  0) (find-restart 'continue))
+                         (progn (decf ,retry-continue) (invoke-restart 'continue))
+                         (signal e)))))
+         ,@body))))

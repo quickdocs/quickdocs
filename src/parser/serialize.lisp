@@ -14,9 +14,9 @@
      ((name :type string
             :initarg :name
             :reader ssymbol-name)
-      (package-name :type string
+      (package-name :type (or null string)
                     :initarg :package-name
-                    :initform (package-name *package*)
+                    :initform nil
                     :reader ssymbol-package-name)
       (externalp :type boolean
                  :initarg :externalp

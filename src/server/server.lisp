@@ -102,7 +102,7 @@
                           :input "")
                        (princ stderr *error-output*)
                        stdout)
-                     (render-api-reference release)))
+                     (render-api-reference release :use-cache nil :continue-on-error nil)))
                 (next-route)))))
 
 (setf (route *app* "/search")
