@@ -2,7 +2,7 @@
 <span class="initial-value<%= (if (eq initial-value unbound) " unbound" "") %>">
   <%= (emb::escape-for-xml
         (if (eq initial-value unbound)
-            "#<unbound>"
+            "#<Unbound>"
             (prin1-to-string initial-value))) %>
 </span>
 <% ) %>

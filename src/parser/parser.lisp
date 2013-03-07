@@ -8,7 +8,10 @@
                 :ensure-system-loaded)
   (:import-from :quickdocs.parser.util
                 :slot-value*
-                :with-ignoring-streams))
+                :with-ignoring-streams
+                :map-tree)
+  (:import-from :quickdocs.parser.serialize
+                :serialize-symbol))
 (in-package :quickdocs.parser)
 
 (cl-annot:enable-annot-syntax)
@@ -53,30 +56,39 @@
     :symbol-list
     ,(mapcar #'parse-documentation
       (reverse
-       (remove-if-not
-        #'externalp
-        (package-symbols this))))))
+       (package-symbols this)))
+    :external-symbols
+    ,(when-let (package (find-entity this))
+       (let (exported)
+         (do-external-symbols (s package exported)
+           (push (serialize-symbol s) exported))))))
 
 @export
 (defmethod parse-documentation ((this <doc-function>))
   `(:type ,(doc-type this)
-    :name ,(doc-name this)
-    :lambda-list ,(function-lambda-list this)
+    :symbol ,(etypecase (doc-name this)
+               (symbol (serialize-symbol (doc-name this)))
+               (list (mapcar #'serialize-symbol
+                             (doc-name this))))
+    :lambda-list ,(map-tree #'serialize-symbol (function-lambda-list this))
     :documentation ,(documentation (doc-name this) 'function)))
 
 @export
 (defmethod parse-documentation ((this <doc-method>))
   `(:type ,(doc-type this)
-    :name ,(doc-name this)
-    :lambda-list ,(normalized-lambda-list this)
+    :symbol ,(etypecase (doc-name this)
+               (symbol (serialize-symbol (doc-name this)))
+               (list (mapcar #'serialize-symbol
+                             (doc-name this))))
+    :lambda-list ,(map-tree #'serialize-symbol (function-lambda-list this))
     :documentation ,(documentation (find-entity this) t)))
 
 @export
 (defmethod parse-documentation ((this <doc-class>))
   (prepare this)
   `(:type ,(doc-type this)
-    :name,(doc-name this)
-    :super-class-list ,(class-super-classes this)
+    :symbol ,(serialize-symbol (doc-name this))
+    :super-class-list ,(mapcar #'serialize-symbol (class-super-classes this))
     :documentation ,(documentation (doc-name this) 'type)
     :slot-list ,(mapcar #'parse-documentation
                  (class-slots this))))
@@ -91,16 +103,16 @@
          (writers (set-difference (mapcar #'cadr (c2mop:slot-definition-writers this))
                                   accessors)))
     `(:type :class-slot
-      :name ,(c2mop:slot-definition-name this)
-      :accessors ,accessors
-      :readers ,readers
-      :writers ,writers
+      :symbol ,(serialize-symbol (c2mop:slot-definition-name this))
+      :accessors ,(mapcar #'serialize-symbol accessors)
+      :readers ,(mapcar #'serialize-symbol readers)
+      :writers ,(mapcar #'serialize-symbol writers)
       :documentation ,(documentation this t))))
 
 @export
 (defmethod parse-documentation ((this <doc-variable>))
   `(:type ,(doc-type this)
-    :name ,(doc-name this)
+    :symbol ,(serialize-symbol (doc-name this))
     :documentation ,(documentation (doc-name this) 'variable)
     ,@(if (initial-value-boundp this)
           (list :initial-value (doc-variable-initial-value this))

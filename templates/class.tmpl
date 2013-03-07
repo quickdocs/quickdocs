@@ -1,17 +1,19 @@
-<span class="symbol-type label class"><% @with type %><% @include _string-capitalize %><% @endwith %></span>&nbsp;<code class="symbol-name"><% @with name %><% @include _string %><% @endwith %></code><% @if super-class-list %> inherits (<code class="symbol-name"><% @with super-class-list %><% @include _list-comma %><% @endwith %></code>)<% @endif %>
+<span class="symbol-type label class"><% @with type %><% @include _string-capitalize %><% @endwith %></span>
+<% @with symbol %><% @include symbol %><% @endwith %>
+<% @if super-class-list %>inherits (<% @include class/super-class-list %>)<% @endif %>
 <% @with documentation %><% @include docstring %><% @endwith %>
 <dl class="slot-list">
 <% @loop slot-list %>
   <dt>
-    <code class="symbol-name"><% @var name %></code>
+    <% @with symbol %><% @include symbol %><% @endwith %>
     <% @if accessors %>
-    <span class="label">Accessor:</span> <code class="symbol-name"><% @with accessors %><% @include _list %><% @endwith %></code>
+    <span class="label">Accessor:</span> <% @with @accessors %><% @include class/accessors %><% @endwith %>
     <% @endif %>
     <% @if readers %>
-    <span class="label">Reader:</span> <code class="symbol-name"><% @with readers %><% @include _list %><% @endwith %></code>
+    <span class="label">Reader:</span> <% @with @readers %><% @include class/accessors %><% @endwith %>
     <% @endif %>
     <% @if writers %>
-    <span class="label">Writer:</span> <code class="symbol-name"><% @with writers %><% @include _list %><% @endwith %></code>
+    <span class="label">Writer:</span> <% @with @writers %><% @include class/accessors %><% @endwith %>
     <% @endif %>
   </dt>
   <% @if documentation %>

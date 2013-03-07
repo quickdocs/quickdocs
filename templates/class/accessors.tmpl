@@ -1,0 +1,6 @@
+<%=
+   (loop for accessor in env
+         collect (emb:execute-emb "symbol.tmpl" :env accessor) into accessors
+         finally
+           (format nil "~{~A~^ ~}" accessors))
+%>

@@ -16,5 +16,6 @@
                 :components
                 ((:file "class" :depends-on ("util"))
                  (:file "util")
+                 (:file "serialize" :depends-on ("util"))
                  (:file "asdf" :depends-on ("class"))
-                 (:file "parser" :depends-on ("class" "asdf" "util"))))))
+                 (:file "parser" :depends-on ("class" "asdf" "util" "serialize"))))))
