@@ -24,9 +24,9 @@ start:
 parse: ensure_bin_dir
 	$(call $(LISP)-save,bin/parse, \
 		(ql:quickload :quickdocs), \
-		(prin1 (handler-bind \
-			((error (lambda (e) (if (find-restart (quote asdf:try-recompiling)) (invoke-restart (quote asdf:try-recompiling)) (signal e))))) \
-			(quickdocs.parser:parse-documentation (asdf:find-system (cadr $($(LISP)_argv)))))))
+		(prin1 (let ((retry 0)) (handler-bind \
+			((error (lambda (e) (if (and (< retry 5) (find-restart (quote asdf:try-recompiling))) (progn (incf retry) (invoke-restart (quote asdf:try-recompiling))) (signal e))))) \
+			(quickdocs.parser:parse-documentation (asdf:find-system (cadr $($(LISP)_argv))))))))
 
 render: ensure_bin_dir
 	$(call $(LISP)-save,bin/render, \
