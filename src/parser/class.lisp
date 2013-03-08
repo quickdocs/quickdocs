@@ -128,7 +128,7 @@
 
 @export
 (defmethod prepare ((this <doc-class>))
-  (let ((class (find-entity this)))
+  (when-let (class (find-entity this))
     (setf (class-super-classes this)
           (loop for super in (c2mop:class-direct-superclasses class)
                 unless (or (eq (class-name super) 'standard-object)
@@ -139,7 +139,10 @@
 
 @export
 (defmethod find-entity ((this <doc-class>))
-  (find-class (doc-name this)))
+  (handler-case (find-class (doc-name this))
+    (simple-error (e)
+      (warn "~A" e)
+      nil)))
 
 @export
 (defclass <doc-variable> (<doc-symbol-base>)
