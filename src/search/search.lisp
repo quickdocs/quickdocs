@@ -138,7 +138,8 @@
     (sort (search-by-categories query) #'sort-by-download-count)
     (sort (search-by-description query) #'sort-by-download-count))
    :test #'string-equal
-   :key #'ql-dist:project-name))
+   :key #'ql-dist:project-name
+   :from-end t))
 
 @export
 (defun search-exact-project (query)
