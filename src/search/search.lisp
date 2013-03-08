@@ -5,7 +5,9 @@
   (:import-from :alexandria
                 :ensure-list)
   (:import-from :quickdocs.renderer.category
-                :*category-db*))
+                :*category-db*)
+  (:import-from :quickdocs.renderer.description
+                :project-description))
 (in-package :quickdocs.search)
 
 (cl-annot:enable-annot-syntax)
@@ -133,7 +135,8 @@
    (append
     (ensure-list (search-exact-project query))
     (sort (search-by-name query) #'sort-by-download-count)
-    (sort (search-by-categories query) #'sort-by-download-count))
+    (sort (search-by-categories query) #'sort-by-download-count)
+    (sort (search-by-description query) #'sort-by-download-count))
    :test #'string-equal
    :key #'ql-dist:project-name))
 
@@ -145,19 +148,24 @@
                 (slot-value release 'ql-dist:project-name)))
    (ql-dist:provided-releases t)))
 
-@export
-(defun search-by-name (query)
+(defun search-by (query &key key)
   (let ((re (mapcar
              #'(lambda (q)
                  (ppcre:create-scanner (ppcre:quote-meta-chars q) :case-insensitive-mode t))
              (ppcre:split "\\s+" query))))
     (remove-if-not
      #'(lambda (release)
-         (let ((project-name (slot-value release 'ql-dist:project-name)))
+         (let ((key (if key
+                        (funcall key release)
+                        release)))
            (every #'(lambda (re)
-                      (ppcre:scan re project-name))
+                      (ppcre:scan re key))
                   re)))
      (ql-dist:provided-releases t))))
+
+@export
+(defun search-by-name (query)
+  (search-by query :key #'ql-dist:project-name))
 
 @export
 (defun search-by-categories (word)
@@ -171,6 +179,12 @@
           collect project into project-names
         finally
      (return (mapcar #'ql-dist:find-release project-names))))
+
+@export
+(defun search-by-description (query)
+  (search-by query
+             :key #'(lambda (release)
+                      (project-description (ql-dist:project-name release)))))
 
 @export
 (defun sort-by-download-count (a b)
