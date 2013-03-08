@@ -18,7 +18,8 @@
   (:import-from :quickdocs.model.project
                 :sorted-provided-systems
                 :merged-slot-values
-                :dependency-projects)
+                :dependency-projects
+                :depending-projects)
   (:import-from :quickdocs.renderer.readme
                 :project-readme-in-html)
   (:import-from :quickdocs.renderer.repository
@@ -26,6 +27,8 @@
                 :repos-homepage)
   (:import-from :quickdocs.renderer.category
                 :project-categories)
+  (:import-from :quickdocs.renderer.description
+                :project-description)
   (:import-from :quickdocs.renderer.util
                 :slurp-file))
 (in-package :quickdocs.renderer)
@@ -80,7 +83,18 @@
            :homepage (repos-homepage project-name)
            :readme (project-readme-in-html (car (sorted-provided-systems this)))
            :categories (project-categories project-name)
-           :dependencies (mapcar #'ql-dist:project-name (dependency-projects this))
+           :dependencies (mapcar
+                          #'(lambda (project)
+                              (let ((project-name (ql-dist:project-name project)))
+                                (list :name project-name
+                                      :description (project-description project-name))))
+                          (dependency-projects this))
+           :depending (mapcar
+                       #'(lambda (project)
+                           (let ((project-name (ql-dist:project-name project)))
+                             (list :name project-name
+                                   :description (project-description project-name))))
+                       (depending-projects this))
            :authors (merged-slot-values this 'asdf::author)
            :maintainer (merged-slot-values this 'asdf::maintainer)
            :licenses (merged-slot-values this 'asdf::licence)))))

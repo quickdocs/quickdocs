@@ -72,3 +72,17 @@
    :key #'ql-dist:project-name
    :test #'string-equal
    :from-end t))
+
+@export
+(defun depending-projects (project)
+  (remove-if-not
+   #'(lambda (release)
+       (and (not (string= (ql-dist:name release)
+                          (ql-dist:name project)))
+            (find-if
+             #'(lambda (dep)
+                 (string= dep (ql-dist:project-name project)))
+             ;; almost same as calling `dependency-projects`, but this would be faster because this don't think about the order.
+             (mapcan #'ql-dist:required-systems
+                     (ql-dist:provided-systems release)))))
+   (ql-dist:provided-releases t)))

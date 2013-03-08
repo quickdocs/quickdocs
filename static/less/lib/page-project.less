@@ -1,8 +1,14 @@
 @charset "UTF-8";
 
+@import "lib/variables.less";
+
+@box-border-color: #CCC;
+@box-header-color: lighten(@box-border-color, 15%);
+@box-background-color: #FFF;
+
 .information {
-  border: 1px solid #ccc;
-  border-top: 3px solid #BBB;
+  border: 1px solid @box-border-color;
+  border-top: 3px solid lighten(@box-border-color, 1%);
   background-color: #f1f1f1;
   line-height: 200%;
   padding: 15px;
@@ -54,6 +60,90 @@
   }
 }
 
-.dependencies {
+@box-space: 10px;
+.dependencies, .depending {
+  position: relative;
+  width: @content-width / 2 - @box-space;
+  float: left;
+  border: 1px solid @box-border-color;
+  border-radius: 3px;
+  background-color: @box-background-color;
   margin-bottom: 40px;
+  line-height: 1.5;
+  font-size: 90%;
+  h3 {
+    margin: 0 !important;
+    padding: 5px 12px;
+    background-color: @box-header-color;
+    font-size: 95% !important;
+  }
+  .count {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    color: #888;
+    background-color: @box-background-color;
+    border: 1px solid lighten(@box-border-color, 5%);
+    border-radius: 10px;
+    display: inline-block;
+    padding: 0 5px;
+    font-size: 80%;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    li {
+      border-top: 1px solid @box-border-color;
+      width: 100%;
+      height: 50px;
+      display: table;
+      a {
+        display: table-cell;
+        vertical-align: middle;
+        height: 100%;
+        padding: 0px 15px;
+        text-decoration: none;
+        &:hover .name {
+          text-decoration: underline;
+        }
+      }
+      .description {
+        display: block;
+        margin-left: 10px;
+        font-size: 80%;
+        color: #AAA;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: @content-width / 2 - @box-space - 50px;
+      }
+    }
+  }
+  .none {
+    display: block;
+    margin: 20px 20px;
+    color: #888;
+  }
+  .load-more {
+    font-size: 85%;
+    height: 25px;
+    cursor: pointer;
+    color: #888;
+    text-align: center;
+    background-color: #fafafa;
+    &:hover {
+      background-color: lighten(@box-border-color, 17%);
+      a {
+        color: #777;
+      }
+    }
+  }
+}
+.depending {
+  margin-left: @box-space;
+}
+
+.links {
+  clear: both;
 }

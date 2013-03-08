@@ -38,16 +38,42 @@
 <% ) %>
 
 <aside class="dependencies">
-<h3>Dependencies</h3>
+<h3>Requirements</h3>
+<span class="count"><%= (emb::escape-for-xml (format nil "~:D" (length (getf env :dependencies)))) %></span>
 
 <% @if dependencies %>
-<ul>
+<ul class="folding-list">
   <% @loop dependencies %>
-  <li><a href="/<%= (emb::url-encode env) %>/"><%= (emb::escape-for-xml env) %></a></li>
+  <li>
+    <a href="/<% @var name -escape uri %>/">
+      <span class="name"><% @var name %></span>
+      <span class="description"><% @var description %></span>
+    </a>
+  </li>
   <% @endloop %>
 </ul>
 <% @else %>
-<em>None.</em>
+<em class="none">None.</em>
+<% @endif %>
+</aside>
+
+<aside class="depending">
+<h3>Required by</h3>
+<span class="count"><%= (emb::escape-for-xml (format nil "~:D" (length (getf env :depending)))) %></span>
+
+<% @if depending %>
+<ul class="folding-list">
+  <% @loop depending %>
+  <li>
+    <a href="/<% @var name -escape uri %>/">
+      <span class="name"><% @var name %></span>
+      <span class="description"><% @var description %></span>
+    </a>
+  </li>
+  <% @endloop %>
+</ul>
+<% @else %>
+<em class="none">None.</em>
 <% @endif %>
 </aside>
 

@@ -1,6 +1,6 @@
 @charset "UTF-8";
 .information {
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc;
   border-top: 3px solid #BBB;
   background-color: #f1f1f1;
   line-height: 200%;
@@ -50,6 +50,22 @@
   padding: 15px;
   border-radius: 5px;
 }
-.dependencies {
-  margin-bottom: 40px;
+.dependencies,
+.depending {
+  width: 48%;
+  float: left;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  background-color: #f1f1f1;
+}
+.dependencies h3,
+.depending h3 {
+  margin: 0 !important;
+  background-color: #cccccc;
+  color: white;
+  font-size: 100% !important;
+}
+.links {
+  clear: both;
+  margin-top: 40px;
 }

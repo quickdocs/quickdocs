@@ -144,4 +144,19 @@ $(document).on('click', '.pager-link', function(e) {
     }
 });
 
+Quickdocs.init.done(function() {
+$('.folding-list').each(function(i, list) {
+    var rows = $(list).children('li');
+    if (rows.length >= 3) {
+        rows.slice(3).hide();
+        var loadMore = $('<a class="lsf">down</a>').on('click', function() {
+            var parent = $(this).closest('li');
+            parent.siblings('li:hidden').fadeIn();
+            parent.hide();
+        });
+        $('<li class="load-more">').append(loadMore).appendTo(list);
+    }
+});
+});
+
 }).call(this, jQuery, Quickdocs);
