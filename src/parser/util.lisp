@@ -56,12 +56,13 @@
 
 @export
 (defun map-tree (f tree)
-  (mapcar (lambda (e)
-            (cond
-              ((null e) nil)
-              ((listp e) (map-tree f e))
-              (t (funcall f e))))
-          tree))
+  (typecase tree
+    (cons
+     (cons (map-tree f (car tree))
+           (if (cdr tree)
+               (map-tree f (cdr tree))
+               nil)))
+    (t (funcall f tree))))
 
 @export
 (defun slot-value* (instance slot-name)
