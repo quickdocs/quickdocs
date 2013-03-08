@@ -44,6 +44,7 @@
                  (:file "readme" :depends-on ("util"))
                  (:file "repository" :depends-on ("util"))
                  (:file "category" :depends-on ("util"))
+                 (:file "description" :depends-on ("util"))
                  (:file "util")))
                (:module "server"
                 :pathname "src/server"

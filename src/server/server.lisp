@@ -28,8 +28,8 @@
                 :static-path
                 :template-path
                 :render-with-layout)
-  (:import-from :quickdocs.renderer.readme
-                :project-readme)
+  (:import-from :quickdocs.renderer.description
+                :project-description)
   (:import-from :quickdocs.search
                 :search-projects
                 :*ql-download-stats-hash*)
@@ -125,7 +125,7 @@
                                                 :ql-version ,(ql-release-version release)
                                                 :download-count
                                                 ,(gethash project-name *ql-download-stats-hash*)
-                                                :readme ,(project-readme (car (ql-dist:provided-systems release)))))
+                                                :description ,(project-description project-name)))
                      :query ,query))))))
 
 ;; Redirect to a project page.
