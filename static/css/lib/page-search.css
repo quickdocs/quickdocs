@@ -6,30 +6,32 @@
 .search-results-summary strong {
   color: #666;
 }
-.search-result {
+.search-result-container {
+  padding: 0;
+}
+.search-result-container .search-result {
   position: relative;
   padding: 15px;
   list-style: none;
   clear: both;
   line-height: 100%;
-  border-bottom: 2px solid #eee;
   width: 100%;
 }
-.search-result .project-name {
+.search-result-container .search-result .project-name {
   font-size: 130%;
 }
-.search-result .ql-version {
+.search-result-container .search-result .ql-version {
   font-style: italic;
   color: #999;
   font-size: 80%;
 }
-.search-result .download-count {
+.search-result-container .search-result .download-count {
   position: absolute;
   top: 15px;
   right: 25px;
   color: #2075a5;
 }
-.search-result .readme-body {
+.search-result-container .search-result .readme-body {
   margin: 7px 60px 0 10px;
   color: #AAA;
   font-size: 80%;
@@ -37,4 +39,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.search-result-container .search-result:nth-child(2n+1) {
+  background-color: #eee;
 }

@@ -320,43 +320,52 @@ ul {
 }
 @charset "UTF-8";
 .search-results-summary {
-  margin-left: 5px;
+  margin-left: 30px;
   color: #888;
 }
 .search-results-summary strong {
   color: #666;
 }
-.search-result {
+.search-result-container {
+  padding: 0 30px;
+}
+.search-result-container .search-result {
   position: relative;
   padding: 15px;
   list-style: none;
   clear: both;
   line-height: 100%;
-  border-bottom: 2px solid #eee;
   width: 100%;
+  height: 71px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
-.search-result .project-name {
+.search-result-container .search-result .project-name {
   font-size: 130%;
 }
-.search-result .ql-version {
+.search-result-container .search-result .ql-version {
+  margin-left: 10px;
   font-style: italic;
   color: #999;
   font-size: 80%;
 }
-.search-result .download-count {
+.search-result-container .search-result .download-count {
   position: absolute;
   top: 15px;
   right: 25px;
   color: #2075a5;
 }
-.search-result .readme-body {
-  margin: 7px 60px 0 10px;
+.search-result-container .search-result .description {
+  margin: 5px 0.5em 0;
   color: #AAA;
-  font-size: 80%;
-  max-height: 5px;
+  font-size: 90%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.search-result-container .search-result:nth-child(2n+1) {
+  background-color: #f1f1f1;
 }
 @charset "UTF-8";
 .toc-systems header {

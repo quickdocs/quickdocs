@@ -24,7 +24,7 @@
     <span class="ql-version">
       <% @var ql-version %>
     </span>
-    <p class="readme-body"><% @var description -escape xml %></p>
+    <p class="description"><% @var description -escape xml %></p>
     <% @if download-count %>
     <div class="download-count"><span class="lsf">download</span>&nbsp;<%= (emb::escape-for-xml (format nil "~:D" (getf env :download-count))) %></div>
     <% @endif %>
