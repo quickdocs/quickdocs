@@ -7,13 +7,13 @@
   <dt>
     <% @with symbol %><% @include symbol %><% @endwith %>
     <% @if accessors %>
-    <span class="label">Accessor:</span> <% @with @accessors %><% @include class/accessors %><% @endwith %>
+    <span class="label">Accessor:</span> <% @with accessors %><% @include class/accessors %><% @endwith %>
     <% @endif %>
     <% @if readers %>
-    <span class="label">Reader:</span> <% @with @readers %><% @include class/accessors %><% @endwith %>
+    <span class="label">Reader:</span> <% @with readers %><% @include class/accessors %><% @endwith %>
     <% @endif %>
     <% @if writers %>
-    <span class="label">Writer:</span> <% @with @writers %><% @include class/accessors %><% @endwith %>
+    <span class="label">Writer:</span> <% @with writers %><% @include class/accessors %><% @endwith %>
     <% @endif %>
   </dt>
   <% @if documentation %>

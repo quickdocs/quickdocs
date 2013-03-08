@@ -1,4 +1,4 @@
 <span class="symbol-type label <% @with type %><% @include _string-downcase %><% @endwith %>"><% @with type %><% @include _string-capitalize %><% @endwith %></span>
-<% @with symbol %><% @var name %><% @endwith %>
+<% @with symbol %><% @include symbol %><% @endwith %>
 <% @include variable/initial-value %>
 <% @with documentation %><% @include docstring %><% @endwith %>

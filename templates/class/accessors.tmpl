@@ -1,6 +1,6 @@
 <%=
    (loop for accessor in env
-         collect (emb:execute-emb "symbol.tmpl" :env accessor) into accessors
+         collect (emb:execute-emb (quickdocs.renderer:template-path "symbol.tmpl") :env accessor) into accessors
          finally
-           (format nil "~{~A~^ ~}" accessors))
+           (return (format nil "~{~A~^ ~}" accessors)))
 %>
