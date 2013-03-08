@@ -173,7 +173,6 @@ ul {
 @charset "UTF-8";
 .information {
   border: 1px solid #cccccc;
-  border-top: 3px solid #cfcfcf;
   background-color: #f1f1f1;
   line-height: 200%;
   padding: 15px;
