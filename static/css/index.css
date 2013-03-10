@@ -288,9 +288,9 @@ body {
   position: relative;
   margin-top: 30px;
   width: 100%;
-  background-color: #d3e5a5;
-  background: -webkit-gradient(linear, left top, left bottom, from(#e7f1cd), to(#d3e5a5));
-  background: -moz-linear-gradient(top, #e7f1cd, #d3e5a5);
+  background-color: #ddebb9;
+  background: -webkit-gradient(linear, left top, left bottom, from(#e7f1cd), to(#ddebb9));
+  background: -moz-linear-gradient(top, #e7f1cd, #ddebb9);
 }
 #global-footer .back-to-top-link {
   text-decoration: none;
