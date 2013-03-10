@@ -134,8 +134,8 @@
   (remove-duplicates
    (append
     (ensure-list (search-exact-project query))
-    (sort (search-by-name query) #'sort-by-download-count)
     (sort (search-by-categories query) #'sort-by-download-count)
+    (sort (search-by-name query) #'sort-by-download-count)
     (sort (search-by-description query) #'sort-by-download-count))
    :test #'string-equal
    :key #'ql-dist:project-name
