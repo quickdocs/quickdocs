@@ -36,6 +36,10 @@
     (or
      (when-let (main-system (and main-system
                                  (ignore-errors (asdf:find-system (ql-dist:name main-system)))))
-       (and (slot-boundp main-system 'asdf::description)
-            (slot-value main-system 'asdf::description)))
+       (when (slot-boundp main-system 'asdf::description)
+         (let ((desc (slot-value main-system 'asdf::description)))
+           (typecase desc
+             (list (format nil "~{~A~^ ~}" desc))
+             (string desc)
+             (t (princ-to-string desc))))))
      (cdr (assoc project-name *description-db* :test #'string-equal)))))
