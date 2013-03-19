@@ -30,6 +30,8 @@
                 :render-with-layout)
   (:import-from :quickdocs.renderer.description
                 :project-description)
+  (:import-from :quickdocs.renderer.category
+                :project-categories)
   (:import-from :quickdocs.search
                 :search-projects
                 :*ql-download-stats-hash*)
@@ -77,20 +79,28 @@
 
 (setf (route *app* "/:project-name/")
       #'(lambda (params)
-          (let ((release (ql-dist:find-release (getf params :project-name))))
+          (let* ((project-name (getf params :project-name))
+                 (release (ql-dist:find-release project-name)))
             (if release
                 (render-with-layout
-                 :title (format nil "~A | Quickodcs" (getf params :project-name))
+                 :title (format nil "~A | Quickodcs" project-name)
+                 :keywords (append (list (string project-name))
+                                   (project-categories project-name))
+                 :description (project-description project-name)
                  :deploy-time *deploy-time*
                  :content (render-documentation release))
                 (next-route)))))
 
 (setf (route *app* "/:project-name/api")
       #'(lambda (params)
-          (let ((release (ql-dist:find-release (getf params :project-name))))
+          (let* ((project-name (getf params :project-name))
+                 (release (ql-dist:find-release project-name)))
             (if release
                 (render-with-layout
-                 :title (format nil "~A | API Reference | Quickdocs" (getf params :project-name))
+                 :title (format nil "~A | API Reference | Quickdocs" project-name)
+                 :keywords (append (list (string project-name))
+                                   (project-categories project-name))
+                 :description (project-description project-name)
                  :deploy-time *deploy-time*
                  :content
                  (if (eq *app-env* :production)
@@ -98,7 +108,7 @@
                          (trivial-shell:shell-command
                           (format nil "LANG=en_US.UTF-8 ~A ~A"
                            (asdf:system-relative-pathname :quickdocs #P"bin/render")
-                           (getf params :project-name))
+                           project-name)
                           :input "")
                        (princ stderr *error-output*)
                        stdout)

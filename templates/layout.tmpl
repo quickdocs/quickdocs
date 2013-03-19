@@ -2,6 +2,10 @@
 <html>
 <head>
   <meta charset="UTF-8" />
+  <meta name="keywords" content="<% @with keywords %><% @include _list-comma %><% @endwith %>,Lisp,Documentation" />
+  <% @if description %>
+  <meta name="description" content="<% @var description %>" />
+  <% @endif %>
   <link rel="shortcut icon" href="/favicon.ico" />
   <title><% @var title %></title>
   <link rel="stylesheet" type="text/css" href="/css/LigatureSymbols/style.css" />
