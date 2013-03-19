@@ -21,6 +21,13 @@ start:
 		(quickdocs.server:start-server :mode :production :debug nil :server :fcgi :port $(SERVER_PORT) :error-log "$(ERROR_LOG)") \
 		(swank:create-server :port $(SWANK_PORT) :style :spawn :dont-close t))
 
+hot_deploy:
+	$(call $(LISP), \
+		(ql:quickload :swank-client), \
+		(swank-client:with-slime-connection (conn "localhost" $(SWANK_PORT)) \
+			(swank-client:slime-eval (quote (handler-bind ((error (function continue))) (ql:quickload :quickdocs))) conn)) \
+		(sb-ext:quit))
+
 parse: ensure_bin_dir
 	$(call $(LISP)-save,bin/parse, \
 		(ql:quickload :quickdocs), \

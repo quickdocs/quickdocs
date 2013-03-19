@@ -13,6 +13,11 @@ def restart():
     sudo('supervisorctl restart %s' % env.project_name, shell=False)
 
 
+def hot_deploy():
+    with cd(env.directory):
+        run('make hot_deploy SWANK_PORT=%s' % env.swank_port)
+
+
 def setup():
     with cd(env.directory):
         run('make setup')
@@ -25,7 +30,7 @@ def bin():
 
 def deploy():
     update()
-    restart()
+    hot_deploy()
     bin()
 
 

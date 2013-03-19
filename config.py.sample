@@ -7,8 +7,10 @@ default_project_name = 'quickdocs_dev'
 def prod():
     env.directory = '/home/quickdocs/quickdocs'
     env.project_name = 'quickdocs'
+    env.swank_port = 4005
 
 
 def dev():
     env.directory = '/home/quickdocs/quickdocs_dev'
     env.project_name = 'quickdocs_dev'
+    env.swank_port = 4006
