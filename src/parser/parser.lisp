@@ -30,7 +30,7 @@
     :licence ,(slot-value* system 'asdf::licence)
     :description ,(slot-value* system 'asdf::description)
     :long-description ,(slot-value* system 'asdf::long-description)
-    :depends-on ,(slot-value* system 'asdf::load-dependencies)
+    :depends-on ,(mapcar #'princ-to-string (slot-value* system 'asdf::load-dependencies))
     :package-list
     ,(mapcar #'parse-documentation
       (reverse (find-system-packages system)))))
