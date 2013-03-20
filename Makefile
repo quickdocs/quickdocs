@@ -23,9 +23,9 @@ start:
 
 hot_deploy:
 	$(call $(LISP), \
-		(ql:quickload :swank-client), \
+		(ql:quickload :quickdocs-parser) (ql:quickload :swank-client), \
 		(swank-client:with-slime-connection (conn "localhost" $(SWANK_PORT)) \
-			(swank-client:slime-eval (quote (handler-bind ((error (function continue))) (ql:quickload :quickdocs))) conn)) \
+			(swank-client:slime-eval (quote (quickdocs.parser.util:with-retrying 5 (handler-bind ((error (function continue))) (ql:quickload :quickdocs)))) conn)) \
 		(sb-ext:quit))
 
 parse: ensure_bin_dir
