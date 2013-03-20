@@ -172,11 +172,12 @@
 (defun search-by-categories (word)
   (loop with scanner = (ppcre:create-scanner (ppcre:quote-meta-chars word) :case-insensitive-mode t)
         for (project . categories) in *category-db*
-        if (find-if
-                #'(lambda (category)
-                    (or (string-equal category word)
-                        (ppcre:scan scanner category)))
-                categories)
+        if (and (find-if
+                     #'(lambda (category)
+                         (or (string-equal category word)
+                             (ppcre:scan scanner category)))
+                     categories)
+                (ql-dist:find-release project))
           collect project into project-names
         finally
      (return (mapcar #'ql-dist:find-release project-names))))
