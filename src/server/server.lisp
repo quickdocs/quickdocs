@@ -83,7 +83,7 @@
                  (release (ql-dist:find-release project-name)))
             (if release
                 (render-with-layout
-                 :title (format nil "~A | Quickodcs" project-name)
+                 :title (format nil "~A | Quickdocs" project-name)
                  :keywords (append (list (string project-name))
                                    (project-categories project-name))
                  :description (project-description project-name)
