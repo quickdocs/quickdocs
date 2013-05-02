@@ -125,6 +125,47 @@ body {
   }
 }
 
+hr.soften {
+  width: 800px;
+  border: 0;
+  height: 1px;
+  .horizontal-linear-gradient(0, rgba(0,0,0,0), 50%, rgba(0,0,0,.1), 100%, rgba(0,0,0,0));
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #fff;
+}
+
+.contribution {
+  width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  h2 {
+    font-size: 160%;
+  }
+  p {
+    text-align: left;
+    margin: 0 20px;
+    color: #888;
+  }
+  .contribute-button {
+    display: inline-block;
+    padding: 10px 15px;
+    color: #fff;
+    .vertical-gradient(@button-blue, lighten(@button-blue, 15%), @button-blue);
+    border-radius: 4px;
+    font-size: 110%;
+    text-shadow: 0 -1px 1px darken(@button-blue, 10%), 0 1px 1px lighten(@button-blue, 10%);
+    &:hover {
+      text-decoration: none;
+      .vertical-gradient(darken(@button-blue, 5%), lighten(@button-blue, 10%), darken(@button-blue, 5%));
+    }
+    .logo {
+      font-family: @logo-font-family;
+      font-size: 110%;
+    }
+  }
+}
+
 .dist-version {
   color: #888;
   margin: 0 0 25px;
@@ -134,8 +175,7 @@ body {
   position: relative;
   margin-top: 30px;
   width: 100%;
-  background-color: @lisp-yellow;
-  .vertical-gradient(lighten(@lisp-yellow, 5%), @lisp-yellow);
+  .vertical-gradient(@lisp-yellow, lighten(@lisp-yellow, 5%), @lisp-yellow);
   .back-to-top-link {
     text-decoration: none;
     display: inline-block;

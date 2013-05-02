@@ -581,9 +581,12 @@ header .header-links a {
   padding: 10px 15px;
   border-radius: 4px;
   color: white;
-  background-color: #6fbf42;
-  background: -webkit-gradient(linear, left top, left bottom, from(#6fbf42), to(#4e872e));
-  background: -moz-linear-gradient(top, #6fbf42, #4e872e);
+  background: #6fbf42;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #6fbf42), color-stop(1, #4e872e));
+  background: -ms-linear-gradient(top, #6fbf42, #4e872e);
+  background: -moz-linear-gradient(center top, #6fbf42 0%, #4e872e 100%);
+  background: -o-linear-gradient(#6fbf42, #4e872e);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6fbf42', endColorstr='#4e872e', GradientType=0);
   text-decoration: none;
 }
 header .search-query {

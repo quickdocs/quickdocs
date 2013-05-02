@@ -280,6 +280,62 @@ body {
   top: 8px;
   left: 0;
 }
+hr.soften {
+  width: 800px;
+  border: 0;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  background: -webkit-gradient(linear, left top, right top, color-stop(0, rgba(0, 0, 0, 0)), color-stop(50%, rgba(0, 0, 0, 0.1)), color-stop(100%, rgba(0, 0, 0, 0)));
+  background: -moz-linear-gradient(center top, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+  background: -ms-linear-gradient(center top, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+  background: -o-linear-gradient(center top, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(center top, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+  -pie-background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=rgba(0, 0, 0, 0),endColorstr=rgba(0, 0, 0, 0));
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #fff;
+}
+.contribution {
+  width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+.contribution h2 {
+  font-size: 160%;
+}
+.contribution p {
+  text-align: left;
+  margin: 0 20px;
+  color: #888;
+}
+.contribution .contribute-button {
+  display: inline-block;
+  padding: 10px 15px;
+  color: #fff;
+  background: #426fbf;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #7b9bd2), color-stop(1, #426fbf));
+  background: -ms-linear-gradient(top, #7b9bd2, #426fbf);
+  background: -moz-linear-gradient(center top, #7b9bd2 0%, #426fbf 100%);
+  background: -o-linear-gradient(#7b9bd2, #426fbf);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7b9bd2', endColorstr='#426fbf', GradientType=0);
+  border-radius: 4px;
+  font-size: 110%;
+  text-shadow: 0 -1px 1px #34599a, 0 1px 1px #688ccc;
+}
+.contribution .contribute-button:hover {
+  text-decoration: none;
+  background: #3b64ad;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #688ccc), color-stop(1, #3b64ad));
+  background: -ms-linear-gradient(top, #688ccc, #3b64ad);
+  background: -moz-linear-gradient(center top, #688ccc 0%, #3b64ad 100%);
+  background: -o-linear-gradient(#688ccc, #3b64ad);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#688ccc', endColorstr='#3b64ad', GradientType=0);
+}
+.contribution .contribute-button .logo {
+  font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
+  font-size: 110%;
+}
 .dist-version {
   color: #888;
   margin: 0 0 25px;
@@ -288,9 +344,12 @@ body {
   position: relative;
   margin-top: 30px;
   width: 100%;
-  background-color: #ddebb9;
-  background: -webkit-gradient(linear, left top, left bottom, from(#e7f1cd), to(#ddebb9));
-  background: -moz-linear-gradient(top, #e7f1cd, #ddebb9);
+  background: #ddebb9;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #e7f1cd), color-stop(1, #ddebb9));
+  background: -ms-linear-gradient(top, #e7f1cd, #ddebb9);
+  background: -moz-linear-gradient(center top, #e7f1cd 0%, #ddebb9 100%);
+  background: -o-linear-gradient(#e7f1cd, #ddebb9);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e7f1cd', endColorstr='#ddebb9', GradientType=0);
 }
 #global-footer .back-to-top-link {
   text-decoration: none;
