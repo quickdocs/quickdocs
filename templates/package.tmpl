@@ -1,4 +1,4 @@
-<h2 id="package-<%= (emb::escape-for-xml (getf env :name)) %>"><% @var name %></h2>
+<h2 id="package-<% @var full-name %>"><% @var full-name %></h2>
 <% @with documentation %><% @include docstring %><% @endwith %>
 <ul>
   <% @loop symbol-list %>

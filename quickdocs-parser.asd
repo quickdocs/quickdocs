@@ -8,6 +8,7 @@
   :author "Eitarow Fukamachi"
   :license "LLGPL"
   :depends-on (:cl-annot
+               :cl-ppcre
                :alexandria
                :closer-mop
                :trivial-backtrace)

@@ -4,6 +4,9 @@
         :quickdocs.parser.class)
   (:import-from :alexandria
                 :when-let)
+  (:import-from :cl-ppcre
+                :regex-replace
+                :quote-meta-chars)
   (:import-from :quickdocs.parser.asdf
                 :ensure-system-loaded)
   (:import-from :quickdocs.parser.util
@@ -22,18 +25,27 @@
                           *debug-io*
                           *trace-output*)
     (ensure-system-loaded system))
-  `(:type :system
-    :name ,(slot-value* system 'asdf::name)
-    :author ,(slot-value* system 'asdf::author)
-    :maintainer ,(slot-value* system 'asdf::maintainer)
-    :version ,(slot-value* system 'asdf::version)
-    :licence ,(slot-value* system 'asdf::licence)
-    :description ,(slot-value* system 'asdf::description)
-    :long-description ,(slot-value* system 'asdf::long-description)
-    :depends-on ,(mapcar #'princ-to-string (slot-value* system 'asdf::load-dependencies))
-    :package-list
-    ,(mapcar #'parse-documentation
-      (reverse (find-system-packages system)))))
+  (let* ((name (slot-value* system 'asdf::name))
+         (system-re (format nil "(?i)^~A" (ppcre:quote-meta-chars name))))
+    `(:type :system
+      :name ,(slot-value* system 'asdf::name)
+      :author ,(slot-value* system 'asdf::author)
+      :maintainer ,(slot-value* system 'asdf::maintainer)
+      :version ,(slot-value* system 'asdf::version)
+      :licence ,(slot-value* system 'asdf::licence)
+      :description ,(slot-value* system 'asdf::description)
+      :long-description ,(slot-value* system 'asdf::long-description)
+      :depends-on ,(mapcar #'princ-to-string (slot-value* system 'asdf::load-dependencies))
+      :package-list
+      ,(mapcar
+        #'(lambda (plist)
+            (unless (string-equal (getf plist :name) name)
+              (setf (getf plist :name)
+                    (ppcre:regex-replace system-re (getf plist :full-name) ""
+                     :preserve-case nil)))
+            plist)
+        (mapcar #'parse-documentation
+         (reverse (find-system-packages system)))))))
 
 @export
 (defmethod parse-documentation ((system ql-dist:system))
@@ -52,6 +64,7 @@
 (defmethod parse-documentation ((this <doc-package>))
   `(:type :package
     :name ,(doc-name this)
+    :full-name ,(doc-name this)
     :documentation ,(documentation (find-entity this) t)
     :symbol-list
     ,(mapcar #'parse-documentation

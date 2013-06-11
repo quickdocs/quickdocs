@@ -32,7 +32,7 @@
   <h3>Package Index</h3>
   <ul class="toc-packages">
     <% @loop package-list %>
-      <li><a href="#package-<% @var name -escape uri %>" title="<% @var name %>"><% @var name %></a></li>
+      <li><a href="#package-<% @var full-name -escape uri %>" title="<% @var full-name %>"><% @var name %></a></li>
     <% @endloop %>
   </ul>
   </nav>
