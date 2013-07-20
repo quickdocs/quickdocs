@@ -1,4 +1,8 @@
 ;; -*- mode: common-lisp -*-
+(pushnew (directory-namestring
+          (asdf::ensure-pathname-absolute #.(or *load-pathname* *compile-file-pathname*)))
+         asdf:*central-registry*)
+
 (ql:quickload :swank)
 (ql:quickload :swank-client)
 (ql:quickload :quickdocs)
