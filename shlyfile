@@ -1,0 +1,16 @@
+;; -*- mode: common-lisp -*-
+(ql:quickload :swank)
+(ql:quickload :swank-client)
+(ql:quickload :quickdocs)
+
+(defparameter *default-swank-port* 4005)
+
+(defun start (&key (mode :production) (server-port 8080) (swank-port *default-swank-port*) (server :fcgi) (error-log "/dev/null"))
+  (quickdocs.server:start-server :mode mode :debug nil :server server :port server-port :error-log error-log)
+  (swank:create-server :port swank-port :style :spawn :dont-close t))
+
+(defun hot-deploy (&key (swank-port *default-swank-port*))
+  (swank-client:with-slime-connection (conn "localhost" swank-port)
+   (swank-client:slime-eval
+    '(quickdocs.parser.util:with-retrying 5
+      (handler-bind ((error #'continue)) (ql:quickload :quickdocs))) conn)))
