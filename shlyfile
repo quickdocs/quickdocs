@@ -1,13 +1,13 @@
 ;; -*- mode: common-lisp -*-
-(pushnew (directory-namestring
-          (asdf::ensure-pathname-absolute #.(or *load-pathname* *compile-file-pathname*)))
-         asdf:*central-registry*)
-
 (ql:quickload '(:quickdocs :swank :swank-client))
 
 (defparameter *default-swank-port* 4005)
 
-(defun start (&key (mode :production) (server-port 8080) (swank-port *default-swank-port*) (server :fcgi) (error-log #p"/dev/null"))
+(defun start (&key (mode :production)
+                   (server-port 8080)
+                   (swank-port *default-swank-port*)
+                   (server :fcgi)
+                   (error-log #p"/dev/null"))
   (quickdocs.server:start-server :mode mode :debug nil :server server :port server-port :error-log error-log)
   (swank:create-server :port swank-port :style :spawn :dont-close t))
 
