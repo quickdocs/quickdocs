@@ -43,11 +43,8 @@
     padding: 0 !important;
   }
   .markdown {
-    code, pre {
-      color: white;
-      background-color: black;
-    }
     code {
+      background-color: #eee;
       padding: 2px;
       border-radius: 3px;
       font-size: 90%;
@@ -55,6 +52,11 @@
     pre {
       padding: 15px;
       border-radius: 5px;
+      color: white;
+      background-color: black;
+      code {
+        background-color: transparent;
+      }
     }
   }
 }

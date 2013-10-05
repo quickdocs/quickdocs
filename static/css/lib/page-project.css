@@ -35,12 +35,8 @@
 .readme-body pre code {
   padding: 0 !important;
 }
-.readme-body .markdown code,
-.readme-body .markdown pre {
-  color: white;
-  background-color: black;
-}
 .readme-body .markdown code {
+  background-color: #eee;
   padding: 2px;
   border-radius: 3px;
   font-size: 90%;
@@ -48,6 +44,11 @@
 .readme-body .markdown pre {
   padding: 15px;
   border-radius: 5px;
+  color: white;
+  background-color: black;
+}
+.readme-body .markdown pre code {
+  background-color: transparent;
 }
 .dependencies,
 .depending {
