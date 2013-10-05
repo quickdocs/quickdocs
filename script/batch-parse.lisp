@@ -90,6 +90,7 @@
                  (ql-dist:name system)
                  (/ (- (get-internal-real-time) real-time) 1000)))
      (unless (= error-code 0)
+       (princ error-string *error-output*)
        (push (ql-dist:name system) *error-systems*))))
 
 (test-more:finalize)
