@@ -15,7 +15,10 @@
     (asdf::source-file (list comp))
     (asdf::static-file nil)
     (asdf::component
-     (loop for c in (slot-value comp 'asdf::components)
+     (loop for c in (funcall
+                     #+asdf3 #'asdf:component-children
+                     #-asdf3 #'asdf:module-components
+                     comp)
            append (asdf-components c)))))
 
 (defun asdf-system-reload (system)
