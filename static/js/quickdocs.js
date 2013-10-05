@@ -68,7 +68,15 @@ Quickdocs.smoothScrollTo = function(el, opt_speed) {
         var position = $el.offset().top;
         $(/safari/i.test(navigator.userAgent) ? 'body' : 'html').animate({
             scrollTop: position
-        }, speed, 'swing');
+        }, speed, 'swing', function() {
+            var id =  $el.attr('id');
+            if (!id) {
+                id = $el.find('h1,h2').attr('id');
+            }
+            if (id && window.history && window.history.pushState) {
+                history.pushState({}, null, '#'+id);
+            }
+        });
     }
 };
 
