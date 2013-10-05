@@ -55,7 +55,7 @@
    (loop with dist = (ql-dist:dist "quicklisp")
          for dependency in (merged-slot-values component
                                                #+asdf3
-                                               'asdf::sibling-dependencies
+                                               'asdf::sideway-dependencies
                                                #-asdf3
                                                'asdf::load-dependencies)
          for system-name = (if (listp dependency)

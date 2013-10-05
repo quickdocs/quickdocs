@@ -1,5 +1,5 @@
 ;; -*- mode: common-lisp -*-
-(setf ql:*quicklisp-home* (asdf::truenamize #P"quicklisp/"))
+(setf ql:*quicklisp-home* (merge-pathnames #P"quicklisp/" (or *load-pathname* *compile-file-pathname*)))
 (ql:quickload '(:quickdocs :swank :swank-client))
 
 (defparameter *default-swank-port* 4005)
