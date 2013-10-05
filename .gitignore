@@ -10,3 +10,5 @@ config.py
 *.py[cod]
 
 tmp
+
+quicklisp

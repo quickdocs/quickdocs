@@ -1,4 +1,5 @@
 ;; -*- mode: common-lisp -*-
+(setf ql:*quicklisp-home* (asdf::truenamize #P"quicklisp/"))
 (ql:quickload '(:quickdocs :swank :swank-client))
 
 (defparameter *default-swank-port* 4005)
