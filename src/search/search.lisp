@@ -170,7 +170,8 @@
 
 @export
 (defun search-by-categories (word)
-  (loop with scanner = (ppcre:create-scanner (ppcre:quote-meta-chars word) :case-insensitive-mode t)
+  (loop with scanner = (ppcre:create-scanner
+                        (format nil "\\b~A\\b" (ppcre:quote-meta-chars word)) :case-insensitive-mode t)
         for (project . categories) in *category-db*
         if (and (find-if
                      #'(lambda (category)
