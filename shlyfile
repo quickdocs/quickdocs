@@ -17,3 +17,15 @@
    (swank-client:slime-eval
     '(quickdocs.parser.util:with-retrying 5
       (handler-bind ((error #'continue)) (ql:quickload :quickdocs))) conn)))
+
+(defun batch-parse ()
+  #+sbcl
+  (load #P "script/batch-parse.lisp")
+  #-sbcl
+  (princ "Run with -I sbcl." *error-output*))
+
+(defun update-categories ()
+  #+sbcl
+  (load #P"script/cliki-categories.lisp")
+  #-sbcl
+  (princ "Run with -I sbcl." *error-output*))

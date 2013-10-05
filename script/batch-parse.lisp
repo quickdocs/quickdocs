@@ -45,9 +45,10 @@
 
 (defvar *systems*
         (loop for release in (ql-dist:provided-releases t)
+              do (ql-dist:ensure-installed release)
               append
            (loop for system in (ql-dist:provided-systems release)
-                 when (ql-dist:installedp system) collect system)))
+                 collect system)))
 
 (defvar *error-systems* nil)
 
