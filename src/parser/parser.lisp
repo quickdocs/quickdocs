@@ -57,7 +57,11 @@
   (when-let (asdf-system (with-ignoring-streams (*standard-output*
                                                  *debug-io*
                                                  *trace-output*)
-                           (asdf:find-system (slot-value system 'ql-dist:name))))
+                           (handler-case
+                               (asdf:find-system (slot-value system 'ql-dist:name))
+                             (asdf:load-system-definition-error (e)
+                               (princ e *error-output*)
+                               nil))))
     (parse-documentation asdf-system)))
 
 @export
