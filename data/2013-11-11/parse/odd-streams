@@ -1,0 +1,452 @@
+
+(:TYPE :SYSTEM :NAME "odd-streams" :AUTHOR NIL :MAINTAINER NIL :VERSION "0.1.2"
+ :LICENCE NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("TRIVIAL-GRAY-STREAMS") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "ODD-STREAMS" :FULL-NAME "ODD-STREAMS" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :CONSTANT :SYMBOL
+     (:NAME "+MAX-BYTE-SIZE+" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :DOCUMENTATION "The maximal size of an odd stream element in bits."
+     :INITIAL-VALUE "128")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+RECOMMENDED-BYTES-PER-BUFFER+" :PACKAGE-NAME "ODD-STREAMS"
+      :EXTERNALP NIL)
+     :DOCUMENTATION "Default number of bytes per buffer." :INITIAL-VALUE
+     "1024")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+RECOMMENDED-OCTETS-PER-BUFFER+" :PACKAGE-NAME "ODD-STREAMS"
+      :EXTERNALP NIL)
+     :DOCUMENTATION
+     "The library tries to make the size of the stream buffers be a
+ multiple of this value.  For that reason, the product of
+ +MAX-BYTE-SIZE+ and +RECOMMENDED-BYTES-PER-BUFFER+ must also be a
+ multiple of this value."
+     :INITIAL-VALUE "8192")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+MIN-BUFFER-SIZE+" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :DOCUMENTATION "The minimal size for a buffer in octets." :INITIAL-VALUE
+     "64")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HYPERDOC-BASE-URI*" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"http://weitz.de/odd-streams/\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HYPERDOC-LOOKUP" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "OCTET" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SANS" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "PLIST" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns PLIST with keyword arguments from KEYS removed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ODD-STREAM-ERROR" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FORMAT-CONTROL" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signals an error of type ODD-STREAM-SIMPLE-ERROR with the provided
+format control and arguments.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "TRIVIAL-GRAY-STREAM-MIXIN" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+       :EXTERNALP T))
+     :DOCUMENTATION "A ODD-STREAM object is a stream that's `layered'
+atop an existing binary stream in order to allow for `odd' element
+types like (UNSIGNED-BYTE 3).  Odd streams use a buffer that acts as
+a \"window\" into the original stream.  Only the part of the buffer
+from its beginning up to the bit specified by BUFFER-OCTET-LIMIT and
+BUFFER-BIT-LIMIT is valid.
+
+ODD-STREAM itself is a mixin and should not be instantiated."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS
+       ((:NAME "ODD-STREAM-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "The actual stream that's used for input
+and/or output - a binary stream with element-type OCTET.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BYTE-SIZE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS
+       NIL :READERS
+       ((:NAME "ODD-STREAM-BYTE-SIZE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP
+         T))
+       :WRITERS NIL :DOCUMENTATION "The size of the \"apparent element
+type\" of the odd stream in bits, i.e. the stream behaves as if its
+element type were (UNSIGNED-BYTE BYTE-SIZE).")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BUFFER" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "ODD-STREAM-BUFFER" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Odd streams are buffered streams, and this
+is the buffer - an array of BUFFER-SIZE octets.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BUFFER-SIZE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "ODD-STREAM-BUFFER-SIZE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP
+         T))
+       :WRITERS NIL :DOCUMENTATION
+       "The size of the stream's buffer in octets.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BUFFER-OCTET-LIMIT" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ODD-STREAM-BUFFER-OCTET-LIMIT" :PACKAGE-NAME "ODD-STREAMS"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "The index of the first octet in
+the buffer which isn't valid anymore - but see BUFFER-BIT-LIMIT.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BUFFER-BIT-LIMIT" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ODD-STREAM-BUFFER-BIT-LIMIT" :PACKAGE-NAME "ODD-STREAMS"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "If this value is not 0 (zero),
+then the first BUFFER-BIT-LIMIT bits of the buffer element at index
+BUFFER-OCTET-LIMIT are valid bits of the buffer.  This value can only
+be non-zero for output streams.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "OCTET-POSITION" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ODD-STREAM-OCTET-POSTION" :PACKAGE-NAME "ODD-STREAMS"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The current octet position within
+the buffer - the actual position is a combination of this value and
+BIT-POSITION.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BIT-POSITION" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ODD-STREAM-BIT-POSTION" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The current bit position within the
+buffer - the actual position is a combination of this value and
+OCTET-POSITION.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BUFFER-FILE-POSITION" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "ODD-STREAM-BUFFER-FILE-POSITION" :PACKAGE-NAME "ODD-STREAMS"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "Where the beginning of the
+buffer is located within the original stream - measured in octets.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-ELEMENT-TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns the element type of STREAM which is computed from the
+BYTE-SIZE slot.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CLOSE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ABORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Closes the odd stream by closing the underlying `real' stream.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OPEN-STREAM-P" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION "An odd stream is open if its underlying stream is open.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+      (:NAME "FUNDAMENTAL-BINARY-OUTPUT-STREAM" :PACKAGE-NAME
+       "TRIVIAL-GRAY-STREAMS" :EXTERNALP T))
+     :DOCUMENTATION "An ODD-OUTPUT-STREAM is an ODD-STREAM that can
+actually be instatiated and used for output.  Don't use MAKE-INSTANCE
+to create a new ODD-OUTPUT-STREAM but use MAKE-ODD-STREAM instead."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BUFFER-MODIFIED-P" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ODD-STREAM-BUFFER-MODIFIED-P" :PACKAGE-NAME "ODD-STREAMS"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A boolean indicating whether the
+stream's buffer has been modified since it was last flushed.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+      (:NAME "FUNDAMENTAL-BINARY-INPUT-STREAM" :PACKAGE-NAME
+       "TRIVIAL-GRAY-STREAMS" :EXTERNALP T))
+     :DOCUMENTATION "An ODD-INPUT-STREAM is an ODD-STREAM that can
+actually be instatiated and used for input.  Don't use MAKE-INSTANCE
+to create a new ODD-INPUT-STREAM but use MAKE-ODD-STREAM instead."
+     :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ODD-IO-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+      (:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T))
+     :DOCUMENTATION "An ODD-IO-STREAM is an ODD-STREAM that can actually
+be instatiated and used for input and output.  Don't use MAKE-INSTANCE
+to create a new ODD-IO-STREAM but use MAKE-ODD-STREAM instead."
+     :SLOT-LIST NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "BYTE-SIZE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 1)
+      (:NAME "BUFFER-SIZE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates and returns a new odd stream.  STREAM must be an open
+binary stream capable of reading/writing octets.  The resulting odd
+stream is an input stream if and only if STREAM is an input stream.
+Likewise, it's an output stream if and only if STREAM is an output
+stream.  BYTE-SIZE is the size of one stream element in bits, i.e. the
+stream will (try to) behave as if it had element type (UNSIGNED-BYTE
+BYTE-SIZE).
+
+BUFFER-SIZE is the size of the stream's buffer in octets.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-OPEN-ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VAR" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "BYTE-SIZE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "BUFFER-SIZE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like CL:WITH-OPEN-STREAM, but for odd streams.  See MAKE-ODD-STREAM
+for the meaning of the parameters.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-OPEN-ODD-FILE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FILESPEC" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "BYTE-SIZE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "BUFFER-SIZE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       (:NAME "DIRECTION" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       (:NAME "IF-EXISTS" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+       (:NAME "IF-DOES-NOT-EXIST" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like CL:WITH-OPEN-FILE, but for odd streams.  See MAKE-ODD-STREAM
+for the meaning of the parameters.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ODD-FILE-LENGTH" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+       (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Like CL:FILE-LENGTH, but using the stream's BYTE-SIZE as its unit
+of measurement.  This is an exported function as it can't be done with
+Gray streams.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-FILE-POSITION" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION "Implements the one-argument version of FILE-POSITION.  Not
+available on all Common Lisps with Gray streams.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STREAM-FILE-POSITION" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+       :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "POSITION-SPEC" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+      ((:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+       (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION "Implements the two-argument version of FILE-POSITION.  Not
+available on all Common Lisps with Gray streams.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITARGS" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates the stream's buffer after the stream (object) has been created.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "AT-BUFFER-LIMIT-P" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns true iff the octet position of the buffer is right at the
+limit, i.e. if it would be invalidated if it were increased.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "AT-BUFFER-END-P" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns true iff the octet position of the buffer is right at the
+end of the buffer, i.e. if it would be illegal (in terms of Lisp
+array access) to increase it.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FILL-BUFFER" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Tries to fill as much of the buffer as possible beginning from the
+end of the valid part of the buffer.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FILL-BUFFER" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-IO-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "If the stream is an IO stream, i.e. if it's also used for writing,
+we have to make sure that the buffer is flushed (if necessary) before
+it's refilled.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FLUSH-BUFFER" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EVERYTHING" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+      (:NAME "RE-POSITION" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Writes out the valid part of the buffer to the underlying stream.
+If EVERYTHING is true, we also write out \"overlapping\" bits at the
+end.  (We usually don't do that in order not to partially overwrite
+otherwise valid octets on the disk.)  If RE-POSITION is true, we also
+adjust the \"virtual\" position of the buffer towards the end (this
+happens when WRITE-BYTE has reached the end of the buffer), otherwise
+we just write but leave the buffer where it is.  In case of
+RE-POSITION the buffer is also cleared and invalidated.
+
+RE-POSITION and EVERYTHING must not be used both at the same time.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-WRITE-BYTE" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T))
+      (:NAME "BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Implements writing one byte (having BYTE-SIZE bits) to the odd stream.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-CLEAR-OUTPUT" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION "Does nothing, which is allowed by the spec.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-FINISH-OUTPUT" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+       (:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Simply calls the corresponding method for the underlying output
+stream after flushing the buffer.  Note that this might fail to
+\"flush overlapping bits\".")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-FORCE-OUTPUT" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+       (:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Simply calls the corresponding method for the underlying output
+stream after flushing the buffer.  Note that this might fail to
+\"flush overlapping bits\".")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CLOSE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ABORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Makes sure the buffer is flushed (unless ABORT is true) before the
+stream is actually closed.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-WRITE-SEQUENCE" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T))
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Writes a sequence to the stream by writing each byte in turn.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BITS-AVAILABLE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns the number of bits that can be read from the \"current
+ octet\" within the buffer.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MUST-FILL-P" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T))
+      (:NAME "BITS-WANTED" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns true if the buffer must be re-filled before BITS-WANTED
+more bits can be read.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-READ-BYTE" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Implements reading one byte (having BYTE-SIZE bits) from the odd stream.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-CLEAR-INPUT" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION "Does nothing, which is allowed by the spec.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-LISTEN" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+       (:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Calls the corresponding method for the underlying input stream but
+first checks if there's still something in the buffer.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-READ-SEQUENCE" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T))
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "ODD-STREAM-BUFFER-SIZE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "ODD-STREAM-WARNING" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "ODD-INPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "WITH-OPEN-ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "ODD-STREAM-ERROR" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "OCTET" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "ODD-STREAM-BYTE-SIZE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "ODD-IO-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "ODD-STREAM-CONDITION" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "ODD-FILE-LENGTH" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "MAKE-ODD-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "WITH-OPEN-ODD-FILE" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)
+    (:NAME "ODD-OUTPUT-STREAM" :PACKAGE-NAME "ODD-STREAMS" :EXTERNALP T)))))

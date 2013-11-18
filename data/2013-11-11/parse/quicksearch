@@ -1,0 +1,476 @@
+
+(:TYPE :SYSTEM :NAME "quicksearch" :AUTHOR
+ "Takaya OCHIAI <tkych.repl@gmail.com>" :MAINTAINER NIL :VERSION "0.1.3"
+ :LICENCE "MIT License" :DESCRIPTION
+ "Quicksearch searches CL library, and outputs results at REPL."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("ITERATE" "ANAPHORA" "ALEXANDRIA" "CL-PPCRE" "DRAKMA" "YASON" "FLEXI-STREAMS"
+  "DO-URLENCODE" "HTML-ENTITIES" "BORDEAUX-THREADS")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "QUICKSEARCH" :FULL-NAME "QUICKSEARCH" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "STR" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STRINGS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION "Concatenates strings")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-REDUCE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REDUCER" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "MAPPER" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "
+MAP-REDUCE is suitable for only the case that `mapper''s cost is much
+expensive (e.g. QUICKSEARCH invokes DRAKMA:HTTP-REQUEST as `mapper').
+For each element in `sequence' (as an argument), `mapper' is computed it
+with each thread, then the results are collected by `reducer'.
+
+Examples: (inefficient but intuitive)
+
+  (map-reduce #'+
+              (lambda (x) (expt x 2)) ;<- each thread computes this
+              '(1 2 3 4))
+   => 30
+
+  (map-reduce #'append
+              (lambda (x) (list (expt x 2)))
+              '(1 2 3 4))
+   => (1 4 9 16)
+
+  (map-reduce (lambda (x y) (format nil \"~A~A\" x y))
+              (lambda (c) (code-char (1- (char-code c))))
+             \"IBM\")
+   => \"HAL\"
+
+Note:
+  * Use only for expensive computation (e.g. fetching a resource on the
+    web).
+  * If `mapper' assigns a value for the same global variable, it will
+    cause interleave.
+  * Strictly, this MAP-REDUCE is not the MapReduce, but abstract model
+    is the same if threads are equated with worker nodes.
+")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*QUICKSEARCH-VERSION*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"0.1.03\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*QUICKSEARCH-WEBPAGE*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "\"https://github.com/tkych/quicksearch\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*USER-AGENT*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP T)
+     :DOCUMENTATION
+     "This value tells the server who is requested (i.e. User-Agent header
+value). If you are embedding CL-Feed-Parser in a larger application, you
+should change the value of *USER-AGENT* to your application name and
+URL."
+     :INITIAL-VALUE "(FORMAT NIL \"Quicksearch/~A (~A ~A; ~A; ~A; ~A)\"
+        QUICKSEARCH::*QUICKSEARCH-VERSION* (LISP-IMPLEMENTATION-TYPE)
+        (LISP-IMPLEMENTATION-VERSION) (SOFTWARE-TYPE) (SOFTWARE-VERSION)
+        QUICKSEARCH::*QUICKSEARCH-WEBPAGE*)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*THREADING?*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "T")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DESCRIPTION-PRINT?*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*URL-PRINT?*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CUT-OFF*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "50")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PRINT-SEARCH-RESULTS?*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUICKSEARCH" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEARCH-WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "?WEB" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "?DESCRIPTION" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "?URL" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "?CUT-OFF" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL) 50)
+      ((:NAME "?QUICKLISP" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "?CLIKI" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "?GITHUB" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "?BITBUCKET" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Search for CL projects with `search-word' in Quicklisp, Cliki, GitHub
+and BitBucket. `search-word' must be a string, number or symbol (symbol
+will be automatically converted into downcase-string).
+
+Keywords:
+ * If `?web' is NIL, it does not search in Cliki, GitHub and BitBucket.
+ * If `?quicklisp' is NIL, it does not search in Quicklisp (also
+   `?cliki', `?github', `?bitbucket').
+ * At least one search-space must be specified.
+ * If `?description' is T, it displays project's descriptions (except
+   for Quicklisp-search).
+ * If `?url' is T, it display project's url.
+ * `?cut-off' is the max number of printing repositories each space.
+
+Note:
+ * keyword `?cut-off' controls only printing results, nothing to do with
+   the maximum number of fetching repositories (c.f. function CONFIG
+   documentation).
+
+ * About #\\Space in `search-word':
+   In case `search-word' contains #\\Space, Quicklisp-search is
+   OR-search, whereas Cliki-search, GitHub-, BitBucket- is AND-search.
+   e.g. (quicksearch \"foo bar\")
+        Quicklisp-search for \"foo\" OR \"bar\",
+        Cliki-search, GitHub-, BitBucket- for \"foo\" AND \"bar\".")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*QUICKLISP-VERBOSE?*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*INSTALLED-PREFIX*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"!\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEARCH-QUICKLISP" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-TITLE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SYS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSTALLED-P" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SYS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-URL" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SYS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-VERSION" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SYS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-QUICKDOCS-URL" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SYS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CACHE-SIZE*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "4")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CACHE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLEAR-CACHE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEARCH-CACHE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IN-CACHE-P" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STORE-CACHE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "REPOS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEARCH-WEB" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEARCH-WEB-BY-THREAD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GEN-QUERY" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FETCH" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "QUERY" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-REPOS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RESPONSE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRIP" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-TAGS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-CLIKI-REPOS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RESPONSE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-GITHUB-REPOS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RESPONSE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-BITBUCKET-REPOS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "RESPONSE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-NEXT-PAGE-URL" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RESPONSE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MAX-NUM-WEB-SEARCH-RESULTS*" :PACKAGE-NAME "QUICKSEARCH"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "50")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*NUM-RESULTS-PER-PAGE*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "10")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAX-NUM-NEXT-PAGES" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-CLIKI-NEXT-PAGE-URL" :PACKAGE-NAME "QUICKSEARCH"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RESPONSE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-GITHUB-NEXT-PAGE-URL" :PACKAGE-NAME "QUICKSEARCH"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RESPONSE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-BITBUCKET-NEXT-PAGE-URL" :PACKAGE-NAME "QUICKSEARCH"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RESPONSE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MAX-NUM-DESCRIPTION-COLUMNS*" :PACKAGE-NAME "QUICKSEARCH"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "80")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DESCRIPTION-INDENT-NUM*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "6")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINT-LINE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINT-SEARCH-RESULTS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GEN-URL" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "URL" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINT-SPACE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ONCE-ONLY-PRINT-SEARCH-RESULTS" :PACKAGE-NAME "QUICKSEARCH"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINT-RESULTS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPOS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "SPACE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PPRINT-DESCRIPTION" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "DESC" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONFIG" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "MAXIMUM-COLUMNS-OF-DESCRIPTION" :PACKAGE-NAME "KEYWORD"
+         :EXTERNALP T)
+        (:NAME "MAX-COLS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+       80
+       (:NAME "MAX-COLS-SUPPLIED?" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+      (((:NAME "MAXIMUM-NUMBER-OF-FETCHING-REPOSITORIES" :PACKAGE-NAME
+         "KEYWORD" :EXTERNALP T)
+        (:NAME "MAX-REPOS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+       50
+       (:NAME "MAX-REPOS-SUPPLIED?" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP
+        NIL))
+      ((:NAME "CACHE-SIZE" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL) 4
+       (:NAME "CACHE-SIZE-SUPPLIED?" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP
+        NIL))
+      ((:NAME "CLEAR-CACHE?" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CLEAR-CACHE-SUPPLIED?" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP
+        NIL))
+      ((:NAME "THREADING?" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "THREADING-SUPPLIED?" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP
+        NIL))
+      ((:NAME "QUICKLISP-VERBOSE?" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "QUICKLISP-VERBOSE-SUPPLIED?" :PACKAGE-NAME "QUICKSEARCH"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION "Function CONFIG customizes printing, fetching or caching.
+If CONFIG is called with no keyword, then it sets default values.
+
+Keywords:
+
+ * `:maximum-columns-of-description' (default 80)
+   The value must be a plus integer bigger than 5.
+   If the length of description-string is bigger than this value,
+   then output of description is inserted newline for easy to see.
+
+ * `:maximum-number-of-fetching-repositories' (default 50)
+   This value controls the number of fetching repositories.
+   The value must be a plus integer.
+   Increasing this value, the number of fetching repositories increases,
+   but also space & time does.
+
+ * `:cache-size'
+   The value must be a plus integer (default 4).
+   This value is the number of stored previous search-results.
+   Increasing this value, the number of caching results increases, but
+   also space does.
+
+ * `:clear-cache?'
+   The value must be a boolean (default NIL).
+   If value is T, then clear all caches.
+
+ * `:threading?'
+   The value must be a boolean (default T).
+   If value is NIL, then QUICKSEARCH becomes not to use threads for
+   searching.
+
+   Note:
+     Currently on SBCL (1.1.8), threads are part of the default build on
+     x86[-64] Linux only. Other platforms (x86[-64] Darwin (Mac OS X),
+     x86[-64] FreeBSD, x86 SunOS (Solaris), and PPC Linux)
+     experimentally supports threads and must be explicitly enabled at
+     build-time. For more details, please see [SBCL manual](http://www.sbcl.org/manual/index.html#Threading).
+
+ * `:quicklisp-verbose?'
+   The value must be a boolean (default NIL).
+   If value is T, then outputs version of quicklisp and whether library
+   had installed your local.
+
+   Example:
+     CL-REPL> (qs:config :QUICKLISP-VERBOSE? t)
+     CL-REPL> (qs:? \"json\" :q)
+
+     SEARCH-RESULTS: \"json\"
+
+      Quicklisp: 2013-04-20   ;<- quicklisp version
+       !cl-json               ;<- if library has been installed via quicklisp, print prefix \"!\".
+       !cl-json.test
+       com.gigamonkeys.json   ;<- if not, none.
+       json-template
+       st-json
+     T
+
+Note:
+ * If you would prefer permanent configuration,
+   for example, add codes something like the following in the CL init
+   file.
+
+   In `.sbclrc` for SBCL, `ccl-init.lisp` for CCL:
+
+   (ql:quickload :quicksearch)
+   (qs:config :maximum-columns-of-description 50
+              :maximum-number-of-fetching-repositories 20
+              :cache-size 10
+              :threading? nil
+              :quicklisp-verbose? t)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "?" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "SEARCH-WORD" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OPTIONS" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP NIL))
+     :DOCUMENTATION "? is abbreviation wrapper for function QUICKSEARCH.
+`search-word' must be a string, number or symbol. `options' must be a
+non-negative integer (as Cut-Off) and/or some keywords which consists of
+some Option-Chars.
+
+Options:
+ * Cut-Off:
+   * The max number of printing results (default is 50).
+ * Option-Chars:
+   * d, D -- output Description
+   * u, U -- output URL
+   * q, Q -- search in Quicklisp
+   * c, C -- search in Cliki
+   * g, G -- search in GitHub
+   * b, B -- search in Bitbucket
+
+Note:
+ * Option-Char is idempotent (e.g. :dd <=> :d).
+ * If `options' contains more than 2 Cut-Offs, only last one is applyed.
+ * The order of Option-Chars is nothing to do with output
+   (e.g. :du <=> :ud).
+ * The order of `options' is nothing to do with output
+   (except for some Cut-Offs).
+ * If no search-space is specified, all spaces are specified
+   (e.g. :d <=> :dqcgb).
+ * If at most one search-space is specified, then others are not
+   specified.
+
+Examples:
+  (? \"crypt\")
+  <=>
+  (quicksearch \"crypt\" :?description nil :?url nil :?cut-off 50
+                       :?quicklisp t :?cliki t :?github t :?bitbucket t)
+
+  (? \"crypt\" :du 10)
+  <=>
+  (quicksearch \"crypt\" :?description T :?url T :?cut-off 10
+                       :?quicklisp t :?cliki t :?github t :?bitbucket t)
+
+  (? \"crypt\" 20 :g :d)
+  <=>
+  (quicksearch \"crypt\" :?description T :?url nil :?cut-off 20
+                       :?quicklisp nil :?cliki nil :?github T :?bitbucket nil)"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*USER-AGENT*" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP T)
+    (:NAME "?" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP T)
+    (:NAME "CONFIG" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP T)
+    (:NAME "QUICKSEARCH" :PACKAGE-NAME "QUICKSEARCH" :EXTERNALP T)))))

@@ -1,0 +1,84 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "cl-binaural"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+ALSA lib confmisc.c:768:(parse_card) cannot find card '0'
+ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_card_driver returned error: No such file or directory
+ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1251:(snd_func_refer) error evaluating name
+ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:4720:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM default
+Unhandled MIXALOT:ALSA-ERROR in thread #<SB-THREAD:THREAD
+                                         "Mixer thread 44,100 Hz" RUNNING
+                                          {E04E461}>:
+  PCM open of "default" (PLAYBACK,BLOCKING): No such file or directory
+
+Backtrace for: #<SB-THREAD:THREAD "Mixer thread 44,100 Hz" RUNNING {E04E461}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {E155425}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {E15540D}>)
+3: (SB-DEBUG:PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :INTERRUPTED-FRAME :COUNT NIL :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (SB-DEBUG::DEBUGGER-DISABLED-HOOK #<MIXALOT:ALSA-ERROR {E13EBD1}> #<unavailable argument>)
+5: (SB-DEBUG::RUN-HOOK SB-EXT:*INVOKE-DEBUGGER-HOOK* #<MIXALOT:ALSA-ERROR {E13EBD1}>)
+6: (INVOKE-DEBUGGER #<MIXALOT:ALSA-ERROR {E13EBD1}>)
+7: (ERROR MIXALOT:ALSA-ERROR :TEXT "PCM open of \"default\" (PLAYBACK,BLOCKING): No such file or directory")
+8: (MIXALOT::CHECK-ERROR "PCM open of \"default\" (PLAYBACK,BLOCKING)" -2)
+9: (MIXALOT::SND-PCM-OPEN "default" :PLAYBACK :BLOCKING)
+10: (MIXALOT::CALL-WITH-PCM 44100 #<CLOSURE (LAMBDA (MIXALOT::PCM) :IN MIXALOT:CREATE-MIXER) {E04F06D}>)
+11: ((LAMBDA NIL :IN BORDEAUX-THREADS::BINDING-DEFAULT-SPECIALS))
+ALSA lib confmisc.c:768:(parse_card) cannot find card '0'
+ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_card_driver returned error: No such file or directory
+ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1251:(snd_func_refer) error evaluating name
+ALSA lib conf.c:4241:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:4720:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2217:(snd_pcm_open_noupdate) Unknown PCM default
+12: 
+Unhandled MIXALOT:ALSA-ERROR in thread #<SB-THREAD:THREAD
+                                         "Mixer thread 44,100 Hz" RUNNING
+                                          {E134AC1}>:
+  PCM open of "default" (PLAYBACK,BLOCKING): No such file or directory
+
+Backtrace for: #<SB-THREAD:THREAD "Mixer thread 44,100 Hz" RUNNING {E134AC1}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {E13A71D}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {E13A705}>)
+3: (SB-DEBUG:PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :INTERRUPTED-FRAME :COUNT NIL :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (SB-DEBUG::DEBUGGER-DISABLED-HOOK #<MIXALOT:ALSA-ERROR {E1356F1}> #<unavailable argument>)
+5: (SB-DEBUG::RUN-HOOK SB-EXT:*INVOKE-DEBUGGER-HOOK* #<MIXALOT:ALSA-ERROR {E1356F1}>)
+6: (INVOKE-DEBUGGER #<MIXALOT:ALSA-ERROR {E1356F1}>)
+7: (ERROR MIXALOT:ALSA-ERROR :TEXT "PCM open of \"default\" (PLAYBACK,BLOCKING): No such file or directory")
+8: (MIXALOT::CHECK-ERROR "PCM open of \"default\" (PLAYBACK,BLOCKING)" -2)
+9: (MIXALOT::SND-PCM-OPEN "default" :PLAYBACK :BLOCKING)
+10: (MIXALOT::CALL-WITH-PCM 44100 #<CLOSURE (LAMBDA (MIXALOT::PCM) :IN MIXALOT:CREATE-MIXER) {E135095}>)
+11: 
+11: 
+((LAMBDA NIL :IN BORDEAUX-THREADS::BINDING-DEFAULT-SPECIALS))
+13: ((FLET #:WITHOUT-INTERRUPTS-BODY-1113 :IN SB-THREAD::INITIAL-THREAD-FUNCTION-TRAMPOLINE))
+13: ((FLET SB-THREAD::WITH-MUTEX-THUNK :IN SB-THREAD::INITIAL-THREAD-FUNCTION-TRAMPOLINE))
+14: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))((FLET SB-THREAD::WITH-MUTEX-THUNK :IN SB-THREAD::INITIAL-THREAD-FUNCTION-TRAMPOLINE))
+14: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))
+15: (SB-THREAD::CALL-WITH-MUTEX #<CLOSURE (FLET SB-THREAD::WITH-MUTEX-THUNK :IN SB-THREAD::INITIAL-THREAD-FUNCTION-TRAMPOLINE) {B67B91A5}> #<SB-THREAD:MUTEX "thread result lock" owner: #<SB-THREAD:THREAD "Mixer thread 44,100 Hz" RUNNING {E134AC1}>> NIL T NIL)
+16: E1A5}> #<SB-THREAD:MUTEX "thread result lock" owner: #<SB-THREAD:THREAD "Mixer thread 44,100 Hz" RUNNING {E04E461}>> NIL T NIL)
+16: (SB-THREAD::INITIAL-THREAD-FUNCTION-TRAMPOLINE #<SB-THREAD:THREAD "Mixer thread 44,100 Hz" RUNNING {E134AC1}> #S(SB-THREAD:SEMAP(SB-THREAD::INITIAL-THREAD-FUNCTION-TRAMPOLINE #<SB-THREAD:THREAD "Mixer thread 44,100 Hz" RUNNING {E04E461}> #S(SB-THREAD:SEMAPHORE :NAME "Thread setup semaphore" :%COUNT 0 :WAITCOUNT 0 :MUTEX #<SB-THREAD:MUTEX (free) {E04E499}> :QUEUE #<SB-THREAD:WAITQUEHORE :NAME "Thread setup semaphore" :%COUNT 0 :WAITCOUNT 0 :MUTEX #<SB-THREAD:MUTEX (free) {E134AF9}> :QUEUE #<SB-THREAD:WAITQUEUE  {E134B11}>) #<CLOSURE (LAMBDA NIL :IN BORDEAUX-THREADS::BINDING-DEFAULT-SPECIALS) {E134A85}> NIL NIL NIL NIL)
+17: ("foreign function: call_into_lisp")
+18: ("foreign function: funcall0")
+19: ("foreign function: new_thread_trampoline")
+20: ("foreign function: #xB7FB5D4C")
+
+unhandled condition in --disable-debugger mode, quitting
+17: ; 
+    ; compilation unit aborted
+    ;   caught 2 fatal ERROR conditions

@@ -1,0 +1,6 @@
+
+(:TYPE :SYSTEM :NAME "parser-combinators-debug" :AUTHOR
+ "Samium Gromoff <_deepfire@feelingofgreen.ru>" :MAINTAINER
+ "Jakub Higersberger <ramarren@gmail.com>" :VERSION "0" :LICENCE "BSD-style"
+ :DESCRIPTION "A debug extension for PARSER-COMBINATORS" :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("PARSER-COMBINATORS" "CL-CONTAINERS") :PACKAGE-LIST NIL)

@@ -1,0 +1,6 @@
+
+(:TYPE :SYSTEM :NAME "cl-csv-clsql" :AUTHOR NIL :MAINTAINER NIL :VERSION "0.1"
+ :LICENCE "BSD" :DESCRIPTION
+ "Facilities for reading and writing CSV format files (and importing and exporting csvs from databases)"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("CLSQL-HELPER" "CL-CSV" "DATA-TABLE-CLSQL")
+ :PACKAGE-LIST NIL)

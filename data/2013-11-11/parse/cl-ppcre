@@ -1,0 +1,3572 @@
+
+(:TYPE :SYSTEM :NAME "cl-ppcre" :AUTHOR NIL :MAINTAINER NIL :VERSION "2.0.3"
+ :LICENCE NIL :DESCRIPTION "Perl-compatible regular expression library"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-PPCRE" :FULL-NAME "CL-PPCRE" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*STANDARD-OPTIMIZE-SETTINGS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :DOCUMENTATION
+     "The standard optimize settings used by most declaration expressions."
+     :INITIAL-VALUE
+     "'(OPTIMIZE SPEED (SAFETY 0) (SPACE 0) (DEBUG 1) (COMPILATION-SPEED 0))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SPECIAL-OPTIMIZE-SETTINGS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :DOCUMENTATION
+     "Special optimize settings used only by a few declaration expressions."
+     :INITIAL-VALUE "'(OPTIMIZE SPEED SPACE)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*EXTENDED-MODE-P*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION "Whether the parser will start in extended mode."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REGEX-CHAR-CODE-LIMIT*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :DOCUMENTATION
+     "The upper exclusive bound on the char-codes of characters which can
+occur in character classes.  Change this value BEFORE creating
+scanners if you don't need the (full) Unicode support of
+implementations like AllegroCL, CLISP, LispWorks, or SBCL."
+     :INITIAL-VALUE "CHAR-CODE-LIMIT")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*STRING*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :DOCUMENTATION
+     "The string which is currently scanned by SCAN.
+Will always be coerced to a SIMPLE-STRING."
+     :INITIAL-VALUE "\"\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*START-POS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION "Where to start scanning within *STRING*." :INITIAL-VALUE
+     "0")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REAL-START-POS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "The real start of *STRING*. This is for repeated scans and is only used internally."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*END-POS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :DOCUMENTATION
+     "Where to stop scanning within *STRING*." :INITIAL-VALUE "0")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REG-STARTS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION "An array which holds the start positions
+of the current register candidates."
+     :INITIAL-VALUE "(MAKE-ARRAY 0)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REGS-MAYBE-START*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION "An array which holds the next start positions
+of the current register candidates."
+     :INITIAL-VALUE "(MAKE-ARRAY 0)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REG-ENDS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION "An array which holds the end positions
+of the current register candidates."
+     :INITIAL-VALUE "(MAKE-ARRAY 0)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*END-STRING-POS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION "Start of the next possible end-string candidate."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REP-NUM*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :DOCUMENTATION
+     "Counts the number of \"complicated\" repetitions while the matchers
+are built."
+     :INITIAL-VALUE "0")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ZERO-LENGTH-NUM*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Counts the number of repetitions the inner regexes of which may
+have zero-length while the matchers are built."
+     :INITIAL-VALUE "0")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REPEAT-COUNTERS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION "An array to keep track of how often
+repetitive patterns have been tested already."
+     :INITIAL-VALUE "(MAKE-ARRAY 0 :INITIAL-ELEMENT 0 :ELEMENT-TYPE 'FIXNUM)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LAST-POS-STORES*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION "An array to keep track of the last positions
+where we saw repetitive patterns.
+Only used for patterns which might have zero length."
+     :INITIAL-VALUE "(MAKE-ARRAY 0)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*USE-BMH-MATCHERS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :DOCUMENTATION
+     "Whether the scanners created by CREATE-SCANNER should use the (fast
+but large) Boyer-Moore-Horspool matchers."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*OPTIMIZE-CHAR-CLASSES*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :DOCUMENTATION
+     "Whether character classes should be compiled into look-ups into
+O(1) data structures.  This is usually fast but will be costly in
+terms of scanner creation time and might be costly in terms of size if
+*REGEX-CHAR-CODE-LIMIT* is high.  This value will be used as the :KIND
+keyword argument to CREATE-OPTIMIZED-TEST-FUNCTION - see there for the
+possible non-NIL values."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PROPERTY-RESOLVER*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :DOCUMENTATION
+     "Should be NIL or a designator for a function which accepts strings
+and returns unary character test functions or NIL.  This 'resolver' is
+intended to handle `character properties' like \\p{IsAlpha}.  If
+*PROPERTY-RESOLVER* is NIL, then the parser will simply treat \\p and
+\\P as #\\p and #\\P as in older versions of CL-PPCRE."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ALLOW-QUOTING*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :DOCUMENTATION "Whether the parser should support Perl's \\Q and \\E."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ALLOW-NAMED-REGISTERS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :DOCUMENTATION
+     "Whether the parser should support AllegroCL's named registers
+(?<name>\"<regex>\") and back-reference \\k<name> syntax."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HYPERDOC-BASE-URI*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"http://weitz.de/cl-ppcre/\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HYPERDOC-LOOKUP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFCONSTANT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOC" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Make sure VALUE is evaluated only once (to appease SBCL).")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-UNIQUE-NAMES" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "BINDINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Syntax: WITH-UNIQUE-NAMES ( { var | (var x) }* ) declaration* form*
+
+Executes a series of forms with each VAR bound to a fresh,
+uninterned symbol. The uninterned symbol is as if returned by a call
+to GENSYM with the string denoted by X - or, if X is not supplied, the
+string denoted by VAR - as argument.
+
+The variable bindings created are lexical unless special declarations
+are specified. The scopes of the name bindings and declarations do not
+include the Xs.
+
+The forms are evaluated in order, and the values of all but the last
+are discarded (that is, the body is an implicit PROGN).")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-REBINDING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BINDINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "WITH-REBINDING ( { var | (var prefix) }* ) form*
+
+Evaluates a series of forms in the lexical environment that is
+formed by adding the binding of each VAR to a fresh, uninterned
+symbol, and the binding of that fresh, uninterned symbol to VAR's
+original value, i.e., its value in the current lexical environment.
+
+The uninterned symbol is created as if by a call to GENSYM with the
+string denoted by PREFIX - or, if PREFIX is not supplied, the string
+denoted by VAR - as argument.
+
+The forms are evaluated in order, and the values of all but the last
+are discarded (that is, the body is an implicit PROGN).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DIGIT-CHAR-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CHR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Tests whether a character is a decimal digit, i.e. the same as
+Perl's [\\d].  Note that this function shadows the standard Common
+Lisp function CL:DIGIT-CHAR-P.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WORD-CHAR-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CHR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Tests whether a character is a \"word\" character.  In the ASCII
+charset this is equivalent to a-z, A-Z, 0-9, or _, i.e. the same as
+Perl's [\\w].")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+WHITESPACE-CHAR-STRING+" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A string of all characters which are considered to be whitespace.
+Same as Perl's [\\s]."
+     :INITIAL-VALUE "(IF (BOUNDP 'CL-PPCRE::+WHITESPACE-CHAR-STRING+)
+    (SYMBOL-VALUE 'CL-PPCRE::+WHITESPACE-CHAR-STRING+)
+    (COERCE '(#\\  #\\Tab #\\Newline #\\Return #\\Page) 'STRING))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WHITESPACEP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CHR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Tests whether a character is whitespace, i.e. whether it would
+match [\\s] in Perl.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "MAYBE-COERCE-TO-SIMPLE-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Coerces STRING to a simple STRING unless it already is one.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NSUBSEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns a subsequence by pointing to location in original sequence.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NORMALIZE-VAR-LIST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "VAR-LIST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Utility function for REGISTER-GROUPS-BIND and DO-REGISTER-GROUPS.
+Creates the long form (a list of (FUNCTION VAR) entries) out of the
+short form of VAR-LIST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-LIST-TO-SIMPLE-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING-LIST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Concatenates a list of strings to one simple-string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPLEMENT*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Like COMPLEMENT but optimized for unary functions.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SYNTAX-ERROR-STRING*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION "The string which caused the syntax error." :INITIAL-VALUE
+     "NIL")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "SIGNAL-SYNTAX-ERROR*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "FORMAT-CONTROL" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "SIGNAL-SYNTAX-ERROR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORMAT-CONTROL" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "SIGNAL-INVOCATION-ERROR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORMAT-CONTROL" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+PROBE-DEPTH+" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Maximum number of collisions (for any element) we accept before we
+allocate more storage.  This is now fixed, but could be made to vary
+depending on the size of the storage vector (e.g. in the range of
+1-4).  Larger probe-depths mean more collisions are tolerated before
+the table grows, but increase the constant factor."
+     :INITIAL-VALUE "(IF (BOUNDP 'CL-PPCRE::+PROBE-DEPTH+)
+    (SYMBOL-VALUE 'CL-PPCRE::+PROBE-DEPTH+)
+    3)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CHAR-VECTOR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SIZE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a vector of size SIZE to hold characters.  All elements are
+initialized to #Null except for the first one which is initialized to
+#?.")
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "CHARSET" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DEPTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CHARSET" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-LOAD-FORM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SET" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARSET" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENVIRONMENT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MIX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "HASH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Given a character code CODE and a hash code HASH, computes and
+returns the \"next\" hash code.  See comments below.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPUTE-INDEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "HASH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Computes and returns the index into the vector VECTOR corresponding
+to the hash code HASH.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IN-CHARSET-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SET" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Checks whether the character CHAR is in the charset SET.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-TO-CHARSET" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SET" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Adds the character CHAR to the charset SET, extending SET if
+necessary.  Returns CHAR.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%ADD-TO-CHARSET" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SET" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Tries to add the character CHAR to the charset SET without
+extending it.  Returns NIL if this fails.  Counts CHAR as new
+if COUNT is true and it is added to SET.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%ADD-TO-CHARSET/EXPAND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SET" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Extends the charset SET and then adds the character CHAR to it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-CHARSET" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CHARSET" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Calls FUNCTION with all characters in SET.  Returns NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-CHARSET-FROM-TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates and returns a charset representing all characters with
+character codes between START and END which satisfy TEST-FUNCTION.")
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "CHARMAP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COMPLEMENTP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CHARMAP%" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "VECTOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM0" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       #*0)
+      (((:NAME "START" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM1" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       0)
+      (((:NAME "END" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM2" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       0)
+      (((:NAME "COUNT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM3" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "COMPLEMENTP" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM4" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-LOAD-FORM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "MAP" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARMAP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENVIRONMENT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IN-CHARMAP-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CHARMAP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Tests whether the character CHAR belongs to the set represented by CHARMAP.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHARMAP-CONTENTS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CHARMAP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list of all characters belonging to a character map.
+Only works for non-complement charmaps.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CHARMAP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COMPLEMENTP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates and returns a charmap representing all characters with
+character codes in the interval [start end) that satisfy
+TEST-FUNCTION.  The COMPLEMENTP slot of the charmap is set to the
+value of the optional argument, but this argument doesn't have an
+effect on how TEST-FUNCTION is used.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-CHARMAP-FROM-TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates and returns a charmap representing all characters with
+character codes between START and END which satisfy TEST-FUNCTION.
+Tries to find the smallest interval which is necessary to represent
+the character set and uses the complement representation if that
+helps.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-HASH-TABLE-FROM-TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates and returns a hash table representing all characters with
+character codes between START and END which satisfy TEST-FUNCTION.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-OPTIMIZED-TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "*REGEX-CHAR-CODE-LIMIT*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T))
+      ((:NAME "KIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "*OPTIMIZE-CHAR-CLASSES*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+        T)))
+     :DOCUMENTATION
+     "Given a unary test function which is applicable to characters
+returns a function which yields the same boolean results for all
+characters with character codes from START to (excluding) END.  If
+KIND is NIL, TEST-FUNCTION will simply be returned.  Otherwise, KIND
+should be one of:
+
+* :HASH-TABLE - builds a hash table representing all characters which
+                satisfy the test and returns a closure which checks if
+                a character is in that hash table
+
+* :CHARSET - instead of a hash table uses a \"charset\" which is a
+             data structure using non-linear hashing and optimized to
+             represent (sparse) sets of characters in a fast and
+             space-efficient way (contributed by Nikodemus Siivola)
+
+* :CHARMAP - instead of a hash table uses a bit vector to represent
+             the set of characters
+
+You can also use :HASH-TABLE* or :CHARSET* which are like :HASH-TABLE
+and :CHARSET but use the complement of the set if the set contains
+more than half of all characters between START and END.  This saves
+space but needs an additional pass across all characters to create the
+data structure.  There is no corresponding :CHARMAP* kind as the bit
+vectors are already created to cover the smallest possible interval
+which contains either the set or its complement.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-CHAR-TO-SPECIAL-CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CHR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Maps escaped characters like \"\\d\" to the tokens which represent
+their associated character classes.")
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "LEXER structures are used to hold the regex string which is
+currently lexed and to keep track of the lexer's state."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REG" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LAST-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-LEXER-INTERNAL" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "STR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM3" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       "")
+      (((:NAME "LEN" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM4" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       0)
+      (((:NAME "REG" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM5" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       0)
+      (((:NAME "POS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM6" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       0)
+      (((:NAME "LAST-POS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM7" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "END-OF-STRING-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Tests whether we're at the end of the regex string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LOOKING-AT-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "CHR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Tests whether the next character the lexer would see is CHR.
+Does not respect extended mode.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEXT-CHAR-NON-EXTENDED" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the next character which is to be examined and updates the
+POS slot. Does not respect extended mode.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEXT-CHAR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the next character which is to be examined and updates the
+POS slot. Respects extended mode, i.e.  whitespace, comments, and also
+nested comments are skipped if applicable.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FAIL" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Moves (LEXER-POS LEXER) back to the last position stored in
+(LEXER-LAST-POS LEXER) and pops the LAST-POS stack.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-NUMBER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "RADIX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 10)
+      (:NAME "MAX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NO-WHITESPACE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Read and consume the number the lexer is currently looking at and
+return it. Returns NIL if no number could be identified.
+RADIX is used as in PARSE-INTEGER. If MAX-LENGTH is not NIL we'll read
+at most the next MAX-LENGTH characters. If NO-WHITESPACE-P is not NIL
+we don't tolerate whitespace in front of the number.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRY-NUMBER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "RADIX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 10)
+      (:NAME "MAX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NO-WHITESPACE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like GET-NUMBER but won't consume anything if no number is seen.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CHAR-FROM-CODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NUMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Create character from char-code NUMBER. NUMBER can be NIL
+which is interpreted as 0. ERROR-POS is the position where
+the corresponding number started within the regex string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNESCAPE-CHAR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Convert the characters(s) following a backslash into a token
+which is returned. This function is to be called when the backslash
+has already been consumed. Special character classes like \\W are
+handled elsewhere.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-CHAR-PROPERTY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "FIRST-CHAR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COLLECT-CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads and consumes characters from regex string until a right
+bracket is seen.  Assembles them into a list (which is returned) of
+characters, character ranges, like (:RANGE #\\A #\\E) for a-e, and
+tokens representing special character classes.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-PARSE-FLAGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads a sequence of modifiers (including #\\- to reverse their
+meaning) and returns a corresponding list of \"flag\" tokens.  The
+\"x\" modifier is treated specially in that it dynamically modifies
+the behaviour of the lexer itself via the special variable
+*EXTENDED-MODE-P*.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-QUANTIFIER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list of two values (min max) if what the lexer is looking
+at can be interpreted as a quantifier. Otherwise returns NIL and
+resets the lexer to its old position.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-REGISTER-NAME-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads and returns the name in a named register group.  It is
+assumed that the starting #< character has already been read.  The
+closing #> will also be consumed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns and consumes the next token from the regex string (or NIL).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNGET-TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Moves the lexer back to the last position stored in the LAST-POS stack.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "START-OF-SUBEXPR-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Tests whether the next token can start a valid sub-expression, i.e.
+a stand-alone regex.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GROUP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Parses and consumes a <group>.
+The productions are: <group> -> \"(\"<regex>\")\"
+                                \"(?:\"<regex>\")\"
+                                \"(?>\"<regex>\")\"
+                                \"(?<flags>:\"<regex>\")\"
+                                \"(?=\"<regex>\")\"
+                                \"(?!\"<regex>\")\"
+                                \"(?<=\"<regex>\")\"
+                                \"(?<!\"<regex>\")\"
+                                \"(?(\"<num>\")\"<regex>\")\"
+                                \"(?(\"<regex>\")\"<regex>\")\"
+                                \"(?<name>\"<regex>\")\" (when *ALLOW-NAMED-REGISTERS* is T)
+                                <legal-token>
+where <flags> is parsed by the lexer function MAYBE-PARSE-FLAGS.
+Will return <parse-tree> or (<grouping-type> <parse-tree>) where
+<grouping-type> is one of six keywords - see source for details.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GREEDY-QUANT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Parses and consumes a <greedy-quant>.
+The productions are: <greedy-quant> -> <group> | <group><quantifier>
+where <quantifier> is parsed by the lexer function GET-QUANTIFIER.
+Will return <parse-tree> or (:GREEDY-REPETITION <min> <max> <parse-tree>).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUANT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Parses and consumes a <quant>.
+The productions are: <quant> -> <greedy-quant> | <greedy-quant>\"?\".
+Will return the <parse-tree> returned by GREEDY-QUANT and optionally
+change :GREEDY-REPETITION to :NON-GREEDY-REPETITION.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Parses and consumes a <seq>.
+The productions are: <seq> -> <quant> | <quant><seq>.
+Will return <parse-tree> or (:SEQUENCE <parse-tree> <parse-tree>).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REG-EXPR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Parses and consumes a <regex>, a complete regular expression.
+The productions are: <regex> -> <seq> | <seq>\"|\"<regex>.
+Will return <parse-tree> or (:ALTERNATION <parse-tree> <parse-tree>).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Translate the regex string STRING into a parse tree.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :SUPER-CLASS-LIST
+     NIL :DOCUMENTATION "The REGEX base class.  All other classes inherit
+from this one."
+     :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "SEQ objects represents sequences of regexes.
+(Like \"ab\" is the sequence of \"a\" and \"b\".)"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ELEMENTS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "ELEMENTS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION "A list of REGEX objects.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "ALTERNATION objects represent alternations of
+regexes.  (Like \"a|b\" ist the alternation of \"a\" or \"b\".)"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CHOICES" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CHOICES" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "A list of REGEX objects")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "LOOKAHEAD" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "LOOKAHEAD objects represent look-ahead assertions." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The REGEX object we're checking.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "POSITIVEP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "POSITIVEP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION "Whether this assertion is positive.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "LOOKBEHIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "LOOKBEHIND objects represent look-behind assertions." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The REGEX object we're checking.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "POSITIVEP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "POSITIVEP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION "Whether this assertion is positive.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "The (fixed) length of the enclosed regex.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "REPETITION objects represent repetitions of regexes." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The REGEX that's repeated.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "GREEDYP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "GREEDYP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Whether the repetition is greedy.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MINIMUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "MINIMUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The minimal number of repetitions.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MAXIMUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "MAXIMUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The maximal number of repetitions.
+Can be NIL for unbounded.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MIN-LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "MIN-LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "The minimal length of the enclosed regex.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "The length of the enclosed regex.  NIL if
+unknown.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION "The minimal number of characters which
+must appear after this repetition.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONTAINS-REGISTER-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "CONTAINS-REGISTER-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Whether the regex contains a
+register.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "REGISTER objects represent register groups." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The inner regex.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "NUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "The number of this register, starting from 0.
+This is the index into *REGS-START* and *REGS-END*.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Name of this register or NIL.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "A standalone regular expression." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The inner regex.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "BACK-REFERENCE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "BACK-REFERENCE objects represent backreferences." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "NUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The number of the register this
+reference refers to.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The name of the register this
+reference refers to or NIL.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Whether we check
+case-insensitively.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "CHAR-CLASS objects represent character classes." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "A unary function (accepting a
+character) which stands in for the character class and does the work
+of checking whether a character belongs to the class.")))
+    (:TYPE :CLASS :SYMBOL (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "STR objects represent string." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The actual string.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The length of the string.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "If we match case-insensitively.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "OFFSET" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "OFFSET" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "Offset from the left of the whole
+parse tree. The first regex has offset 0. NIL if unknown, i.e. behind
+a variable-length regex.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SKIP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "SKIP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "If we can avoid testing for this
+string because the SCAN function has done this already.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "START-OF-END-STRING-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "START-OF-END-STRING-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "If this is the unique
+STR which starts END-STRING (a slot of MATCHER).")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ANCHOR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "ANCHOR objects represent anchors like \"^\" or \"$\"." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STARTP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "STARTP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Whether this is a \"start anchor\".")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MULTI-LINE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "MULTI-LINE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Whether we're in multi-line mode,
+i.e. whether each #\\Newline is surrounded by anchors.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NO-NEWLINE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "NO-NEWLINE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Whether we ignore #\\Newline at the end.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "EVERYTHING objects represent regexes matching
+\"everything\", i.e. dots."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SINGLE-LINE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "SINGLE-LINE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Whether we're in single-line mode,
+i.e. whether we also match #\\Newline.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "WORD-BOUNDARY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "WORD-BOUNDARY objects represent word-boundary assertions." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NEGATEDP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "NEGATEDP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION "Whether we mean the opposite,
+i.e. no word-boundary.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "BRANCH objects represent Perl's conditional regular
+expressions."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TEST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "TEST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The test of this branch, one of
+LOOKAHEAD, LOOKBEHIND, or a number.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "THEN-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "THEN-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION "The regex that's to be matched if the
+test succeeds.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ELSE-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "ELSE-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION "The regex that's to be matched if the
+test fails.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "FILTER objects represent arbitrary functions
+defined by the user."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "The user-defined function.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "The fixed length of this filter or NIL.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :SUPER-CLASS-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "VOID objects represent empty regular expressions." :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INIT-ARGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Automatically computes the length of a STR after initialization.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SKIP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-OF-END-STRING-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CASE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "OLD-CASE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Utility function used by the optimizer (see GATHER-STRINGS).
+Returns a keyword denoting the case-(in)sensitivity of a STR or its
+second argument if the STR has length 0. Returns NIL for REGEX objects
+which are not of type STR.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CASE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "OLD-CASE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CASE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "OLD-CASE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Implements a deep copy of a REGEX object.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "ANCHOR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ANCHOR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "WORD-BOUNDARY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "WORD-BOUNDARY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "LOOKAHEAD" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "LOOKAHEAD" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "LOOKBEHIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "LOOKBEHIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "BACK-REFERENCE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BACK-REFERENCE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COPY-REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "REMOVE-REGISTERS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a deep copy of a REGEX (see COPY-REGEX) and
+optionally removes embedded REGISTER objects if possible and if the
+special variable REMOVE-REGISTERS-P is true.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-REGISTERS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-REGISTERS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-REGISTERS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-REGISTERS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOOKAHEAD" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "LOOKAHEAD" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-REGISTERS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOOKBEHIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "LOOKBEHIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-REGISTERS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-REGISTERS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-REGISTERS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-REGISTERS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "EVERYTHINGP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns an EVERYTHING object if REGEX is equivalent
+to this object, otherwise NIL.  So, \"(.){1}\" would return true
+(i.e. the object corresponding to \".\", for example.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EVERYTHINGP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EVERYTHINGP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EVERYTHINGP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EVERYTHINGP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EVERYTHINGP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EVERYTHINGP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EVERYTHINGP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the length of REGEX if it is fixed, NIL otherwise.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BACK-REFERENCE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BACK-REFERENCE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the minimal length of REGEX.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REGEX-MIN-LENGTH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the offset the following regex would have
+relative to START-POS or NIL if we can't compute it. Sets the OFFSET
+slot of REGEX to START-POS if REGEX is a STR. May also affect OFFSET
+slots of STR objects further down the tree.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BACK-REFERENCE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BACK-REFERENCE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-OFFSETS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "CASE-INSENSITIVE-MODE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "FLAGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Accessor macro to extract the first flag out of a three-element flag list.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "MULTI-LINE-MODE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "FLAGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Accessor macro to extract the second flag out of a three-element flag list.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "SINGLE-LINE-MODE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "FLAGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Accessor macro to extract the third flag out of a three-element flag list.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-FLAG" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Reads a flag token and sets or unsets the corresponding entry in
+the special FLAGS list.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RESOLVE-PROPERTY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "PROPERTY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Resolves PROPERTY to a unary character test
+function.  PROPERTY can either be a function designator or it can be a
+string which is resolved using *PROPERTY-RESOLVER*.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RESOLVE-PROPERTY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RESOLVE-PROPERTY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RESOLVE-PROPERTY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "FUNCTION-NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RESOLVE-PROPERTY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "FUNCTION-NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RESOLVE-PROPERTY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "PROPERTY-NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RESOLVE-PROPERTY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "PROPERTY-NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONVERT-CHAR-CLASS-TO-TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INVERTEDP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Combines all items in LIST into test function and returns a
+logical-OR combination of these functions.  Items can be single
+characters, character ranges like (:RANGE #\\A #\\E), or special
+character classes like :DIGIT-CLASS.  Does the right thing with
+respect to case-(in)sensitivity as specified by the special variable
+FLAGS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-SPLIT-REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "GREEDYP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MINIMUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MAXIMUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MIN-LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REG-SEEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Splits a REPETITION object into a constant and a varying part if
+applicable, i.e. something like
+  a{3,} -> a{3}a*
+The arguments to this function correspond to the REPETITION slots of
+the same name.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-ACCUMULATE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Accumulate STR into the special variable STARTS-WITH if
+ACCUMULATE-START-P (also special) is true and STARTS-WITH is either
+NIL or a STR object of the same case mode. Always returns NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONVERT-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Converts the parse tree PARSE-TREE into a REGEX object and returns
+it.  Will also
+
+  - split and optimize repetitions,
+  - accumulate strings or EVERYTHING objects into the special variable
+    STARTS-WITH,
+  - keep track of all registers seen in the special variable REG-NUM,
+  - keep track of all named registers seen in the special variable REG-NAMES
+  - keep track of the highest backreference seen in the special
+    variable MAX-BACK-REF,
+  - maintain and adher to the currently applicable modifiers in the special
+    variable FLAGS, and
+  - maybe even wash your car...")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Helper function for CONVERT-AUX which converts
+parse trees which are conses and dispatches on TOKEN which is the
+first element of the parse tree.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "SEQUENCE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for parse trees like (:SEQUENCE {<regex>}*).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "GROUP" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for parse trees like (:GROUP {<regex>}*).
+
+This is a syntactical construct equivalent to :SEQUENCE intended to
+keep the effect of modifiers local.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "ALTERNATION" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:ALTERNATION {<regex>}*).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "BRANCH" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:BRANCH <test> <regex>).
+
+Here, <test> must be look-ahead, look-behind or number; if <regex> is
+an alternation it must have one or two choices.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "POSITIVE-LOOKAHEAD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:POSITIVE-LOOKAHEAD <regex>).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NEGATIVE-LOOKAHEAD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:NEGATIVE-LOOKAHEAD <regex>).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "POSITIVE-LOOKBEHIND" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:POSITIVE-LOOKBEHIND <regex>).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NEGATIVE-LOOKBEHIND" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:NEGATIVE-LOOKBEHIND <regex>).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "GREEDY-REPETITION" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "GREEDYP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "The case for (:GREEDY-REPETITION|:NON-GREEDY-REPETITION <min> <max> <regex>).
+
+This function is also used for the non-greedy case in which case it is
+called with GREEDYP set to NIL as you would expect.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NON-GREEDY-REPETITION" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "The case for (:NON-GREEDY-REPETITION <min> <max> <regex>).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "REGISTER" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The case for (:REGISTER <regex>).  Also used for named registers
+when NAME is not NIL.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NAMED-REGISTER" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:NAMED-REGISTER <regex>).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "FILTER" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:FILTER <function> &optional <length>).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STANDALONE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:STANDALONE <regex>).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "BACK-REFERENCE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:BACK-REFERENCE <number>|<name>).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "REGEX" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:REGEX <string>).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHAR-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INVERTEDP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "The case for (:CHAR-CLASS {<item>}*) where item is one of
+
+- a character,
+- a character range: (:RANGE <char1> <char2>), or
+- a special char class symbol like :DIGIT-CHAR-CLASS.
+
+Also used for inverted char classes when INVERTEDP is true.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "INVERTED-CHAR-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "The case for (:INVERTED-CHAR-CLASS {<item>}*).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "PROPERTY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "The case for (:PROPERTY <name>) where <name> is a string.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "INVERTED-PROPERTY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "The case for (:INVERTED-PROPERTY <name>) where <name> is a string.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-COMPOUND-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "FLAGS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "The case for (:FLAGS {<flag>}*) where flag is a modifier symbol
+like :CASE-INSENSITIVE-P.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Helper function for CONVERT-AUX which converts
+parse trees which are atoms.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NOT-SINGLE-LINE-MODE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NOT-SINGLE-LINE-MODE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "SINGLE-LINE-MODE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "SINGLE-LINE-MODE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NOT-MULTI-LINE-MODE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NOT-MULTI-LINE-MODE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "MULTI-LINE-MODE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "MULTI-LINE-MODE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CASE-SENSITIVE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CASE-SENSITIVE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "MODELESS-END-ANCHOR-NO-NEWLINE" :PACKAGE-NAME "KEYWORD"
+         :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "MODELESS-END-ANCHOR-NO-NEWLINE" :PACKAGE-NAME "KEYWORD"
+         :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "MODELESS-END-ANCHOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "MODELESS-END-ANCHOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "MODELESS-START-ANCHOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "MODELESS-START-ANCHOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "END-ANCHOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "END-ANCHOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "START-ANCHOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "START-ANCHOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NON-WHITESPACE-CHAR-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NON-WHITESPACE-CHAR-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NON-WORD-CHAR-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NON-WORD-CHAR-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NON-DIGIT-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NON-DIGIT-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "WHITESPACE-CHAR-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "WHITESPACE-CHAR-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "WORD-CHAR-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "WORD-CHAR-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DIGIT-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DIGIT-CLASS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EVERYTHING" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EVERYTHING" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NON-WORD-BOUNDARY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NON-WORD-BOUNDARY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "WORD-BOUNDARY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "WORD-BOUNDARY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "VOID" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "VOID" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONVERT-SIMPLE-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "The default method - check if there's a translation.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONVERT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Converts the parse tree PARSE-TREE into an equivalent REGEX object
+and returns three values: the REGEX object, the number of registers
+seen and an object the regex starts with which is either a STR object
+or an EVERYTHING object (if the regex starts with something like
+\".*\") or NIL.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FLATTEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Merges adjacent sequences and alternations, i.e. it
+transforms #<SEQ #<STR \"a\"> #<SEQ #<STR \"b\"> #<STR \"c\">>> to
+#<SEQ #<STR \"a\"> #<STR \"b\"> #<STR \"c\">>. This is a destructive
+operation on REGEX.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FLATTEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FLATTEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FLATTEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FLATTEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GATHER-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Collects adjacent strings or characters into one
+string provided they have the same case mode. This is a destructive
+operation on REGEX.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GATHER-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GATHER-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GATHER-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GATHER-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "START-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IN-SEQ-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns T if REGEX starts with a \"real\" start
+anchor, i.e. one that's not in multi-line mode, NIL otherwise. If
+IN-SEQ-P is true the function will return :ZERO-LENGTH if REGEX is a
+zero-length assertion.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IN-SEQ-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IN-SEQ-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IN-SEQ-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IN-SEQ-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IN-SEQ-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IN-SEQ-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ANCHOR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ANCHOR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IN-SEQ-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IN-SEQ-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "END-STRING-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OLD-CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the constant string (if it exists) REGEX
+ends with wrapped into a STR object, otherwise NIL.
+OLD-CASE-INSENSITIVE-P is the CASE-INSENSITIVE-P slot of the last STR
+collected or :VOID if no STR has been collected yet. (This is a helper
+function called by END-STRING.)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "END-STRING-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OLD-CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "END-STRING-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OLD-CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "END-STRING-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OLD-CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "END-STRING-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OLD-CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "END-STRING-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OLD-CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "END-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the constant string (if it exists) REGEX ends with wrapped
+into a STR object, otherwise NIL.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the minimal length of REGEX plus
+CURRENT-MIN-REST. This is similar to REGEX-MIN-LENGTH except that it
+recurses down into REGEX and sets the MIN-REST slots of REPETITION
+objects.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOOKAHEAD" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "LOOKAHEAD" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOOKBEHIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "LOOKBEHIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPUTE-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "CURRENT-MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "*STRING*=" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING2" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START1" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END1" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START2" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END2" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like STRING=, i.e. compares the special string *STRING* from START1
+to END1 with STRING2 from START2 to END2. Note that there's no
+boundary check - this has to be implemented by the caller.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "*STRING*-EQUAL" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING2" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START1" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END1" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START2" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END2" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like STRING-EQUAL, i.e. compares the special string *STRING* from
+START1 to END1 with STRING2 from START2 to END2. Note that there's no
+boundary check - this has to be implemented by the caller.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a closure which takes one parameter,
+START-POS, and tests whether REGEX can match *STRING* at START-POS
+such that the call to NEXT-FN after the match would succeed.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SEQ" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ALTERNATION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGISTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOOKAHEAD" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "LOOKAHEAD" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOOKBEHIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "LOOKBEHIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "INSERT-CHAR-CLASS-TESTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "CHR-EXPR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Utility macro to replace each occurence of '(CHAR-CLASS-TEST)
+within BODY with the correct test (corresponding to CHAR-CLASS)
+against CHR-EXPR.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "CHAR-CLASS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WORD-BOUNDARY-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Check whether START-POS is a word-boundary within *STRING*.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "WORD-BOUNDARY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "WORD-BOUNDARY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "EVERYTHING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ANCHOR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "ANCHOR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BACK-REFERENCE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BACK-REFERENCE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "BRANCH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STANDALONE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FILTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "VOID" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "INCF-AFTER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DELTA" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 1)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Utility macro inspired by C's \"place++\", i.e. first return the
+value of PLACE and afterwards increment it by DELTA.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "GREEDY-CONSTANT-LENGTH-CLOSURE" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CHECK-CURR-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This is the template for simple greedy repetitions (where simple
+means that the minimum number of repetitions is zero, that the inner
+regex to be checked is of fixed length LEN, and that it doesn't
+contain registers, i.e. there's no need for backtracking).
+CHECK-CURR-POS is a form which checks whether the inner regex of the
+repetition matches at CURR-POS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-GREEDY-EVERYTHING-MATCHER" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "MAXIMUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MIN-REST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates a closure which just matches as far ahead as possible,
+i.e. a closure for a dot in single-line mode.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-GREEDY-CONSTANT-LENGTH-MATCHER" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a closure which tries to match REPETITION.
+It is assumed that REPETITION is greedy and the minimal number of
+repetitions is zero.  It is furthermore assumed that the inner regex
+of REPETITION is of fixed length and doesn't contain registers.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-GREEDY-CONSTANT-LENGTH-MATCHER" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-GREEDY-NO-ZERO-MATCHER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a closure which tries to match REPETITION.
+It is assumed that REPETITION is greedy and the minimal number of
+repetitions is zero.  It is furthermore assumed that the inner regex
+of REPETITION can never match a zero-length string (or instead the
+maximal number of repetitions is 1).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-GREEDY-NO-ZERO-MATCHER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-GREEDY-MATCHER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a closure which tries to match REPETITION.
+It is assumed that REPETITION is greedy and the minimal number of
+repetitions is zero.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-GREEDY-MATCHER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "NON-GREEDY-CONSTANT-LENGTH-CLOSURE" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CHECK-CURR-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This is the template for simple non-greedy repetitions (where
+simple means that the minimum number of repetitions is zero, that the
+inner regex to be checked is of fixed length LEN, and that it doesn't
+contain registers, i.e. there's no need for backtracking).
+CHECK-CURR-POS is a form which checks whether the inner regex of the
+repetition matches at CURR-POS.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-NON-GREEDY-CONSTANT-LENGTH-MATCHER" :PACKAGE-NAME
+      "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a closure which tries to match REPETITION.
+It is assumed that REPETITION is non-greedy and the minimal number of
+repetitions is zero.  It is furthermore assumed that the inner regex
+of REPETITION is of fixed length and doesn't contain registers.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-NON-GREEDY-CONSTANT-LENGTH-MATCHER" :PACKAGE-NAME
+      "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-NON-GREEDY-NO-ZERO-MATCHER" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a closure which tries to match REPETITION.
+It is assumed that REPETITION is non-greedy and the minimal number of
+repetitions is zero.  It is furthermore assumed that the inner regex
+of REPETITION can never match a zero-length string (or instead the
+maximal number of repetitions is 1).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-NON-GREEDY-NO-ZERO-MATCHER" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-NON-GREEDY-MATCHER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a closure which tries to match REPETITION.
+It is assumed that REPETITION is non-greedy and the minimal number of
+repetitions is zero.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-NON-GREEDY-MATCHER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "CONSTANT-REPETITION-CONSTANT-LENGTH-CLOSURE" :PACKAGE-NAME
+      "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CHECK-CURR-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This is the template for simple constant repetitions (where simple
+means that the inner regex to be checked is of fixed length LEN, and
+that it doesn't contain registers, i.e. there's no need for
+backtracking) and where constant means that MINIMUM is equal to
+MAXIMUM.  CHECK-CURR-POS is a form which checks whether the inner
+regex of the repetition matches at CURR-POS.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-CONSTANT-REPETITION-CONSTANT-LENGTH-MATCHER" :PACKAGE-NAME
+      "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a closure which tries to match REPETITION.
+It is assumed that REPETITION has a constant number of repetitions.
+It is furthermore assumed that the inner regex of REPETITION is of
+fixed length and doesn't contain registers.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-CONSTANT-REPETITION-CONSTANT-LENGTH-MATCHER" :PACKAGE-NAME
+      "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-CONSTANT-REPETITION-MATCHER" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a closure which tries to match REPETITION.
+It is assumed that REPETITION has a constant number of repetitions.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-CONSTANT-REPETITION-MATCHER" :PACKAGE-NAME "CL-PPCRE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REPETITION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "NEXT-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "BMH-MATCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Auxiliary macro used by CREATE-BMH-MATCHER.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-BMH-MATCHER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATTERN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a Boyer-Moore-Horspool matcher which searches the (special)
+simple-string *STRING* for the first occurence of the substring
+PATTERN.  The search starts at the position START-POS within *STRING*
+and stops before *END-POS* is reached.  Depending on the second
+argument the search is case-insensitive or not.  If the special
+variable *USE-BMH-MATCHERS* is NIL, use the standard SEARCH function
+instead.  (BMH matchers are faster but need much more space.)")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "CHAR-SEARCHER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Auxiliary macro used by CREATE-CHAR-SEARCHER.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-CHAR-SEARCHER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CHR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "CASE-INSENSITIVE-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a function which searches the (special) simple-string
+*STRING* for the first occurence of the character CHR. The search
+starts at the position START-POS within *STRING* and stops before
+*END-POS* is reached.  Depending on the second argument the search is
+case-insensitive or not.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEWLINE-SKIPPER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Finds the next occurence of a character in *STRING* which is behind
+a #Newline.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "INSERT-ADVANCE-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ADVANCE-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates the actual closure returned by CREATE-SCANNER-AUX by
+replacing '(ADVANCE-FN-DEFINITION) with a suitable definition for
+ADVANCE-FN.  This is a utility macro used by CREATE-SCANNER-AUX.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-SCANNER-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "MATCH-FN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MIN-LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "STARTS-WITH" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START-STRING-TEST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END-ANCHORED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END-STRING-TEST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END-STRING-LEN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END-STRING-OFFSET" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "REP-NUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "ZERO-LENGTH-NUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "REG-NUM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Auxiliary function to create and return a scanner (which is
+actually a closure).  Used by CREATE-SCANNER.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-SCANNER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CASE-INSENSITIVE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MULTI-LINE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "SINGLE-LINE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "EXTENDED-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "DESTRUCTIVE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Accepts a regular expression - either as a
+parse-tree or as a string - and returns a scan closure which will scan
+strings for this regular expression and a list mapping registers to
+their names (NIL stands for unnamed ones).  The \"mode\" keyboard
+arguments are equivalent to the imsx modifiers in Perl.  If
+DESTRUCTIVE is not NIL, the function is allowed to destructively
+modify its first argument (but only if it's a parse tree).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-SCANNER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "REGEX-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CASE-INSENSITIVE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MULTI-LINE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "SINGLE-LINE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "EXTENDED-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "DESTRUCTIVE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-SCANNER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SCANNER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CASE-INSENSITIVE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MULTI-LINE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "SINGLE-LINE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "EXTENDED-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "DESTRUCTIVE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-SCANNER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CASE-INSENSITIVE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MULTI-LINE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "SINGLE-LINE-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "EXTENDED-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "DESTRUCTIVE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SCAN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "REAL-START-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Searches TARGET-STRING from START to END and tries
+to match REGEX.  On success returns four values - the start of the
+match, the end of the match, and two arrays denoting the beginnings
+and ends of register matches.  On failure returns NIL.  REGEX can be a
+string which will be parsed according to Perl syntax, a parse tree, or
+a pre-compiled scanner created by CREATE-SCANNER.  TARGET-STRING will
+be coerced to a simple string if it isn't one already.  The
+REAL-START-POS parameter should be ignored - it exists only for
+internal purposes.")
+    (:TYPE :METHOD :SYMBOL (:NAME "SCAN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "REGEX-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+      (((:NAME "REAL-START-POS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "*REAL-START-POS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "SCAN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SCANNER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+      (((:NAME "REAL-START-POS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "*REAL-START-POS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "SCAN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+      (((:NAME "REAL-START-POS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "*REAL-START-POS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCAN-TO-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+      (:NAME "SHAREDP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like SCAN but returns substrings of TARGET-STRING instead of
+positions, i.e. this function returns two values on success: the whole
+match as a string plus an array of substrings (or NILs) corresponding
+to the matched registers.  If SHAREDP is true, the substrings may
+share structure with TARGET-STRING.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "REGISTER-GROUPS-BIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VAR-LIST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SHAREDP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Executes BODY with the variables in VAR-LIST bound to the
+corresponding register groups after TARGET-STRING has been matched
+against REGEX, i.e. each variable is either bound to a string or to
+NIL.  If there is no match, BODY is _not_ executed. For each element
+of VAR-LIST which is NIL there's no binding to the corresponding
+register group.  The number of variables in VAR-LIST must not be
+greater than the number of register groups.  If SHAREDP is true, the
+substrings may share structure with TARGET-STRING.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-SCANS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "MATCH-START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "MATCH-END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REG-STARTS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REG-ENDS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "RESULT-FORM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Iterates over TARGET-STRING and tries to match REGEX as often as
+possible evaluating BODY with MATCH-START, MATCH-END, REG-STARTS, and
+REG-ENDS bound to the four return values of each match in turn.  After
+the last match, returns RESULT-FORM if provided or NIL otherwise. An
+implicit block named NIL surrounds DO-SCANS; RETURN may be used to
+terminate the loop immediately.  If REGEX matches an empty string the
+scan is continued one position behind this match. BODY may start with
+declarations.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-MATCHES" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "MATCH-START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "MATCH-END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "RESULT-FORM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Iterates over TARGET-STRING and tries to match REGEX as often as
+possible evaluating BODY with MATCH-START and MATCH-END bound to the
+start/end positions of each match in turn.  After the last match,
+returns RESULT-FORM if provided or NIL otherwise.  An implicit block
+named NIL surrounds DO-MATCHES; RETURN may be used to terminate the
+loop immediately.  If REGEX matches an empty string the scan is
+continued one position behind this match.  BODY may start with
+declarations.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-MATCHES-AS-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "MATCH-VAR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "RESULT-FORM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SHAREDP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Iterates over TARGET-STRING and tries to match REGEX as often as
+possible evaluating BODY with MATCH-VAR bound to the substring of
+TARGET-STRING corresponding to each match in turn.  After the last
+match, returns RESULT-FORM if provided or NIL otherwise.  An implicit
+block named NIL surrounds DO-MATCHES-AS-STRINGS; RETURN may be used to
+terminate the loop immediately.  If REGEX matches an empty string the
+scan is continued one position behind this match.  If SHAREDP is true,
+the substrings may share structure with TARGET-STRING.  BODY may start
+with declarations.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-REGISTER-GROUPS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VAR-LIST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "RESULT-FORM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "SHAREDP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Iterates over TARGET-STRING and tries to match REGEX as often as
+possible evaluating BODY with the variables in VAR-LIST bound to the
+corresponding register groups for each match in turn, i.e. each
+variable is either bound to a string or to NIL.  For each element of
+VAR-LIST which is NIL there's no binding to the corresponding register
+group. The number of variables in VAR-LIST must not be greater than
+the number of register groups.  After the last match, returns
+RESULT-FORM if provided or NIL otherwise.  An implicit block named NIL
+surrounds DO-REGISTER-GROUPS; RETURN may be used to terminate the loop
+immediately. If REGEX matches an empty string the scan is continued
+one position behind this match.  If SHAREDP is true, the substrings
+may share structure with TARGET-STRING.  BODY may start with
+declarations.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-MATCHES" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))))
+     :DOCUMENTATION
+     "Returns a list containing the start and end positions of all
+matches of REGEX against TARGET-STRING, i.e. if there are N matches
+the list contains (* 2 N) elements.  If REGEX matches an empty string
+the scan is continued one position behind this match.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-MATCHES-AS-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+      (:NAME "SHAREDP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list containing all substrings of TARGET-STRING which
+match REGEX. If REGEX matches an empty string the scan is continued
+one position behind this match. If SHAREDP is true, the substrings may
+share structure with TARGET-STRING.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SPLIT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+      (:NAME "LIMIT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "WITH-REGISTERS-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "OMIT-UNMATCHED-P" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "SHAREDP" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Matches REGEX against TARGET-STRING as often as possible and
+returns a list of the substrings between the matches.  If
+WITH-REGISTERS-P is true, substrings corresponding to matched
+registers are inserted into the list as well.  If OMIT-UNMATCHED-P is
+true, unmatched registers will simply be left out, otherwise they will
+show up as NIL.  LIMIT limits the number of elements returned -
+registers aren't counted.  If LIMIT is NIL (or 0 which is
+equivalent), trailing empty strings are removed from the result list.
+If REGEX matches an empty string the scan is continued one position
+behind this match.  If SHAREDP is true, the substrings may share
+structure with TARGET-STRING.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-CASE-MODIFIER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "FROM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Checks whether all words in STR between FROM and TO are upcased,
+downcased or capitalized and returns a function which applies a
+corresponding case modification to strings.  Returns #'IDENTITY
+otherwise, especially if words in the target area extend beyond FROM
+or TO.  STR is supposed to be bounded by START and END.  It is assumed
+that (<= START FROM TO END).")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "BUILD-REPLACEMENT-TEMPLATE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPLACEMENT-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Converts a replacement string for REGEX-REPLACE or
+REGEX-REPLACE-ALL into a replacement template which is an
+S-expression.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BUILD-REPLACEMENT-TEMPLATE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPLACEMENT-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BUILD-REPLACEMENT-TEMPLATE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPLACEMENT-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BUILD-REPLACEMENT-TEMPLATE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPLACEMENT-FUNCTION-SYMBOL" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+        NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BUILD-REPLACEMENT-TEMPLATE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "REPLACEMENT-LIST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BUILD-REPLACEMENT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REPLACEMENT-TEMPLATE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MATCH-START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "MATCH-END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "REG-STARTS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "REG-ENDS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "SIMPLE-CALLS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "ELEMENT-TYPE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Accepts a replacement template and the current values from the
+matching process in REGEX-REPLACE or REGEX-REPLACE-ALL and returns the
+corresponding string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REPLACE-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "REPLACEMENT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "POS-LIST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "REG-LIST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "PRESERVE-CASE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "SIMPLE-CALLS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "ELEMENT-TYPE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Auxiliary function used by REGEX-REPLACE and REGEX-REPLACE-ALL.
+POS-LIST contains a list with the start and end positions of all
+matches while REG-LIST contains a list of arrays representing the
+corresponding register start and end positions.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REGEX-REPLACE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "REPLACEMENT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+      (:NAME "PRESERVE-CASE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "SIMPLE-CALLS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      ((:NAME "ELEMENT-TYPE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Try to match TARGET-STRING between START and END against REGEX and
+replace the first match with REPLACEMENT.  Two values are returned;
+the modified string, and T if REGEX matched or NIL otherwise.
+
+  REPLACEMENT can be a string which may contain the special substrings
+\"\\&\" for the whole match, \"\\`\" for the part of TARGET-STRING
+before the match, \"\\'\" for the part of TARGET-STRING after the
+match, \"\\N\" or \"\\{N}\" for the Nth register where N is a positive
+integer.
+
+  REPLACEMENT can also be a function designator in which case the
+match will be replaced with the result of calling the function
+designated by REPLACEMENT with the arguments TARGET-STRING, START,
+END, MATCH-START, MATCH-END, REG-STARTS, and REG-ENDS. (REG-STARTS and
+REG-ENDS are arrays holding the start and end positions of matched
+registers or NIL - the meaning of the other arguments should be
+obvious.)
+
+  Finally, REPLACEMENT can be a list where each element is a string,
+one of the symbols :MATCH, :BEFORE-MATCH, or :AFTER-MATCH -
+corresponding to \"\\&\", \"\\`\", and \"\\'\" above -, an integer N -
+representing register (1+ N) -, or a function designator.
+
+  If PRESERVE-CASE is true, the replacement will try to preserve the
+case (all upper case, all lower case, or capitalized) of the
+match. The result will always be a fresh string, even if REGEX doesn't
+match.
+
+  ELEMENT-TYPE is the element type of the resulting string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REGEX-REPLACE-ALL" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "REPLACEMENT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)))
+      (:NAME "PRESERVE-CASE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "SIMPLE-CALLS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      ((:NAME "ELEMENT-TYPE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Try to match TARGET-STRING between START and END against REGEX and
+replace all matches with REPLACEMENT.  Two values are returned; the
+modified string, and T if REGEX matched or NIL otherwise.
+
+  REPLACEMENT can be a string which may contain the special substrings
+\"\\&\" for the whole match, \"\\`\" for the part of TARGET-STRING
+before the match, \"\\'\" for the part of TARGET-STRING after the
+match, \"\\N\" or \"\\{N}\" for the Nth register where N is a positive
+integer.
+
+  REPLACEMENT can also be a function designator in which case the
+match will be replaced with the result of calling the function
+designated by REPLACEMENT with the arguments TARGET-STRING, START,
+END, MATCH-START, MATCH-END, REG-STARTS, and REG-ENDS. (REG-STARTS and
+REG-ENDS are arrays holding the start and end positions of matched
+registers or NIL - the meaning of the other arguments should be
+obvious.)
+
+  Finally, REPLACEMENT can be a list where each element is a string,
+one of the symbols :MATCH, :BEFORE-MATCH, or :AFTER-MATCH -
+corresponding to \"\\&\", \"\\`\", and \"\\'\" above -, an integer N -
+representing register (1+ N) -, or a function designator.
+
+  If PRESERVE-CASE is true, the replacement will try to preserve the
+case (all upper case, all lower case, or capitalized) of the
+match. The result will always be a fresh string, even if REGEX doesn't
+match.
+
+  ELEMENT-TYPE is the element type of the resulting string.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "REGEX-APROPOS-AUX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "PACKAGES" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "CASE-INSENSITIVE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "RETURN-FORM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Auxiliary macro used by REGEX-APROPOS and REGEX-APROPOS-LIST. Loops
+through PACKAGES and executes BODY with SYMBOL bound to each symbol
+which matches REGEX. Optionally evaluates and returns RETURN-FORM at
+the end. If CASE-INSENSITIVE is true and REGEX isn't already a
+scanner, a case-insensitive scanner is used.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REGEX-APROPOS-LIST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PACKAGES" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "CASE-INSENSITIVE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Similar to the standard function APROPOS-LIST but returns a list of
+all symbols which match the regular expression REGEX.  If
+CASE-INSENSITIVE is true and REGEX isn't already a scanner, a
+case-insensitive scanner is used.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINT-SYMBOL-INFO" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Auxiliary function used by REGEX-APROPOS. Tries to print some
+meaningful information about a symbol.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REGEX-APROPOS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PACKAGES" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "CASE-INSENSITIVE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Similar to the standard function APROPOS but returns a list of all
+symbols which match the regular expression REGEX.  If CASE-INSENSITIVE
+is true and REGEX isn't already a scanner, a case-insensitive scanner
+is used.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUOTE-META-CHARS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Quote, i.e. prefix with #\\\\, all non-word characters in STRING.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUOTE-SECTIONS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Replace sections inside of STRING which are enclosed by \\Q and
+\\E with the quoted equivalent of these sections (see
+QUOTE-META-CHARS). Repeat this as long as there are such
+sections. These sections may nest.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLEAN-COMMENTS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXTENDED-MODE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Clean (?#...) comments within STRING for quoting, i.e. convert
+\\Q to Q and \\E to E.  If EXTENDED-MODE is true, also clean
+end-of-line comments, i.e. those starting with #\\# and ending with
+#\\Newline.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-TREE-SYNONYM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns the parse tree the SYMBOL symbol is a synonym for.  Returns
+NIL is SYMBOL wasn't yet defined to be a synonym.")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PARSE-TREE-SYNONYM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEW-PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Defines SYMBOL to be a synonm for the parse tree NEW-PARSE-TREE.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-PARSE-TREE-SYNONYM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL)
+      (:NAME "PARSE-TREE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP NIL))
+     :DOCUMENTATION "Defines the symbol NAME to be a synonym for the parse tree
+PARSE-TREE.  Both arguments are quoted."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "QUOTE-META-CHARS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "*USE-BMH-MATCHERS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "REGEX-APROPOS-LIST" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "PARSE-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "ALL-MATCHES-AS-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "SPLIT" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "REGISTER-GROUPS-BIND" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "*ALLOW-NAMED-REGISTERS*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "PPCRE-SYNTAX-ERROR-STRING" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "DO-REGISTER-GROUPS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "PPCRE-ERROR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "REGEX-APROPOS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "SCAN-TO-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "DO-SCANS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "*OPTIMIZE-CHAR-CLASSES*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "*PROPERTY-RESOLVER*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "ALL-MATCHES" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "DEFINE-PARSE-TREE-SYNONYM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "PPCRE-INVOCATION-ERROR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "REGEX-REPLACE" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "PPCRE-SYNTAX-ERROR" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "PARSE-TREE-SYNONYM" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "PPCRE-SYNTAX-ERROR-POS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "*REGEX-CHAR-CODE-LIMIT*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "DO-MATCHES-AS-STRINGS" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "*ALLOW-QUOTING*" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "REGEX-REPLACE-ALL" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "SCAN" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "DO-MATCHES" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "CREATE-SCANNER" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP T)
+    (:NAME "CREATE-OPTIMIZED-TEST-FUNCTION" :PACKAGE-NAME "CL-PPCRE" :EXTERNALP
+     T)))))

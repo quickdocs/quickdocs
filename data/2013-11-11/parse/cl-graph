@@ -1,0 +1,3321 @@
+
+(:TYPE :SYSTEM :NAME "cl-graph" :AUTHOR
+ "Gary Warren King <gwking@metabang.com>" :MAINTAINER
+ "Gary Warren King <gwking@metabang.com>" :VERSION "0.10.2" :LICENCE
+ "MIT Style License" :DESCRIPTION
+ "Graph manipulation utilities for Common Lisp" :LONG-DESCRIPTION NIL
+ :DEPENDS-ON
+ ("(VERSION METATILITIES-BASE 0.6.0)" "(VERSION CL-CONTAINERS 0.12.0)"
+  "METABANG-BIND")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-GRAPH" :FULL-NAME "CL-GRAPH" :DOCUMENTATION
+   "CL-Graph is a Common Lisp library for manipulating graphs and running graph algorithms."
+   :SYMBOL-LIST
+   ((:TYPE :GENERIC :SYMBOL
+     (:NAME "MAKE-VERTEX-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "INITIAL-SIZE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Make-vertex-container is called during graph
+  creation and can be used to create specialized containers to hold
+  graph vertexes.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAKE-EDGE-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "INITIAL-SIZE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Make-edge-container is called during graph creation
+  and can be used to create specialized containers to hold graph
+  edges.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAKE-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Create a new graph of type `graph-type'. Graph type
+can be a symbol naming a sub-class of basic-graph or a list. If it is
+a list of symbols naming different classes. If graph-type is a list,
+then a class which has all of the listed classes as superclasses will
+be found (or created). In either case, the new graph will be created
+as if with a call to make-instance.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAKE-EDGE-FOR-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EDGE-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "It should not usually necessary to call this in
+  user code. Creates a new edge between vertex-1 and vertex-2 for the
+  graph. If the edge-type and edge-class are not specified, they will
+  be determined from the defaults of the graph.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ADD-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORCE-NEW?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Add-edge adds an existing edge to a graph. As
+  add-edge-between-vertexes is generally more natural to use, this
+  method is rarely called.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ADD-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VALUE-OR-VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VALUE-OR-VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IF-DUPLICATE-DO" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "EDGE-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Adds an edge between two vertexes and returns it.
+If force-new? is true, the edge is added even if one already exists.
+If the vertexes are not found in the graph, they will be added
+(unless :error-if-not-found? is true). The class of the edge can be
+specified using :edge-class or :edge-type. If :edge-type is used, it
+can be either :directed or :undirected; the actual class of the edge
+will be determined by using the edge-types of the graph. If
+neither :edge-type nor :edge-class is specified, then a directed edge
+will be created.
+
+If-duplicate-do is used when the 'same' edge is added more than
+once. It can be either a function on one variable or :ignore
+or :force. If it is :ignore, then the previously added edge is
+returned; if it is :force, then another edge is added between the two
+vertexes; if it is a function, then this function will be called with
+the previous edge.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DELETE-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Delete the `edge' from the `graph' and returns it.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DELETE-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Delete all edges from `graph'. Returns the graph..")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DELETE-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VALUE-OR-VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VALUE-OR-VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Finds an edge in the graph between the two
+  specified vertexes. If values (i.e., non-vertexes) are passed in,
+  then the graph will be searched for matching vertexes.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ADD-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VALUE-OR-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IF-DUPLICATE-DO" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Adds a vertex to a graph. If called with a vertex,
+  then this vertex is added. If called with a value, then a new vertex
+  is created to hold the value. If-duplicate-do can be one
+  of :ignore, :force, :replace, :replace-value, :error, or a function. The
+  default is :ignore.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DELETE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VALUE-OR-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Remove a vertex from a graph. The 'vertex-or-value'
+argument can be a vertex of the graph or a 'value' that will find a
+vertex via a call to find-vertex. A graph-vertex-not-found-error will
+be raised if the vertex is not found or is not part of the graph.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FIND-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Search 'graph' for a vertex with element
+  'value'. The search is fast but inflexible because it uses an
+  associative-container. If you need more flexibity, see
+  search-for-vertex.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SEARCH-FOR-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Search 'graph' for a vertex with element
+  'value'. The 'key' function is applied to each element before that
+  element is compared with the value. The comparison is done using the
+  function 'test'. If you don't need to use key or test, then consider
+  using find-vertex instead.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FIND-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Search `graph` for an edge whose vertexes match
+  `edge`. This means that `vertex-1` of the edge in the graph must
+  match `vertex-1` of `edge` and so forth. Wil signal an error of type
+  `graph-edge-not-found-error` unless `error-if-not-found?` is
+  nil. [?? Unused. Remove?]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FIND-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VALUE-OR-VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VALUE-OR-VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Searches `graph` for an edge that connects vertex-1
+  and vertex-2.  [?? Ignores error-if-not-found? Does directedness
+  matter? need test]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SOURCE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the source-vertex of a directed
+  edge. Compare with `vertex-1`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TARGET-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the target-vertex of a directed
+  edge. Compare with `vertex-2`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ITERATE-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH-OR-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Calls `fn` on each edge of graph or vertex.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ITERATE-SOURCE-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "In a directed graph, calls `fn` on each edge of a
+  vertex that begins at vertex. In an undirected graph, this is
+  equivalent to `iterate-edges`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ITERATE-TARGET-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "In a directed graph, calls `fn` on each edge of a
+  vertex that ends at vertex. In an undirected graph, this is
+  equivalent to `iterate-edges`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "HAS-CHILDREN-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "In a directed graph, returns true if vertex has any
+  edges that point from vertex to some other
+  vertex (cf. iterate-target-edges). In an undirected graph,
+  `has-children-p` is testing only whether or not the vertex has any
+  edges.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "HAS-PARENT-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "In a directed graph, returns true if vertex has any
+  edges that point from some other vertex to this
+  vertex (cf. iterate-source-edges). In an undirected graph,
+  `has-parent-p` is testing only whether or not the vertex has any
+  edges.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ITERATE-PARENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Calls fn on every vertex that is either connected
+  to vertex by an undirected edge or is at the source end of a
+  directed edge.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ITERATE-NEIGHBORS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Calls fn on every vertex adjecent to vertex See
+  also iterate-children and iterate-parents.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RENUMBER-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Assign a number to each vertex in a graph in some
+  unspecified order. [?? internal]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RENUMBER-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Assign a number to each edge in a graph in some
+  unspecified order. [?? internal]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERATE-DIRECTED-FREE-TREE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns a version of graph which is a directed free
+tree rooted at root.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "IN-UNDIRECTED-CYCLE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "START-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MARKED" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "PREVIOUS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Return true if-and-only-if an undirected cycle in
+  graph is reachable from start-vertex.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "UNDIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns true if-and-only-if edge is undirected")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns true if-and-only-if edge is directed")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TAGGED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "Returns true if-and-only-if edge's tag slot is t")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "UNTAGGED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns true if-and-only-if edge's tage slot is nil")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ADJACENTP" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Return true if vertex-1 and vertex-2 are connected
+  by an edge. [?? compare with vertices-share-edge-p and remove one or
+  maybe call one directed-adjacentp]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAKE-FILTERED-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OLD-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "TEST-FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "GRAPH-COMPLETION-METHOD" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "DEPTH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "NEW-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Takes a GRAPH and a TEST-FN (a single argument
+function returning NIL or non-NIL), and filters the graph nodes
+according to the test-fn (those that return non-NIL are accepted),
+returning a new graph with only nodes corresponding to those in the
+original graph that satisfy the test (the nodes in the new graph are
+new, but their values and name point to the same contents of the
+original graph).  There are four options for how the new graph is
+filled-out, depending on the following keywords passed to the optional
+GRAPH-COMPLETION-METHOD argument:
+
+*  NIL (default)
+
+     New graph has only nodes that correspond to those in the original
+       graph that pass the test.  NO LINKS are reproduced.
+
+*  :COMPLETE-LINKS
+
+     New graph has only nodes that pass, but reproduces corresponding
+       links between passing nodes in the original graph.
+
+*  :COMPLETE-CLOSURE-NODES-ONLY
+
+     New graph also includes nodes corresponding to the transitive
+       closure(s) that include the passign nodes in the original
+       graph.  NO LINKS are reproduced.
+
+*  :COMPLETE-CLOSURE-WITH-LINKS
+
+     Same as above, except corresponding links are reproduced.
+
+For both transitive closure options, an additional optional argument,
+DEPTH, specifies how many links away from a source vertex to travel in
+gathering vertexes of the closure.  E.g., a depth of 1 returns the
+source vertex and the parents and children of that vertex (all
+vertexes one link away from the source).  The default value is NIL,
+indicating that all vertexes are to be included, no matter their
+depth.  This value is ignored in non closure options.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "PROJECT-BIPARTITE-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NEW-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "EXISTING-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VERTEX-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-CLASSIFIER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates the unimodal bipartite projects of
+existing-graph with vertexes for each vertex of existing graph whose
+`vertex-classifier` is eq to `vertex-class` and where an edge existing
+between two vertexes of the graph if and only if they are connected to
+a shared vertex in the existing-graph.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ASSORTATIVITY-COEFFICIENT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "MIXING-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "An assortative graph is one where vertexes of the
+same type are more likely to have edges between them. The (discrete)
+assortativity-coefficient measures how assortative a graph is based on
+its mixing matrix. The definition we use is from Mixing Patterns in
+Networks by Mark Newman. See the citation 'newman200-mixing' in moab
+or the URL 'http://arxiv.org/abs/cond-mat/0209450'.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GRAPH->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "OUTPUT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "GRAPH-FORMATTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VERTEX-KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VERTEX-LABELER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VERTEX-FORMATTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "EDGE-LABELER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "EDGE-FORMATTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Generates a description of `graph` in DOT file format. The
+   formatting can be altered using `graph->dot-properties,`
+   `vertex->dot,` and `edge->dot` as well as `edge-formatter,`
+   `vertex-formatter,` `vertex-labeler,` and `edge-labeler`. These can
+   be specified directly in the call to `graph->dot` or by creating
+   subclasses of basic-graph, basic-vertex and basic-edge.
+
+The output can be a stream or pathname or one of the values `nil` or
+`t`. If output is `nil`, then graph->dot returns a string containing
+the DOT description. If it is `t`, then the DOT description is written
+to \\*standard-output\\*.
+
+Here is an example;
+
+    (let ((g (make-container 'graph-container :default-edge-type :directed)))
+      (loop for (a b) in '((a b) (b c) (b d) (d e) (e f) (d f)) do
+            (add-edge-between-vertexes g a b))
+      (graph->dot g nil))
+
+    \"digraph G {
+    E []
+    C []
+    B []
+    A []
+    D []
+    F []
+    E->F []
+    B->C []
+    B->D []
+    A->B []
+    D->E []
+    D->F []
+    }\"
+
+For more information about DOT file format, search the web for 'DOTTY' and
+'GRAPHVIZ'.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GRAPH->DOT-PROPERTIES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "G" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Unless a different graph-formatter is specified,
+  this method is called by graph->dot to output graph-properties onto
+  a stream. The function can assume that the openning and closing
+  brackets will be taken care of by the graph->dot.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "VERTEX->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Unless a different vertex-formatter is specified
+  with a keyword argument, this is used by graph->dot to output vertex
+  formatting for `vertex` onto the `stream`. The function can assume
+  that openning and closing square brackets and label have already
+  been taken care of.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "EDGE->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Used by graph->dot to output edge formatting for
+  `edge` onto the `stream`. The function can assume that openning and
+  closing square brackets and label have already been taken care
+  of.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERATE-GNM" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GENERATOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "N" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "M" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Generate a 'classic' random graph G(n, m) with n
+  vertexes and m edges.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERATE-GNP" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GENERATOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "N" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Generate the Erd\"os-R'enyi random graph G(n,
+p). I.e., a graph with n vertexes where each possible edge appears
+with probability p. This implementation is from Efficient Generation
+of Large Random Networks (see batagelj-generation-2005 in doab).")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERATE-UNDIRECTED-GRAPH-VIA-ASSORTATIVITY-MATRIX" :PACKAGE-NAME
+      "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GENERATOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "GRAPH-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "SIZE" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+      (:NAME "EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "KIND-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "ASSORTATIVITY-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VERTEX-LABELER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "This generates a random graph with 'size' vertexes.
+The vertexes can be in multiple different classes and the number of
+vertexes in each class is specified in the 'kind-matrix'. If the
+matrix has all fixnums, then it specifies the counts and these should
+add up to the size. If the kind-matrix contains non-fixnums then the
+values are treated as ratios.
+
+The assortativity-matrix specifies the number of edges between
+vertexes of different kinds.
+
+The vertex-labeler is a function of two parameters: the vertex kind
+and the index. It should return whatever the 'value' of the vertex
+ought to be.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERATE-UNDIRECTED-GRAPH-VIA-VERTEX-PROBABILITIES" :PACKAGE-NAME
+      "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GENERATOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "GRAPH-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "SIZE" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+      (:NAME "KIND-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "PROBABILITY-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VERTEX-LABELER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Generate an Erd\"os-R/'enyi like random graph
+having multiple vertex kinds. See the function Gnp for the simple one
+vertex kind method.
+
+Generator and graph-class specify the random number generator used and
+the class of the graph produced; Size the number of vertexes. Kind
+matrix is a vector of ratios specifying the distribution of vertex
+kinds {0 ... (1- k)}.  The probability-matrix is a k x k matrix
+specifying the probability that two vertexes of the row-kind and the
+column-kind will have an edge between them. vertex-labeler is a
+function of two arguments (the kind and the vertex number) called to
+create values for vertexes. It will be called only once for each
+vertex created.
+
+The clever sequential sampling technique in this implementation is
+from Efficient Generation of Large Random Networks (see
+batagelj-generation-2005 in moab).")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERATE-SCALE-FREE-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "GENERATOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "SIZE" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+      (:NAME "KIND-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "ADD-EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "OTHER-VERTEX-KIND-SAMPLERS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+       NIL)
+      (:NAME "VERTEX-LABELER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Generates a 'scale-free' graph using preferential
+  attachment -- too damn slow.
+
+Size is the number of vertexes; kind-matrix is as in
+generate-undirected-graph-via-assortativity-matrix, etc.;
+add-edge-count is the number of edges to add for each vertex;
+other-vertex-kind-samplers are confusing...; and vertex-labeler is
+used to create vertex elements (as in other generators).")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERATE-ASSORTATIVE-GRAPH-WITH-DEGREE-DISTRIBUTIONS"
+      :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GENERATOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "ASSORTATIVITY-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "AVERAGE-DEGREES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "DEGREE-DISTRIBUTIONS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VERTEX-LABELER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERATE-SIMPLE-PREFERENTIAL-ATTACHMENT-GRAPH" :PACKAGE-NAME
+      "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GENERATOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "SIZE" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+      (:NAME "MINIMUM-DEGREE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Generate a simple scale-free graph using the
+preferential attachment mechanism of Barabasi and Albert. The
+implementation is from Efficient Generation of Large Random Networks
+(see batagelj-generation-2005 in moab). Self-edges are possible.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERATE-PREFERENTIAL-ATTACHMENT-GRAPH" :PACKAGE-NAME "CL-GRAPH"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GENERATOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "SIZE" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+      (:NAME "KIND-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "MINIMUM-DEGREE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "ASSORTATIVITY-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Generate a Barabasi-Albert type scale free graph
+  with multiple vertex kinds.
+
+The idea behind this implementation is from Efficient Generation of
+Large Random Networks (see batagelj-generation-2005 in moab).")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAKE-VERTEX-FOR-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Creates a new vertex for graph `graph`. The keyword
+  arguments include:
+
+* vertex-class : specify the class of the vertex
+* element      : specify the `element` of the vertex
+
+and any other initialization arguments that make sense for the vertex
+class.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TAG-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)) :DOCUMENTATION
+     "Sets the `tag` of all the edges of `thing` to
+  true. [?? why does this exist?]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "UNTAG-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Sets the `tag` of all the edges of `thing` to nil.
+  [?? why does this exist?]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "UNTAG-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "Sets the `tag` of all the edges of `thing` to
+  true. [?? why does this exist?]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TAG-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "Sets the `tag` of all the edges of `thing` to
+  true. [?? why does this exist?]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "REPLACE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "OLD" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "NEW" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Replace vertex `old` in graph `graph` with vertex
+  `new`. The edge structure of the graph is maintained.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ADD-EDGE-TO-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Attaches the edge `edge` to the vertex `vertex`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SOURCE-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns a list of the source edges of
+`vertex`. I.e., the edges that begin at `vertex`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TARGET-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns a list of the target edges of `vertex`.
+I.e., the edges that end at `vertex`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CHILD-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns a list of the vertexes to which `vertex` is
+connected by an edge and for which `vertex` is the source vertex.  If
+the connecting edge is undirected, then the vertex is always counted
+as a source. [?? Could be a defun].")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "PARENT-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns a list of the vertexes to which `vertex` is
+  connected by an edge and for which `vertex` is the target vertex. If
+  the connecting edge is undirected, then the vertex is always counted
+  as a target. [?? Could be a defun].")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "NEIGHBOR-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns a list of the vertexes to which `vertex` is
+  connected by an edge disregarding edge direction. In a directed
+  graph, neighbor-vertexes is the union of parent-vertexes and
+  child-vertexes. [?? Could be a defun].")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "NUMBER-OF-NEIGHBORS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns the number of neighbors of
+  `vertex` (cf. `neighbor-vertexes`). [?? could be a defun]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "IN-CYCLE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "START-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns true if `start-vertex` is in some cycle in
+  `graph`. This uses child-vertexes to generate the vertexes adjacent
+  to a vertex.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ITERATE-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Calls `fn` on each of the vertexes of `thing`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns a list of the edges of `thing`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "VERTEX-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the number of vertexes in `graph`. [??
+  could be a defun]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns a list of the vertexes of `thing`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SOURCE-EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns the number of source edges of
+  vertex (cf. source-edges). [?? could be a defun]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TARGET-EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns the number of target edges of
+  vertex (cf. target-edges). [?? could be a defun]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GRAPH-ROOTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "Returns a list of the roots of graph. A root is
+  defined as a vertex with no source edges (i.e., all of the edges
+  are out-going). (cf. rootp) [?? could be a defun]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ROOTP" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "Returns true if `vertex` is a root vertex (i.e.,
+  it has no incoming (source) edges).")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FIND-VERTEX-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "PREDICATE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the first vertex in `thing` for which the
+  `predicate` function returns non-nil. If the `key` is supplied, then
+  it is applied to the vertex before the predicate is.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FIND-EDGE-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the first edge in `thing` for which the
+  `predicate` function returns non-nil. If the `key` is supplied, then
+  it is applied to the edge before the predicate is.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FIND-EDGES-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "PREDICATE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a list of edges in `thing` for which the
+  `predicate` returns non-nil. [?? why no key function?]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FIND-VERTEXES-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "PREDICATE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list of vertexes in `thing` for which the `predicate` returns non-nil. [?? why no key function?]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FORCE-UNDIRECTED" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Ensures that the graph is undirected (possibly by
+  calling change-class on the edges).")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TRAVERSE-ELEMENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "STYLE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "WIP")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TRAVERSE-ELEMENTS-HELPER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "STYLE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "MARKER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "WIP")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ANY-UNDIRECTED-CYCLE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns true if there are any undirected cycles in `graph`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the number of edges attached to
+  `vertex`. Compare with the more flexible `vertex-degree`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TOPOLOGICAL-SORT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns a list of vertexes sorted by the depth from
+  the roots of the graph. See also assign-level and graph-roots.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ASSIGN-LEVEL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "LEVEL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Sets the depth of `vertex` to level and then
+  recursively sets the depth of all of the children of `vertex` to
+  (1+ level).")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DEPTH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the maximum depth of the vertexes in graph
+  assuming that the roots are of depth 0 and that each edge distance
+  from the roots increments the depth by one.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAKE-VERTEX-EDGES-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "CONTAINER-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Called during the initialization of a vertex to
+  create the create the container used to store the edges incident to
+  the vertex. The initarg :vertex-edges-container-class can be used to
+  alter the default container class.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "OTHER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VALUE-OR-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Assuming that the value-or-vertex corresponds to
+  one of the vertexes for `edge`, this method returns the other vertex
+  of `edge`. If the value-or-vertex is not part of edge, then an error
+  is signaled. [?? Should create a new condition for this]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FIND-EDGE-BETWEEN-VERTEXES-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VALUE-OR-VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VALUE-OR-VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Finds and returns an edge between value-or-vertex-1
+and value-or-vertex-2 which returns true (as a generalized boolean) when
+evaluated by `fn`. Unless error-if-not-found? is nil, then a error will 
+be signaled. [?? IS error really signaled? need a test.]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "VERTICES-SHARE-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Return true if vertex-1 and vertex-2 are connected
+  by an edge. [?? Compare adjacentp]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GRAPH-EDGE-MIXTURE-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-CLASSIFIER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EDGE-WEIGHT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Return the `mixing-matrix` of graph based on the
+  classifier and the edge-weight function. The mixing matrix is a
+  matrix whose runs and columns represent each class of vertex in the
+  graph. The entries of the matrix show the total number of edges
+  between vertexes of the two kinds. [?? Edge-weight is not used; also
+  compare with graph-mixture-matrix.]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GRAPH-MIXING-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-CLASSIFIER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EDGE-WEIGHT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Return the `mixing-matrix` of graph based on the
+  classifier and the edge-weight function. The mixing matrix is a
+  matrix whose runs and columns represent each class of vertex in the
+  graph. The entries of the matrix show the total number of edges
+  between vertexes of the two kinds. [?? Edge-weight is not used; also
+  compare with graph-edge-mixture-matrix.]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CONNECTED-COMPONENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns a union-find-container representing the
+  connected-components of `graph`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CONNECTED-COMPONENT-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns the number of connected-components of
+  graph.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FIND-CONNECTED-COMPONENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns a list of sub-graphs of `graph` where each
+  sub-graph is a different connected component of graph. Compare with
+  connected-components and connected-component-count.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "INITIALIZE-VERTEX-DATA" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "BREADTH-FIRST-VISITOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "SOURCE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "BREADTH-FIRST-SEARCH-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "SOURCE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MST-FIND-SET" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MST-MAKE-SET" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MST-TREE-UNION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "V1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "V2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MST-LINK" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "V1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "V2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ADD-EDGES-TO-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IF-DUPLICATE-DO" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAKE-GRAPH-FROM-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX-LIST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Create a new graph given a list of vertexes (which
+  are assumed to be from the same graph). The new graph contains all
+  of the vertexes in the list and all of the edges between any
+  vertexes on the list.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "EDGE-LESSP-BY-WEIGHT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "EDGE-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "EDGE-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns true if the weight of edge-1 is strictly less than the weight of edge-2.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MINIMUM-SPANNING-TREE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a minimum spanning tree of graph if one exists and nil otherwise.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CONNECTED-GRAPH-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns true if graph is a connected graph and nil otherwise.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "EDGE-LESSP-BY-DIRECTION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "EDGE-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "EDGE-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns true if and only if edge-1 is undirected and edge-2 is directed.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "OUT-EDGE-FOR-VERTEX-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns true if the edge is connected to vertex and
+  is either an undirected edge or a directed edge for which vertex is
+  the source vertex of the edge.")
+    (:TYPE :GENERIC :SYMBOL (:NAME "DFS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OUT-EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DFS-VISIT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "U" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DFS-TREE-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DFS-BACK-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DFS-FORWARD-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DFS-CROSS-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DFS-EDGE-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAP-OVER-ALL-COMBINATIONS-OF-K-VERTEXES" :PACKAGE-NAME "CL-GRAPH"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "K" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAP-OVER-ALL-COMBINATIONS-OF-K-EDGES" :PACKAGE-NAME "CL-GRAPH"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "K" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "COMPLETE-LINKS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NEW-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "OLD-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Add edges between vertexes in the new-graph for
+  which the matching vertexes in the old-graph have edges. The vertex
+  matching is done using `find-vertex`.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SUBGRAPH-CONTAINING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DEPTH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "NEW-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a new graph that is a subset of `graph`
+that contains `vertex` and all of the other vertexes that can be
+reached from vertex by paths of less than or equal of length `depth`.
+If depth is not specified, then the entire sub-graph reachable from
+vertex will be returned. [?? Edge weights are always assumed to be
+one.]")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "WEIGHT" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Returns the weight of an edge. This defaults to 1.0
+and can only be altered if the edge is a sub-class of
+`weighted-edge-mixin`.")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOT-ATTRIBUTE-VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "ATTRIBUTE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DOT-ATTRIBUTE-VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ATTRIBUTE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GRAPH->DOT-EXTERNAL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "FILE-NAME" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ENSURE-VALID-DOT-ATTRIBUTE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "WRITE-NAME-FOR-DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ATTRIBUTE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-CHANGING-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This is used to maintain consistency when changing the value of vertex elements while iterating over the vertexes...")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "CONTAINER-NODE-MIXIN" :PACKAGE-NAME "METABANG.CL-CONTAINERS"
+       :EXTERNALP T))
+     :DOCUMENTATION "This is the root class for all vertexes in CL-Graph."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DEPTH-LEVEL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       ((:NAME "DEPTH-LEVEL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION
+       "`Depth-level` is used by some algorithms for bookkeeping.  [?? Should be in a mixin]")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VERTEX-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "VERTEX-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION
+       "`Vertex-id` is used internally to keep track of vertexes.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ELEMENT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+        (:NAME "ELEMENT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The `element` is the value that this vertex represents.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TAG" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T) :ACCESSORS
+       ((:NAME "TAG" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION
+       "The `tag` slot is used by some algorithms to keep track of which vertexes have been visited.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "The graph in which this vertex is contained.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COLOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       ((:NAME "COLOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "The `color` slot is used by some algorithms for bookkeeping.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RANK" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       ((:NAME "RANK" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "The `rank` is used by some algorithms for bookkeeping.  [?? Should be in a mixin]")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PREVIOUS-NODE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       ((:NAME "PREVIOUS-NODE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION
+       "`Previous-node` is used by some algorithms for bookkeeping. [?? Should be in a mixin]")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NEXT-NODE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       ((:NAME "NEXT-NODE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "`Next-node` is used by some algorithms for bookkeeping.  [?? Should be in a mixin]")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DISCOVERY-TIME" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "DISCOVERY-TIME" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "`Discovery-time` is used by some algorithms for bookkeeping.  [?? Should be in a mixin]")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FINISH-TIME" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       ((:NAME "FINISH-TIME" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION
+       "`Finish-time` is used by some algorithms for bookkeeping.  [?? Should be in a mixin]")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-LOAD-FORM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENVIRONMENT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "This is the root class for all edges in CL-Graph." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "EDGE-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       ((:NAME "EDGE-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "The `edge-id` is used internally by CL-Graph for bookkeeping.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ELEMENT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+        (:NAME "ELEMENT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TAG" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T) :ACCESSORS
+       ((:NAME "TAG" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION
+       "The `tag` is used by some algorithms for bookkeeping. [?? Should probably be in a mixin]")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION "The `graph` of which this edge is a part.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COLOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       ((:NAME "COLOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "The `color` is used by some algorithms for bookkeeping. [?? Should probably be in a mixin]")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-LOAD-FORM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP NIL)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENVIRONMENT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "EDGE-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DIRECTED-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "This mixin class is used to indicate that an edge is directed."
+     :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "WEIGHTED-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "This mixin class adds a `weight` slot to an edge." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "WEIGHT" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "WEIGHT" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The value of the weight of this edge. Defaults to 1.0d0")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "WEIGHT" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "This is the root class for all graphs in CL-Graph." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "GRAPH-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       :ACCESSORS NIL :READERS
+       ((:NAME "GRAPH-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "GRAPH-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       NIL :READERS
+       ((:NAME "GRAPH-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LARGEST-VERTEX-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "LARGEST-VERTEX-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LARGEST-EDGE-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "LARGEST-EDGE-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VERTEX-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS
+       NIL :READERS
+       ((:NAME "VERTEX-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)) :WRITERS
+       NIL :DOCUMENTATION
+       "The class of the vertexes in the graph. This must extend the base-class for vertexes of the graph type. E.g., all vertexes of a graph-container must extend graph-container-vertex.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DIRECTED-EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       :ACCESSORS NIL :READERS
+       ((:NAME "DIRECTED-EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION
+       "The class used to create directed edges in the graph. This must extend the base-class for edges of the graph type and directed-edge-mixin. E.g., the directed-edge-class of a graph-container must extend graph-container-edge and directed-edge-mixin.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "UNDIRECTED-EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       :ACCESSORS NIL :READERS
+       ((:NAME "UNDIRECTED-EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION
+       "The class used to create undirected edges in the graph. This must extend the base-class for edges of the graph type. E.g., all edges of a graph-container must extend graph-container-edge")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONTAINS-DIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "CONTAINS-DIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Returns true if graph contains at least one directed edge. [?? Not sure if this is really keep up-to-date.]")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONTAINS-UNDIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+        T)
+       :ACCESSORS
+       ((:NAME "CONTAINS-UNDIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Returns true if graph contains at least one undirected edge. [?? Not sure if this is really keep up-to-date.]")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VERTEX-TEST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "VERTEX-TEST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VERTEX-KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "VERTEX-KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "EDGE-TEST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "EDGE-TEST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "EDGE-KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "EDGE-KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DEFAULT-EDGE-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       :ACCESSORS NIL :READERS
+       ((:NAME "DEFAULT-EDGE-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION
+       "The default edge type for the graph. This should be one of :undirected or :directed.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DEFAULT-EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       :ACCESSORS NIL :READERS
+       ((:NAME "DEFAULT-EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION "The default edge class for the graph.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-LOAD-FORM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP NIL)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENVIRONMENT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITIAL-SIZE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IF-DUPLICATE-DO" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-VERTEX-FOR-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "VERTEX-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       ((:NAME "VERTEX-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+        (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-EDGE-FOR-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "EDGE-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "DEFAULT-EDGE-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+        (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+      ((:NAME "EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "DEFAULT-EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+        (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNDIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TAGGED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNTAGGED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TAG-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TAG-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNTAG-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNTAG-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNTAG-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TAG-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ELEMENT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IF-DUPLICATE-DO" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "IGNORE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REPLACE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "OLD" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "NEW" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VALUE-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "VALUE-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IF-DUPLICATE-DO" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "IGNORE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "V-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "V-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "IF-DUPLICATE-DO" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "IGNORE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-EDGE-TO-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VALUE-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "VALUE-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VALUE-OR-VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "VALUE-OR-VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "VALUE-OR-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INSERT-ITEM" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SOURCE-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TARGET-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHILD-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PARENT-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NEIGHBOR-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADJACENTP" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADJACENTP" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NUMBER-OF-NEIGHBORS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "IN-CYCLE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENUMBER-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENUMBER-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONTAINER->LIST" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORCE-NEW?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SEARCH-FOR-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "VERTEX-KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+        (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+      ((:NAME "TEST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQUAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SEARCH-FOR-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "VERTEX-KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+        (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+      ((:NAME "TEST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQUAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-ELEMENTS" :PACKAGE-NAME "METABANG.CL-CONTAINERS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-NODES" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SIZE" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VERTEX-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SOURCE-EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TARGET-EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GRAPH-ROOTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ROOTP" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-VERTEX-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-VERTEX-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-EDGE-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-EDGES-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-VERTEXES-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EMPTY!" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEIGHBORS-TO-CHILDREN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NEW-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VISITED-LIST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GENERATE-DIRECTED-FREE-TREE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FORCE-UNDIRECTED" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TRAVERSE-ELEMENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STYLE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TRAVERSE-ELEMENTS-HELPER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STYLE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEPTH" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "MARKER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TRAVERSE-ELEMENTS-HELPER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STYLE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "BREADTH" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "MARKER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GRAPH-SEARCH-FOR-CL-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "STATES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "GOAL-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "SUCCESSORS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "COMBINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "STATE=" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "OLD-STATES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      ((:NAME "NEW-STATE-FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "argument required")))
+     :DOCUMENTATION "Find a state that satisfies goal-p.  Start with states,
+  and search according to successors and combiner.
+  Don't try the same state twice.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "IN-CYCLE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "START-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "IN-UNDIRECTED-CYCLE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "CURRENT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "MARKED" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "MAKE-CONTAINER" :PACKAGE-NAME "METABANG.CL-CONTAINERS"
+         :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "SIMPLE-ASSOCIATIVE-CONTAINER" :PACKAGE-NAME
+          "METABANG.CL-CONTAINERS" :EXTERNALP T))))
+      ((:NAME "PREVIOUS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ANY-UNDIRECTED-CYCLE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-LIST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "ORIGINAL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "TARGET" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Removes all elements in original from target.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-NODELIST-RELATIVES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "NODE-LIST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "Collects set of unique relatives of nodes in node-list.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-TRANSITIVE-CLOSURE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VERTEX-LIST" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DEPTH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Given a list of vertices, returns a combined list of all of the nodes
+in the transitive closure(s) of each of the vertices in the list
+(without duplicates).  Optional DEPTH limits the depth (in _both_ the
+child and parent directions) to which the closure is gathered; default
+nil gathers the entire closure(s).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TOPOLOGICAL-SORT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ASSIGN-LEVEL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "LEVEL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "NUMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ASSIGN-LEVEL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "LEVEL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "NUMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DEPTH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-PATHS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "START-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+       ((:NAME "CONSTANTLY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Apply fn to each path that starts at start-vertex and is of exactly length
+length")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-SHORTEST-PATHS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "START-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "DEPTH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "FILTER" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+       ((:NAME "CONSTANTLY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Apply fn to each shortest path starting at `start-vertex` of depth `depth`. The `filter` predicate is used to remove vertexes from consideration.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "APPEND-UNIQUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LIST1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "LIST2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROJECT-BIPARTITE-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NEW-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-CLASSIFIER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROJECT-BIPARTITE-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NEW-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "VERTEX-CLASSIFIER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "ITERATABLE-CONTAINER-MIXIN" :PACKAGE-NAME
+       "METABANG.CL-CONTAINERS" :EXTERNALP T)
+      (:NAME "NON-ASSOCIATIVE-CONTAINER-MIXIN" :PACKAGE-NAME
+       "METABANG.CL-CONTAINERS" :EXTERNALP T)
+      (:NAME "INITIAL-CONTENTS-MIXIN" :PACKAGE-NAME "METABANG.CL-CONTAINERS"
+       :EXTERNALP T)
+      (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "CONTAINER-USES-NODES-MIXIN" :PACKAGE-NAME
+       "METABANG.CL-CONTAINERS" :EXTERNALP T))
+     :DOCUMENTATION
+     "A graph container is essentially an adjacency list graph representation [?? The Bad name comes from it being implemented with containers... ugh]"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VERTEX-PAIR->EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "VERTEX-PAIR->EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION
+     "This is the root class for edges in graph-containers. It adds vertex-1 and vertex-2 slots."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION
+       "`Vertex-1` is one of the two vertexes that an edge connects. In a directed-edge, `vertex-1` is also the `source-edge`.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION
+       "`Vertex-2` is one of the two vertexes that an edge connects. In a directed edge, `vertex-2` is also the `target-vertex`.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "WEIGHTED-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "WEIGHTED-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION
+     "A weighted edge is both a weighted-edge-mixin and a graph-container-edge."
+     :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION
+     "A graph container vertex keeps track of its edges in the the vertex-edges slot. The storage for this defaults to a vector-container but can be changed using the vertex-edges-container-class initarg."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VERTEX-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "VERTEX-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-VERTEX-EDGES-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "CONTAINER-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VERTEX-EDGES-CONTAINER-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-VERTEX-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "INITIAL-SIZE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-EDGE-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "INITIAL-SIZE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "GRAPH-CONTAINER-DIRECTED-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DIRECTED-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION
+     "A graph-container-directed-edge is both a directed-edge-mixin and a graph-container-edge."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "GRAPH-CONTAINER-DIRECTED-EDGE" :PACKAGE-NAME "CL-GRAPH"
+        :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SOURCE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "TARGET-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SOURCE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TARGET-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OTHER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "V" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OTHER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORCE-NEW?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-EDGE-TO-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-NODE-FOR-CONTAINER" :PACKAGE-NAME "METABANG.CL-CONTAINERS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "NODE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-EDGE-BETWEEN-VERTEXES-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-EDGE-BETWEEN-VERTEXES-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VALUE-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "VALUE-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-IF-NOT-FOUND?" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EMPTY!" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-SOURCE-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-TARGET-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-CHILDREN" :PACKAGE-NAME "METABANG.CL-CONTAINERS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-PARENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITERATE-NEIGHBORS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HAS-CHILDREN-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HAS-PARENT-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VERTICES-SHARE-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "GRAPH-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Stub for matrix based graph. Not implemented." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ADJENCENCY-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "ADJENCENCY-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "GRAPH-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-VERTEX-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "INITIAL-SIZE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-EDGE-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "INITIAL-SIZE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "GRAPH-MATRIX-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Stub for matrix based graph. Not implemented." :SLOT-LIST
+     NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "GRAPH-MATRIX-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION "Stub for matrix based graph. Not implemented." :SLOT-LIST
+     NIL)
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "VERTEX-DATUM" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NODE-COLOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NODE-COLOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "SB-KERNEL" :EXTERNALP NIL)
+      (:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NODE-DEPTH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NODE-DEPTH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "SB-KERNEL" :EXTERNALP NIL)
+      (:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NODE-PARENT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NODE-PARENT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "SB-KERNEL" :EXTERNALP NIL)
+      (:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-VERTEX-DATUM" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "COLOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM1" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "DEPTH" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM2" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "MOST-POSITIVE-FIXNUM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "PARENT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM3" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-VERTEX-DATA" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BREADTH-FIRST-VISITOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "SOURCE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BREADTH-FIRST-VISITOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "SOURCE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BREADTH-FIRST-SEARCH-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "SOURCE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BREADTH-FIRST-SEARCH-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "SOURCE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONNECTED-COMPONENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONNECTED-COMPONENT-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-CONNECTED-COMPONENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MST-FIND-SET" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MST-MAKE-SET" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MST-TREE-UNION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "V1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "V2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MST-LINK" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "V1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "V2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-EDGES-TO-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IF-DUPLICATE-DO" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "IGNORE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EDGE-LESSP-BY-WEIGHT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "E1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "E2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MINIMUM-SPANNING-TREE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EDGE-LESSP-BY-WEIGHT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONNECTED-GRAPH-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EDGE-LESSP-BY-WEIGHT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEPTH-FIRST-SEARCH-TIMER*" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "-1")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EDGE-LESSP-BY-DIRECTION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "E1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "E2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OUT-EDGE-FOR-VERTEX-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "DFS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUT-EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EDGE-LESSP-BY-DIRECTION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "DFS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUT-EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EDGE-LESSP-BY-DIRECTION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ROOTED-DFS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OUT-EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION "A variant of DFS that does not visit nodes that are
+unreachable from the ROOT.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ROOTED-DFS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUT-EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EDGE-LESSP-BY-DIRECTION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ROOTED-DFS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUT-EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EDGE-LESSP-BY-DIRECTION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ROOTED-DFS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUT-EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EDGE-LESSP-BY-DIRECTION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ROOTED-DFS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "ROOT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUT-EDGE-SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EDGE-LESSP-BY-DIRECTION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DFS-VISIT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "U" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "SORTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DFS-TREE-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DFS-BACK-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DFS-FORWARD-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DFS-CROSS-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DFS-EDGE-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAP-OVER-ALL-COMBINATIONS-OF-K-VERTEXES" :PACKAGE-NAME "CL-GRAPH"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "K" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAP-OVER-ALL-COMBINATIONS-OF-K-EDGES" :PACKAGE-NAME "CL-GRAPH"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "K" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAP-OVER-ALL-COMBINATIONS-OF-K-EDGES" :PACKAGE-NAME "CL-GRAPH"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "K" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GRAPH->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "G" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "GRAPH-FORMATTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "GRAPH->DOT-PROPERTIES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+      ((:NAME "VERTEX-KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "VERTEX-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+      ((:NAME "VERTEX-LABELER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "VERTEX-FORMATTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "VERTEX->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+      ((:NAME "EDGE-LABELER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "PRINC" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "EDGE-FORMATTER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EDGE->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GRAPH->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "G" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GRAPH->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "G" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GRAPH->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "G" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GRAPH->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "G" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "PATHNAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GRAPH->DOT-PROPERTIES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "G" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VERTEX->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "V" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EDGE->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "V" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DOT-GRAPH-ATTRIBUTES*" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'((:SIZE CL-GRAPH::COORDINATE) (:BB CL-GRAPH::BOUNDING-BOX)
+  (:PAGE CL-GRAPH::TEXT) (:DPI FLOAT) (:RATIO (:FILL :COMPRESS :AUTO))
+  (:MARGIN FLOAT) (:NODESEP FLOAT) (:RANKSEP FLOAT) (:ORDERING (:OUT))
+  (:OVERLAP CL-GRAPH::TEXT) (:RANKDIR (\"LR\" \"RL\" \"BT\"))
+  (:PAGEDIR CL-GRAPH::TEXT) (:RANK (:SAME :MIN :MAX)) (:ROTATE INTEGER)
+  (:CENTER INTEGER) (:NSLIMIT FLOAT) (:MCLIMIT FLOAT) (:LAYERS CL-GRAPH::TEXT)
+  (:COLOR CL-GRAPH::TEXT) (:BGCOLOR CL-GRAPH::TEXT) (:FONTNAME CL-GRAPH::TEXT))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DOT-VERTEX-ATTRIBUTES*" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'((:POS CL-GRAPH::COORDINATE) (:HEIGHT FLOAT) (:WIDTH FLOAT) (:MARGIN FLOAT)
+  (:FIXED-SIZE BOOLEAN) (:LABEL CL-GRAPH::TEXT)
+  (:SHAPE
+   (:RECORD :PLAINTEXT :ELLIPSE :CIRCLE :EGG :TRIANGLE :BOX :DIAMOND :TRAPEZIUM
+    :PARALLELOGRAM :HOUSE :HEXAGON :OCTAGON :DOUBLECIRCLE))
+  (:FONTSIZE INTEGER) (:FONTNAME CL-GRAPH::TEXT) (:FONTCOLOR CL-GRAPH::TEXT)
+  (:COLOR CL-GRAPH::TEXT) (:FILLCOLOR CL-GRAPH::TEXT)
+  (:STYLE (:FILLED :SOLID :DASHED :DOTTED :BOLD :INVIS))
+  (:LAYER CL-GRAPH::TEXT) (:URL CL-GRAPH::TEXT) (:PERIPHERIES INTEGER))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DOT-EDGE-ATTRIBUTES*" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'((:POS CL-GRAPH::SPLINE) (:MINLEN INTEGER) (:WEIGHT INTEGER)
+  (:LABEL CL-GRAPH::TEXT) (:FONTSIZE INTEGER) (:FONTNAME CL-GRAPH::TEXT)
+  (:FONTCOLOR CL-GRAPH::TEXT) (:STYLE (:SOLID :DASHED :DOTTED :BOLD :INVIS))
+  (:COLOR CL-GRAPH::TEXT) (:DIR (:FORWARD :BACK :BOTH :NONE))
+  (:TAILCLIP BOOLEAN) (:HEADCLIP BOOLEAN)
+  (:ARROWHEAD
+   (:NONE :NORMAL :INV :DOT :ODOT :INVDOT :INVODOT :TEE :EMPTY :INVEMPTY :OPEN
+    :HALFOPEN :DIAMOND :ODIAMOND :BOX :OBOX :CROW))
+  (:ARROWTAIL
+   (:NONE :NORMAL :INV :DOT :ODOT :INVDOT :INVODOT :TEE :EMPTY :INVEMPTY :OPEN
+    :HALFOPEN :DIAMOND :ODIAMOND :BOX :OBOX :CROW))
+  (:HEADLABEL CL-GRAPH::TEXT) (:TAILLABEL CL-GRAPH::TEXT)
+  (:LABELFONTSIZE INTEGER) (:LABELFONTNAME CL-GRAPH::TEXT)
+  (:LABELFONTCOLOR CL-GRAPH::TEXT) (:LABELDISTANCE INTEGER)
+  (:PORT-LABEL-DISTANCE INTEGER) (:DECORATE BOOLEAN) (:SAMEHEAD BOOLEAN)
+  (:SAMETAIL BOOLEAN) (:CONSTRAINT BOOLEAN) (:LAYER CL-GRAPH::TEXT))")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOT-ATTRIBUTES-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DOT-ATTRIBUTES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "DOT-ATTRIBUTES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOT-GRAPH-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DOT-ATTRIBUTES-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOT-VERTEX-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DOT-ATTRIBUTES-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOT-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DOT-ATTRIBUTES-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOT-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DOT-GRAPH-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOT-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DOT-VERTEX-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOT-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :SUPER-CLASS-LIST
+     ((:NAME "DOT-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOT-DIRECTED-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DOT-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "DIRECTED-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOT-ATTRIBUTE-VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      ((:NAME "ATTR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "DOT-ATTRIBUTES-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOT-ATTRIBUTE-VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      ((:NAME "ATTR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "DOT-ATTRIBUTES-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DOT-ATTRIBUTE-VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ATTR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "DOT-ATTRIBUTES-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFPIXEL-INCH-ACCESSORS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "ATTR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "WIDTH-IN-PIXELS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "DOT-VERTEX-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION "Return the attribute in pixels assuming 72 dpi")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WIDTH-IN-PIXELS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "DOT-VERTEX-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION "Set the attribute in pixels assuming 72 dpi")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HEIGHT-IN-PIXELS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "DOT-VERTEX-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION "Return the attribute in pixels assuming 72 dpi")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEIGHT-IN-PIXELS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      ((:NAME "THING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "DOT-VERTEX-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION "Set the attribute in pixels assuming 72 dpi")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GRAPH->DOT-PROPERTIES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "DOT-GRAPH-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VERTEX->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "DOT-VERTEX-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EDGE->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+       (:NAME "DOT-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FORMAT-DOT-ATTRIBUTES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "DOT-ATTRIBUTES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ENSURE-VALID-DOT-ATTRIBUTE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      ((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "DOT-GRAPH-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ENSURE-VALID-DOT-ATTRIBUTE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      ((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "DOT-VERTEX-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ENSURE-VALID-DOT-ATTRIBUTE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      ((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "DOT-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINT-DOT-KEY-VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "DOT-ATTRIBUTES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "WRITE-NAME-FOR-DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ATTRIBUTE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "WRITE-NAME-FOR-DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ATTRIBUTE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "URL" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEXTIFY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DOT-PATH*" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+     :DOCUMENTATION "Path to `dot`" :INITIAL-VALUE "\"/usr/bin/dot\"")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GRAPH->DOT-EXTERNAL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "G" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+       (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T))
+      (:NAME "FILE-NAME" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "PS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Generate an external represenation of a graph to a file, by running
+the program in *dot-path*."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "ITERATE-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ROOTED-DFS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "CONNECTED-COMPONENT-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-CONTAINER-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "UNTAG-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DELETE-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+     T)
+    (:NAME "ITERATE-PARENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ITERATE-CHILDREN" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP
+     T)
+    (:NAME "GRAPH->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DOT-ATTRIBUTE-VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "*DOT-GRAPH-ATTRIBUTES*" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DOT-VERTEX-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "SOURCE-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "WIDTH-IN-PIXELS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "HEIGHT-IN-PIXELS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DIRECTED-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DOT-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "RANK" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "REPLACE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "SOURCE-EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ADD-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "PARENT-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "EDGE-ERROR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FIND-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "MINIMUM-SPANNING-TREE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX-TRIANGLE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-CONTAINER-DIRECTED-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+     T)
+    (:NAME "RENUMBER-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DOT-GRAPH-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ITERATE-TARGET-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DELETE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DOT-ATTRIBUTES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ASSORTATIVITY-COEFFICIENT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "EDGE-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "MAKE-VERTEX-FOR-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH->DOT-EXTERNAL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-VERTEX-NOT-FOUND-ERROR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+     T)
+    (:NAME "LAYOUT-GRAPH-WITH-GRAPHVIZ" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DFS-TREE-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FIND-VERTEX-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "MAKE-FILTERED-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DOT-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-ERROR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-MATRIX-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DOT-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "PRINT-DOT-KEY-VALUE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "EDGE-LESSP-BY-DIRECTION" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "NEIGHBOR-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ITERATE-NEIGHBORS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "SUBGRAPH-CONTAINING" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "NUMBER-OF-NEIGHBORS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-ROOTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "MAKE-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "MAP-SHORTEST-PATHS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-MATRIX-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-EDGE-MIXTURE-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FIND-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "UNTAGGED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "WITH-CHANGING-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DOT-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-VERTEX-NOT-FOUND-IN-EDGE-ERROR" :PACKAGE-NAME "CL-GRAPH"
+     :EXTERNALP T)
+    (:NAME "GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FIND-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "TARGET-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "EDGE-LESSP-BY-WEIGHT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DEPTH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-EDGE-NOT-FOUND-ERROR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "AVERAGE-VERTEX-DEGREE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "PREVIOUS-NODE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DFS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "BASIC-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DELETE-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "BASIC-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "UNDIRECTED-EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-CONTAINER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "AVERAGE-LOCAL-CLUSTERING-COEFFICIENT" :PACKAGE-NAME "CL-GRAPH"
+     :EXTERNALP T)
+    (:NAME "IN-CYCLE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX-2" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "EDGE->DOT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ITERATE-SOURCE-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "NEXT-NODE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "TAGGED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "CONTAINS-UNDIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ITERATE-CONTAINER" :PACKAGE-NAME "METABANG.CL-CONTAINERS"
+     :EXTERNALP T)
+    (:NAME "OUT-EDGE-FOR-VERTEX-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "MAKE-VERTEX-EDGES-CONTAINER" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH->DOT-PROPERTIES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FIND-EDGE-BETWEEN-VERTEXES-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+     T)
+    (:NAME "BASIC-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ITERATE-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ADD-EDGE-BETWEEN-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ADD-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "WEIGHT" :PACKAGE-NAME "METABANG.CL-CONTAINERS" :EXTERNALP T)
+    (:NAME "ROOTP" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DEFAULT-EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "AVERAGE-VERTEX-CLUSTERING-COEFFICIENT" :PACKAGE-NAME "CL-GRAPH"
+     :EXTERNALP T)
+    (:NAME "GET-TRANSITIVE-CLOSURE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "CONNECTED-COMPONENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DIRECTED-EDGE-CLASS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FORCE-UNDIRECTED" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "CONTAINS-DIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "TOPOLOGICAL-SORT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "MAP-PATHS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "IN-UNDIRECTED-CYCLE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FIND-CONNECTED-COMPONENTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ADJACENTP" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "OTHER-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "HAS-CHILDREN-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "TARGET-EDGE-COUNT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "TARGET-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-MIXING-MATRIX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FIND-EDGE-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "PROJECT-BIPARTITE-GRAPH" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ANY-UNDIRECTED-CYCLE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FINISH-TIME" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX-1" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "UNDIRECTED-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FIND-VERTEXES-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DFS-EDGE-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "MAKE-GRAPH-FROM-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "RENUMBER-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "TAG-ALL-EDGES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "SOURCE-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "HAS-PARENT-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DEFAULT-EDGE-TYPE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DOT-ATTRIBUTES-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GRAPH-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "GENERATE-DIRECTED-FREE-TREE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX-DEGREE-SUMMARY" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DFS-BACK-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "FIND-EDGES-IF" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DEPTH-LEVEL" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "CHILD-VERTEXES" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "SEARCH-FOR-VERTEX" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "WEIGHTED-EDGE-MIXIN" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "ELEMENT" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)
+    (:NAME "VERTEX-DEGREE-COUNTS" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX-DEGREE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTICES-SHARE-EDGE-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DELETE-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX-CLUSTERING-COEFFICIENT" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP
+     T)
+    (:NAME "DISCOVERY-TIME" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "COLOR" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "DOT-DIRECTED-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "WEIGHTED-EDGE" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "VERTEX-ID" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "CONNECTED-GRAPH-P" :PACKAGE-NAME "CL-GRAPH" :EXTERNALP T)
+    (:NAME "TAG" :PACKAGE-NAME "METABANG.UTILITIES" :EXTERNALP T)))))

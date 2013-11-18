@@ -1,0 +1,7 @@
+<code class="symbol-name"><%=
+   (emb::escape-for-xml
+     (princ-to-string
+       (or (getf env :name)
+           (loop for symbol in env
+                 collect (getf symbol :name)))))
+%></code>

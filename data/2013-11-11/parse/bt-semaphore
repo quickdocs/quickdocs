@@ -1,0 +1,227 @@
+
+(:TYPE :SYSTEM :NAME "bt-semaphore" :AUTHOR "Ralph Möritz" :MAINTAINER NIL
+ :VERSION "0.6.2" :LICENCE "MIT" :DESCRIPTION
+ "A simple semaphore class for bordeaux-threads inspired by SBCL's semaphore."
+ :LONG-DESCRIPTION "# bt-semaphore
+
+A simple semaphore class for bordeaux-threads inspired by SBCL's semaphore.
+
+## Installation
+
+`bt-semaphore` is available via [Quicklisp](http://www.quicklisp.org/beta/). You
+can also clone the Git repo if you prefer to use bleeding edge:
+
+```
+cd ~/quicklisp/local-projects
+git clone https://github.com/rmoritz/bt-semaphore
+```
+
+## Usage
+
+There are seven functions of interest at the moment:
+
+ - `make-semaphore` creates a semaphore instance
+ - `wait-on-semaphore` blocks until the semaphore can be decremented (ie. its
+   count > 0) or the timeout has expired
+ - `signal-semaphore` increments the semaphore & wakes n waiting threads
+ - `try-semaphore` decrements the semaphore without blocking
+ - `semaphore-count` returns the current count of the semaphore
+ - `semaphore-waiters` returns the number of threads waiting on semaphore
+ - `semaphore-name` is an accessor for the semaphore's name slot
+
+To illustrate, here's a tiny example:
+
+```common-lisp
+(ql:quickload :bt-semaphore)
+
+(defun semaphore-demo ()
+  (defparameter sem (bt-sem:make-semaphore))
+  (defparameter lock (bt:make-lock))
+  (defparameter num 0)
+  
+  (format t \"spawn 20 threads with 4s timeout~%\")
+  (loop
+    repeat 20
+    do (bt:make-thread
+         (lambda ()
+           (if (bt-sem:wait-on-semaphore sem :timeout 4)
+             (bt:with-lock-held (lock)
+               (incf num))))))
+  (format t \"num is ~d~%\" num)
+  (sleep 0.33)
+  (format t \"there are ~d waiting threads~%~%\" (bt-sem:semaphore-waiters sem))
+
+  (format t \"signal 5 threads~%\")
+  (bt-sem:signal-semaphore sem 5)
+  (sleep 0.33)
+  (bt:with-lock-held (lock)
+    (format t \"num is ~d~%\" num))
+  (format t \"there are ~d waiting threads~%~%\" (bt-sem:semaphore-waiters sem))
+
+  (format t \"signal 10 threads~%\")
+  (bt-sem:signal-semaphore sem 10)
+  (sleep 0.33)
+  (bt:with-lock-held (lock)
+    (format t \"num is ~d~%\" num))
+  (format t \"there are ~d waiting threads~%~%\" (bt-sem:semaphore-waiters sem))
+
+  (format t \"4s sleep~%\")
+  (sleep 4)
+  (bt:with-lock-held (lock)
+    (format t \"num is ~d~%\" num))
+  (format t \"there are ~d waiting threads~%~%\" (bt-sem:semaphore-waiters sem)))
+```
+
+Calling `SEMAPHORE-DEMO` at the REPL should produce the following output:
+
+```
+spawn 20 threads with 4s timeout
+num is 0
+there are 20 waiting threads
+
+signal 5 threads
+num is 5
+there are 15 waiting threads
+
+signal 10 threads
+num is 15
+there are 5 waiting threads
+
+4s sleep
+num is 15
+there are 0 waiting threads
+```
+
+## Status
+
+The basics are done. It's not yet a replacement for `SB-THREAD:SEMAPHORE`, but
+we're getting there.
+
+You can run the test suites to verify that everything is working as it
+should by invoking `(ql:quickload :bt-semaphore-test)` or `(asdf:test-system
+:bt-semaphore)`.
+
+## Bugs
+
+I'm not aware of any bugs, but if you believe you've found one, please do
+[report it](https://github.com/rmoritz/bt-semaphore/issues).
+
+## Author
+
+* Ralph Möritz (ralphmoritz@outlook.com)
+
+## License
+
+Copyright (c) Ralph Möritz 2013.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the \"Software\"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+**THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.**
+"
+ :DEPENDS-ON ("BORDEAUX-THREADS") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "BT-SEMAPHORE" :FULL-NAME "BT-SEMAPHORE" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LOCK" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONDVAR" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "WAITERS" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "SEMAPHORE-NAME" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SIGNAL-SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL)
+       (:NAME "SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "N" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL) 1))
+     :DOCUMENTATION
+     "Increment the count of the semaphore instance by n. If there are threads
+  waiting on this semaphore, then n of them are woken up.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ALLOW-WITH-INTERRUPTS" :PACKAGE-NAME NIL :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ALLOW-FORMS" :PACKAGE-NAME "SB-UNIX" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-LOCAL-INTERRUPTS" :PACKAGE-NAME NIL :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WITH-FORMS" :PACKAGE-NAME "SB-UNIX" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "WAIT-ON-SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL)
+       (:NAME "SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION
+     "Decrement the count of the semaphore instance if the count would not be
+  negative, else block until the semaphore can be decremented. Returns t on
+  success. If timeout is given, it is the maximum number of seconds to wait. If
+  the count cannot be decremented in that time, return nil.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TRY-SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL)
+       (:NAME "SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "N" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL) 1))
+     :DOCUMENTATION
+     "Try to decrement the count of semaphore by n. Returns nil if
+  the count were to become negative, otherwise returns t.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SEMAPHORE-COUNT" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL)
+       (:NAME "SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL)))
+     :DOCUMENTATION "Return the count of the semaphore.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SEMAPHORE-WAITERS" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL)
+       (:NAME "SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL)))
+     :DOCUMENTATION "Return the number of threads waiting on the semaphore.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP NIL)
+      ((:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 0))
+     :DOCUMENTATION "Create a semaphore with the supplied name and count."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "SEMAPHORE-WAITERS" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+    (:NAME "SEMAPHORE-NAME" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+    (:NAME "SIGNAL-SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+    (:NAME "TRY-SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+    (:NAME "MAKE-SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+    (:NAME "SEMAPHORE-COUNT" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)
+    (:NAME "WAIT-ON-SEMAPHORE" :PACKAGE-NAME "BT-SEMAPHORE" :EXTERNALP T)))))

@@ -1,0 +1,310 @@
+
+(:TYPE :SYSTEM :NAME "monkeylib-markup-html" :AUTHOR NIL :MAINTAINER NIL
+ :VERSION NIL :LICENCE NIL :DESCRIPTION
+ "Library for generating HTML from Markup formatted text." :LONG-DESCRIPTION
+ NIL :DEPENDS-ON
+ ("COM.GIGAMONKEYS.MACRO-UTILITIES" "ALEXANDRIA" "COM.GIGAMONKEYS.MARKUP"
+  "COM.GIGAMONKEYS.UTILITIES" "MONKEYLIB-HTML")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "COM.GIGAMONKEYS.MARKUP.HTML" :FULL-NAME
+   "COM.GIGAMONKEYS.MARKUP.HTML" :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-SUBDOCUMENT-TAGS*" :PACKAGE-NAME
+      "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "'(:NOTE :COMMENT)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FILE" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TITLE" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL)
+      (:NAME "STYLESHEETS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+       :EXTERNALP NIL)
+      (:NAME "SCRIPTS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL)
+      ((:NAME "LINKS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+        NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "SUBDOCUMENT-TAGS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+        :EXTERNALP NIL)
+       (:NAME "*DEFAULT-SUBDOCUMENT-TAGS*" :PACKAGE-NAME
+        "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL))
+      ((:NAME "REWRITER" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+        NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Render `file' to an html file with a header made from `title',
+`stylesheets', and `scripts'. If `title' is not supplied, we try to
+guess from the first H1 in sexps. Tags specified with
+`subdocument-tags' are parsed as subdocuments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RENDER-TO-STREAM" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FILE" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "OUT" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TITLE" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL)
+      (:NAME "STYLESHEETS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+       :EXTERNALP NIL)
+      (:NAME "SCRIPTS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL)
+      ((:NAME "LINKS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+        NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "SUBDOCUMENT-TAGS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+        :EXTERNALP NIL)
+       (:NAME "*DEFAULT-SUBDOCUMENT-TAGS*" :PACKAGE-NAME
+        "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL))
+      ((:NAME "REWRITER" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+        NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Render `file' to the stream `out' with a header made from `title',
+`stylesheets', and `scripts'. If `title' is not supplied, we try to
+guess from the first H1 in sexps. Tags specified with
+`subdocument-tags' are parsed as subdocuments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RENDER-SEXPS-TO-STREAM" :PACKAGE-NAME
+      "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEXPS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL)
+      (:NAME "OUT" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TITLE" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL)
+      (:NAME "STYLESHEETS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+       :EXTERNALP NIL)
+      (:NAME "SCRIPTS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL)
+      ((:NAME "REWRITER" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+        NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION "Render `sexps' to `out' with a header made from `title',
+`stylesheets', and `scripts'. If `title' is not supplied, we try to
+guess from the first H1 in sexps.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GUESS-TITLE" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEXPS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "JUST-TEXT" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-RETAGGER" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "MAPPINGS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMAP-TAGS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "MAPPINGS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMAP-ONE-TAG" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "MAPPINGS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL)
+      (:NAME "WALKER-FN" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HTMLIZE-LINKS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEXPS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-LINK-DEFS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REWRITE-LINKS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "LINKS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LINK-KEY" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "LINK" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-KEY" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "LINK" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LINK-URL" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "LINKS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FOOTNOTES" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "TAG" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "NUMBER-FORMAT" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+        :EXTERNALP NIL)
+       "~d"))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRAP-WITH-NOTEREFS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BODY" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL)
+      (:NAME "CURRENT" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+       NIL)
+      (:NAME "NOTEREF-NAME-FMT" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+       :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "MAKE-RETAGGER" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+     :EXTERNALP T)
+    (:NAME "FOOTNOTES" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+     T)
+    (:NAME "RENDER-SEXPS-TO-STREAM" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+     :EXTERNALP T)
+    (:NAME "JUST-TEXT" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP
+     T)
+    (:NAME "RENDER-TO-STREAM" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+     :EXTERNALP T)
+    (:NAME "RENDER" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML" :EXTERNALP T)
+    (:NAME "HTMLIZE-LINKS" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML"
+     :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS" :FULL-NAME
+   "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS" :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*AMAZON-LINK*" :PACKAGE-NAME
+      "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "\"http://www.amazon.com/gp/product/~a?ie=UTF8&tag=gigamonkeys-20&linkCode=as2&camp=1789&creative=9325&creativeASIN=~:*~a\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*AMAZON-IMAGE-BUG*" :PACKAGE-NAME
+      "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "\"http://www.assoc-amazon.com/e/ir?t=gigamonkeys-20&l=as2&o=1&a=~a\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ASINS*" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(PROGN
+ (LET ((COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS::HT
+        (MAKE-HASH-TABLE :TEST #'EQUAL)))
+   (LOOP COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS::FOR (COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS::K
+                                                      COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS::V) COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS::IN '((\"Peopleware\"
+                                                                                                                                               \"0932633439\")
+                                                                                                                                              (\"Practical Common Lisp\"
+                                                                                                                                               \"1590592395\")
+                                                                                                                                              (\"Rapid Development\"
+                                                                                                                                               \"1556159005\")
+                                                                                                                                              (\"Software Estimation\"
+                                                                                                                                               \"0735605351\")
+                                                                                                                                              (\"Software Estimation: Demystifying the Black Art\"
+                                                                                                                                               \"0735605351\")
+                                                                                                                                              (\"The Mythical Man Month\"
+                                                                                                                                               \"0201835959\")
+                                                                                                                                              (\"The Wisdom of Crowds\"
+                                                                                                                                               \"0385503865\")
+                                                                                                                                              (\"Founders at Work\"
+                                                                                                                                               \"1590597141\")
+                                                                                                                                              (\"Programmers at Work\"
+                                                                                                                                               \"0914845713\")
+                                                                                                                                              (\"Coders at Work\"
+                                                                                                                                               \"1430219483\")
+                                                                                                                                              (\"Land of Lisp\"
+                                                                                                                                               \"1593272006\")
+                                                                                                                                              (\"Beautiful Code\"
+                                                                                                                                               \"0596510047\")
+                                                                                                                                              (\"Test Driven Development\"
+                                                                                                                                               \"0321146530\")
+                                                                                                                                              (\"The C++ Programming Language\"
+                                                                                                                                               \"0201700735\")
+                                                                                                                                              (\"The Design and Evolution of C++\"
+                                                                                                                                               \"0201543303\")
+                                                                                                                                              (\"Pink Brain, Blue Brain\"
+                                                                                                                                               \"0618393110\")
+                                                                                                                                              (\"Structure and Interpretation of Computer Programs\"
+                                                                                                                                               \"0262011530\"))
+         DO (SETF (GETHASH COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS::K
+                           COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS::HT)
+                    COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS::V))
+   COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS::HT))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AMAZON-LINK" :PACKAGE-NAME
+      "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS"
+       :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AMAZON-IMAGE-BUG" :PACKAGE-NAME
+      "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS"
+       :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-AMAZON-IMAGE-BUGS" :PACKAGE-NAME
+      "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS"
+       :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAILTO-LINK" :PACKAGE-NAME
+      "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS"
+       :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "URL-LINK" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEXP" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS"
+       :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "URL-LINK" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS"
+     :EXTERNALP T)
+    (:NAME "MAILTO-LINK" :PACKAGE-NAME "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS"
+     :EXTERNALP T)
+    (:NAME "ADD-AMAZON-IMAGE-BUGS" :PACKAGE-NAME
+     "COM.GIGAMONKEYS.MARKUP.HTML.HANDY-TAGS" :EXTERNALP T)))))

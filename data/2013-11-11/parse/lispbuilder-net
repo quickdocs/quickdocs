@@ -1,0 +1,9 @@
+
+(:TYPE :SYSTEM :NAME "lispbuilder-net" :AUTHOR "Frank Buss <fb@frank-buss.de>"
+ :MAINTAINER "Application Builder <application-builder@lispniks.com>" :VERSION
+ NIL :LICENCE "MIT" :DESCRIPTION
+ "lispbuilder-net: asynchronous sockets library" :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("CFFI" "LISPBUILDER-NET-CFFI") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "LISPBUILDER-NET" :FULL-NAME "LISPBUILDER-NET"
+   :DOCUMENTATION "The main package of `lispbuilder-net'." :SYMBOL-LIST NIL
+   :EXTERNAL-SYMBOLS NIL)))

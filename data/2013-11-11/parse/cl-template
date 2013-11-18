@@ -1,0 +1,158 @@
+
+(:TYPE :SYSTEM :NAME "cl-template" :AUTHOR
+ "Peter Cannici <turkchess123@gmail.com>" :MAINTAINER NIL :VERSION "0.0.1"
+ :LICENCE "MIT" :DESCRIPTION
+ "A simple output-agnostic templating system for Common Lisp."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-TEMPLATE" :FULL-NAME "CL-TEMPLATE" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCAN-STRING-UNTIL-IGNORING" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TERMINATOR" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IGNORE-LIST" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Scan a string until a substring is encountered, ignoring anything
+  between ignore-list pairs. Probably not super-useful outside of
+  CLT. In CLT it is used to scan until the next end delimiter while
+  ignoring things in quotes.
+  Example:
+    (scan-string-until-ignoring \"abc|def\" \"|\")  ; \"abc\"
+    (scan-string-until-ignoring \"abc <ignor|ing> def\" \"|\" :ignore-list '((#< . #>)))  ; \"abc <ignor|ing> def\"
+  ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCAN-BETWEEN-DELIMITERS" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "END-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IGNORE-LIST" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Scan a string and return a substring between the two delimiter substrings.
+  Example:
+    (scan-between-delimiters \"abc <%= thingy %> def\" \"<%=\" \"%>\")  ; \" thingy \"
+    (scan-between-delimiters \"what{{ever stuff<ignor{{ing>{{now}}xyz\" :ignore-list '((#< . #>)) :start 10)  ; \"now\"
+  ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MATCH-PAIRS-IGNORING" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PAIR" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IGNORE-LIST" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Count the occurences of a pair (e.g. []) in a string, ignoring any that occur in between pairs of `ignore-list`.
+  Example:
+    (match-pairs-ignoring \"(something)\" '(#( . #)))  ; t
+    (match-pairs-ignoring \"[that <thing]>\" '(#[ . #]) :ignore-list '((#< . #>)))  ; nil
+  ")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ADD-PROGN-TO-IF*" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP T)
+     :DOCUMENTATION
+     "Boolean; whether or not to implicitly add a progn to IF expressions."
+     :INITIAL-VALUE "T")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TEMPLATE-FN-CACHE*" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Hash table which compiled template functions are cached in."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :TEST 'EQUAL)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-PROGN-TO-IF-EXPRESSION" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "EXPRESSION" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HANDLE-END-EXPRESSION" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "EXPRESSIONS" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "STACK" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPILE-EXPRESSION" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CODE" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPRESSIONS" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "STACK" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPILE-ECHO-EXPRESSION" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "CODE" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPRESSIONS" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "STACK" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPILE-STRING" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPRESSIONS" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "STACK" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPILE-TEMPLATE-PART" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "START-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "START-ECHO-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "END-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPRESSIONS" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "STACK" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INTERNAL-COMPILE-TEMPLATE" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "START-ECHO-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "END-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "STREAM-NAME" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPILE-TEMPLATE" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+       "<%")
+      ((:NAME "START-ECHO-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP
+        NIL)
+       "<%=")
+      ((:NAME "END-DELIMITER" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP NIL)
+       "%>"))
+     :DOCUMENTATION
+     "Compile a string template into a lambda, which can be invoked with
+  a plist as the only argument and provides data to the template.  The
+  data argument to the lambda is available in the template as
+  `cl-template::__data`, although it's not recommended to use it
+  directly.  See README.md for examples of the template syntax.
+  It caches the result of the compilation.
+  Examples:
+    (compile-template \"the number is <%= (@ number) %>\")  ; (lambda (__data) ...)
+    (compile-template \"{{= @ mood }} shark\" :start-delimiter \"{{\" :start-echo-delimiter \"{{=\" :end-delimiter \"}}\")  ; (lambda (__data) ...)
+    (funcall (compile-template \"<%= format nil \"~@r\" (@ number) %>\") '(:number 12))  ; \"XII\"
+  "))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*ADD-PROGN-TO-IF*" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP T)
+    (:NAME "COMPILE-TEMPLATE" :PACKAGE-NAME "CL-TEMPLATE" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME "-TEMPLATE-SYMBOLS" :FULL-NAME
+   "CL-TEMPLATE-TEMPLATE-SYMBOLS" :DOCUMENTATION NIL :SYMBOL-LIST NIL
+   :EXTERNAL-SYMBOLS NIL)))

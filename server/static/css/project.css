@@ -1,0 +1,55 @@
+@charset "UTF-8";
+.information {
+  border: 1px solid #ccc;
+  border-top: 3px solid #BBB;
+  background-color: #f1f1f1;
+  line-height: 200%;
+  padding: 15px;
+}
+.information dt {
+  color: #666;
+  font-weight: bold;
+  font-size: 90%;
+}
+.information dd {
+  color: #888;
+  font-size: 80%;
+}
+.readme-body {
+  margin: 0 10px 10px;
+  padding: 0 15px 15px;
+  line-height: 1.6;
+}
+.readme-body .plain-text {
+  white-space: pre-wrap;
+}
+.readme-body h1 {
+  font-size: 28px !important;
+}
+.readme-body h2 {
+  font-size: 24px !important;
+  border-bottom: 1px solid #ccc;
+}
+.readme-body h3 {
+  font-size: 18px !important;
+}
+.readme-body p {
+  margin: 10px 0;
+}
+.readme-body pre code {
+  padding: 0 !important;
+}
+.readme-body code,
+.readme-body pre {
+  color: white;
+  background-color: black;
+}
+.readme-body code {
+  padding: 2px;
+  border-radius: 3px;
+  font-size: 90%;
+}
+.readme-body pre {
+  padding: 15px;
+  border-radius: 5px;
+}

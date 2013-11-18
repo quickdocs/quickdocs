@@ -1,0 +1,864 @@
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/package.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:CL)
+; compiling (PUSHNEW :PARENSCRIPT ...)
+; compiling (UNLESS (EDITOR-HINTS.NAMED-READTABLES:FIND-READTABLE :PARENSCRIPT) ...)
+; compiling (EDITOR-HINTS.NAMED-READTABLES:IN-READTABLE :PARENSCRIPT)
+; compiling (defpackage #:parenscript ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/package-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.023
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/js-dom-symbol-exports.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (IN-READTABLE :PARENSCRIPT)
+; compiling (defun re-export-symbols ...)
+; compiling (defpackage #:ps-js-symbols ...)
+; compiling (re-export-symbols (quote #:ps-js-symbols) ...)
+; compiling (defpackage #:ps-dom1-symbols ...)
+; compiling (defpackage #:ps-dom2-symbols ...)
+; compiling (re-export-symbols (quote #:ps-dom1-symbols) ...)
+; compiling (defpackage #:ps-window-wd-symbols ...)
+; compiling (re-export-symbols (quote #:ps-dom2-symbols) ...)
+; compiling (defpackage #:ps-dom-nonstandard-symbols ...)
+; compiling (defpackage #:ps-dhtml-symbols ...)
+; compiling (re-export-symbols (quote #:ps-window-wd-symbols) ...)
+; compiling (re-export-symbols (quote #:ps-dom-nonstandard-symbols) ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/js-dom-symbol-exports-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.021
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/js-ir-package.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (IN-READTABLE :PARENSCRIPT)
+; compiling (defpackage #:ps-js ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/js-ir-package-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.005
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/utils.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (LET (#) ...)
+; compiling (DEFUN ORDERED-SET-DIFFERENCE ...)
+; compiling (DEFMACRO ONCE-ONLY ...)
+; compiling (DEFUN FLATTEN ...)
+; compiling (DEFUN TREE-SEARCH ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/utils-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.070
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/namespace.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (IN-READTABLE :PARENSCRIPT)
+; compiling (defvar *obfuscated-packages* ...)
+; compiling (defun obfuscate-package ...)
+; compiling (defun unobfuscate-package ...)
+; compiling (defun maybe-obfuscate-symbol ...)
+; compiling (defvar *package-prefix-table* ...)
+; compiling (defmacro ps-package-prefix ...)
+; compiling (defun symbol-to-js-string ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/namespace-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.017
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/compiler.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (IN-READTABLE :PARENSCRIPT)
+; compiling (defvar *version* ...)
+; compiling (defparameter %compiling-reserved-forms-p% ...)
+; compiling (defvar *defined-operators* ...)
+; compiling (defun defined-operator-override-check ...)
+; compiling (defvar *reserved-symbol-names* ...)
+; compiling (defvar *lambda-wrappable-statements* ...)
+; compiling (defun reserved-symbol-p ...)
+; compiling (defvar *special-expression-operators* ...)
+; compiling (defvar *special-statement-operators* ...)
+; compiling (defmacro %define-special-operator ...)
+; compiling (defmacro define-expression-operator ...)
+; compiling (defmacro define-statement-operator ...)
+; compiling (defun special-form? ...)
+; compiling (defvar *vars-needing-to-be-declared* ...)
+; compiling (defvar *used-up-names*)
+; compiling (setf (documentation # ...) ...)
+; compiling (defvar in-case? ...)
+; compiling (defvar in-loop-scope? ...)
+; compiling (defvar *loop-return-var* ...)
+; compiling (defvar *loop-return-set-var* ...)
+; compiling (defvar *loop-scope-lexicals*)
+; compiling (setf (documentation # ...) ...)
+; compiling (defvar *loop-scope-lexicals-captured*)
+; compiling (setf (documentation # ...) ...)
+; compiling (defvar in-function-scope? ...)
+; compiling (defvar *local-function-names* ...)
+; compiling (defvar *enclosing-lexicals* ...)
+; compiling (defvar *enclosing-function-arguments* ...)
+; compiling (defvar *function-block-names* ...)
+; compiling (defvar *dynamic-return-tags* ...)
+; compiling (defvar *current-block-tag* ...)
+; compiling (defvar *special-variables* ...)
+; compiling (defun special-variable? ...)
+; compiling (defvar *macro-toplevel-lambda-list* ...)
+; compiling (defvar *function-lambda-list* ...)
+; compiling (defun make-macro-dictionary ...)
+; compiling (defvar *macro-toplevel* ...)
+; compiling (defvar *macro-env* ...)
+; compiling (defvar *symbol-macro-toplevel* ...)
+; compiling (defvar *symbol-macro-env* ...)
+; compiling (defvar *setf-expanders* ...)
+; compiling (defun lookup-macro-def ...)
+; compiling (defun make-ps-macro-function ...)
+; compiling (defmacro defpsmacro ...)
+; compiling (defmacro define-ps-symbol-macro ...)
+; compiling (defun import-macros-from-lisp ...)
+; compiling (defmacro defmacro+ps ...)
+; compiling (defun ps-macroexpand-1 ...)
+; compiling (defun ps-macroexpand ...)
+; compiling (defparameter *compilation-level* ...)
+; compiling (defun adjust-compilation-level ...)
+; compiling (defvar compile-expression?)
+; compiling (define-condition compile-expression-error ...)
+; compiling (defun compile-special-form ...)
+; compiling (defun ps-compile ...)
+; compiling (defun compile-statement ...)
+; compiling (defun compile-expression ...)
+; compiling (defvar *ps-gensym-counter* ...)
+; compiling (defun ps-gensym ...)
+; compiling (defmacro with-ps-gensyms ...)
+; compiling (defmacro ps-once-only ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/compiler-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.166
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/printer.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (IN-READTABLE :PARENSCRIPT)
+; compiling (defvar *ps-print-pretty* ...)
+; compiling (defvar *indent-num-spaces* ...)
+; compiling (defvar *js-string-delimiter* ...)
+; compiling (defvar *indent-level*)
+; compiling (defvar *column*)
+; compiling (defvar *psw-stream*)
+; compiling (defvar %printer-toplevel?)
+; compiling (defun parenscript-print ...)
+; compiling (defun psw ...)
+; compiling (defgeneric ps-print ...)
+; compiling (defgeneric ps-print% ...)
+; compiling (defmethod ps-print ...)
+; compiling (defmacro defprinter ...)
+; compiling (defmethod ps-print ...)
+; compiling (defmethod ps-print ...)
+; compiling (defmethod ps-print ...)
+; compiling (defmethod ps-print ...)
+; compiling (defmethod ps-print ...)
+; compiling (defun newline-and-indent ...)
+; compiling (defun print-comment ...)
+; compiling (defparameter *js-lisp-escaped-chars* ...)
+; compiling (defmethod ps-print ...)
+; compiling (defmethod ps-print ...)
+; compiling (defmethod ps-print ...)
+; compiling (defvar %equality-ops ...)
+; compiling (let (#) ...)
+; compiling (defun associative? ...)
+; compiling (defun parenthesize-print ...)
+; compiling (defun parenthesize-at-toplevel ...)
+; compiling (defun print-op-argument ...)
+; compiling (defun print-op ...)
+; compiling (defprinter (ps-js:! ps-js:~ ...) ...)
+; compiling (defprinter ps-js:negate ...)
+; compiling (defprinter (ps-js:delete ps-js:typeof ...) ...)
+; compiling (defprinter (ps-js:return) ...)
+; compiling (defprinter ps-js:post++ ...)
+; compiling (defprinter ps-js:post-- ...)
+; compiling (defprinter (ps-js:+ ps-js:- ...) ...)
+; compiling (defprinter (ps-js:== ps-js:!= ...) ...)
+; compiling (defprinter ps-js:aref ...)
+; compiling (defun print-comma-delimited-list ...)
+; compiling (defprinter ps-js:array ...)
+; compiling (defprinter (ps-js:|,|) ...)
+; compiling (defprinter ps-js:funcall ...)
+; compiling (defprinter ps-js:block ...)
+; compiling (defprinter ps-js:lambda ...)
+; compiling (defprinter ps-js:defun ...)
+; compiling (defun print-fun-def ...)
+; compiling (defprinter ps-js:object ...)
+; compiling (defprinter ps-js:getprop ...)
+; compiling (defprinter ps-js:if ...)
+; compiling (defprinter ps-js:? ...)
+; compiling (defprinter ps-js:var ...)
+; compiling (defprinter ps-js:label ...)
+; compiling (defprinter (ps-js:continue ps-js:break) ...)
+; compiling (defprinter ps-js:for ...)
+; compiling (defprinter ps-js:for-in ...)
+; compiling (defprinter (ps-js:with ps-js:while) ...)
+; compiling (defprinter ps-js:switch ...)
+; compiling (defprinter ps-js:try ...)
+; compiling (defprinter ps-js:regex ...)
+; compiling (defprinter ps-js:instanceof ...)
+; compiling (defprinter ps-js:escape ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/printer-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.338
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/compilation-interface.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (DEFPARAMETER *JS-TARGET-VERSION* ...)
+; compiling (DEFVAR *PARENSCRIPT-STREAM* ...)
+; compiling (DEFMACRO PS ...)
+; compiling (DEFMACRO PS-TO-STREAM ...)
+; compiling (DEFUN PS* ...)
+; compiling (DEFMACRO WITH-BLANK-COMPILATION-ENVIRONMENT ...)
+; compiling (DEFMACRO PS-DOC ...)
+; compiling (DEFUN PS-DOC* ...)
+; compiling (DEFVAR *JS-INLINE-STRING-DELIMITER* ...)
+; compiling (DEFUN PS-INLINE* ...)
+; compiling (DEFMACRO+PS PS-INLINE ...)
+; compiling (DEFVAR *PS-READ-FUNCTION* ...)
+; compiling (DEFUN PS-COMPILE-STREAM ...)
+; compiling (DEFUN PS-COMPILE-FILE ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/compilation-interface-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.043
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/non-cl.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (IN-READTABLE :PARENSCRIPT)
+; compiling (defmacro define-trivial-special-ops ...)
+; compiling (define-trivial-special-ops array ...)
+; compiling (define-statement-operator continue ...)
+; compiling (define-statement-operator switch ...)
+; compiling (define-expression-operator create ...)
+; compiling (define-expression-operator %js-getprop ...)
+; compiling (defpsmacro getprop ...)
+; compiling (defpsmacro @ ...)
+; compiling (defpsmacro chain ...)
+; compiling (define-expression-operator var ...)
+; compiling (define-statement-operator var ...)
+; compiling (defmacro var ...)
+; compiling (define-statement-operator for ...)
+; compiling (define-statement-operator for-in ...)
+; compiling (define-statement-operator while ...)
+; compiling (defmacro while ...)
+; compiling (define-statement-operator try ...)
+; compiling (define-expression-operator regex ...)
+; compiling (define-expression-operator lisp ...)
+; compiling (defun lisp ...)
+; compiling (defpsmacro undefined ...)
+; compiling (defpsmacro defined ...)
+; compiling (defpsmacro objectp ...)
+; compiling (define-ps-symbol-macro {} ...)
+; compiling (defpsmacro [] ...)
+; compiling (defpsmacro stringify ...)
+; compiling (defun stringify ...)
+; compiling (define-ps-symbol-macro false ...)
+; compiling (defvar false ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/non-cl-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.106
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/special-operators.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (IN-READTABLE :PARENSCRIPT)
+; compiling (define-trivial-special-ops + ...)
+; compiling (define-expression-operator / ...)
+; compiling (define-expression-operator - ...)
+; compiling (defun fix-nary-comparison ...)
+; compiling (define-nary-comparison-forms < ...)
+; compiling (define-expression-operator /= ...)
+; compiling (defun references? ...)
+; compiling (defmacro inc-dec ...)
+; compiling (define-expression-operator incf ...)
+; compiling (define-expression-operator decf ...)
+; compiling (let (#) ...)
+; compiling (defun flatten-blocks ...)
+; compiling (defun compile-progn ...)
+; compiling (define-expression-operator progn ...)
+; compiling (define-statement-operator progn ...)
+; compiling (defun fill-mv-reg ...)
+; compiling (defvar suppress-values?)
+; compiling (defun wrap-for-dynamic-return ...)
+; compiling (define-statement-operator block ...)
+; compiling (defun return-exp ...)
+; compiling (defun try-expressionizing-if? ...)
+; compiling (defun expressionize-result ...)
+; compiling (define-statement-operator return-from ...)
+; compiling (define-expression-operator values ...)
+; compiling (define-statement-operator throw ...)
+; compiling (define-expression-operator if ...)
+; compiling (define-statement-operator if ...)
+; compiling (define-expression-operator cond ...)
+; compiling (define-statement-operator cond ...)
+; compiling (defmacro with-local-macro-environment ...)
+; compiling (define-expression-operator macrolet ...)
+; compiling (define-expression-operator symbol-macrolet ...)
+; compiling (define-expression-operator defmacro ...)
+; compiling (define-expression-operator define-symbol-macro ...)
+; compiling (defun assignment-op ...)
+; compiling (define-expression-operator ps-assign ...)
+; compiling (define-statement-operator defvar ...)
+; compiling (defmacro with-declaration-effects ...)
+; compiling (defun maybe-rename-lexical-var ...)
+; compiling (defun with-lambda-scope ...)
+; compiling (define-expression-operator let ...)
+; compiling (defun make-for-vars/inits ...)
+; compiling (defun compile-loop-body ...)
+; compiling (define-expression-operator quote ...)
+; compiling (define-expression-operator eval-when ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/special-operators-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.292
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/parse-lambda-list.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (DEFUN COLLECT-LIST-EXPANDER ...)
+; compiling (DEFMACRO COLLECT ...)
+; compiling (DEFPARAMETER *LAMBDA-LIST-KEYWORDS* ...)
+; compiling (DEFUN STYLE-WARN ...)
+; compiling (DEFUN PARSE-LAMBDA-LIST-LIKE-THING ...)
+; compiling (DEFUN PARSE-LAMBDA-LIST ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/parse-lambda-list-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.084
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/function-definition.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (IN-READTABLE :PARENSCRIPT)
+; compiling (defun parse-key-spec ...)
+; compiling (defun parse-optional-spec ...)
+; compiling (defun parse-extended-function ...)
+; compiling (defun collapse-function-return-blocks ...)
+; compiling (defun compile-function-body ...)
+; compiling (define-expression-operator lambda ...)
+; compiling (defun compile-named-function-body ...)
+; compiling (define-statement-operator defun% ...)
+; compiling (defun maybe-rename-local-function ...)
+; compiling (defun collect-function-names ...)
+; compiling (defun compile-named-local-function ...)
+; compiling (defmacro local-functions ...)
+; compiling (defun compile-local-function-body ...)
+; compiling (define-expression-operator flet ...)
+; compiling (define-expression-operator labels ...)
+; compiling (define-expression-operator function ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/function-definition-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.066
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/macros.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (IN-READTABLE :PARENSCRIPT)
+; compiling (define-trivial-mappings string= ...)
+; compiling (defpsmacro null ...)
+; compiling (defmacro def-js-maths ...)
+; compiling (def-js-maths (max # ...) ...)
+; compiling (defpsmacro ash ...)
+; compiling (define-ps-symbol-macro pi ...)
+; compiling (defpsmacro stringp ...)
+; compiling (defpsmacro numberp ...)
+; compiling (defpsmacro functionp ...)
+; compiling (defpsmacro booleanp ...)
+; compiling (defpsmacro make-array ...)
+; compiling (defpsmacro length ...)
+; compiling (defpsmacro with-slots ...)
+; compiling (defpsmacro multiple-value-bind ...)
+; compiling (defpsmacro case ...)
+; compiling (defpsmacro when ...)
+; compiling (defpsmacro unless ...)
+; compiling (defpsmacro defun ...)
+; compiling (defvar *defun-setf-name-prefix* ...)
+; compiling (defpsmacro defun-setf ...)
+; compiling (defpsmacro defsetf-long ...)
+; compiling (defpsmacro defsetf-short ...)
+; compiling (defpsmacro defsetf ...)
+; compiling (defpsmacro setf ...)
+; compiling (defpsmacro psetf ...)
+; compiling (defun check-setq-args ...)
+; compiling (defpsmacro setq ...)
+; compiling (defpsmacro psetq ...)
+; compiling (defun do-make-let-bindings ...)
+; compiling (defun do-make-init-vars ...)
+; compiling (defun do-make-init-vals ...)
+; compiling (defun do-make-for-vars/init ...)
+; compiling (defun do-make-for-steps ...)
+; compiling (defun do-make-iter-psteps ...)
+; compiling (defpsmacro do* ...)
+; compiling (defpsmacro do ...)
+; compiling (defpsmacro dotimes ...)
+; compiling (defpsmacro dolist ...)
+; compiling (defpsmacro concatenate ...)
+; compiling (defpsmacro append ...)
+; compiling (defun complex-js-expr? ...)
+; compiling (defun hoist-expr? ...)
+; compiling (defun destructuring-wrap ...)
+; compiling (defpsmacro destructuring-bind ...)
+; compiling (defun dot->rest ...)
+; compiling (defun property-bindings-p ...)
+; compiling (defun extract-bindings ...)
+; compiling (defun property-bindings ...)
+; compiling (defpsmacro bind ...)
+; compiling (defpsmacro bind* ...)
+; compiling (defpsmacro return ...)
+; compiling (defpsmacro ignore-errors ...)
+; compiling (defpsmacro unwind-protect ...)
+; compiling (defpsmacro prog1 ...)
+; compiling (defpsmacro prog2 ...)
+; compiling (defpsmacro apply ...)
+; compiling (defpsmacro let* ...)
+; compiling (defpsmacro in-package ...)
+; compiling (defpsmacro use-package ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/macros-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.285
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/deprecated-interface.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (IN-READTABLE :PARENSCRIPT)
+; compiling (define-condition simple-style-warning ...)
+; compiling (defun warn-deprecated ...)
+; compiling (defmacro defun-js ...)
+; compiling (defmacro define-script-symbol-macro ...)
+; compiling (defun js-equal ...)
+; compiling (defun-js js-compile ...)
+; compiling (defun-js js-compile-list ...)
+; compiling (defmacro defjsmacro ...)
+; compiling (defmacro js-inline ...)
+; compiling (defun-js js-inline* ...)
+; compiling (defmacro with-unique-js-names ...)
+; compiling (defun-js gen-js-name ...)
+; compiling (defmacro js ...)
+; compiling (defun-js js* ...)
+; compiling (defun-js compile-script ...)
+; compiling (defun-js symbol-to-js ...)
+; compiling (defmacro defmacro/ps ...)
+; compiling (defmacro defpsmacro-deprecated ...)
+; compiling (defpsmacro-deprecated slot-value ...)
+; compiling (defpsmacro-deprecated === ...)
+; compiling (defpsmacro-deprecated == ...)
+; compiling (defpsmacro-deprecated % ...)
+; compiling (defpsmacro-deprecated concat-string ...)
+; compiling (defpsmacro !== ...)
+; compiling (defpsmacro != ...)
+; compiling (defpsmacro labeled-for ...)
+; compiling (defpsmacro do-set-timeout ...)
+; compiling (defun concat-string ...)
+; compiling (define-statement-operator with ...)
+; compiling (defpsmacro label ...)
+; compiling (define-ps-symbol-macro f ...)
+; compiling (setf %compiling-reserved-forms-p% ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/deprecated-interface-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.074
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/lib/ps-html.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (DEFVAR *PS-HTML-EMPTY-TAG-AWARE-P* ...)
+; compiling (DEFVAR *PS-HTML-MODE* ...)
+; compiling (DEFVAR *HTML-EMPTY-TAGS* ...)
+; compiling (DEFUN EMPTY-TAG-P ...)
+; compiling (DEFUN CONCAT-CONSTANT-STRINGS ...)
+; compiling (DEFUN PROCESS-HTML-FORMS-LHTML ...)
+; compiling (DEFUN PROCESS-HTML-FORMS-CL-WHO ...)
+; compiling (DEFMACRO+PS PS-HTML ...)
+; compiling (DEFMACRO+PS WHO-PS-HTML ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/lib/ps-html-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.050
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/lib/ps-loop.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (DEFVAR *LOOP-KEYWORDS* ...)
+; compiling (DEFUN AS-KEYWORD ...)
+; compiling (DEFMACRO LOOP-CASE ...)
+; compiling (DEFUN ERR ...)
+; compiling (DEFCLASS LOOP-STATE ...)
+; compiling (DEFUN PUSH-TOKENS ...)
+; compiling (DEFUN PEEK ...)
+; compiling (DEFUN EAT ...)
+; compiling (DEFUN MAYBE-EXTRACT-VAR ...)
+; compiling (DEFUN FOR-FROM ...)
+; compiling (DEFUN FOR-= ...)
+; compiling (DEFUN FOR-IN ...)
+; compiling (DEFUN FOR-ON ...)
+; compiling (DEFUN FOR-KEYS-OF ...)
+; compiling (DEFUN FOR-CLAUSE ...)
+; compiling (DEFUN A-WITH-CLAUSE ...)
+; compiling (DEFUN ACCUMULATE ...)
+; compiling (DEFUN REPEAT-CLAUSE ...)
+; compiling (DEFUN WHILE-CLAUSE ...)
+; compiling (DEFUN UNTIL-CLAUSE ...)
+; compiling (DEFUN BODY-CLAUSE ...)
+; compiling (DEFUN CLAUSE ...)
+; compiling (DEFUN PARSE-PS-LOOP ...)
+; compiling (DEFUN FOLD-TESTS ...)
+; compiling (DEFUN AUGMENTED-LOOP-BODY ...)
+; compiling (DEFUN MASTER-LOOP ...)
+; compiling (DEFUN BUILD-LOOP ...)
+; compiling (DEFUN NORMALIZE ...)
+; compiling (DEFUN PROLOGUE-WRAP ...)
+; compiling (DEFPSMACRO LOOP ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/lib/ps-loop-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.115
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/lib/ps-dom.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (DEFPSMACRO INNER-HTML ...)
+; compiling (DEFPSMACRO URI-ENCODE ...)
+; compiling (DEFPSMACRO ATTRIBUTE ...)
+; compiling (DEFUN ASSERT-IS-ONE-OF ...)
+; compiling (DEFPSMACRO OFFSET ...)
+; compiling (DEFPSMACRO SCROLL ...)
+; compiling (DEFPSMACRO INNER ...)
+; compiling (DEFPSMACRO CLIENT ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/src/lib/ps-dom-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.038
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/runtime/ps-runtime-lib.lisp" (written 12 NOV 2013 06:02:42 PM):
+; compiling (IN-PACKAGE #:PARENSCRIPT)
+; compiling (DEFPARAMETER *PS-LISP-LIBRARY* ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/parenscript-2.5/runtime/ps-runtime-lib-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.004
+
+(:TYPE :SYSTEM :NAME "paren-files" :AUTHOR "Red Daly <reddaly@gmail.com.>"
+ :MAINTAINER NIL :VERSION "0.0.1" :LICENCE "MIT" :DESCRIPTION
+ "Parenscript library for compiling files and ASDF systems." :LONG-DESCRIPTION
+ NIL :DEPENDS-ON ("PARENSCRIPT") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "PARENSCRIPT.READER" :FULL-NAME "PARENSCRIPT.READER"
+   :DOCUMENTATION "The Parenscript reader.  Used for reading Parenscript forms.
+
+The only significant difference between this and the standard lisp reader is that package names are
+script package names rather than Lisp package names."
+   :SYMBOL-LIST NIL :EXTERNAL-SYMBOLS
+   ((:NAME "READ" :PACKAGE-NAME "PARENSCRIPT.READER" :EXTERNALP T)
+    (:NAME "READ-FROM-STRING" :PACKAGE-NAME "PARENSCRIPT.READER" :EXTERNALP T)
+    (:NAME "READ-DELIMITED-LIST" :PACKAGE-NAME "PARENSCRIPT.READER" :EXTERNALP
+     T)))
+  (:TYPE :PACKAGE :NAME "PARENSCRIPT.ASDF" :FULL-NAME "PARENSCRIPT.ASDF"
+   :DOCUMENTATION
+   "ASDF extensions that help compile and use Parenscript systems."
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PARENSCRIPT-FILE-EXTENSION*" :PACKAGE-NAME "PARENSCRIPT.ASDF"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"paren\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JAVASCRIPT-FILE-EXTENSION*" :PACKAGE-NAME "PARENSCRIPT.ASDF"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"js\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*OMIT-IMPLICIT-LOAD-OP-DEPENDENCY*" :PACKAGE-NAME
+      "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SLURP-FILE-3000" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "PATHNAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "A SLURP-FILE function inspired Mr. Insane 3000's
+     SLURP-STREAM4.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "PARENSCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "SOURCE-FILE" :PACKAGE-NAME "ASDF/COMPONENT" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "JAVASCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "SOURCE-FILE" :PACKAGE-NAME "ASDF/COMPONENT" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "OPERATION" :PACKAGE-NAME "ASDF/OPERATION" :EXTERNALP T))
+     :DOCUMENTATION
+     "The operation used in conjunction with parenscript:compile-script-system."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "OUTPUT-SPEC" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "OUTPUT-SPEC" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COMP-ENV" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "COMP-ENV" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Compilaiton environment to use to compile.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PRETTY-PRINT-P" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "PRETTY-PRINT-P" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "T if Javascript should be printed readably.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "OUTPUT-STREAM" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "OUTPUT-STREAM" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The output stream in which to print the Javascript output.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FORCE-P" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "FORCE-P" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "T to force compilation.")))
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PS-COMPILE-NOOPS*" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "0")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PS-COMPILE-PS-FILES*" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "0")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OUTPUT-FILES" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      (:NAME "GENERAL-COMPONENT" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Parenscript compilation does not, in general, produce output files.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PERFORM" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      (:NAME "GENERAL-COMPONENT" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Do the usual on some non-specific component.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PERFORM" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      ((:NAME "FILE" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "SOURCE-FILE" :PACKAGE-NAME "ASDF/COMPONENT" :EXTERNALP T)))
+     :DOCUMENTATION "Do nothing on a source (non-compound) component.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PERFORM" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      ((:NAME "FILE" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "JAVASCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Include the javascript in the output stream.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PERFORM" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      ((:NAME "FILE" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OPERATION-DONE-P" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      (:NAME "GENERAL-COMPONENT" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OPERATION-DONE-P" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      ((:NAME "MODULE" :PACKAGE-NAME "ASDF/COMPONENT" :EXTERNALP T)
+       (:NAME "MODULE" :PACKAGE-NAME "ASDF/COMPONENT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OPERATION-DONE-P" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      ((:NAME "FILE" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OPERATION-DONE-P" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      ((:NAME "FILE" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "JAVASCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPONENT-DEPENDS-ON" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      ((:NAME "C" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "COMPONENT" :PACKAGE-NAME "ASDF/COMPONENT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPONENT-DEPENDS-ON" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-COMPILE-OP" :PACKAGE-NAME "ASDF/INTERFACE"
+        :EXTERNALP NIL))
+      ((:NAME "SYSTEM" :PACKAGE-NAME "ASDF/SYSTEM" :EXTERNALP T)
+       (:NAME "SYSTEM" :PACKAGE-NAME "ASDF/SYSTEM" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns the list of operations the system depends on to ps-compile.  We requrie that the
+lisp system be loaded first.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SOURCE-FILE-TYPE" :PACKAGE-NAME "ASDF/COMPONENT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP
+        NIL))
+      ((:NAME "S" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "MODULE" :PACKAGE-NAME "ASDF/COMPONENT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SOURCE-FILE-TYPE" :PACKAGE-NAME "ASDF/COMPONENT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "JAVASCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP NIL))
+      ((:NAME "S" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "MODULE" :PACKAGE-NAME "ASDF/COMPONENT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PERFORM" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "COMPILE-OP" :PACKAGE-NAME "ASDF/LISP-ACTION" :EXTERNALP T))
+      ((:NAME "PAREN-FILE" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PERFORM" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "COMPILE-OP" :PACKAGE-NAME "ASDF/LISP-ACTION" :EXTERNALP T))
+      ((:NAME "FILE" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "JAVASCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PERFORM" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "LOAD-OP" :PACKAGE-NAME "ASDF/LISP-ACTION" :EXTERNALP T))
+      ((:NAME "PAREN-FILE" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "PARENSCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PERFORM" :PACKAGE-NAME "ASDF/ACTION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "OP" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "LOAD-OP" :PACKAGE-NAME "ASDF/LISP-ACTION" :EXTERNALP T))
+      ((:NAME "FILE" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "JAVASCRIPT-FILE" :PACKAGE-NAME "ASDF/INTERFACE" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPILE-SCRIPT-SYSTEM" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "SYSTEM" :PACKAGE-NAME "ASDF/SYSTEM" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PRETTY-PRINT" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "OUTPUT-SPEC" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "JAVASCRIPT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "OUTPUT-TO-STREAM" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+        NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "OUTPUT-STREAM" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+       (:NAME "*STANDARD-OUTPUT*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "OUTPUT-TO-FILES" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL)
+      (:NAME "COMP-ENV" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Compiles a collection of parenscripts as described by an ASDF system into files or
+a specified output stream."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "COMPILE-SCRIPT-SYSTEM" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+     T)))
+  (:TYPE :PACKAGE :NAME "PARENSCRIPT.FILES" :FULL-NAME "PARENSCRIPT.FILES"
+   :DOCUMENTATION "Library that compiles Parenscript files and systems."
+   :SYMBOL-LIST
+   ((:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-PS-COMPILATION-ENVIRONMENT" :PACKAGE-NAME "PARENSCRIPT.FILES"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ENV" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-TOPLEVEL-COMPILATION" :PACKAGE-NAME "PARENSCRIPT.FILES"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "ENV" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-PARENSCRIPT-FORM" :PACKAGE-NAME "PARENSCRIPT.FILES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "*STANDARD-INPUT*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "EOF-ERROR-OP" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+      (:NAME "EOF-VALUE" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+      (:NAME "RECURSIVEP" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads a parenscript form from a stream.  Use instead of READ so we can replace the reader
+with a parenscript reader, if necessary.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPILE-SCRIPT-FILE" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "SOURCE-FILE" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUTPUT-SPEC" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+       (:NAME "JAVASCRIPT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      (:NAME "COMP-ENV" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+      ((:NAME "PRETTY-PRINT" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "OUTPUT-STREAM" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+       (:NAME "*STANDARD-OUTPUT*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Compiles the given Parenscript source file and outputs the results
+to the given output stream.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPILE-SCRIPT-FILE-TO-STRING" :PACKAGE-NAME "PARENSCRIPT.FILES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SOURCE-FILE" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Compile SOURCE-FILE (a parenscript file) to a javascript string. (in-package ...) forms
+behave as expected and all other forms are evaluated according to the value of
+EVAL-FORMS-P. If the result of the evaluation is not nil then it's compiled with
+js:js* and written to the output.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPILE-SCRIPT-FILE-TO-JS-FILE" :PACKAGE-NAME "PARENSCRIPT.FILES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SOURCE-FILE" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DESTINATION-FILE" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP
+       NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Compile SOURCE-FILE (a parenscript file) to a javascript file with
+compile-parenscript-file-to-string. When DESTINATION-FILE is omitted,
+then it will be named the same as SOURCE-FILE but with js extension.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPILE-SCRIPT-SYSTEM" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "SYSTEM" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Compiles a collection of parenscripts as described by an ASDF system into files or
+a specified output stream."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "COMPILE-SCRIPT-FILE-TO-STRING" :PACKAGE-NAME "PARENSCRIPT.FILES"
+     :EXTERNALP T)
+    (:NAME "COMPILE-SCRIPT-FILE-TO-JS-FILE" :PACKAGE-NAME "PARENSCRIPT.FILES"
+     :EXTERNALP T)
+    (:NAME "COMPILE-SCRIPT-FILE" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP
+     T)
+    (:NAME "READ-PARENSCRIPT-FORM" :PACKAGE-NAME "PARENSCRIPT.FILES" :EXTERNALP
+     T)
+    (:NAME "COMPILE-SCRIPT-SYSTEM" :PACKAGE-NAME "PARENSCRIPT.ASDF" :EXTERNALP
+     T)))))

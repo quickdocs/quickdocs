@@ -1,0 +1,60 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "hemlock.qt"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+Error while trying to bind key #(#<Key-Event C-x> #<Key-Event C-a>): "Add Mode Word Abbrev" is not a defined command.
+Error while trying to bind key #(#<Key-Event C-x> #<Key-Event +>): "Add Global Word Abbrev" is not a defined command.
+Error while trying to bind key #(#<Key-Event C-x> #<Key-Event C-h>): "Inverse Add Mode Word Abbrev" is not a defined command.
+Error while trying to bind key #(#<Key-Event C-x> #<Key-Event ->): "Inverse Add Global Word Abbrev" is not a defined command.
+Error while trying to bind key #<Key-Event M-">: "Word Abbrev Prefix Mark" is not a defined command.
+Error while trying to bind key #<Key-Event !>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event ~>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event @>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event #>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event ;>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event $>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event %>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event ^>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event &>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event *>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event ->: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event _>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event =>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event +>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event [>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event ]>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event (>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event )>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event />: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event |>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event :>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event '>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event ">: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event {>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event }>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event ,>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event <>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event .>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event >>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event `>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event \>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event ?>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event Return>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event Linefeed>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event Tab>: "Abbrev" is not a defined mode.
+Error while trying to bind key #<Key-Event Space>: "Abbrev" is not a defined mode.
+/bin/sh: 1: qmake: not found
+; 
+; compilation unit aborted
+;   caught 2 fatal ERROR conditions
+Error: OPERATION-ERROR while invoking #<COMPILE-OP > on
+       #<MAKEFILE "qt" "so" "commonqt.pro">

@@ -1,0 +1,314 @@
+
+(:TYPE :SYSTEM :NAME "cl-async-future" :AUTHOR
+ "Andrew Danger Lyon <orthecreedence@gmail.com>" :MAINTAINER NIL :VERSION
+ "0.4.4" :LICENCE "MIT" :DESCRIPTION
+ "A futures implementation for Common Lisp. Plugs in nicely to cl-async."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-ASYNC-FUTURE" :FULL-NAME "CL-ASYNC-FUTURE"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "Defines a class which represents a value that MAY be ready sometime in the
+     future. Also supports attaching callbacks to the future such that they will
+     be called with the computed value(s) when ready."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CALLBACKS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "FUTURE-CALLBACKS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A list that holds all callbacks associated with this future.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ERRBACKS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "FUTURE-ERRBACKS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A list that holds all errbacks associated with this future.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FORWARDED-FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "FUTURE-FORWARD-TO" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Can hold a reference to another future, which will receive
+                    callbacks and event handlers added to this one once set.
+                    This allows a future to effectively take over another future
+                    by taking all its callbacks/events.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PRESERVE-CALLBACKS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "FUTURE-PRESERVE-CALLBACKS" :PACKAGE-NAME "CL-ASYNC-FUTURE"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "When nil (the default) detaches callbacks after running
+                    future.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REATTACH-CALLBACKS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "FUTURE-REATTACH-CALLBACKS" :PACKAGE-NAME "CL-ASYNC-FUTURE"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "When a future's callback returns another future, bind all
+                    callbacks from this future onto the returned one. Allows
+                    values to transparently be derived from many layers deep of
+                    futures, almost like a real call stack.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FINISHED" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "FUTURE-FINISHED" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+         NIL))
+       :READERS
+       ((:NAME "FUTURE-FINISHED-P" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+         T))
+       :WRITERS NIL :DOCUMENTATION
+       "Marks if a future has been finished or not.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "EVENTS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "FUTURE-EVENTS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Holds events for this future, to be handled with event-handler.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VALUES" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "FUTURE-VALUES" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Holds the finished value(s) of the computer future. Will be
+                    apply'ed to the callbacks.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+       (:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T))
+      (:NAME "S" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PRESERVE-CALLBACKS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+       NIL)
+      ((:NAME "REATTACH-CALLBACKS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+        NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Create a blank future.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FUTUREP" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T))
+     :DOCUMENTATION "Is this a future?")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DO-ADD-CALLBACK" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+      (:NAME "CB" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION "Add a callback to a future if it isn't already attached.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ATTACH-ERRBACK" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+      (:NAME "ERRBACK" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Add an error handler for this future. If the errback already exists on this
+   future, don't re-add it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SETUP-FUTURE-FORWARD" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE-FROM" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "FUTURE-TO" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set up future-from to send all callbacks, events, handlers, etc to the
+   future-to future. This includes all current objects, plus objects that may be
+   added later on. For instance, if you forward future A to future B, adding an
+   event handler to future A will then add it to future B (assuming future B has
+   no current event handler). The same goes for callbacks as well, they will be
+   added to the new future-to if added to the future-from.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LOOKUP-FORWARDED-FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T))
+     :DOCUMENTATION
+     "This function follows forwarded futures until it finds the last in the chain
+   of forwarding.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROCESS-ERRORS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T))
+     :DOCUMENTATION
+     "If an event handler exists for this future, run all events through the
+   errbacks and clear the events out once run.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SIGNAL-ERROR" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+      (:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Signal that an error has happened on a future. If the future has errbacks,
+   they will be used to process the error, otherwise it will be stored until an
+   errback is added to the future.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RUN-FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T))
+     :DOCUMENTATION
+     "Run all callbacks on a future *IF* the future is finished (and has computed
+   values). If preserve-callbacks in the future is set to nil, the future's
+   callbacks will be detached after running.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FINISH" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VALUES" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Mark a future as finished, along with all values it's finished with. If
+   finished with another future, forward the current future to the new one.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESET-FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T))
+     :DOCUMENTATION
+     "Clear out all callbacks/errbacks. Useful for halting a future's execution.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ATTACH-CB" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE-VALUES" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "CB" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Attach a callback to a future. The future must be the first value in a list
+   of values (car future-values) OR the future-values will be apply'ed to cb.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ATTACH" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "FUTURE-GEN" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "CB" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Macro wrapping attachment of callback to a future (takes multiple values into
+   account, which a simple function cannot).")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ALET" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "BINDINGS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Asynchronous let. Allows calculating a number of values in parallel via
+   futures, and runs the body when all values have computed with the bindings
+   given available to the body.
+   
+   Also returns a future that fires with the values returned from the body form,
+   which allows arbitrary nesting to get a final value(s).")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ALET*" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "BINDINGS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Asynchronous let*. Allows calculating a number of values in sequence via
+   futures, and run the body when all values have computed with the bindings
+   given available to the body.
+   
+   Also returns a future that fires with the values returned from the body form,
+   which allows arbitrary nesting to get a final value(s).")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "AIF" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "FUTURE-GEN" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "TRUE-FORM" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "FALSE-FORM" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Acts like `if` except that the evaluated form accepts a future:
+     (aif (async-action)
+          (it-worked!)
+          (nope-sad-face))")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "MULTIPLE-FUTURE-BIND" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "BINDINGS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+      (:NAME "FUTURE-GEN" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like multiple-value-bind, but instead of a form that evaluates to multiple
+   values, takes a form that generates a future.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WAIT-FOR" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE-GEN" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Wait for a future to finish, ignoring any values it returns. Can be useful
+   when you want to run an async action but don't care about the return value
+   (or it doesn't return a value) and you want to continue processing when it
+   returns.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ADOLIST" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ITEM" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+       (:NAME "ITEMS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FUTURE-BIND" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Async version of dolist, only continues loop when future in final form
+   finishes with a value.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WRAP-EVENT-HANDLER" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUTURE-GEN" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "ERROR-FORMS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Used to wrap the future-generation forms of future syntax macros. This macro
+   is not to be used directly, but instead by future-handler-case.
+   
+   It allows itself to be recursive, but any recursions will simply add their
+   error forms for a top-level list and return the form they are given as the
+   body. This allows a top-level form to add an error handler to a future, while
+   gathering the lower-level forms' handler-case bindings into one big handler
+   function (created with make-nexted-handler-cases).
+   
+   Note that since normally the wrap-event-handler forms expand outside in, we
+   have to do some trickery with the error-handling functions to make sure the
+   order of the handler-case forms (as far as what level of the tree we're on)
+   are preserved.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "FUTURE-HANDLER-CASE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BODY-FORM" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-FORMS" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Wrap all of our lovely attach macro up with an event handler. This is more or
+   less restricted to the form it's run in.
+   
+   Note that we only have to wrap (attach) because *all other syntax macros* use
+   attach. This greatly simplifies our code."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "WAIT-FOR" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "FUTURE-FINISHED-P" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "MULTIPLE-FUTURE-BIND" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "ALET*" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "LOOKUP-FORWARDED-FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP
+     T)
+    (:NAME "RESET-FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "FINISH" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "ATTACH" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "FUTUREP" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "MAKE-FUTURE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "FUTURE-HANDLER-CASE" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "ATTACH-ERRBACK" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "AIF" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "SIGNAL-ERROR" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "ALET" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)
+    (:NAME "ADOLIST" :PACKAGE-NAME "CL-ASYNC-FUTURE" :EXTERNALP T)))))

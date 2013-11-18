@@ -1,0 +1,525 @@
+
+(:TYPE :SYSTEM :NAME "sequence-iterators" :AUTHOR
+ "Tobias C. Rittweiler <trittweiler@common-lisp.net>" :MAINTAINER NIL :VERSION
+ NIL :LICENCE "BSD" :DESCRIPTION "DOSEQUENCE & Co." :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("PARSE-DECLARATIONS-1.0") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "TCR.SEQUENCE-ITERATORS" :FULL-NAME
+   "TCR.SEQUENCE-ITERATORS" :DOCUMENTATION "
+* Required Libraries
+
+  This library depends on parse-declarations, available at
+
+    http://common-lisp.net/project/parse-declarations/
+
+* Notes on the API
+
+  This library has not been publically released yet. The API as
+  described here should be pretty stable, and changes should hopefully
+  only happen as additions. (No guarantee on that, of course.)
+
+  If you find use of this library, I'm eager to receive feedback about
+  inconveniences or improvements to the API.
+
+* Examples
+
+  There's a presentation available at
+
+    http://common-lisp.net/~trittweiler/talks/sequence-iterators-2009.pdf
+
+  which is an introduction to the library, including examples.
+
+* Acknowledgements
+
+  I'd like to thank Paul Khuong and Christophe Rhodes for valuable
+  comments regarding details of the API.
+"
+   :SYMBOL-LIST
+   ((:TYPE :TYPE :SYMBOL
+     (:NAME "ARRAY-INDEX" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARRAY-DIMENSION-LIMIT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "ARRAY-LENGTH" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARRAY-DIMENSION-LIMIT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DOLISTS" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CLAUSES" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-GENSYM-LIST" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "X" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL) "G"))
+     :DOCUMENTATION
+     "Returns a list of LENGTH gensyms, each generated as if with a call to MAKE-GENSYM,
+using the second (optional, defaulting to \"G\") argument.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUIRED-ARGUMENT" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signals an error for a missing argument of NAME. Intended for
+use as an initialization form for structure and class-slots, and
+a default value for required keyword arguments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-FUNCTION" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION-DESIGNATOR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+       :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the function designated by FUNCTION-DESIGNATOR:
+if FUNCTION-DESIGNATOR is a function, it is returned, otherwise
+it must be a function name and its FDEFINITION is returned.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-SEXP-BUILDER" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "START-SYMBOL" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+        NIL)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STUFF" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-API" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "LAMBDA-LIST" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+       NIL)
+      (:NAME "TYPE-LIST" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOCUMENTATION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WHOLE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Parses BODY into (values remaining-forms declarations doc-string).
+Documentation strings are recognized only if DOCUMENTATION is true.
+Syntax errors in body are signalled and WHOLE is used in the signal
+arguments when given.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-ORDINARY-LAMBDA-LIST" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LAMBDA-LIST" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Parses an ordinary lambda-list, returning as multiple values:
+
+ 1. Required parameters.
+ 2. Optional parameter specifications, normalized into form (NAME INIT SUPPLIEDP)
+    where SUPPLIEDP is NIL if not present.
+ 3. Name of the rest parameter, or NIL.
+ 4. Keyword parameter specifications, normalized into form ((KEYWORD-NAME NAME) INIT SUPPLIEDP)
+    where SUPPLIEDP is NIL if not present.
+ 5. Boolean indicating &ALLOW-OTHER-KEYS presence.
+ 6. &AUX parameter specifications, normalized into form (NAME INIT).
+
+Signals a PROGRAM-ERROR is the lambda-list is malformed.")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "SEQUENCE-INDEX" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+       (:NAME "LENGTHP" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "SEQUENCE-LENGTH" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VALIDATE-SEQUENCE-BOUNDS" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Signals an error of type SEQUENCE-BOUNDING-INDICES-ERROR if `start', and
+`end' are not valid /bounding indices/ for sequence `sequence'.
+
+If `start' is NIL, the bounds are assumed to start at the first element of
+`sequence'.
+
+If `end' is NIL, the bounds are assumed to end at the length of `sequence'.
+
+If `length' is NIL, the length of the sequence is computed as by
+LENGTH. (The purpose of this parameter is to avoid having to compute the
+length twice if you already had to do so.)
+
+This function returns `sequence', and the possibly updated values of
+`start', `end', and `length'.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "CHECK-SEQUENCE-BOUNDS" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEQ-PLACE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "START-PLACE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+       NIL)
+      (:NAME "END-PLACE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LENGTH-PLACE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+       NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This is a convenience wrapper around VALIDATE-SEQUENCE-BOUNDS to
+automatically assign its return values to the specified places.
+
+As the return type of VALIDATE-SEQUENCE-BOUND is known, your Common
+Lisp implementation may henceforth be able to derive the types of the
+places.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CANONICALIZE-KEY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY-DESIGNATOR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Canonicalizes `key-designator' to a function object.
+If `key-designator' is NIL, the IDENTITY function is returned.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CANONICALIZE-TEST" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TEST" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TEST-NOT" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION "Canonicalizes `test' and `test-not' to a function object.
+If both are given, an error is signaled.
+If both are NIL, the EQL function is returned.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-SEQUENCE-LIKE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "INITIAL-ELEMENT" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+        :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "IEP" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+      ((:NAME "INITIAL-CONTENTS" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+        :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ICP" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Returns a new sequence of length `length' and of the same type as `sequence'.
+
+The parameters `initial-element' and `initial-contents' specify how the new
+sequence is supposed to be initialized. Only one of them can be passed at a
+time.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%NORMALIZE-DOSEQUENCE-BINDING-ARG" :PACKAGE-NAME
+      "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ARG" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%PARSE-DOSEQUENCES-CLAUSES" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CLAUSES" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%PARSE-DO-SEQUENCE-ITERATORS-CLAUSES" :PACKAGE-NAME
+      "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CLAUSES" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DOSEQUENCE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VAR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+       (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "RESULT" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "START" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+       (:NAME "END" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+       (:NAME "FROM-END" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+       (:NAME "PLACE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MACRO-ENV" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "DOSEQUENCE iterates over the elements of `sequence' with `var'
+bound to each element in turn, starting from `start' until `end'; if
+`from-end' is T, the iteration is performed in reverse order.
+
+Instead of a symbol, `var' can be a list of two elements (`elt'
+`index') where `elt' is bound to the current element, and `index' to
+its index into the sequence.
+
+An implicit block named NIL surrounds DOSEQUENCE, hence RETURN may be
+used to terminate the loop immediately. Otherwise `result' is returned
+at the end of the loop.
+
+`body' is executed in an implicit TAGBODY.
+
+`result' is processed at a time where `var' (or `elt') is bound to
+the last element, and `index' (if given) to the index of the last
+element.
+
+If `place' is given, a /generalized reference/ for `place' is defined
+within the lexical scope of `body' such that a) an invocation of (`place')
+will (re)access the current element in the sequence, and such that b) an
+invocation of (SETF (`place') `new-value') will destructively set the
+current element in `sequence' to `new-value'. It is unspecified whether the
+SETF function updates `var' (or `elt', respectively.) Beyond that, CLHS 3.6
+applies.
+
+The bounding indices `start' and `end' are _not_ checked for validity.
+
+It is unspecified whether DOSEQUENCE establishes a new binding for
+`var' on each iteration, or only establishes one initial binding and
+assigns to it on subsequent iterations.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DOSEQUENCES*" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((((:NAME "VAR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+        (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "RESULT" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+        (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "START" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+        (:NAME "END" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+        (:NAME "FROM-END" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+         NIL)
+        (:NAME "PLACE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "MORE-CLAUSES" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+        NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION "DOSEQUENCES* iterates through multiple sequences at once.
+
+Each iterator is run sequentially until one exhausts; the `result'
+form belonging to the clause of the iterator that exhausts first, is
+returned.
+
+For detailed information on the way the iterators are run, see
+DO-SEQUENCE-ITERATORS*. For a description of the format of each
+clause, see DOSEQUENCE. ")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-SEQUENCE-ITERATOR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VAR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+       (:NAME "ITERATOR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "RESULT" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This is a convenience wrapper around DO-SEQUENCE-ITERATORS*.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-SEQUENCE-ITERATORS*" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((((:NAME "VAR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+        (:NAME "ITERATOR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+         NIL)
+        (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "RESULT" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "MORE-CLAUSES" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+        NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "DO-SEQUENCE-ITERATORS* advances multiple sequence iterators at
+once. It relates to DO-SEQUENCE-ITERATORS as DO* relates to DO.
+
+In each iteration, the iterators are run and checked for exhaustion
+_sequentially_.
+
+For each element produced by the currently executed iterator, the
+respective `var' is bound to this element.
+
+If no iterator exhausts, `body' will be executed.
+
+If, however, an iterator exhausts, the iteration will terminate at
+that point, and the `result' form of the clause denoting the currently
+executed iterator is evaluated and returned. The form is evaluated in
+an environment where all the `var's belonging to iterators already
+executed are bound to the elements produced in the current iteration,
+and the other variables are bound to the elements produced during the
+previous iteration.
+
+`body' is executed in an implicit TAGBODY, and the iteration is
+performed in an implicit BLOCK named NIL.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-SEQUENCE-ITERATORS" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((((:NAME "VAR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+        (:NAME "ITERATOR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+         NIL)
+        (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "RESULT" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "MORE-CLAUSES" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+        NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "DO-SEQUENCE-ITERATORS advances multiple sequence iterators at
+once.
+
+In each iteration, all iterators are run in _parallel_.
+
+If no iterator exhausts, the `var's, which may be of the form (`elt'
+`idx'), will be bound to the elements produced, and `body' is executed.
+
+If, however, an iterator exhausts, the `result' form of the clause
+denoting the exhausted iterator will be evaluated (in an environment
+where all the variables are still bound to the elements as produced in
+the previous iteration), and returned. If several iterators exhaust,
+each respective `result' form will be returned as multiple values (in
+the order the respective clauses appeared.)
+
+`body' is executed in an implicit TAGBODY, and the iteration is
+performed in an implicit BLOCK named NIL.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-SEQUENCE-ITERATOR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ITERATOR-NAME" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+        NIL)
+       (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "START" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+       (:NAME "END" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+       (:NAME "FROM-END" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+       (:NAME "PLACE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Within the lexical scope of `body', `iterator-name' is defined via FLET
+such that each successive invocation of (`iterator-name') will yield all
+the elements of `sequence', one by one, starting from `start' until `end';
+if `from-end' is T, in reverse order.
+
+The /bounding indices/ `start', and `end' are _not_ checked for
+validity upfront; to achieve that, use CHECK-SEQUENCE-BOUNDS.
+
+Each invocation of the iterator form returns the following three values:
+
+  1. A generalized boolean that is true if an element is returned.
+
+  2. The element itself.
+
+  3. The index of the element in the sequence.
+
+If `place' is given, a /generalized reference/ for `place' is defined within
+the lexical scope of `body' such that a) an invocation of (`place') will
+(re)access the current element in the sequence, and such that b) an
+invocation of (SETF (`place') `new-value') will destructively set the
+current element in `sequence' to `new-value'. Beyond that, CLHS 3.6
+applies.
+
+Consequences are undefined if `place' is referenced or assigned to before
+`iterator' has run, or after `iterator' has exhausted.
+
+Consequences are undefined if a closure that closes over the iterator
+form (or `place') is executed outside the dynamic extent of
+WITH-SEQUENCE-ITERATOR.
+
+Consequences are undefined if multiple threads invoke the iterator
+concurrently.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REVERSED-LIST-OF-PTRS" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%MAKE-SEQUENCE-ITERATOR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL)
+      (:NAME "FROM-END" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns an iterator thunk that returns three values: a boolean flag
+that is true, if an element is returned, the current sequence index,
+and the current sequence element."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "DO-SEQUENCE-ITERATOR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+     :EXTERNALP T)
+    (:NAME "SEQUENCE-BOUNDING-INDICES-ERROR" :PACKAGE-NAME
+     "TCR.SEQUENCE-ITERATORS" :EXTERNALP T)
+    (:NAME "SEQUENCE-OUT-OF-BOUNDS-ERROR--SEQUENCE" :PACKAGE-NAME
+     "TCR.SEQUENCE-ITERATORS" :EXTERNALP T)
+    (:NAME "SEQUENCE-OUT-OF-BOUNDS-ERROR" :PACKAGE-NAME
+     "TCR.SEQUENCE-ITERATORS" :EXTERNALP T)
+    (:NAME "CANONICALIZE-TEST" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+     :EXTERNALP T)
+    (:NAME "SEQUENCE-OUT-OF-BOUNDS-ERROR--END" :PACKAGE-NAME
+     "TCR.SEQUENCE-ITERATORS" :EXTERNALP T)
+    (:NAME "DO-SEQUENCE-ITERATORS" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+     :EXTERNALP T)
+    (:NAME "MAKE-SEQUENCE-LIKE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+     :EXTERNALP T)
+    (:NAME "SEQUENCE-INDEX" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+     T)
+    (:NAME "DO-SEQUENCE-ITERATORS*" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+     :EXTERNALP T)
+    (:NAME "DOSEQUENCE" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP T)
+    (:NAME "VALIDATE-SEQUENCE-BOUNDS" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+     :EXTERNALP T)
+    (:NAME "SEQUENCE-OUT-OF-BOUNDS-ERROR--START" :PACKAGE-NAME
+     "TCR.SEQUENCE-ITERATORS" :EXTERNALP T)
+    (:NAME "SEQUENCE-OUT-OF-BOUNDS-ERROR--INDEX" :PACKAGE-NAME
+     "TCR.SEQUENCE-ITERATORS" :EXTERNALP T)
+    (:NAME "CANONICALIZE-KEY" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+     T)
+    (:NAME "DOSEQUENCES*" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP T)
+    (:NAME "SEQUENCE-LENGTH" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS" :EXTERNALP
+     T)
+    (:NAME "CHECK-SEQUENCE-BOUNDS" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+     :EXTERNALP T)
+    (:NAME "SEQUENCE-INDEX-ERROR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+     :EXTERNALP T)
+    (:NAME "WITH-SEQUENCE-ITERATOR" :PACKAGE-NAME "TCR.SEQUENCE-ITERATORS"
+     :EXTERNALP T)))))

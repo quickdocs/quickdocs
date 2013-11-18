@@ -1,0 +1,22 @@
+
+(:TYPE :SYSTEM :NAME "lispbuilder-sdl-image-binaries" :AUTHOR
+ "Sam Lantinga <slouken@libsdl.org>" :MAINTAINER
+ "Application Builder <application-builder@lispniks.com>" :VERSION "1.2.10"
+ :LICENCE "LGPL" :DESCRIPTION
+ "lispbuilder-sdl-image-binaries: The windows binary for the SDL_image v1.2.10 library"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "LISPBUILDER-SDL-IMAGE-BINARIES" :FULL-NAME
+   "LISPBUILDER-SDL-IMAGE-BINARIES" :DOCUMENTATION
+   "The main package of `lispbuilder-sdl-image'." :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DLL-PATH*" :PACKAGE-NAME "LISPBUILDER-SDL-IMAGE-BINARIES"
+      :EXTERNALP T)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(MAKE-PATHNAME :HOST
+               (PATHNAME-HOST
+                #P\"/home/quickdocs_dev/quicklisp/dists/quicklisp/software/lispbuilder-20130312-svn/lispbuilder-sdl-image/bin/globals.lisp\")
+               :DIRECTORY
+               (PATHNAME-DIRECTORY
+                #P\"/home/quickdocs_dev/quicklisp/dists/quicklisp/software/lispbuilder-20130312-svn/lispbuilder-sdl-image/bin/globals.lisp\"))"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*DLL-PATH*" :PACKAGE-NAME "LISPBUILDER-SDL-IMAGE-BINARIES"
+     :EXTERNALP T)))))

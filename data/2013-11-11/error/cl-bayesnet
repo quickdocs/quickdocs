@@ -1,0 +1,62 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "cl-bayesnet"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/cl-bayesnet-20130420-git/src/bn.lisp
+; in: DEFUN GEN-PARAMETER
+;     (AREF CL-BAYESNET::NET-STATE CL-BAYESNET::NODE-NUM)
+; ==>
+;   (SB-KERNEL:HAIRY-DATA-VECTOR-REF ARRAY SB-INT:INDEX)
+; 
+; note: unable to
+;   optimize
+; due to type uncertainty:
+;   The first argument is a VECTOR, not a SIMPLE-STRING.
+; 
+; note: unable to
+;   avoid runtime dispatch on array element type
+; due to type uncertainty:
+;   The first argument is a VECTOR, not a SIMPLE-ARRAY.
+
+;     (COERCE
+;      (SVREF
+;       (APPLY #'AREF (CL-BAYESNET::TABLE CL-BAYESNET:NODE) CL-BAYESNET::DIMS)
+;       CL-BAYESNET::STATE)
+;      'DOUBLE-FLOAT)
+; --> THE 
+; ==>
+;   (SB-KERNEL:%DOUBLE-FLOAT SB-C::X)
+; 
+; note: unable to
+;   optimize
+; due to type uncertainty:
+;   The first argument is a REAL, not a DOUBLE-FLOAT.
+; 
+; note: forced to do full call
+;       unable to do inline float coercion (cost 2) because:
+;       The first argument is a REAL, not a SINGLE-FLOAT.
+;       unable to do inline float coercion (cost 5) because:
+;       The first argument is a REAL, not a (SIGNED-BYTE 32).
+;       etc.
+; 
+; compilation unit finished
+;   printed 4 notes
+WARNING:
+   unsupported DOCUMENTATION: type T for object of type SB-PCL::STRUCTURE-DIRECT-SLOT-DEFINITION
+WARNING:
+   unsupported DOCUMENTATION: type T for object of type SB-PCL::STRUCTURE-DIRECT-SLOT-DEFINITION
+WARNING:
+   unsupported DOCUMENTATION: type T for object of type SB-PCL::STRUCTURE-DIRECT-SLOT-DEFINITION
+WARNING:
+   unsupported DOCUMENTATION: type T for object of type SB-PCL::STRUCTURE-DIRECT-SLOT-DEFINITION
+Error: The value CL-BAYESNET::SET-NAME is not of type LIST.

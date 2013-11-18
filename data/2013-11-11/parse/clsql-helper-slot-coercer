@@ -1,0 +1,10 @@
+
+(:TYPE :SYSTEM :NAME "clsql-helper-slot-coercer" :AUTHOR NIL :MAINTAINER NIL
+ :VERSION "0.1" :LICENCE "BSD" :DESCRIPTION
+ "A library providing a single overwritde of (setf slot-value-using-class)
+   so that obvious type coercions occur when setting slots on clsql:standard-db-objects
+
+   USE CAUTION, LOADING SYSTEM WILL CHANGE THE SEMANTICS OF CLSQL:VIEW-CLASS
+   (slightly, and probably in a good way)"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("CLSQL-HELPER" "CLOSER-MOP") :PACKAGE-LIST
+ NIL)

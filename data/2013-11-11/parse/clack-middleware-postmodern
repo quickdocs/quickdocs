@@ -1,0 +1,159 @@
+
+(:TYPE :SYSTEM :NAME "clack-middleware-postmodern" :AUTHOR "Karl Heinrichmeyer"
+ :MAINTAINER NIL :VERSION "0.1" :LICENCE "BSD2" :DESCRIPTION
+ "Middleware for POSTMODERN connection management" :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("CLACK" "CL-SYNTAX" "CL-SYNTAX-ANNOT" "POSTMODERN") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CLACK.MIDDLEWARE.POSTMODERN" :FULL-NAME
+   "CLACK.MIDDLEWARE.POSTMODERN" :DOCUMENTATION "# 
+Clack.Middleware.Postmodern - Middleware for Postmodern connection management
+
+
+## SYNOPSIS
+
+ (builder
+  (<clack-middleware-postmodern>
+   :database \"database-name\"
+   :user \"database-user\"
+   :password \"database-password\"
+   :host \"remote-address\")
+  app)
+
+## DESCRIPTION
+
+This is a Clack Middleware component for managing Postmodern connections.
+
+The database connection will be bound to postmodern:*database* as expected
+by most of the postmodern functionality. Additionally it can be found
+in the environment under the key :clack.postmodern.databases in form of
+an list that maps the database names to the connections. This allows
+the connection to multiple databases. The connections can be retrieved
+by calling (get-connection db-name env).
+
+## Slots
+
+* database (String)
+
+The name of the database.
+
+* user (String)
+
+The database user name.
+
+* password (String)
+
+The password to the database.
+
+* host (Optional, String)
+
+The address of the database server. The default is \"localhost\"
+
+* port (Optional, Integer)
+
+The port on which the database server is listening.
+
+* pooled-p (Optional, Boolean)
+
+If true, then the connection pool is used. The default is true.
+
+* use-ssl (Optional, Keyword)
+
+Same meaning as in the connection spec to a postmodern database. 
+
+## AUTHOR
+
+* Karl Heinrichmeyer (karl.heinrichmeyer@gmail.com)
+
+## SEE ALSO
+
+* [Postmodern](http://marijnhaverbeke.nl/postmodern/)
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "<CLACK-MIDDLEWARE-POSTMODERN>" :PACKAGE-NAME
+      "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "<MIDDLEWARE>" :PACKAGE-NAME "CLACK.MIDDLEWARE" :EXTERNALP T))
+     :DOCUMENTATION
+     "This middleware opens a connection to the specified database
+and stores it in *database* as expected by postmodern. It also
+stores the connection(s) in an alist (database name as key) in
+the environment with the key :clack.postmodern.databases."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DATABASE" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "DATABASE" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The name of the database to connect to.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "USER" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "USER" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The name of the database user.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PASSWORD" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "PASSWORD" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The password for the database.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HOST" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "HOST" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The host the database server is on.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PORT" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "PORT" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The port the database server is listening on.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "POOLED-P" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "POOLED-P" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Shall the connections be pooled?")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "USE-SSL" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "USE-SSL" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Keyword for the use-ssl configuration.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CALL" :PACKAGE-NAME "CLACK.COMPONENT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+        NIL)
+       (:NAME "<CLACK-MIDDLEWARE-POSTMODERN>" :PACKAGE-NAME
+        "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP T))
+      (:NAME "ENV" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-CONNECTION" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DB-NAME" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP
+       NIL)
+      (:NAME "ENV" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "GET-CONNECTION" :PACKAGE-NAME "CLACK.MIDDLEWARE.POSTMODERN"
+     :EXTERNALP T)
+    (:NAME "<CLACK-MIDDLEWARE-POSTMODERN>" :PACKAGE-NAME
+     "CLACK.MIDDLEWARE.POSTMODERN" :EXTERNALP T)))))

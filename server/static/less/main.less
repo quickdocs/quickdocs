@@ -1,0 +1,131 @@
+@charset "UTF-8";
+
+@import "lib/mixin.less";
+@import "lib/variables.less";
+
+@import "lib/base.less";
+@import "lib/header.less";
+@import "lib/footer.less";
+@import "lib/page-project.less";
+@import "lib/page-search.less";
+@import "lib/page-api.less";
+
+section {
+  margin-bottom: 40px;
+}
+
+#content {
+  position: relative;
+  width: 800px;
+  margin: 30px auto;
+
+  h1 { font-size: 32px; }
+  h2 { font-size: 20px; }
+  h3 {
+    font-size: 32px;
+    margin: 10px 0 20px;
+  }
+}
+
+/**
+ *  Header
+ */
+header {
+  margin: 10px 0 30px;
+
+  h2 {
+    float: left;
+    font-size: 40px !important;
+    margin: 0 !important;
+  }
+  .subtitle {
+    display: inline-block;
+    margin: 3px 0 0 10px;
+    font-style: italic;
+    color: #ccc;
+  }
+  .header-links {
+    position: absolute;
+    top: -7px;
+    right: 0;
+
+    a {
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 4px;
+      color: white;
+      .vertical-gradient(@button-green, @button-green, darken(@button-green, 15%));
+      text-decoration: none;
+    }
+  }
+
+  .search-query {
+    display: inline-block;
+    margin: 6px 0 0 10px;
+    color: #888;
+    font-size: 25px;
+    strong {
+      color: #333;
+    }
+  }
+}
+
+.error-message {
+  text-align: left;
+}
+
+.breadcrumb-header-container {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 0;
+  margin: 0;
+  font-size: 80%;
+  list-style: none;
+  .transition-duration(0.2s);
+  opacity: 0.5;
+  &:hover {
+    opacity: 0.7 !important;
+  }
+  li {
+    display: inline-block;
+    float: left;
+    margin: 0;
+    padding: 0;
+    &.package-name.current:before {
+      content: ">";
+      color: #ccc;
+    }
+  }
+  a {
+    &.top-link {
+      font-size: 140%;
+    }
+    height: 25px;
+    padding: 0 10px;
+    text-decoration: none;
+    color: #555;
+    .transition-duration(0.2s);
+    &:hover {
+      color: black;
+    }
+  }
+}
+
+.pager-link-container {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  font-size: 80%;
+  .pager-link {
+    cursor: pointer;
+    text-decoration: none;
+    opacity: 0.5;
+    .transition-duration(0.2s);
+    color: #555;
+    margin-left: 5px;
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

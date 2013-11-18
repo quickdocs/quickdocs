@@ -1,0 +1,26 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "lispbuilder-net-examples"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+; 
+; compilation unit aborted
+;   caught 3 fatal ERROR conditions
+Error: The constant LISPBUILDER-NET-EXAMPLES::+CONTENT-TYPES+ is being
+       redefined (from
+       (("png" . "image/png") ("gif" . "image/gif") ("jpg" . "image/jpeg")
+        ("jpeg" . "image/jpeg") ("text" . "plain/text"))
+       to
+       (("png" . "image/png") ("gif" . "image/gif") ("jpg" . "image/jpeg")
+        ("jpeg" . "image/jpeg") ("text" . "plain/text")))
+See also:
+  The ANSI Standard, Macro DEFCONSTANT
+  The SBCL Manual, Node "Idiosyncrasies"

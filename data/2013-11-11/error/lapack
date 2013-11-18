@@ -1,0 +1,31 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "lapack"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+Heap exhausted during garbage collection: 4096 bytes available, 4104 requested.
+ Gen StaPg UbSta LaSta LUbSt Boxed Unboxed LB   LUB  !move  Alloc  Waste   Trig    WP  GCs Mem-age
+   0: 83568     0     0     0 13042  8206     0     0     0 43975176 43056632 22525045    0   1  0.0000
+   1: 130883 131070     0     0  1827 57902    43     0    35 129009592 115816520 63330445 1457   1  1.1827
+   2: 65594 65482 50878     0 16546 10757   340   146   144 93963104 19860640  5368709 12773   0  0.6005
+   3: 27501 27502 26952     0  9123  2676   561   339    97 49403576 2611528  2000000 9554   0  0.6574
+   4:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
+   5:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
+   6:     0     0     0     0  7648  1915     0     0     0 39170048     0  2000000 6922   0  0.0000
+   Total bytes allocated    = 355521496
+   Dynamic-space-size bytes = 536870912
+GC control variables:
+   *GC-INHIBIT* = true
+   *GC-PENDING* = in progress
+   *STOP-FOR-GC-PENDING* = false
+fatal error encountered in SBCL pid 23931(tid 3084744384):
+Heap exhausted, game over.
+

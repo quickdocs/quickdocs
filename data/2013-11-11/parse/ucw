@@ -1,0 +1,3188 @@
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/helpers.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFTYPE ARRAY-INDEX ...)
+; compiling (DEFUN SYSTEM-RELATIVE-PATHNAME ...)
+; compiling (DEFUN FILENAME-FOR-TEMPORARY-FILE ...)
+; compiling (DEFUN OPEN-TEMPORARY-FILE ...)
+; compiling (DEFUN NEW-RANDOM-KEY ...)
+; compiling (DEFUN INSERT-WITH-NEW-KEY ...)
+; compiling (DEFSTRUCT (SHARED-HASHTABLE-ENTRY #) ...)
+; compiling (DEFMACRO DEFINE-SHARED-HASHTABLE ...)
+; compiling (DEFMACRO WITH-THREAD-NAME ...)
+; compiling (DEFCLASS URI ...)
+; compiling (DEFPRINT-OBJECT (URI URI ...) ...)
+; compiling (DEFUN MAKE-URI ...)
+; compiling (DEFUN ADD-QUERY-PARAMETER-TO-URI ...)
+; compiling (DEFUN APPEND-PATH-TO-URI ...)
+; compiling (DEFUN WRITE-URI-SANS-QUERY ...)
+; compiling (DEFUN WRITE-URI ...)
+; compiling (DEFUN PRINT-URI-TO-STRING ...)
+; compiling (DEFUN PRINT-URI-TO-STRING-SANS-QUERY ...)
+; compiling (DEFTYPE IP-V4-ADDRESS ...)
+; compiling (DEFTYPE IP-V6-ADDRESS ...)
+; compiling (DEFTYPE IP-ADDRESS ...)
+; compiling (DEFUN IP-ADDRESS= ...)
+; compiling (DEFVAR +IP-V4-LOCALHOST+ ...)
+; compiling (DEFVAR +IP-V6-LOCALHOST+ ...)
+; compiling (DEFUN IP-ADDRESS-FROM-PRIVATE-NETWORK-P ...)
+; compiling (DEFUN LOCALHOST-IP-ADDRESS-P ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/helpers-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.116
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/loggers.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.LOGGERS)
+; compiling (DEFMACRO DEFUCWLOGGER ...)
+; compiling (DEFUCWLOGGER UCW ...)
+; compiling (DEFUCWLOGGER UCW.RERL ...)
+; compiling (DEFUCWLOGGER UCW.RERL.ACTIONS ...)
+; compiling (DEFUCWLOGGER UCW.RERL.THREADS ...)
+; compiling (DEFUCWLOGGER UCW.RERL.SERVER ...)
+; compiling (DEFUCWLOGGER UCW.RERL.APPLICATION ...)
+; compiling (DEFUCWLOGGER UCW.RERL.SESSION ...)
+; compiling (DEFUCWLOGGER UCW.RERL.SESSION-FRAME ...)
+; compiling (DEFUCWLOGGER UCW.RERL.DISPATCHER ...)
+; compiling (DEFUCWLOGGER UCW.RERL.AJAX ...)
+; compiling (DEFUCWLOGGER UCW.L10N ...)
+; compiling (DEFUCWLOGGER UCW.COMPONENT ...)
+; compiling (DEFUCWLOGGER UCW.COMPONENT.DOJO ...)
+; compiling (DEFUCWLOGGER UCW.COMPONENT.RENDER ...)
+; compiling (DEFUCWLOGGER UCW.COMPONENT.ACTION ...)
+; compiling (DEFUCWLOGGER UCW.COMPONENT.LAYERS ...)
+; compiling (DEFUCWLOGGER UCW.BACKEND ...)
+; compiling (DEFUCWLOGGER UCW.ADMIN ...)
+; compiling (DEFUCWLOGGER UCW.EXAMPLES ...)
+; compiling (DEFUN UCW.LOG-LEVEL ...)
+; compiling (DEFUN (SETF UCW.LOG-LEVEL) ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/loggers-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.651
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/protocol.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFCLASS COMPONENT ...)
+; compiling (DEFGENERIC (SETF COMPONENT.CALLING-COMPONENT) ...)
+; compiling (DEFGENERIC COMPONENT.CONTINUATION ...)
+; compiling (DEFGENERIC (SETF COMPONENT.CONTINUATION) ...)
+; compiling (DEFGENERIC/CC CALL-COMPONENT ...)
+; compiling (DEFGENERIC WAS-CALLED-P ...)
+; compiling (DEFGENERIC CALL-REQUEST-PATH ...)
+; compiling (DEFGENERIC ANSWER-COMPONENT ...)
+; compiling (DEFVAR *CURRENT-COMPONENT*)
+; compiling (SETF (DOCUMENTATION # ...) ...)
+; compiling (DEFGENERIC PARENT ...)
+; compiling (DEFGENERIC VALIDP ...)
+; compiling (DEFGENERIC VISIBLEP ...)
+; compiling (DEFGENERIC INSPECTABLE-COMPONENT ...)
+; compiling (DEFGENERIC RENDER ...)
+; compiling (DEFGENERIC COMPUTE-URL ...)
+; compiling (DEFGENERIC UPDATE-URL ...)
+; compiling (DEFVAR *DEFAULT-SERVER* ...)
+; compiling (DEFCLASS SERVER ...)
+; compiling (DEFGENERIC SERVER.APPLICATIONS ...)
+; compiling (DEFGENERIC REGISTER-APPLICATION ...)
+; compiling (DEFGENERIC UNREGISTER-APPLICATION ...)
+; compiling (DEFGENERIC STARTUP-SERVER ...)
+; compiling (DEFGENERIC SHUTDOWN-SERVER ...)
+; compiling (DEFGENERIC FIND-ASSOCIATED-APPLICATION ...)
+; compiling (DEFGENERIC HANDLE-REQUEST ...)
+; compiling (DEFVAR *DEFAULT-APPLICATION* ...)
+; compiling (DEFMACRO IN-APPLICATION ...)
+; compiling (DEFCLASS APPLICATION ...)
+; compiling (DEFGENERIC APPLICATION.URL-PREFIX ...)
+; compiling (DEFGENERIC REQUEST-CONTEXT-CLASS ...)
+; compiling (DEFGENERIC MAKE-REQUEST-CONTEXT ...)
+; compiling (DEFGENERIC SESSION-CLASS ...)
+; compiling (DEFGENERIC FIND-SESSION ...)
+; compiling (DEFGENERIC MAKE-NEW-SESSION ...)
+; compiling (DEFGENERIC REMOVE-EXPIRED-SESSIONS ...)
+; compiling (DEFGENERIC DELETE-SESSION ...)
+; compiling (DEFGENERIC NOTIFY-SESSION-EXPIRATION ...)
+; compiling (DEFGENERIC STARTUP-APPLICATION ...)
+; compiling (DEFGENERIC SHUTDOWN-APPLICATION ...)
+; compiling (DEFGENERIC RESTART-APPLICATION ...)
+; compiling (DEFCLASS REQUEST-CONTEXT ...)
+; compiling (DEFGENERIC CONTEXT.REQUEST ...)
+; compiling (DEFGENERIC (SETF CONTEXT.REQUEST) ...)
+; compiling (DEFGENERIC CONTEXT.RESPONSE ...)
+; compiling (DEFGENERIC (SETF CONTEXT.RESPONSE) ...)
+; compiling (DEFGENERIC CONTEXT.APPLICATION ...)
+; compiling (DEFGENERIC (SETF CONTEXT.APPLICATION) ...)
+; compiling (DEFGENERIC CONTEXT.SESSION ...)
+; compiling (DEFGENERIC (SETF CONTEXT.SESSION) ...)
+; compiling (DEFGENERIC CONTEXT.CURRENT-FRAME ...)
+; compiling (DEFGENERIC (SETF CONTEXT.CURRENT-FRAME) ...)
+; compiling (DEFGENERIC CONTEXT.WINDOW-COMPONENT ...)
+; compiling (DEFGENERIC (SETF CONTEXT.WINDOW-COMPONENT) ...)
+; compiling (DEFGENERIC CONTEXT.LOCALE ...)
+; compiling (DEFGENERIC FIND-SESSION-ID ...)
+; compiling (DEFGENERIC FIND-FRAME-ID ...)
+; compiling (DEFGENERIC FIND-ACTION-ID ...)
+; compiling (DEFGENERIC FIND-ACTION-INVOCATION-ID ...)
+; compiling (DEFGENERIC ACTION-REQUEST-P ...)
+; compiling (DEFGENERIC CLEAR-CONTEXT ...)
+; compiling (DEFGENERIC SERVICE ...)
+; compiling (DEFVAR *REQUEST*)
+; compiling (DEFVAR *RESPONSE*)
+; compiling (DEFVAR *CONTEXT*)
+; compiling (SETF (DOCUMENTATION # ...) ...)
+; compiling (DEFCLASS SESSION ...)
+; compiling (DEFGENERIC SESSION.ID ...)
+; compiling (DEFGENERIC ENSURE-SESSION ...)
+; compiling (DEFGENERIC SESSION-EXPIRED-P ...)
+; compiling (DEFGENERIC SESSION-VALID-P ...)
+; compiling (DEFGENERIC SESSION-FRAME-CLASS ...)
+; compiling (DEFGENERIC MAKE-NEW-FRAME ...)
+; compiling (DEFGENERIC CALL-CALLBACKS ...)
+; compiling (DEFGENERIC HANDLE-ACTION ...)
+; compiling (DEFGENERIC CALL-ACTION ...)
+; compiling (DEFGENERIC CALL-RENDER ...)
+; compiling (DEFGENERIC SESSION.CURRENT-FRAME ...)
+; compiling (DEFGENERIC (SETF SESSION.CURRENT-FRAME) ...)
+; compiling (DEFGENERIC SESSION.VALUE ...)
+; compiling (DEFGENERIC (SETF SESSION.VALUE) ...)
+; compiling (DEFUN GET-SESSION-VALUE ...)
+; compiling (DEFUN (SETF GET-SESSION-VALUE) ...)
+; compiling (DEFGENERIC HAS-EVENTS-FOR-THE-CLIENT ...)
+; compiling (DEFGENERIC SEND-EVENTS-TO-THE-CLIENT ...)
+; compiling (DEFCLASS SESSION-FRAME ...)
+; compiling (DEFGENERIC FRAME.ID ...)
+; compiling (DEFGENERIC FRAME.WINDOW-COMPONENT ...)
+; compiling (DEFGENERIC (SETF FRAME.WINDOW-COMPONENT) ...)
+; compiling (DEFGENERIC FIND-ACTION ...)
+; compiling (DEFGENERIC (SETF FIND-ACTION) ...)
+; compiling (DEFGENERIC MAKE-NEXT-FRAME ...)
+; compiling (DEFGENERIC REGISTER-ACTION-IN-FRAME ...)
+; compiling (DEFGENERIC REGISTER-CALLBACK-IN-FRAME ...)
+; compiling (DEFCLASS BACKEND ...)
+; compiling (DEFGENERIC INITIALIZE-BACKEND ...)
+; compiling (DEFGENERIC STARTUP-BACKEND ...)
+; compiling (DEFGENERIC SHUTDOWN-BACKEND ...)
+; compiling (DEFGENERIC PUBLISH-DIRECTORY ...)
+; compiling (DEFCLASS MESSAGE ...)
+; compiling (DEFGENERIC GET-HEADER ...)
+; compiling (DEFGENERIC (SETF GET-HEADER) ...)
+; compiling (DEFGENERIC ADD-HEADER ...)
+; compiling (DEFCLASS REQUEST ...)
+; compiling (DEFGENERIC COOKIES ...)
+; compiling (DEFGENERIC FIND-COOKIE-USING-REQUEST ...)
+; compiling (DEFGENERIC COOKIE-VALUE-USING-REQUEST ...)
+; compiling (DEFGENERIC QUERY-PATH ...)
+; compiling (DEFGENERIC GET-PARAMETER ...)
+; compiling (DEFGENERIC MAP-PARAMETERS ...)
+; compiling (DEFGENERIC CLOSE-REQUEST ...)
+; compiling (DEFCLASS RESPONSE ...)
+; compiling (DEFGENERIC ADD-COOKIE-USING-RESPONSE ...)
+; compiling (DEFGENERIC HTML-STREAM ...)
+; compiling (DEFGENERIC NETWORK-STREAM ...)
+; compiling (DEFGENERIC REMOTE-ADDRESS ...)
+; compiling (DEFGENERIC ENCODING ...)
+; compiling (DEFGENERIC CLEAR-RESPONSE ...)
+; compiling (DEFGENERIC MIME-PART-HEADERS ...)
+; compiling (DEFGENERIC MIME-PART-BODY ...)
+; compiling (DEFGENERIC SEND-RESPONSE ...)
+; compiling (DEFGENERIC SEND-HEADERS ...)
+; compiling (DEFGENERIC HEADERS-ARE-SENT-P ...)
+; compiling (DEFGENERIC HANDLE-TOPLEVEL-CONDITION ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/protocol-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.047
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/rerl-variables.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFVAR *CURRENT-FORM*)
+; compiling (DEFVAR *DEFAULT-SESSION-LONGEVITY* ...)
+; compiling (DEFVAR *DEFAULT-SESSION-PURGE-PERIOD* ...)
+; compiling (DEFVAR *MAXIMUM-NUMBER-OF-SESSIONS* ...)
+; compiling (DEFCONSTANT +SESSION-ID-LENGTH+ ...)
+; compiling (DEFVAR +SESSION-PARAMETER-NAME+ ...)
+; compiling (DEFVAR +SESSION-PARAMETER-KEYWORD+ ...)
+; compiling (DEFVAR +SESSION-BACKTRACKING-MAX-DEPTH+ ...)
+; compiling (DEFCONSTANT +FRAME-ID-LENGTH+ ...)
+; compiling (DEFVAR +FRAME-PARAMETER-NAME+ ...)
+; compiling (DEFVAR +FRAME-PARAMETER-KEYWORD+ ...)
+; compiling (DEFCONSTANT +ACTION-ID-LENGTH+ ...)
+; compiling (DEFVAR +ACTION-PARAMETER-NAME+ ...)
+; compiling (DEFVAR +ACTION-INVOCATION-PARAMETER-NAME+ ...)
+; compiling (DEFVAR +ACTION-PARAMETER-KEYWORD+ ...)
+; compiling (DEFCONSTANT +CALLBACK-ID-LENGTH+ ...)
+; compiling (EVAL-ALWAYS (DEFPARAMETER +UCW-DYNAMIC-URL-PREFIX+ ...))
+; compiling (DEFUN MAP-TO-DYNAMIC-UCW-URL ...)
+; compiling (DEFPARAMETER +I18N-PARENSCRIPT-DISPATCHER-URL+ ...)
+; compiling (DEFPARAMETER +POLLING-DISPATCHER-URL+ ...)
+; compiling (DEFPARAMETER +AJAX-ACTION-DISPATCHER-URL+ ...)
+; compiling (DEFPARAMETER +CALLBACK-DISPATCHER-URL+ ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/rerl-variables-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.010
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/rerl-utils.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFUN SESSION-LOCK-HELD-P ...)
+; compiling (DEFUN ASSERT-SESSION-LOCK-HELD ...)
+; compiling (DEFUN APPLICATION-LOCK-HELD-P ...)
+; compiling (DEFUN ASSERT-APPLICATION-LOCK-HELD ...)
+; compiling (DEFMACRO WITH-LOCK-HELD-ON-SERVER ...)
+; compiling (DEFMACRO WITH-LOCK-HELD-ON-APPLICATION ...)
+; compiling (DEFMACRO WITH-LOCK-HELD-ON-SESSION ...)
+; compiling (DEFMACRO WITH-SESSION-VARIABLES ...)
+; compiling (DEFUN SEND-REDIRECT ...)
+; compiling (DEFUN OPEN-SESSION-SPECIFIC-TEMPORARY-FILE ...)
+; compiling (DEFMACRO WITH-SESSION-SPECIFIC-TEMPORARY-FILE ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/rerl-utils-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.081
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/conditions.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFINE-CONDITION NO-HANDLER-FOR-REQUEST ...)
+; compiling (DEFINE-CONDITION RERL-ERROR ...)
+; compiling (DEFINE-CONDITION TOO-MANY-SESSIONS ...)
+; compiling (DEFINE-CONDITION INEXISTENT-REQUEST-PART ...)
+; compiling (DEFUN REPORT-INEXISTENT-REQUEST-PART ...)
+; compiling (DEFMETHOD INITIALIZE-INSTANCE ...)
+; compiling (DEFINE-CONDITION BADLY-FORMATTED-REQUEST ...)
+; compiling (DEFINE-CONDITION REQUEST-CONTENT-LENGTH-LIMIT-REACHED ...)
+; compiling (DEFUN REQUEST-CONTENT-LENGTH-LIMIT-REACHED ...)
+; compiling (DEFINE-CONDITION SESSION-ID-MISSING ...)
+; compiling (DEFINE-CONDITION FRAME-ID-MISSING ...)
+; compiling (DEFINE-CONDITION ACTION-ID-MISSING ...)
+; compiling (DEFINE-CONDITION SESSION-IS-INVALID ...)
+; compiling (DEFINE-CONDITION SESSION-HAS-EXPIRED ...)
+; compiling (DEFINE-CONDITION FRAME-NOT-FOUND ...)
+; compiling (DEFINE-CONDITION ACTION-NOT-FOUND ...)
+; compiling (DEFINE-CONDITION CALLBACK-ERROR ...)
+; compiling (DEFINE-CONDITION ACTION-ERROR ...)
+; compiling (DEFINE-CONDITION RENDER-ERROR ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/conditions-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.026
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/basic-classes.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFCLASS MINIMAL-APPLICATION ...)
+; compiling (DEFCLASS BASIC-APPLICATION ...)
+; compiling (DEFPRINT-OBJECT (APP BASIC-APPLICATION) ...)
+; compiling (DEFMETHOD INITIALIZE-INSTANCE ...)
+; compiling (DEFCLASS APPLICATION-WITH-SESSION-HANDLING-MIXIN ...)
+; compiling (DEFCLASS STANDARD-REQUEST-CONTEXT ...)
+; compiling (DEFCLASS STANDARD-SERVER ...)
+; compiling (DEFCLASS STANDARD-SESSION-FRAME ...)
+; compiling (DEFPRINT-OBJECT (FRAME STANDARD-SESSION-FRAME) ...)
+; compiling (DEFCLASS PLACE ...)
+; compiling (DEFPRINT-OBJECT (P PLACE) ...)
+; compiling (DEFCLASS BASIC-SESSION ...)
+; compiling (DEFMETHOD INITIALIZE-INSTANCE ...)
+; compiling (DEFPRINT-OBJECT (S BASIC-SESSION) ...)
+; compiling (DEFCLASS ACTION ...)
+; compiling (DEFCLASS RENDERABLE-ACTION ...)
+; compiling (DEFCLASS BASIC-ACTION ...)
+; compiling (DEFCLASS ACTION-WITH-ISOLATION-SUPPORT ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/basic-classes-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.058
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/backtracking.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFMACRO MAKE-PLACE ...)
+; compiling (DEFGENERIC PLACE ...)
+; compiling (DEFGENERIC (SETF PLACE) ...)
+; compiling (DEFGENERIC CLONE-PLACE-VALUE ...)
+; compiling (DEFUN CLONE-EFFECTIVE-BACKTRACKS ...)
+; compiling (DEFUN CLEAR-EFFECTIVE-BACKTRACKS ...)
+; compiling (DEFGENERIC SAVE-BACKTRACKED ...)
+; compiling (DEFGENERIC REINSTATE-BACKTRACKED ...)
+; compiling (DEFGENERIC BACKTRACK ...)
+; compiling (DEFCONSTANT +UNBOUND-VALUE+ ...)
+; compiling (DEFGENERIC BACKTRACK-SLOT ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/backtracking-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.151
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-session-frame.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFMACRO REGISTER-ACTION ...)
+; compiling (DEFMACRO REGISTER-AJAX-ACTION ...)
+; compiling (DEFMETHOD REGISTER-ACTION-IN-FRAME ...)
+; compiling (DEFMETHOD FIND-ACTION ...)
+; compiling (DEFMETHOD FIND-ACTION ...)
+; compiling (DEFMETHOD FIND-ACTION ...)
+; compiling (DEFMETHOD (SETF FIND-ACTION) ...)
+; compiling (DEFSTRUCT (CALLBACK-ENTRY # ...) ...)
+; compiling (DEFUN MAKE-CALLBACK ...)
+; compiling (DEFUN REGISTER-CALLBACK ...)
+; compiling (DEFMETHOD REGISTER-CALLBACK-IN-FRAME ...)
+; compiling (DEFUN NEW-CALLBACK-ID ...)
+; compiling (DEFUN PREPARE-CALLBACKS ...)
+; compiling (DEFMACRO DEFMETHOD-AND-DEFMETHOD/CC ...)
+; compiling (DEFMETHOD CALL-CALLBACKS ...)
+; compiling (DEFMETHOD MAKE-NEXT-FRAME ...)
+; compiling (DEFMETHOD MAKE-NEXT-FRAME ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-session-frame-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.162
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/basic-action.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFMETHOD (SETF ACTION-LAMBDA-OF) ...)
+; compiling (DEFMETHOD INITIALIZE-INSTANCE ...)
+; compiling (DEFMETHOD HANDLE-ACTION ...)
+; compiling (DEFUN ABORT-ACTION ...)
+; compiling (DEFMETHOD CALL-ACTION ...)
+; compiling (DEFMETHOD CALL-ACTION ...)
+; compiling (DEFMETHOD HANDLE-ACTION ...)
+; compiling (DEFMETHOD REINSTATE-BACKTRACKED-USING-ACTION ...)
+; compiling (DEFMETHOD SAVE-BACKTRACKED-USING-ACTION ...)
+; compiling (DEFMETHOD CALL-ACTION ...)
+; compiling (DEFMETHOD MAKE-NEW-FRAME ...)
+; compiling (DEFMETHOD MAKE-NEW-FRAME ...)
+; compiling (DEFMETHOD CALL-CALLBACKS ...)
+; compiling (DEFMETHOD CALL-ACTION ...)
+; compiling (DEFMETHOD CALL-RENDER ...)
+; compiling (DEFMETHOD HANDLE-ACTION ...)
+; compiling (DEFMETHOD HANDLE-ACTION ...)
+; compiling (DEFMETHOD HANDLE-ACTION ...)
+; compiling (DEFMETHOD HANDLE-ACTION ...)
+; compiling (DEFGENERIC REINSTATE-BACKTRACKED-USING-ACTION ...)
+; compiling (DEFGENERIC SAVE-BACKTRACKED-USING-ACTION ...)
+; compiling (DEFMETHOD HANDLE-ACTION ...)
+; compiling (DEFUN MAKE-ACTION ...)
+; compiling (DEFMACRO MAKE-ACTION-BODY ...)
+; compiling (DEFMACRO WITH-REQUEST-PARAMS ...)
+; compiling (DEFSTRUCT ARG-SPEC ...)
+; compiling (DEFUN GEN-REQUEST-PARAM-BINDER ...)
+; compiling (DEFMACRO DEFENTRY-POINT ...)
+; compiling (DEFUN ACTION-HREF ...)
+; compiling (DEFMACRO ACTION-HREF-BODY ...)
+; compiling (DEFMACRO DOWNLOAD-ACTION-HREF-BODY ...)
+; compiling (DEFMACRO ABORT-RAW-REQUEST ...)
+; compiling (DEFMACRO HANDLE-RAW-REQUEST ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/basic-action-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.251
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/request-loop-error.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFCLASS STACK-FRAME ...)
+; compiling (DEFUN MAKE-STACK-FRAME ...)
+; compiling (DEFUN COLLECT-BACKTRACE ...)
+; compiling (DEFVAR *CURRENT-CONDITION*)
+; compiling (DEFUN CALL-WITH-UCW-ERROR-HANDLER ...)
+; compiling (DEFUN SEND-STANDARD-ERROR-PAGE ...)
+; compiling (DEFUN RENDER-STANDARD-ERROR-PAGE ...)
+; compiling (DEFUN INVOKE-SLIME-DEBUGGER-IF-POSSIBLE ...)
+; compiling (DEFMETHOD HANDLE-TOPLEVEL-CONDITION ...)
+; compiling (DEFVAR *UCW-BACKTRACE-VERBOSE* ...)
+; compiling (DEFUN LOG-ERROR-WITH-BACKTRACE ...)
+; compiling (DEFMETHOD HANDLE-TOPLEVEL-CONDITION ...)
+; compiling (DEFMETHOD HANDLE-TOPLEVEL-CONDITION ...)
+; compiling (DEFMETHOD HANDLE-TOPLEVEL-CONDITION ...)
+; compiling (DEFUN SEND-BACKTRACE-TO-EMACS ...)
+; compiling (DEFUN GENERATE-BACKTRACE-FOR-EMACS ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/request-loop-error-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.139
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/basic-application.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFMETHOD (SETF APPLICATION.DISPATCHERS) ...)
+; compiling (DEFUN REGISTER-DISPATCHER ...)
+; compiling (DEFMETHOD DEBUG-ON-ERROR ...)
+; compiling (DEFMETHOD REQUEST-CONTEXT-CLASS ...)
+; compiling (DEFMETHOD SHARED-INITIALIZE ...)
+; compiling (DEFMETHOD SHARED-INITIALIZE ...)
+; compiling (DEFMETHOD SHARED-INITIALIZE ...)
+; compiling (DEFMETHOD MAKE-REQUEST-CONTEXT ...)
+; compiling (DEFMETHOD FIND-SESSION ...)
+; compiling (DEFMETHOD SESSION-CLASS ...)
+; compiling (DEFMETHOD MAKE-NEW-SESSION ...)
+; compiling (DEFMETHOD REMOVE-EXPIRED-SESSIONS ...)
+; compiling (DEFMETHOD DELETE-SESSION ...)
+; compiling (DEFMETHOD DELETE-SESSION ...)
+; compiling (DEFMETHOD DELETE-SESSION ...)
+; compiling (DEFMETHOD NOTIFY-SESSION-EXPIRATION ...)
+; compiling (DEFMETHOD NOTIFY-SESSION-EXPIRATION ...)
+; compiling (DEFMETHOD ENSURE-SESSION ...)
+; compiling (DEFMETHOD ENSURE-SESSION ...)
+; compiling (DEFUN ITERATE-SESSIONS-WITH-LOCK-HELD ...)
+; compiling (DEFMETHOD SERVICE ...)
+; compiling (DEFPRINT-OBJECT (APP APPLICATION ...) ...)
+; compiling (DEFMETHOD STARTUP-APPLICATION ...)
+; compiling (DEFMETHOD STARTUP-APPLICATION ...)
+; compiling (DEFMETHOD SHUTDOWN-APPLICATION ...)
+; compiling (DEFMETHOD SHUTDOWN-APPLICATION ...)
+; compiling (DEFMETHOD SHUTDOWN-APPLICATION ...)
+; compiling (DEFMETHOD RESTART-APPLICATION ...)
+; compiling (DEFMETHOD COMPUTE-URL ...)
+; compiling (DEFMETHOD COMPUTE-URL ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/basic-application-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.250
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-component/standard-component-class.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFCLASS STANDARD-COMPONENT-SLOT ...)
+; compiling (DEFCLASS STANDARD-COMPONENT-CLASS ...)
+; compiling (DEFMETHOD SB-MOP:VALIDATE-SUPERCLASS ...)
+; compiling (DEFMETHOD SB-MOP:FINALIZE-INHERITANCE ...)
+; compiling (DEFUN FIXUP-COMPONENT-SLOTS ...)
+; compiling (DEFMETHOD INITIALIZE-INSTANCE ...)
+; compiling (DEFMETHOD REINITIALIZE-INSTANCE ...)
+; compiling (DEFCLASS STANDARD-COMPONENT-DIRECT-SLOT ...)
+; compiling (DEFMETHOD SB-MOP:DIRECT-SLOT-DEFINITION-CLASS ...)
+; compiling (DEFUN NEEDS-TO-BE-STANDARD-COMPONENT-DIRECT-SLOT-P ...)
+; compiling (DEFCLASS STANDARD-COMPONENT-EFFECTIVE-SLOT ...)
+; compiling (DEFUN FIRST-SPECIFYING-SLOT ...)
+; compiling (DEFUN NEEDS-TO-BE-STANDARD-COMPONENT-EFFECTIVE-SLOT-P ...)
+; compiling (DEFMETHOD SB-MOP:EFFECTIVE-SLOT-DEFINITION-CLASS ...)
+; compiling (DEFMETHOD SB-MOP:COMPUTE-EFFECTIVE-SLOT-DEFINITION ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-component/standard-component-class-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.126
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-component/standard-component.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFCLASS STANDARD-COMPONENT ...)
+; compiling (DEFUN INITIALIZE-BACKTRACKING ...)
+; compiling (DEFUN INITIALIZE-COMPONENT-SLOTS ...)
+; compiling (DEFMETHOD (SETF SB-MOP:SLOT-VALUE-USING-CLASS) ...)
+; compiling (DEFUN INITIALIZE-PLACE-SLOT ...)
+; compiling (DEFMETHOD SHARED-INITIALIZE ...)
+; compiling (DEFGENERIC CHILD-COMPONENTS ...)
+; compiling (DEFMETHOD CHILD-COMPONENTS ...)
+; compiling (DEFGENERIC DESCENDANT-P ...)
+; compiling (DEFMETHOD DESCENDANT-P ...)
+; compiling (DEFUN FIND-PARENT-TYPED ...)
+; compiling (DEFMETHOD RENDER ...)
+; compiling (DEFVAR *COPY-DOWN-COMPONENT* ...)
+; compiling (DEFUN RENDER-WITH-INSPECTOR-LINK ...)
+; compiling (DEFGENERIC (SETF DIRTYP) ...)
+; compiling (DEFMETHOD (SETF DIRTYP) ...)
+; compiling (DEFMETHOD VISIBLEP ...)
+; compiling (DEFMETHOD RENDER ...)
+; compiling (DEFMETHOD RENDER ...)
+; compiling (DEFMETHOD COMPUTE-URL ...)
+; compiling (DEFMETHOD UPDATE-URL ...)
+; compiling (DEFMACRO DEFCOMPONENT ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-component/standard-component-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.154
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-component/control-flow.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFMETHOD CALL-REQUEST-PATH ...)
+; compiling (DEFMETHOD/CC CALL-COMPONENT ...)
+; compiling (DEFMETHOD/CC CALL-COMPONENT ...)
+; compiling (DEFMETHOD WAS-CALLED-P ...)
+; compiling (DEFMETHOD ANSWER-COMPONENT ...)
+; compiling (DEFMETHOD ANSWER-COMPONENT* ...)
+; compiling (DEFMETHOD ANSWER-COMPONENT* ...)
+; compiling (DEFMETHOD ANSWER-COMPONENT* ...)
+; compiling (DEFMETHOD JUMP-TO-COMPONENT ...)
+; compiling (DEFGENERIC/CC REFRESH-COMPONENT ...)
+; compiling (DEFMETHOD/CC REFRESH-COMPONENT ...)
+; compiling (DEFGENERIC/CC OK ...)
+; compiling (DEFMETHOD/CC OK ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-component/control-flow-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.066
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-component/transactions.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-component/transactions-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.003
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/basic-dispatchers.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFCONSTANT +ACTION-DISPATCHER-DEFAULT-PRIORITY+ ...)
+; compiling (DEFCONSTANT +URL-DISPATCHER-DEFAULT-PRIORITY+ ...)
+; compiling (DEFCLASS MATCHER ...)
+; compiling (DEFGENERIC MATCHER-MATCH ...)
+; compiling (DEFCLASS DISPATCHER ...)
+; compiling (DEFGENERIC DISPATCH ...)
+; compiling (DEFMETHOD DISPATCH ...)
+; compiling (DEFCLASS SESSION-FRAME-MATCHER ...)
+; compiling (DEFMETHOD MATCHER-MATCH ...)
+; compiling (DEFCLASS URL-MATCHER ...)
+; compiling (DEFPRINT-OBJECT (SELF URL-MATCHER) ...)
+; compiling (DEFMETHOD MATCHER-MATCH ...)
+; compiling (DEFCLASS HANDLER ...)
+; compiling (DEFGENERIC HANDLER-HANDLE ...)
+; compiling (DEFCLASS ENTRY-POINT-HANDLER ...)
+; compiling (DEFMETHOD INITIALIZE-INSTANCE ...)
+; compiling (DEFMETHOD HANDLER-HANDLE ...)
+; compiling (DEFCLASS URL-DISPATCHER ...)
+; compiling (DEFMACRO MAKE-URL-DISPATCHER ...)
+; compiling (DEFCLASS ACTION-DISPATCHER ...)
+; compiling (DEFMETHOD MATCHER-MATCH ...)
+; compiling (DEFMETHOD HANDLER-HANDLE ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/basic-dispatchers-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.053
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-request-context.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFMETHOD CONTEXT.WINDOW-COMPONENT ...)
+; compiling (DEFMETHOD (SETF CONTEXT.WINDOW-COMPONENT) ...)
+; compiling (DEFMETHOD ACTION-REQUEST-P ...)
+; compiling (DEFMETHOD FIND-SESSION-ID ...)
+; compiling (DEFMETHOD FIND-FRAME-ID ...)
+; compiling (DEFMETHOD FIND-ACTION-ID ...)
+; compiling (DEFMETHOD FIND-ACTION-INVOCATION-ID ...)
+; compiling (DEFMETHOD CLEAR-CONTEXT ...)
+; compiling (DEFUN QUERY-PATH-SANS-PREFIX ...)
+; compiling (DEFMETHOD SEND-RESPONSE ...)
+; compiling (DEFCLASS DUMMY-REQUEST-CONTEXT ...)
+; compiling (DEFCLASS DUMMY-REQUEST ...)
+; compiling (DEFCLASS DUMMY-RESPONSE ...)
+; compiling (DEFUN MAKE-DUMMY-CONTEXT ...)
+; compiling (DEFCOMPONENT DUMMY-ROOT-COMPONENT ...)
+; compiling (DEFMETHOD RENDER ...)
+; compiling (DEFMACRO WITH-DUMMY-CONTEXT ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-request-context-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.048
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-server.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFPRINT-OBJECT (SERVER STANDARD-SERVER) ...)
+; compiling (DEFMETHOD STARTUP-SERVER ...)
+; compiling (DEFMETHOD SHUTDOWN-SERVER ...)
+; compiling (DEFMETHOD REGISTER-APPLICATION ...)
+; compiling (DEFMETHOD UNREGISTER-APPLICATION ...)
+; compiling (DEFMETHOD STARTUP-SERVER ...)
+; compiling (DEFMETHOD SHUTDOWN-SERVER ...)
+; compiling (DEFMETHOD RESTART-SERVER ...)
+; compiling (DEFMETHOD REGISTER-APPLICATION ...)
+; compiling (DEFMETHOD UNREGISTER-APPLICATION ...)
+; compiling (DEFMETHOD FIND-ASSOCIATED-APPLICATION ...)
+; compiling (DEFUN ABORT-REQUEST ...)
+; compiling (DEFUN CALL-AS-REQUEST-HANDLER ...)
+; compiling (DEFUN CALL-AS-RESPONSE-HANDLER ...)
+; compiling (DEFMETHOD HANDLE-REQUEST ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/standard-server-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.093
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/basic-session.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFMETHOD SESSION.VALUE ...)
+; compiling (DEFMETHOD (SETF SESSION.VALUE) ...)
+; compiling (DEFMETHOD SESSION-EXPIRED-P ...)
+; compiling (DEFMETHOD SESSION-VALID-P ...)
+; compiling (DEFUN MARK-SESSION-EXPIRED ...)
+; compiling (DEFMETHOD MAKE-NEW-FRAME ...)
+; compiling (DEFCONSTANT +EPOCH-START+ ...)
+; compiling (DEFCLASS FRAME-QUEUE ...)
+; compiling (DEFMETHOD DEQUEUE ...)
+; compiling (DEFMETHOD ENQUEUE ...)
+; compiling (DEFMETHOD FIND-FRAME-BY-ID ...)
+; compiling (DEFMETHOD FIND-FRAME-BY-ID ...)
+; compiling (DEFMETHOD FIND-FRAME-BY-ID ...)
+; compiling (DEFUN CLEAR-SESSION-FRAME-HISTORY ...)
+; compiling (DEFMETHOD SESSION-FRAME-CLASS ...)
+; compiling (DEFMETHOD SHARED-INITIALIZE ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/rerl/basic-session-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.045
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/backend/accept-headers.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFUN PARSE-ACCEPT-LANGUAGE-HEADER ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/backend/accept-headers-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.097
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/control.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFUN CREATE-SERVER ...)
+; compiling (DEFGENERIC MAKE-BACKEND ...)
+; compiling (DEFMETHOD MAKE-BACKEND ...)
+; compiling (DEFMETHOD MAKE-BACKEND ...)
+; compiling (DEFMETHOD MAKE-BACKEND ...)
+; compiling (DEFMETHOD MAKE-BACKEND ...)
+; compiling (DEFMETHOD MAKE-BACKEND ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/control-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.128
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/core-components/window.lisp" (written 12 NOV 2013 06:02:57 PM):
+; compiling (IN-PACKAGE :IT.BESE.UCW.CORE)
+; compiling (DEFCOMPONENT WINDOW-COMPONENT ...)
+; compiling (DEFMETHOD WINDOW-COMPONENT.CONTENT-TYPE ...)
+; compiling (DEFMETHOD RENDER ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/ucw-20120909-darcs/src/core-components/window-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.017
+
+(:TYPE :SYSTEM :NAME "ucw" :AUTHOR "Marco Baringer <mb@bese.it>" :MAINTAINER
+ "Drew Crampsie <drewc@tech.coop>" :VERSION "0.9" :LICENCE
+ "BSD (sans advertising clause)" :DESCRIPTION
+ "UncommonWeb : Standard Components" :LONG-DESCRIPTION
+ "Containts a simple, standard component library." :DEPENDS-ON
+ ("UCW-CORE" "CL-PPCRE" "CLOSER-MOP") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "-STANDARD" :FULL-NAME "UCW-STANDARD" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SOURCE-COMPONENT*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "STANDARD-ACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-ACTION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SOURCE-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ACTION-SOURCE-COMPONENT" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SHARED-INITIALIZE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACTION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "STANDARD-ACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "SLOTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLE-ACTION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACTION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "STANDARD-ACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "A" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "S" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "F" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CALL" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CALL-AS-WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "COMPONENT-TYPE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COMPONENT-INIT-ARGS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "JUMP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "COMPONENT-TYPE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COMPONENT-INIT-ARGS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ANSWER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VAL" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS-AND-BODY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+ACTION-COMPOUND-NAME-DELIMITER+" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+      :EXTERNALP T)
+     :DOCUMENTATION NIL :INITIAL-VALUE "#\\|")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-ACTION-ID" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-REQUEST-CONTEXT" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DISPATCHER-REGISTERS*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DISPATCHER-URL-SUFFIX*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :DOCUMENTATION NIL)
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+MINIMAL-DISPATCHER-DEFAULT-PRIORITY+" :PACKAGE-NAME
+      "UCW-STANDARD" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "1")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+SIMPLE-DISPATCHER-DEFAULT-PRIORITY+" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "1")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+STARTS-WITH-DISPATCHER-DEFAULT-PRIORITY+" :PACKAGE-NAME
+      "UCW-STANDARD" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "1")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+REGEX-DISPATCHER-DEFAULT-PRIORITY+" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "1")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "STARTS-WITH-MATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "URL-MATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MATCHER-MATCH" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "MATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "STARTS-WITH-MATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL))
+      ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "BASIC-APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+        T))
+      ((:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-REQUEST-CONTEXT" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+        :EXTERNALP T)))
+     :DOCUMENTATION "Returns matched url-string to handler.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REGEXP-URL-MATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "URL-MATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION "Regexp matcher class to match url-string
+  via cl-ppcre scanner."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SCANNER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "SCANNER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION "CL-PPCRE scanner used for pattern
+            matching. Created automagically when url-string is
+            set via accessors or initform.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SHARED-INITIALIZE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "MATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "REGEXP-URL-MATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL))
+      (:NAME "SLOT-NAMES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "URL-STRING" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T)
+      ((:NAME "MATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "REGEXP-URL-MATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MATCHER-MATCH" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "MATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "REGEXP-URL-MATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL))
+      ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "BASIC-APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+        T))
+      ((:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-REQUEST-CONTEXT" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+        :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns two values to handler on success: the whole match as a
+string plus an array of substrings (or NILs) corresponding to the
+matched registers.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "FUNCTION-HANDLER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "HANDLER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION "Function handler class funcalls the handler
+  lambda while providing application and context. "
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HANDLER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "HANDLER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Called when the dispatchers finds a
+            maching request. This function must be a zero arg'ed
+            (lambda ()
+               ...)")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLER-HANDLE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FUNCTION-HANDLER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "FUNCTION-HANDLER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+      ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "BASIC-APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+        T))
+      ((:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-REQUEST-CONTEXT" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+        :EXTERNALP T))
+      (:NAME "MATCHER-RESULT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "MINIMAL-DISPATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DISPATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "REGEXP-URL-MATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "FUNCTION-HANDLER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "A dispatcher which does as little work as
+  possible. The handler function must do basically
+  everything (including shutdowning down request and response)."
+     :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "SIMPLE-DISPATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DISPATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "REGEXP-URL-MATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "FUNCTION-HANDLER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "This class of dispatchers avoids all of UCW's
+  standard call/cc (and therefore frame/backtracking/component)
+  mechanism.
+
+Unlike all other UCW dispatchers a simple-dispatcher must not use
+CALL, and must perform the rendering directly within the handler."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLER-HANDLE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "DISPATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "SIMPLE-DISPATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "BASIC-APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+        T))
+      ((:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-REQUEST-CONTEXT" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+        :EXTERNALP T))
+      (:NAME "MATCHER-RESULT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "STARTS-WITH-DISPATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DISPATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "STARTS-WITH-MATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "STARTS-WITH-BINDING-HANDLER" :PACKAGE-NAME "UCW-STANDARD"
+       :EXTERNALP NIL)
+      (:NAME "ENTRY-POINT-HANDLER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "STARTS-WITH-BINDING-HANDLER" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLER-HANDLE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "STARTS-WITH-BINDING-HANDLER" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL))
+      (:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "MATCHER-RESULT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REGEXP-DISPATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "DISPATCHER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "REGEXP-URL-MATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "REGEXP-BINDING-HANDLER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       NIL)
+      (:NAME "ENTRY-POINT-HANDLER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION "Matches URL using a cl-ppcre regular
+expression. Captured registers are available via
+`ucw:*dispatcher-registers*'"
+     :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REGEXP-BINDING-HANDLER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLER-HANDLE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "REGEXP-BINDING-HANDLER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL))
+      (:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "MATCHER-RESULT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GEN-ID" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "%WITH-ACTION-UNIQUE-NAMES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T))
+     :DOCUMENTATION "These magic macros.")
+    (:TYPE :MACRO :SYMBOL (:NAME "A" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "G36" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION "A Simple <:A which does not require javascript.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*IN-FORM*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :MACRO :SYMBOL (:NAME "FORM" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "G136" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION "A Simple form which does not require javascript. ")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "SUBMIT" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "G262" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "%WITH-CALLBACK-WRITER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T))
+     :DOCUMENTATION "Bind WRITER to either WRITER or ACCESSOR.")
+    (:TYPE :MACRO :SYMBOL (:NAME "INPUT" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "G385" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "TEXTAREA" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "G463" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "%SELECT" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "G549" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The implementation of <ucw:select and tal tags with a :accessor (or :writer and :reader) attribute.
+
+You need to supply either an accessor, or a writer and (optionally) a
+reader to <ucw:select.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "SELECT" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "G660" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "%OPTION" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "G711" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "OPTION" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "G798" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION "Replacement for the standard OPTION tag, must be used with
+  <UCW:SELECT tag. Unlike \"regular\" OPTION tags the :value
+  attribute can be any lisp object (printable or not).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "STANDARD-APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+      T)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ACTION-CLASS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "APPLICATION.ACTION-CLASS" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SERVICE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+        :EXTERNALP T))
+      (:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION "A mixin that renders basic html toplevel tags." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TITLE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "WINDOW-COMPONENT.TITLE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STYLESHEET" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "WINDOW-COMPONENT.STYLESHEET" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The URL of the css file to use as a stylesheet for this window.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ICON" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "WINDOW-COMPONENT.ICON" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "Optional URL for an icon.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DOCTYPE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "WINDOW-COMPONENT.DOCTYPE" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "Doctype for this window.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONTENT-PROLOGUE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "WINDOW-COMPONENT.CONTENT-PROLOGUE" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Unless nil it's printed <:as-is before any other output. Suitable for <?xml...?> lines.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HTML-TAG-ATTRIBUTES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "WINDOW-COMPONENT.HTML-TAG-ATTRIBUTES" :PACKAGE-NAME
+         "UCW-STANDARD" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A yaclml attribute list that'll be rendered into the <:html tag's attributes.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "JAVASCRIPT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "WINDOW-COMPONENT.JAVASCRIPT" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "List of javascript includes.
+
+Each element must be a list whose first value is either the
+symbol :SRC or :JS.
+
+ (:SRC url) - writes <script src=\"URL\"></script> tag.
+ (:JS form) - equivalent to (:SCRIPT (js:js* form))
+ (:SCRIPT string) - write <script>STRING</script>.
+
+The elements will be rendered in order.")))
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "EFFECTIVE-WINDOW-STYLESHEETS" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This method is used to collect the effective stylesheet list for a window; available for customizations.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EFFECTIVE-WINDOW-STYLESHEETS" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EFFECTIVE-WINDOW-STYLESHEETS" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EFFECTIVE-WINDOW-STYLESHEETS" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THING" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EFFECTIVE-WINDOW-STYLESHEETS" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THING" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION "This convience method assumes: 1) the stylesheet is
+external (as opposed to inlined) or is not used; 2) the script
+file is javascript and is external or is no script is used and 3)
+the title is either a literal or a lambda with one argument (the
+window).")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RENDER-HTML-HEAD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-HEAD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-HEAD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-HEAD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-HEAD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RENDER-HTML-BODY" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-BODY" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-BODY" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RENDER-WINDOW-SCRIPTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-WINDOW-SCRIPTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-WINDOW-SCRIPTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "BASIC-WINDOW-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-WINDOW-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+       :EXTERNALP NIL)
+      (:NAME "WINDOW-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION "A convenience class for writing window components."
+     :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "STANDARD-WINDOW-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-WINDOW-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BODY" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T) :ACCESSORS
+       ((:NAME "WINDOW-BODY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-HEAD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-WINDOW-COMPONENT" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-BODY" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-WINDOW-COMPONENT" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "INFO-MESSAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MESSAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "MESSAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "M" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "INFO-MESSAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SERVE-STREAM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "REQUEST" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       ((:NAME "CONTEXT.REQUEST" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)))
+      ((:NAME "RESPONSE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       ((:NAME "CONTEXT.RESPONSE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+         T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)))
+      ((:NAME "LAST-MODIFIED" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "GET-UNIVERSAL-TIME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "CONTENT-TYPE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "CONTENT-LENGTH" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      ((:NAME "CONTENT-DISPOSITION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL)
+       "attachment"
+       (:NAME "CONTENT-DISPOSITION-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL))
+      (:NAME "CONTENT-DISPOSITION-FILENAME" :PACKAGE-NAME "UCW-STANDARD"
+       :EXTERNALP NIL)
+      (:NAME "CONTENT-DISPOSITION-SIZE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       NIL)
+      ((:NAME "EXPIRES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) 86400))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SERVE-SEQUENCE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "REQUEST" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       ((:NAME "CONTEXT.REQUEST" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)))
+      ((:NAME "RESPONSE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       ((:NAME "CONTEXT.RESPONSE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+         T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)))
+      ((:NAME "LAST-MODIFIED" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "GET-UNIVERSAL-TIME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "CONTENT-TYPE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       "application/octet-stream")
+      (:NAME "CONTENT-DISPOSITION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      ((:NAME "EXPIRES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) 3600))
+     :DOCUMENTATION
+     "Write SEQUENCE into the network stream and clean up the request. SEQUENCE
+may be a string or a byte vector. When it's a string it will be encoded
+according to what the (encoding response) protocol answers.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SERVE-FILE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FILE-NAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "REQUEST" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       ((:NAME "CONTEXT.REQUEST" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)))
+      ((:NAME "RESPONSE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       ((:NAME "CONTEXT.RESPONSE" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+         T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)))
+      ((:NAME "LAST-MODIFIED" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "LAST-MODIFIED-SUPPLIED-P" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL))
+      ((:NAME "CONTENT-TYPE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CONTENT-TYPE-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+      ((:NAME "CONTENT-DISPOSITION-FILENAME" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CONTENT-DISPOSITION-FILENAME-P" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL))
+      (:NAME "CONTENT-DISPOSITION-SIZE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       NIL)
+      ((:NAME "EXPIRES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) 86400))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+UCW-SESSION-COOKIE-NAME+" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "Name of the cookie used when storing the session id."
+     :INITIAL-VALUE "\"ucw-session-id\"")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "COOKIE-SESSION-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "Class for applications which use cookies for sesion tracking.
+
+Cookie session applications work exactly like
+standard-applications except that when the session is not found
+using the standard mechanisms the id is looked for in a cookie."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REQUEST-CONTEXT-CLASS" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "COOKIE-SESSION-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "COOKIE-SESSION-REQUEST-CONTEXT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTEXT.SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      ((:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "COOKIE-SESSION-REQUEST-CONTEXT-MIXIN" :PACKAGE-NAME
+        "UCW-STANDARD" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-SESSION-ID" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "COOKIE-SESSION-REQUEST-CONTEXT-MIXIN" :PACKAGE-NAME
+        "UCW-STANDARD" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-SESSION-KEY+" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :DOCUMENTATION "Session key for user's authorization data." :INITIAL-VALUE
+     "'UCW-STANDARD::%USER%")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SESSION-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "CONTEXT.SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SESSION-AUTHENTICATED-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "CONTEXT.SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%SESSION-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "%SESSION-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T)
+      ((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "BASIC-SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%SESSION-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "NULL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "%SESSION-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T)
+      ((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "NULL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "Mixin class for applications which require authorized access.
+Concrete application must specialize the following methods:
+APPLICATION-FIND-USER (APPLICATION USERNAME)
+APPLICATION-CHECK-PASSWORD (APPLICATION USER PASSWORD)
+APPLICATION-AUTHORIZE-CALL (APPLICATION USER FROM-COMPONENT TO-COMPONENT)."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LOGIN-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "LOGIN-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Class of component for user login.
+It must return authenticated USER data or NIL on answer.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "INSECURE-COMPONENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "INSECURE-COMPONENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Calls to these components are never checked.")))
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SECURE-APPLICATION-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION "Does APPLICATION require authorized access.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SECURE-APPLICATION-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SECURE-APPLICATION-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SECURE-APPLICATION-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SECURE-APPLICATION-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "APPLICATION-FIND-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "USERNAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Find USER by USERNAME for APPLICATION.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-FIND-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      (:NAME "USERNAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-FIND-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      (:NAME "USERNAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-APPLICATION-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "USERNAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "CONTEXT.APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+         :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "APPLICATION-CHECK-PASSWORD" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "PASSWORD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Validate PASSWORD against USER for APPLICATION.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-CHECK-PASSWORD" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "PASSWORD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-CHECK-PASSWORD" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "PASSWORD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHECK-USER-PASSWORD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "PASSWORD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "CONTEXT.APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+         :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "APPLICATION-AUTHENTICATE-USER" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION "Ask user for credentials, authenticate and return
+valid USER data or NIL. ")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "APPLICATION-AUTHENTICATE-USER" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Ask user for credentials, authenticate and return
+valid USER data or NIL. ")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-AUTHENTICATE-USER" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "APPLICATION-AUTHENTICATE-USER" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Ask user for credentials, authenticate and return
+valid USER data or NIL. ")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-AUTHENTICATE-USER" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-SESSION" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-SESSION" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-SESSION" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-SESSION" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-SESSION" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "CONTEXT.SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "APPLICATION-UNAUTHORIZE-SESSION" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Clear session user data.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-UNAUTHORIZE-SESSION" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "CONTEXT.SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-UNAUTHORIZE-SESSION" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "CONTEXT.SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-UNAUTHORIZE-SESSION" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-UNAUTHORIZE-SESSION" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-CALL" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Check user credentials to call TO by FROM in APPLICATION.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-CALL" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-CALL" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-CALL" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T))
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-CALL" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T))
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-CALL" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T))
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "APPLICATION-AUTHORIZE-CALL" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T))
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ON-AUTHORIZATION-REJECT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ON-AUTHORIZATION-REJECT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      (:NAME "USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      ((:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CALL-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Transfer control from the component CALLER, to
+  the component CALLEE.
+
+CALLEE should replace CALLER in the user interface (by setting
+itself in CALLER's place). CALLEE can return control to CALLER by
+calling answer-component.
+
+call-component can be called by user code even though it will
+generally be called through the UCW:CALL function.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CALL-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FROM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "LOGIN-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOGIN-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "LOGOUT-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOGOUT-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+        T)))
+     :DOCUMENTATION "Delete user but stay at the same place.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "EXIT-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EXIT-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+        T)))
+     :DOCUMENTATION "Delete session and throw user away to entry point.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "USER-TRACK-SESSION-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "USER-TRACK-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "module to mix with your application in order to track logged in and out users."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ONLINE-USERS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "APPLICATION.ONLINE-USERS" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      ((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "USER-TRACK-SESSION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "%SESSION-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T)
+      ((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "USER-TRACK-SESSION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SESSION-CLASS" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "USER-TRACK-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "STATIC-ROOTS-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STATIC-ROOTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "APPLICATION.STATIC-ROOTS" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A list of (URL-subdir . pathname)
+              pairs to use when looking for static files. This follows
+              standard CL pathname syntax i.e. you must include a
+              trailing / in both the URL-subdir and pathname.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STARTUP-APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "APP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "STATIC-ROOTS-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "TAL-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TAL-GENERATOR" :PACKAGE-NAME "IT.BESE.YACLML" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "APPLICATION.TAL-GENERATOR" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "A tal-generator object used to
+lookup and compile tal pages for template-components.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "TRANSACTIONAL-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "TRANSACTIONAL-SESSION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TRANSACTION-STACK" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "SESSION.TRANSACTION-STACK" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "TRANSACTIONAL-SESSION-FRAME-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TRANSACTION-STACK" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "FRAME.TRANSACTION-STACK" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SESSION-CLASS" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "TRANSACTIONAL-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SESSION-FRAME-CLASS" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TRANSACTIONAL-SESSION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "OPEN-TRANSACTION*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CLOSE-TRANSACTION*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OPEN-TRANSACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "CONTEXT.SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLOSE-TRANSACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "CONTEXT.SESSION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+        (:NAME "*CONTEXT*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "OPEN-TRANSACTION*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "S" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OPEN-TRANSACTION*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "S" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TRANSACTIONAL-SESSION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CLOSE-TRANSACTION*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "S" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CLOSE-TRANSACTION*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "S" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TRANSACTIONAL-SESSION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-NEW-FRAME" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ACTION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TRANSACTIONAL-SESSION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CALL-ACTION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ACTION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      ((:NAME "SESSION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TRANSACTIONAL-SESSION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL))
+      ((:NAME "FRAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TRANSACTIONAL-SESSION-FRAME-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-TRANSACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "OPTIONS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*XML-ID-COUNTER*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "0")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "HTML-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION "An HTML element.
+
+HTML elements control aspects that are relevant to almost all tags.
+
+They provide a place to store the class, id, and style of the
+component. The specific render methods of the components themselves
+must pass these values to whatever code is used to render the actual
+tag."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CSS-CLASS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "HTML-ELEMENT.CSS-CLASS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DOM-ID" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HTML-ELEMENT.DOM-ID" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CSS-STYLE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "HTML-ELEMENT.CSS-STYLE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "HTML-BLOCK-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :SUPER-CLASS-LIST
+     ((:NAME "HTML-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+     :DOCUMENTATION "A component which should be wrapped in a <div>."
+     :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "HTML-INLINE-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :SUPER-CLASS-LIST
+     ((:NAME "HTML-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+     :DOCUMENTATION "A component which should be wrapped in a <span>"
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "WIDGET" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "HTML-BLOCK-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION "Wrap component in a <div> tag.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "WIDGET" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "HTML-INLINE-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION "Wrap component in a <span> tag.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNIQUE-DOM-ID" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PREFIX" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) "_ucw_"))
+     :DOCUMENTATION "Generates a unique DOM id")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION "Component which caches its output.
+0
+The component caching protocol consists of the generic functions
+COMPONENT-CACHE-INVALID-P, REFRESH-COMPONENT-OUTPUT, and
+NOTE-CACHE-UPDATED. Caching is managed in a :wrapping method on RENDER."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CACHED-OUTPUT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "COMPONENT-CACHE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A string holding the output to use
+                  for this component. This string will be written
+                  directly to the html stream.")))
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "COMPONENT-CACHE-INVALID-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION "Returns T if COMPONENT's cache is invalid.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "NOTE-CACHE-UPDATED" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+      (:NAME "OUTPUT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Called whenever COMPONENT's cache is updated. It is
+  safe to override the primary method.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NOTE-CACHE-UPDATED" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T))
+      (:NAME "OUTPUT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NOTE-CACHE-UPDATED" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T))
+      (:NAME "OUTPUT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPONENT-CACHE-INVALID-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "TIMEOUT-CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       T))
+     :DOCUMENTATION "Render the component at most every EXPIRES-AFTER seconds."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LAST-REFRESH" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "LAST-REFRESH" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "The time, exrpessed as a
+                 universal time, when the component was last rendered.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "EXPIRES-AFTER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "EXPIRES-AFTER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Number of seconds the cache is valid.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPONENT-CACHE-INVALID-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TIMEOUT-CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NOTE-CACHE-UPDATED" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TIMEOUT-CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T))
+      (:NAME "OUTPUT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "NUM-HITS-CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       T))
+     :DOCUMENTATION "Render the component every HITS views." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HITS-SINCE-REFRESH" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "HITS-SINCE-REFRESH" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Number of views since last refresh.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HITS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HITS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION
+       "Number of before the cache is invalid.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPONENT-CACHE-INVALID-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "N" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "NUM-HITS-CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "N" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "NUM-HITS-CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NOTE-CACHE-UPDATED" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "N" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "NUM-HITS-CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+        :EXTERNALP T))
+      (:NAME "OUTPUT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION "Allow multiple components to share the same place.
+
+The container component serves to manage a set of components.
+It does not provide any render impementation, which is the
+resposibility of the subclasses (e.g. switching-container or
+list-container).
+
+Each contained component has a \"key\" associated with it which
+is used to retrieve a particular component. Keys are compared with
+container.key-test.
+
+The :contents inintarg, if provided, must be either a list of (key .
+component) or a list of components. In the latter case it will
+be converted into (component . component) form."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONTENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "CONTAINER.CONTENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "An alist of (key . component) holding the controlled components.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "KEY-GENERATOR" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "CONTAINER.KEY-GENERATOR" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A lambda that generates the keys from a component when they are not specified")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "KEY-TEST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "CONTAINER.KEY-TEST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Function used to compare two keys.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SHARED-INITIALIZE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "SLOT-NAMES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITARGS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This method sets up any initial contents for backtacking. If
+the contents are created via (setf find-component) then the
+backtracking is done there.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHILD-COMPONENTS" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      ((:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CLEAR-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-CONTAINER-COMPONENT-ENTRY" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-CONTAINER-COMPONENT-ENTRY" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EMPTYP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FIND-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the component object in C associated with KEY.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Removes the component object in C associated with KEY.
+Returns T when container was found and actually removed.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FIND-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      ((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Associates KEY with COMPONENT in the container CONTAINER.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      ((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Add component at the end of the component list.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPONENT-AT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      ((:NAME "INDEX" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns the component object in CONTAINER associated at the given INDEX.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COMPONENT-AT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      ((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      ((:NAME "INDEX" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Associates KEY with COMPONENT in the container CONTAINER at the given index.
+   If KEY is not provided use the key-generator lambda. (setf (c 0 \"optinal-key\") x)")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+     :DOCUMENTATION "A simple renderable container component.
+
+This component is like the regular CONTAINER but serves to manage a set
+of components which share the same place in the UI. Therefore it provides
+an implementation of RENDER which simply renders its current component.
+
+The switching-container component class is generally used as the super
+class for navigatation components and tabbed-pane like
+components."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CURRENT-COMPONENT-KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "CONTAINER.CURRENT-COMPONENT-KEY" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION "The key of the current component.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SHARED-INITIALIZE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "SLOT-NAMES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Make sure the non-visible contained components are detached (their parent is nil).")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COMPONENT-AT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      ((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "INDEX" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "INITIALIZE-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "KEY-TEST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "CURRENT-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTAINER.CURRENT-COMPONENT-KEY" :PACKAGE-NAME "UCW-STANDARD"
+       :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T)
+      ((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONTAINER.CURRENT-COMPONENT" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTAINER.CURRENT-COMPONENT" :PACKAGE-NAME "UCW-STANDARD"
+       :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T)
+       (:NAME "NULL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTAINER.CURRENT-COMPONENT" :PACKAGE-NAME "UCW-STANDARD"
+       :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T)
+       (:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      ((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T)))
+     :DOCUMENTATION
+     "This method assumes that the container was initialized with #'identity as key generator.
+
+Returns two values: (VALUE T) if the set actually happenend,
+or (VALUE NIL) if the given component is already the current component.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ENSURE-VALID-COMPONENT-KEY" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns T if KEY names one of the component in CONTAINER.
+
+Otherwise a restartable error is signaled.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SWITCH-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SWITCH-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "KEY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAP-CONTENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUNC" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T)
+      ((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "LIST-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+      (:NAME "HTML-BLOCK-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       T))
+     :DOCUMENTATION "A simple renderable container component.
+
+This component is exactly like the regular CONTAINER but provides
+an implementation of RENDER which renders its contents in <:ol/<:li tags"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ORIENTATION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ORIENTATION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HTML-ELEMENT.CSS-CLASS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "LIST-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "LIST-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ORIENTATION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "LIST-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "TABBED-PANE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+      (:NAME "HTML-BLOCK-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       T))
+     :DOCUMENTATION
+     "Component for providing the user with a standard \"tabbed pane\" GUI widget."
+     :SLOT-LIST NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RENDER-PANE-OPTIONS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "PANE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RENDER-PANE-CONTENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "PANE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-PANE-OPTIONS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PANE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TABBED-PANE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-PANE-CONTENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PANE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TABBED-PANE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PANE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TABBED-PANE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ERROR-MESSAGE-WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-WINDOW-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Generic component for showing server side
+ error messages."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MESSAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "MESSAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "WINDOW-COMPONENT.TITLE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ERR" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "ERROR-MESSAGE-WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-BODY" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ERR" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "ERROR-MESSAGE-WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "OPTION-DIALOG" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION "Component for querying the user.
+
+The value of the slot MESSAGE is used as a general heading.
+
+The OPTIONS slot must be an alist of (VALUE . LABEL). LABEL (a
+string) will be used as the text of a link which, when clikced,
+will answer VALUE.
+
+If the CONFIRM slot is T the user will be presented with a second
+OPTION-DIALOG asking the user if they are sure they want to
+submit that value."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MESSAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "MESSAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "OPTIONS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "OPTIONS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONFIRM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CONFIRM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TAL-COMPONENT-ENVIRONMENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "DIALOG" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "OPTION-DIALOG" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RESPOND" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RESPOND" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "OPTION-DIALOG" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "VALUE" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "DIALOG" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "OPTION-DIALOG" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "OPTION-DIALOG" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "MESSAGE-SPEC" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "MESSAGE-ARGS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OPTIONS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION
+     "Component for showing the user a set of data one \"page\" at a time.
+
+The data set is presented one \"page\" at a time with links to
+the the first, previous, next and last page. Each page shows
+at most PAGE-SIZE elements of the data. The data is passed to
+the paged-list at instance creation time via the :DATA initarg.
+
+The generic function RENDER-PAGED-LIST-ITEM is used to render
+each item of DATA.
+
+In order to change the rendering of the single elements of a
+range view developer's should create a sub class of PAGED-LIST
+and define their RENDER-PAGED-LIST-ITEM methods on that."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "OFFSET" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "PAGED-LIST.OFFSET" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Which of the pages we're currently looking at.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PAGES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "PAGED-LIST.PAGES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PAGE-SIZE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "PAGED-LIST.PAGE-SIZE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARTITION-INTO-PAGES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DATA" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "PAGE-SIZE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SHARED-INITIALIZE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "SLOT-NAMES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DATA" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      ((:NAME "PAGE-SIZE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       ((:NAME "PAGED-LIST.PAGE-SIZE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+         T)
+        (:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PAGED-LIST.CURRENT-PAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PAGED-LIST.CURRENT-PAGE-ITEMS" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PAGED-LIST.HAVE-PREVIOUS-P" :PACKAGE-NAME "UCW-STANDARD"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VIEW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION "Returns true if VIEW has a page before the current one.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PAGED-LIST.HAVE-NEXT-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VIEW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION "Returns true if VIEW has a page after the current one.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PAGED-LIST.PAGE-COUNT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RENDER-PAGED-LIST-ITEM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+      (:NAME "ITEM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "Render a single element of a paged-list.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-PAGED-LIST-ITEM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      ((:NAME "ITEM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Standard implementation of RENDER-PAGED-LIST-ITEM. Simply
+applies ITEM to princ (via <:as-html).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-PAGED-LIST-ITEM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      ((:NAME "ITEM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Standard implementation of RENDER-PAGED-LIST-ITEM. Simply
+applies ITEM to princ (via <:as-html).")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SCROLL-START" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SCROLL-START" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SCROLL-END" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SCROLL-END" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SCROLL-FORWARD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VIEW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "N" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SCROLL-FORWARD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VIEW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "N" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) 1))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SCROLL-BACKWARD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "N" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SCROLL-BACKWARD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "N" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) 1))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SCROLL-TO-PAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "PAGE-NUMBER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SCROLL-TO-PAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "RANGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+      (:NAME "PAGE-NUMBER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REDIRECT-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION "Send a client redirect.
+
+This component, which must be used as a window-component,
+redirects the client to the url specified in the target slot. A
+302 (as opposed to 303) response code is sent to ensure
+compatability with older browsers.
+
+The redirect component never answers."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TARGET" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "TARGET" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "REDIRECT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "REDIRECT-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "TAL-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION "Component which is rendered via a TAL template."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TEMPLATE-NAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "TAL-COMPONENT.TEMPLATE-NAME" :PACKAGE-NAME "UCW-STANDARD"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TAL-COMPONENT-ENVIRONMENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+     :DOCUMENTATION
+     "Create the TAL environment for rendering COMPONENT's template.
+
+Methods defined on this generic function must return a TAL
+environment: a list of TAL binding sets (see the documentation
+for YACLML:MAKE-STANDARD-TAL-ENVIRONMENT for details on TAL
+environments.)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TAL-COMPONENT-ENVIRONMENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "TAL-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION "Create the basic TAL environment.
+
+Binds the symbol ucw:component to the component object itself,
+also puts the object COMPONENT on the environment (after the
+binding of ucw:component) so that slots are, by default,
+visable.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "TAL-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION "Render a template based component.
+
+The name of the template is the value returned by the generic function
+TAL-COMPONENT.TEMPLATE-NAME, the template will be rendered
+in the environment returned by the generic function
+TAL-COMPONENT-ENVIRONMENT.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "SIMPLE-TAL-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "TAL-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+      (:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ENVIRONMENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TAL-COMPONENT-ENVIRONMENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "SIMPLE-TAL-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "TASK-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION "A controller for a single task or operation to
+  be performed by the user.
+
+  A task component's START action is called as soon as the
+component is instantiated. Task components do not have their own
+RENDER method, in fact they have no graphical representation but
+serve only to order a sequence of other components."
+     :SLOT-LIST NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "START" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "TASK" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION "action which gets called automatically when
+task-component is active. Use defmethod/cc to define your specialized
+\"start\" methods")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TASK" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TASK-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "USER-LOGIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "STANDARD-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+       T))
+     :DOCUMENTATION "User login component." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "USERNAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "USERNAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "User login name.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PASSWORD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "PASSWORD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "User password.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "USER-LOGIN-WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "BASIC-WINDOW-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "A container window componenet for the user-login."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "USER-LOGIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "USER-LOGIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "USER-LOGIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-BODY" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "USER-LOGIN-WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-HTML-BODY" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "USER-LOGIN-WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CANCEL" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CANCEL" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "USER-LOGIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SUBMIT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SUBMIT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "SELF" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "USER-LOGIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER-TEMPLATE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "REQUEST-CONTEXT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T))
+      (:NAME "TEMPLATE-NAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "ENVIRONMENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%RENDER-TEMPLATE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONTEXT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "TRUENAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENVIRONMENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PREPROCESS-TEMPLATE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TEMPLATE-NAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "ENVIRONMENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+       (:NAME "*DEFAULT-APPLICATION*" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-ATTRIBUTE-VALUE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "VAR" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T)
+       (:NAME "ATTRIBUTE-NAME" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL)
+       (:NAME "TAG" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "IMPLICIT-PROGN-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "IT.BESE.ARNESI" :EXTERNALP T))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "HTML-ELEMENT.DOM-ID" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "PAGED-LIST.CURRENT-PAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SWITCH-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "WINDOW-COMPONENT.CONTENT-TYPE" :PACKAGE-NAME "IT.BESE.UCW.CORE"
+     :EXTERNALP T)
+    (:NAME "SCROLL-START" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "CLEAR-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "REDIRECT-TO" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "JUMP" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "OPTION-DIALOG" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "CONTAINER.KEY-GENERATOR" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "APPLICATION.ONLINE-USERS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "*DISPATCHER-REGISTERS*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "HTML-INLINE-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "TRANSACTIONAL-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "PAGED-LIST.HAVE-PREVIOUS-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "REGEXP-DISPATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "HTML-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "STANDARD-ACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "ANSWER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "WINDOW-COMPONENT.ICON" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "LOGOUT-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "RENDER-PAGED-LIST-ITEM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "LIST-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SIMPLE-TAL-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "APPLICATION-CHECK-PASSWORD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "*DISPATCHER-URL-SUFFIX*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "HTML-BLOCK-ELEMENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "COOKIE-SESSION-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "WINDOW-COMPONENT.DOCTYPE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "SERVE-SEQUENCE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "CONTAINER.CONTENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "CONTAINER.CURRENT-COMPONENT" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "PAGED-LIST.HAVE-NEXT-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SCROLL-FORWARD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "WINDOW-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+    (:NAME "ADD-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "FIND-COMPONENT" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+    (:NAME "APPLICATION-AUTHORIZE-CALL" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "SESSION-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "WINDOW-BODY" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SCROLL-END" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "STARTS-WITH-DISPATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "ERROR-MESSAGE-WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "TABBED-PANE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "TAL-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "CALL" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "STATIC-ROOTS-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "CLOSE-TRANSACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SECURE-APPLICATION-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "CANCEL" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "WINDOW-COMPONENT.STYLESHEET" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "NUM-HITS-CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "USER-LOGIN-WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "WINDOW-COMPONENT.JAVASCRIPT" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "CHILD-COMPONENTS" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP T)
+    (:NAME "PAGED-LIST.PAGE-SIZE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "STANDARD-WINDOW-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "RENDER-PANE-CONTENTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "COMPONENT-CACHE-INVALID-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "TAL-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "BASIC-WINDOWS-FEATURES-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "COMPONENT-AT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "MINIMAL-DISPATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "UNIQUE-DOM-ID" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "WINDOW-COMPONENT.HTML-TAG-ATTRIBUTES" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "HTML-ELEMENT.CSS-STYLE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "USER-LOGIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "RENDER-TEMPLATE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "WINDOW-COMPONENT.CONTENT-PROLOGUE" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "SERVE-STREAM" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "STANDARD-APPLICATION" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+     T)
+    (:NAME "APPLICATION-FIND-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "USER-TRACK-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "PAGED-LIST.PAGE-COUNT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "CONTAINER.CURRENT-COMPONENT-KEY" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "LOGIN-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "PAGED-LIST.OFFSET" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SERVE-FILE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "START" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "TASK-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "COMPONENT-CACHE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SWITCHING-CONTAINER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SESSION-AUTHENTICATED-P" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "PAGED-LIST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "TIMEOUT-CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "APPLICATION.STATIC-ROOTS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "OPEN-TRANSACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SCROLL-TO-PAGE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "RESPOND" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "CALL-AS-WINDOW" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SIMPLE-DISPATCHER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "NOTE-CACHE-UPDATED" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SECURE-APPLICATION-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "SCROLL-BACKWARD" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "HTML-ELEMENT.CSS-CLASS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "SUBMIT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "TAL-COMPONENT-ENVIRONMENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP
+     T)
+    (:NAME "COOKIE-SESSION-REQUEST-CONTEXT" :PACKAGE-NAME "UCW-STANDARD"
+     :EXTERNALP T)
+    (:NAME "RENDER-PANE-OPTIONS" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "WINDOW-COMPONENT.TITLE" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "EXIT-USER" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "CONTAINER.KEY-TEST" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "*DEFAULT-ACTION-CLASS*" :PACKAGE-NAME "IT.BESE.UCW.CORE" :EXTERNALP
+     T)
+    (:NAME "CACHE-COMPONENT-MIXIN" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "DEFACTION" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "ON-AUTHORIZATION-REJECT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "PAGED-LIST.PAGES" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "*SOURCE-COMPONENT*" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)
+    (:NAME "REMOVE-COMPONENT" :PACKAGE-NAME "UCW-STANDARD" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME "-TAGS" :FULL-NAME "UCW-TAGS" :DOCUMENTATION NIL
+   :SYMBOL-LIST NIL :EXTERNAL-SYMBOLS
+   ((:NAME "RENDER-COMPONENT-BODY" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+    (:NAME "FORM" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+    (:NAME "SUBMIT" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+    (:NAME "SELECT" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+    (:NAME "A" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+    (:NAME "INPUT" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+    (:NAME "RENDER-COMPONENT" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+    (:NAME "OPTION" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)
+    (:NAME "TEXTAREA" :PACKAGE-NAME "UCW-TAGS" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME "-USER" :FULL-NAME "UCW-USER" :DOCUMENTATION NIL
+   :SYMBOL-LIST NIL :EXTERNAL-SYMBOLS
+   ((:NAME "*EXAMPLE-SERVER*" :PACKAGE-NAME "UCW-USER" :EXTERNALP T)))))

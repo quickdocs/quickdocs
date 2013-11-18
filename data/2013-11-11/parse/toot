@@ -1,0 +1,2467 @@
+
+(:TYPE :SYSTEM :NAME "toot" :AUTHOR NIL :MAINTAINER NIL :VERSION "0.0.1"
+ :LICENCE NIL :DESCRIPTION
+ "A minimal web server originally built by stripping down Edi Weitz's Hunchentoot"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("ALEXANDRIA" "CHUNGA" "CL-BASE64" "CL-FAD" "CL-PPCRE" "FLEXI-STREAMS"
+  "CL+SSL" "MD5" "TRIVIAL-BACKTRACE" "USOCKET" "BORDEAUX-THREADS" "PURI")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "TOOT" :FULL-NAME "TOOT" :DOCUMENTATION
+   "A very simple web server." :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "LWSP-CHAR-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns true if CHAR is a linear-whitespace-char (LWSP-char).  Either
+   space or tab, in short.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-UNTIL-NEXT-BOUNDARY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BOUNDARY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DISCARD" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "OUT-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads from STREAM up to the next boundary.  Returns two values: read
+   data (nil if DISCARD is true), and true if the boundary is not last
+   (i.e., there's more data).")
+    (:TYPE :STRUCT :SYMBOL (:NAME "HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEADER-NAME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEADER-NAME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "SB-KERNEL" :EXTERNALP NIL)
+      (:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEADER-VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEADER-VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "SB-KERNEL" :EXTERNALP NIL)
+      (:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEADER-PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEADER-PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "SB-KERNEL" :EXTERNALP NIL)
+      (:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-LINEAR-WHITESPACE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the position of first non-linear-whitespace character in STRING
+   bound by START and END.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "PARSE-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SOURCE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START-STATE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Parses SOURCE and returs a single MIME header.
+
+Header is a list of the form (NAME VALUE PARAMETERS), PARAMETERS
+is a list of (NAME . VALUE)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PARSE-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "SOURCE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START-STATE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "NAME" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PARSE-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START-STATE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "NAME" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns a MIME part header, or NIL, if there is no header.  Header is
+   terminated by CRLF.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "PARSE-MIME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SOURCE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "BOUNDARY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "TMP-FILENAME-GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Parses MIME entities, returning them as a list.  Each element in the
+    list is of form: (body headers), where BODY is the contents of MIME
+    part, and HEADERS are all headers for that part.  BOUNDARY is a string
+    used to separate MIME entities.")
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :SUPER-CLASS-LIST
+     NIL :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONTENT-TYPE-SUPER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTENT-TYPE-SUPER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "SB-KERNEL" :EXTERNALP NIL)
+      (:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONTENT-TYPE-SUB" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTENT-TYPE-SUB" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "SB-KERNEL" :EXTERNALP NIL)
+      (:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SUPER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "SUB" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Returns content-type which is parsed from STRING.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNPARSE-CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns content-type CT in string representation.")
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "MIME-PART" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :SUPER-CLASS-LIST
+     NIL :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MIME-PART-CONTENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MIME-PART-CONTENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "SB-KERNEL" :EXTERNALP NIL)
+      (:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MIME-PART-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MIME-PART-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "SB-KERNEL" :EXTERNALP NIL)
+      (:NAME "STRUCTURE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-MIME-PART" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CONTENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PARSE-MIME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "INPUT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "SEPARATOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "TMP-FILENAME-GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PARSE-MIME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "INPUT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "BOUNDARY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "TMP-FILENAME-GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LABEL" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Find header by label from set of headers.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-PARAMETER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "PARAMS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Find header parameter by name from set of parameters.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MIME-CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PART" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "AS-STRING" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the Content-Type header of mime-part PART.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-CONTENT-DISPOSITION-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-FILE-NAME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFCONSTANT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOC" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Make sure VALUE is evaluated only once (to appease SBCL).")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HTTP-REASON-PHRASE-MAP*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION "Used to map numerical return codes to reason phrases."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE)")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEF-HTTP-STATUS-CODE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "REASON-PHRASE" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION "Shortcut to define constants for return codes.  NAME is a
+Lisp symbol, VALUE is the numerical value of the return code, and
+REASON-PHRASE is the phrase (a string) to be shown in the
+server's status line.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+CRLF+" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :DOCUMENTATION
+     "A 2-element array consisting of the character codes for a CRLF
+sequence."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT::+CRLF+)
+    (SYMBOL-VALUE 'TOOT::+CRLF+)
+    (MAKE-ARRAY 2 :ELEMENT-TYPE '(UNSIGNED-BYTE 8) :INITIAL-CONTENTS
+                (MAPCAR 'CHAR-CODE '(#\\Return #\\Newline))))")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-CONTINUE+" :PACKAGE-NAME "TOOT" :EXTERNALP T) :DOCUMENTATION
+     "HTTP return code (100) for 'Continue'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-CONTINUE+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-CONTINUE+)
+    100)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-SWITCHING-PROTOCOLS+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (101) for 'Switching Protocols'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-SWITCHING-PROTOCOLS+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-SWITCHING-PROTOCOLS+)
+    101)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-OK+" :PACKAGE-NAME "TOOT" :EXTERNALP T) :DOCUMENTATION
+     "HTTP return code (200) for 'OK'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-OK+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-OK+)
+    200)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-CREATED+" :PACKAGE-NAME "TOOT" :EXTERNALP T) :DOCUMENTATION
+     "HTTP return code (201) for 'Created'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-CREATED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-CREATED+)
+    201)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-ACCEPTED+" :PACKAGE-NAME "TOOT" :EXTERNALP T) :DOCUMENTATION
+     "HTTP return code (202) for 'Accepted'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-ACCEPTED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-ACCEPTED+)
+    202)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-NON-AUTHORITATIVE-INFORMATION+" :PACKAGE-NAME "TOOT"
+      :EXTERNALP T)
+     :DOCUMENTATION
+     "HTTP return code (203) for 'Non-Authoritative Information'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-NON-AUTHORITATIVE-INFORMATION+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-NON-AUTHORITATIVE-INFORMATION+)
+    203)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-NO-CONTENT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (204) for 'No Content'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-NO-CONTENT+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-NO-CONTENT+)
+    204)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-RESET-CONTENT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (205) for 'Reset Content'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-RESET-CONTENT+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-RESET-CONTENT+)
+    205)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-PARTIAL-CONTENT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (206) for 'Partial Content'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-PARTIAL-CONTENT+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-PARTIAL-CONTENT+)
+    206)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-MULTI-STATUS+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (207) for 'Multi-Status'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-MULTI-STATUS+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-MULTI-STATUS+)
+    207)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-MULTIPLE-CHOICES+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (300) for 'Multiple Choices'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-MULTIPLE-CHOICES+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-MULTIPLE-CHOICES+)
+    300)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-MOVED-PERMANENTLY+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (301) for 'Moved Permanently'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-MOVED-PERMANENTLY+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-MOVED-PERMANENTLY+)
+    301)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-MOVED-TEMPORARILY+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (302) for 'Moved Temporarily'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-MOVED-TEMPORARILY+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-MOVED-TEMPORARILY+)
+    302)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-SEE-OTHER+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (303) for 'See Other'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-SEE-OTHER+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-SEE-OTHER+)
+    303)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-NOT-MODIFIED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (304) for 'Not Modified'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-NOT-MODIFIED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-NOT-MODIFIED+)
+    304)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-USE-PROXY+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (305) for 'Use Proxy'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-USE-PROXY+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-USE-PROXY+)
+    305)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-TEMPORARY-REDIRECT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (307) for 'Temporary Redirect'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-TEMPORARY-REDIRECT+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-TEMPORARY-REDIRECT+)
+    307)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-BAD-REQUEST+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (400) for 'Bad Request'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-BAD-REQUEST+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-BAD-REQUEST+)
+    400)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-AUTHORIZATION-REQUIRED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (401) for 'Authorization Required'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-AUTHORIZATION-REQUIRED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-AUTHORIZATION-REQUIRED+)
+    401)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-PAYMENT-REQUIRED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (402) for 'Payment Required'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-PAYMENT-REQUIRED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-PAYMENT-REQUIRED+)
+    402)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-FORBIDDEN+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (403) for 'Forbidden'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-FORBIDDEN+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-FORBIDDEN+)
+    403)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-NOT-FOUND+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (404) for 'Not Found'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-NOT-FOUND+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-NOT-FOUND+)
+    404)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-METHOD-NOT-ALLOWED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (405) for 'Method Not Allowed'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-METHOD-NOT-ALLOWED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-METHOD-NOT-ALLOWED+)
+    405)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-NOT-ACCEPTABLE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (406) for 'Not Acceptable'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-NOT-ACCEPTABLE+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-NOT-ACCEPTABLE+)
+    406)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-PROXY-AUTHENTICATION-REQUIRED+" :PACKAGE-NAME "TOOT"
+      :EXTERNALP T)
+     :DOCUMENTATION
+     "HTTP return code (407) for 'Proxy Authentication Required'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-PROXY-AUTHENTICATION-REQUIRED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-PROXY-AUTHENTICATION-REQUIRED+)
+    407)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-REQUEST-TIME-OUT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (408) for 'Request Time-out'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-REQUEST-TIME-OUT+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-REQUEST-TIME-OUT+)
+    408)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-CONFLICT+" :PACKAGE-NAME "TOOT" :EXTERNALP T) :DOCUMENTATION
+     "HTTP return code (409) for 'Conflict'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-CONFLICT+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-CONFLICT+)
+    409)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-GONE+" :PACKAGE-NAME "TOOT" :EXTERNALP T) :DOCUMENTATION
+     "HTTP return code (410) for 'Gone'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-GONE+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-GONE+)
+    410)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-LENGTH-REQUIRED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (411) for 'Length Required'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-LENGTH-REQUIRED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-LENGTH-REQUIRED+)
+    411)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-PRECONDITION-FAILED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (412) for 'Precondition Failed'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-PRECONDITION-FAILED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-PRECONDITION-FAILED+)
+    412)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-REQUEST-ENTITY-TOO-LARGE+" :PACKAGE-NAME "TOOT" :EXTERNALP
+      T)
+     :DOCUMENTATION "HTTP return code (413) for 'Request Entity Too Large'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-REQUEST-ENTITY-TOO-LARGE+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-REQUEST-ENTITY-TOO-LARGE+)
+    413)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-REQUEST-URI-TOO-LARGE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (414) for 'Request-URI Too Large'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-REQUEST-URI-TOO-LARGE+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-REQUEST-URI-TOO-LARGE+)
+    414)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-UNSUPPORTED-MEDIA-TYPE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (415) for 'Unsupported Media Type'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-UNSUPPORTED-MEDIA-TYPE+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-UNSUPPORTED-MEDIA-TYPE+)
+    415)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-REQUESTED-RANGE-NOT-SATISFIABLE+" :PACKAGE-NAME "TOOT"
+      :EXTERNALP T)
+     :DOCUMENTATION
+     "HTTP return code (416) for 'Requested range not satisfiable'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-REQUESTED-RANGE-NOT-SATISFIABLE+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-REQUESTED-RANGE-NOT-SATISFIABLE+)
+    416)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-EXPECTATION-FAILED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (417) for 'Expectation Failed'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-EXPECTATION-FAILED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-EXPECTATION-FAILED+)
+    417)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-FAILED-DEPENDENCY+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (424) for 'Failed Dependency'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-FAILED-DEPENDENCY+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-FAILED-DEPENDENCY+)
+    424)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-INTERNAL-SERVER-ERROR+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (500) for 'Internal Server Error'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-INTERNAL-SERVER-ERROR+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-INTERNAL-SERVER-ERROR+)
+    500)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-NOT-IMPLEMENTED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (501) for 'Not Implemented'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-NOT-IMPLEMENTED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-NOT-IMPLEMENTED+)
+    501)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-BAD-GATEWAY+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (502) for 'Bad Gateway'." :INITIAL-VALUE
+     "(IF (BOUNDP 'TOOT:+HTTP-BAD-GATEWAY+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-BAD-GATEWAY+)
+    502)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-SERVICE-UNAVAILABLE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (503) for 'Service Unavailable'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-SERVICE-UNAVAILABLE+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-SERVICE-UNAVAILABLE+)
+    503)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-GATEWAY-TIME-OUT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (504) for 'Gateway Time-out'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-GATEWAY-TIME-OUT+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-GATEWAY-TIME-OUT+)
+    504)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HTTP-VERSION-NOT-SUPPORTED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "HTTP return code (505) for 'Version not supported'."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT:+HTTP-VERSION-NOT-SUPPORTED+)
+    (SYMBOL-VALUE 'TOOT:+HTTP-VERSION-NOT-SUPPORTED+)
+    505)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+DAY-NAMES+" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :DOCUMENTATION
+     "The three-character names of the seven days of the week - needed
+for cookie date format."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT::+DAY-NAMES+)
+    (SYMBOL-VALUE 'TOOT::+DAY-NAMES+)
+    #(\"Mon\" \"Tue\" \"Wed\" \"Thu\" \"Fri\" \"Sat\" \"Sun\"))")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+MONTH-NAMES+" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :DOCUMENTATION
+     "The three-character names of the twelve months - needed for cookie
+date format."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT::+MONTH-NAMES+)
+    (SYMBOL-VALUE 'TOOT::+MONTH-NAMES+)
+    #(\"Jan\" \"Feb\" \"Mar\" \"Apr\" \"May\" \"Jun\" \"Jul\" \"Aug\" \"Sep\" \"Oct\" \"Nov\" \"Dec\"))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-CONTENT-TYPE*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION
+     "The default content-type header which is returned to the client.
+If this is text content type, the character set used for encoding the
+response will automatically be added to the content type in a
+``charset'' attribute."
+     :INITIAL-VALUE "\"text/html\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-CHARSET*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION "The default charset for text/* content-types."
+     :INITIAL-VALUE ":UTF-8")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HEADER-STREAM*" :PACKAGE-NAME "TOOT" :EXTERNALP T) :DOCUMENTATION
+     "If this variable is not NIL, it should be bound to a stream to
+which incoming and outgoing headers will be written for debugging
+purposes."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SHOW-LISP-ERRORS-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION
+     "Whether Lisp errors in request handlers should be shown in HTML output."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SHOW-LISP-BACKTRACES-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION
+     "Whether Lisp errors shown in HTML output should contain backtrace information."
+     :INITIAL-VALUE "T")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LOG-LISP-ERRORS-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "Whether Lisp errors in request handlers should be logged."
+     :INITIAL-VALUE "T")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LOG-LISP-BACKTRACES-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION
+     "Whether Lisp backtraces should be logged.  Only has an effect if
+*LOG-LISP-ERRORS-P* is true as well."
+     :INITIAL-VALUE "T")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LOG-LISP-WARNINGS-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION
+     "Whether Lisp warnings in request handlers should be logged."
+     :INITIAL-VALUE "T")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LISP-ERRORS-LOG-LEVEL*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION
+     "Log level for Lisp errors.  Should be one of :ERROR (the default),
+:WARNING, or :INFO."
+     :INITIAL-VALUE ":ERROR")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LISP-WARNINGS-LOG-LEVEL*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION
+     "Log level for Lisp warnings.  Should be one of :ERROR, :WARNING
+(the default), or :INFO."
+     :INITIAL-VALUE ":WARNING")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEBUG-ERRORS-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION
+     "When true, Toot drops into the debugger on unhandled errors.
+  Otherwise unhandled errors signaled while processing requests are
+  logged and a 500 error returned to the client."
+     :INITIAL-VALUE "T")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TOOT-PROJECT-URL+" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(IF (BOUNDP 'TOOT::+TOOT-PROJECT-URL+)
+    (SYMBOL-VALUE 'TOOT::+TOOT-PROJECT-URL+)
+    \"https://github.com/gigamonkey/toot\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+IMPLEMENTATION-LINK+" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A link to the website of the underlying Lisp implementation."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT::+IMPLEMENTATION-LINK+)
+    (SYMBOL-VALUE 'TOOT::+IMPLEMENTATION-LINK+)
+    \"http://www.sbcl.org/\")")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TMP-DIRECTORY*" :PACKAGE-NAME "TOOT" :EXTERNALP T) :DOCUMENTATION
+     "Directory for temporary files created by MAKE-TMP-FILE-NAME."
+     :INITIAL-VALUE "\"/tmp/toot/\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TMP-COUNTER-LOCK*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION "Lock to protect access to *tmp-counter*." :INITIAL-VALUE
+     "(BORDEAUX-THREADS:MAKE-LOCK \"tmp-counter-lock\")")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TMP-COUNTER*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :DOCUMENTATION
+     "Counter used in creating tmp filenames." :INITIAL-VALUE "0")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+LATIN-1+" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :DOCUMENTATION
+     "A FLEXI-STREAMS external format used for `faithful' input and
+output of binary data."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT::+LATIN-1+)
+    (SYMBOL-VALUE 'TOOT::+LATIN-1+)
+    (FLEXI-STREAMS:MAKE-EXTERNAL-FORMAT :LATIN1 :EOL-STYLE :LF))")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+UTF-8+" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :DOCUMENTATION
+     "A FLEXI-STREAMS external format used internally for logging and to
+encode cookie values."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT::+UTF-8+)
+    (SYMBOL-VALUE 'TOOT::+UTF-8+)
+    (FLEXI-STREAMS:MAKE-EXTERNAL-FORMAT :UTF8 :EOL-STYLE :LF))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-EXTERNAL-FORMAT*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION "The external format used to compute the REQUEST object."
+     :INITIAL-VALUE "TOOT::+UTF-8+")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+BUFFER-LENGTH+" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION "Length of buffers used for internal purposes."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT::+BUFFER-LENGTH+)
+    (SYMBOL-VALUE 'TOOT::+BUFFER-LENGTH+)
+    8192)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-CONNECTION-TIMEOUT*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :DOCUMENTATION
+     "The default connection timeout used when an acceptor is reading
+from and writing to a socket stream."
+     :INITIAL-VALUE "20")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+NEW-CONNECTION-WAIT-TIME+" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Time in seconds to wait for a new connection to arrive before
+performing a cleanup run."
+     :INITIAL-VALUE "(IF (BOUNDP 'TOOT::+NEW-CONNECTION-WAIT-TIME+)
+    (SYMBOL-VALUE 'TOOT::+NEW-CONNECTION-WAIT-TIME+)
+    2)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HYPERDOC-BASE-URI*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"http://www.gigamonkeys.com/toot/\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HYPERDOC-LOOKUP" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INTERNAL-ERROR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "FORMAT-CONTROL" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signals an error of type TOOT-SIMPLE-ERROR with the provided
+format control and arguments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TOOT-WARN" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "FORMAT-CONTROL" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Signals a warning of type TOOT-SIMPLE-WARNING with the
+provided format control and arguments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARAMETER-ERROR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "FORMAT-CONTROL" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Signals an error of type PARAMETER-ERROR with the provided
+format control and arguments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NOT-IMPLEMENTED" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :DOCUMENTATION
+     "Used to signal an error if an operation named NAME is not implemented.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAYBE-INVOKE-DEBUGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "This generic function is called whenever a
+condition CONDITION is signaled in Toot. You might want to specialize
+it on specific condition classes for debugging purposes. The default
+method invokes the debugger with CONDITION if *CATCH-ERRORS-P* is
+NIL.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAYBE-INVOKE-DEBUGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAYBE-INVOKE-DEBUGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-DEBUGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Executes BODY and invokes the debugger if an error is signaled and
+*CATCH-ERRORS-P* is NIL.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "IGNORE-ERRORS*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Like IGNORE-ERRORS, but observes *CATCH-ERRORS-P*.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "HANDLER-CASE*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "EXPRESSION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Like HANDLER-CASE, but observes *CATCH-ERRORS-P*.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-BACKTRACE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Returns a string with a backtrace of what the Lisp system thinks is
+the \"current\" error.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MIME-TYPE-LIST*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "An alist where the cars are MIME types and the cdrs are lists
+of file suffixes for the corresponding type."
+     :INITIAL-VALUE
+     "'((\"application/andrew-inset\" \"ez\") (\"application/cu-seeme\" \"cu\")
+  (\"application/dsptype\" \"tsp\") (\"application/futuresplash\" \"spl\")
+  (\"application/hta\" \"hta\") (\"application/java-archive\" \"jar\")
+  (\"application/java-serialized-object\" \"ser\") (\"application/java-vm\" \"class\")
+  (\"application/mac-binhex40\" \"hqx\") (\"application/mac-compactpro\" \"cpt\")
+  (\"application/mathematica\" \"nb\") (\"application/msaccess\" \"mdb\")
+  (\"application/msword\" \"doc\" \"dot\") (\"application/octet-stream\" \"bin\")
+  (\"application/oda\" \"oda\") (\"application/ogg\" \"ogg\") (\"application/pdf\" \"pdf\")
+  (\"application/pgp-keys\" \"key\") (\"application/pgp-signature\" \"pgp\")
+  (\"application/pics-rules\" \"prf\") (\"application/postscript\" \"ps\" \"ai\" \"eps\")
+  (\"application/rar\" \"rar\") (\"application/rdf+xml\" \"rdf\")
+  (\"application/rss+xml\" \"rss\") (\"application/smil\" \"smi\" \"smil\")
+  (\"application/wordperfect\" \"wpd\") (\"application/wordperfect5.1\" \"wp5\")
+  (\"application/xhtml+xml\" \"xhtml\" \"xht\") (\"application/xml\" \"fo\" \"xml\" \"xsl\")
+  (\"application/zip\" \"zip\") (\"application/vnd.cinderella\" \"cdy\")
+  (\"application/vnd.mozilla.xul+xml\" \"xul\")
+  (\"application/vnd.ms-excel\" \"xls\" \"xlb\" \"xlt\")
+  (\"application/vnd.ms-pki.seccat\" \"cat\") (\"application/vnd.ms-pki.stl\" \"stl\")
+  (\"application/vnd.ms-powerpoint\" \"ppt\" \"pps\")
+  (\"application/vnd.oasis.opendocument.chart\" \"odc\")
+  (\"application/vnd.oasis.opendocument.database\" \"odb\")
+  (\"application/vnd.oasis.opendocument.formula\" \"odf\")
+  (\"application/vnd.oasis.opendocument.graphics\" \"odg\")
+  (\"application/vnd.oasis.opendocument.graphics-template\" \"otg\")
+  (\"application/vnd.oasis.opendocument.image\" \"odi\")
+  (\"application/vnd.oasis.opendocument.presentation\" \"odp\")
+  (\"application/vnd.oasis.opendocument.presentation-template\" \"otp\")
+  (\"application/vnd.oasis.opendocument.spreadsheet\" \"ods\")
+  (\"application/vnd.oasis.opendocument.spreadsheet-template\" \"ots\")
+  (\"application/vnd.oasis.opendocument.text\" \"odt\")
+  (\"application/vnd.oasis.opendocument.text-master\" \"odm\")
+  (\"application/vnd.oasis.opendocument.text-template\" \"ott\")
+  (\"application/vnd.oasis.opendocument.text-web\" \"oth\")
+  (\"application/vnd.rim.cod\" \"cod\") (\"application/vnd.smaf\" \"mmf\")
+  (\"application/vnd.stardivision.calc\" \"sdc\")
+  (\"application/vnd.stardivision.draw\" \"sda\")
+  (\"application/vnd.stardivision.impress\" \"sdd\" \"sdp\")
+  (\"application/vnd.stardivision.math\" \"smf\")
+  (\"application/vnd.stardivision.writer\" \"sdw\" \"vor\")
+  (\"application/vnd.stardivision.writer-global\" \"sgl\")
+  (\"application/vnd.sun.xml.calc\" \"sxc\")
+  (\"application/vnd.sun.xml.calc.template\" \"stc\")
+  (\"application/vnd.sun.xml.draw\" \"sxd\")
+  (\"application/vnd.sun.xml.draw.template\" \"std\")
+  (\"application/vnd.sun.xml.impress\" \"sxi\")
+  (\"application/vnd.sun.xml.impress.template\" \"sti\")
+  (\"application/vnd.sun.xml.math\" \"sxm\")
+  (\"application/vnd.sun.xml.writer\" \"sxw\")
+  (\"application/vnd.sun.xml.writer.global\" \"sxg\")
+  (\"application/vnd.sun.xml.writer.template\" \"stw\")
+  (\"application/vnd.symbian.install\" \"sis\") (\"application/vnd.visio\" \"vsd\")
+  (\"application/vnd.wap.wbxml\" \"wbxml\") (\"application/vnd.wap.wmlc\" \"wmlc\")
+  (\"application/vnd.wap.wmlscriptc\" \"wmlsc\") (\"application/x-123\" \"wk\")
+  (\"application/x-abiword\" \"abw\") (\"application/x-apple-diskimage\" \"dmg\")
+  (\"application/x-bcpio\" \"bcpio\") (\"application/x-bittorrent\" \"torrent\")
+  (\"application/x-cdf\" \"cdf\") (\"application/x-cdlink\" \"vcd\")
+  (\"application/x-chess-pgn\" \"pgn\") (\"application/x-cpio\" \"cpio\")
+  (\"application/x-csh\" \"csh\") (\"application/x-debian-package\" \"deb\" \"udeb\")
+  (\"application/x-director\" \"dcr\" \"dir\" \"dxr\") (\"application/x-dms\" \"dms\")
+  (\"application/x-doom\" \"wad\") (\"application/x-dvi\" \"dvi\")
+  (\"application/x-flac\" \"flac\") (\"application/x-font\" \"pfa\" \"pfb\" \"gsf\" \"pcf\")
+  (\"application/x-freemind\" \"mm\") (\"application/x-futuresplash\" \"spl\")
+  (\"application/x-gnumeric\" \"gnumeric\") (\"application/x-go-sgf\" \"sgf\")
+  (\"application/x-graphing-calculator\" \"gcf\")
+  (\"application/x-gtar\" \"gtar\" \"tgz\" \"taz\") (\"application/x-hdf\" \"hdf\")
+  (\"application/x-httpd-php\" \"phtml\" \"pht\" \"php\")
+  (\"application/x-httpd-php-source\" \"phps\") (\"application/x-httpd-php3\" \"php3\")
+  (\"application/x-httpd-php3-preprocessed\" \"php3p\")
+  (\"application/x-httpd-php4\" \"php4\") (\"application/x-ica\" \"ica\")
+  (\"application/x-internet-signup\" \"ins\" \"isp\") (\"application/x-iphone\" \"iii\")
+  (\"application/x-iso9660-image\" \"iso\") (\"application/x-java-jnlp-file\" \"jnlp\")
+  (\"application/x-javascript\" \"js\") (\"application/json\" \"json\")
+  (\"application/x-jmol\" \"jmz\") (\"application/x-kchart\" \"chrt\")
+  (\"application/x-killustrator\" \"kil\")
+  (\"application/x-koan\" \"skp\" \"skd\" \"skt\" \"skm\")
+  (\"application/x-kpresenter\" \"kpr\" \"kpt\") (\"application/x-kspread\" \"ksp\")
+  (\"application/x-kword\" \"kwd\" \"kwt\") (\"application/x-latex\" \"latex\")
+  (\"application/x-lha\" \"lha\") (\"application/x-lzh\" \"lzh\")
+  (\"application/x-lzx\" \"lzx\")
+  (\"application/x-maker\" \"frm\" \"maker\" \"frame\" \"fm\" \"fb\" \"book\" \"fbdoc\")
+  (\"application/x-mif\" \"mif\") (\"application/x-ms-wmd\" \"wmd\")
+  (\"application/x-ms-wmz\" \"wmz\")
+  (\"application/x-msdos-program\" \"com\" \"exe\" \"bat\" \"dll\")
+  (\"application/x-msi\" \"msi\") (\"application/x-netcdf\" \"nc\")
+  (\"application/x-ns-proxy-autoconfig\" \"pac\") (\"application/x-nwc\" \"nwc\")
+  (\"application/x-object\" \"o\") (\"application/x-oz-application\" \"oza\")
+  (\"application/x-pkcs7-certreqresp\" \"p7r\") (\"application/x-pkcs7-crl\" \"crl\")
+  (\"application/x-python-code\" \"pyc\" \"pyo\")
+  (\"application/x-quicktimeplayer\" \"qtl\")
+  (\"application/x-redhat-package-manager\" \"rpm\") (\"application/x-sh\" \"sh\")
+  (\"application/x-shar\" \"shar\") (\"application/x-shockwave-flash\" \"swf\" \"swfl\")
+  (\"application/x-stuffit\" \"sit\") (\"application/x-sv4cpio\" \"sv4cpio\")
+  (\"application/x-sv4crc\" \"sv4crc\") (\"application/x-tar\" \"tar\")
+  (\"application/x-tcl\" \"tcl\") (\"application/x-tex-gf\" \"gf\")
+  (\"application/x-tex-pk\" \"pk\") (\"application/x-texinfo\" \"texinfo\" \"texi\")
+  (\"application/x-trash\" \"~%\" \"\" \"bak\" \"old\" \"sik\")
+  (\"application/x-troff\" \"tt\" \"r\" \"roff\") (\"application/x-troff-man\" \"man\")
+  (\"application/x-troff-me\" \"me\") (\"application/x-troff-ms\" \"ms\")
+  (\"application/x-ustar\" \"ustar\") (\"application/x-wais-source\" \"src\")
+  (\"application/x-wingz\" \"wz\") (\"application/x-x509-ca-cert\" \"crt\")
+  (\"application/x-xcf\" \"xcf\") (\"application/x-xfig\" \"fig\")
+  (\"application/x-xpinstall\" \"xpi\") (\"audio/basic\" \"au\" \"snd\")
+  (\"audio/midi\" \"mid\" \"midi\" \"kar\")
+  (\"audio/mpeg\" \"mpga\" \"mpega\" \"mp2\" \"mp3\" \"m4a\") (\"audio/mpegurl\" \"m3u\")
+  (\"audio/prs.sid\" \"sid\") (\"audio/x-aiff\" \"aif\" \"aiff\" \"aifc\")
+  (\"audio/x-gsm\" \"gsm\") (\"audio/x-mpegurl\" \"m3u\") (\"audio/x-ms-wma\" \"wma\")
+  (\"audio/x-ms-wax\" \"wax\") (\"audio/x-pn-realaudio\" \"ra\" \"rm\" \"ram\")
+  (\"audio/x-realaudio\" \"ra\") (\"audio/x-scpls\" \"pls\") (\"audio/x-sd2\" \"sd2\")
+  (\"audio/x-wav\" \"wav\") (\"chemical/x-alchemy\" \"alc\")
+  (\"chemical/x-cache\" \"cac\" \"cache\") (\"chemical/x-cache-csf\" \"csf\")
+  (\"chemical/x-cactvs-binary\" \"cbin\" \"cascii\" \"ctab\") (\"chemical/x-cdx\" \"cdx\")
+  (\"chemical/x-cerius\" \"cer\") (\"chemical/x-chem3d\" \"c3d\")
+  (\"chemical/x-chemdraw\" \"chm\") (\"chemical/x-cif\" \"cif\")
+  (\"chemical/x-cmdf\" \"cmdf\") (\"chemical/x-cml\" \"cml\")
+  (\"chemical/x-compass\" \"cpa\") (\"chemical/x-crossfire\" \"bsd\")
+  (\"chemical/x-csml\" \"csml\" \"csm\") (\"chemical/x-ctx\" \"ctx\")
+  (\"chemical/x-cxf\" \"cxf\" \"cef\") (\"chemical/x-embl-dl-nucleotide\" \"emb\" \"embl\")
+  (\"chemical/x-galactic-spc\" \"spc\")
+  (\"chemical/x-gamess-input\" \"inp\" \"gam\" \"gamin\")
+  (\"chemical/x-gaussian-checkpoint\" \"fch\" \"fchk\")
+  (\"chemical/x-gaussian-cube\" \"cub\")
+  (\"chemical/x-gaussian-input\" \"gau\" \"gjc\" \"gjf\")
+  (\"chemical/x-gaussian-log\" \"gal\") (\"chemical/x-gcg8-sequence\" \"gcg\")
+  (\"chemical/x-genbank\" \"gen\") (\"chemical/x-hin\" \"hin\")
+  (\"chemical/x-isostar\" \"istr\" \"ist\") (\"chemical/x-jcamp-dx\" \"jdx\" \"dx\")
+  (\"chemical/x-kinemage\" \"kin\") (\"chemical/x-macmolecule\" \"mcm\")
+  (\"chemical/x-macromodel-input\" \"mmd\" \"mmod\") (\"chemical/x-mdl-molfile\" \"mol\")
+  (\"chemical/x-mdl-rdfile\" \"rd\") (\"chemical/x-mdl-rxnfile\" \"rxn\")
+  (\"chemical/x-mdl-sdfile\" \"sd\" \"sdf\") (\"chemical/x-mdl-tgf\" \"tgf\")
+  (\"chemical/x-mmcif\" \"mcif\") (\"chemical/x-mol2\" \"mol2\")
+  (\"chemical/x-molconn-Z\" \"b\") (\"chemical/x-mopac-graph\" \"gpt\")
+  (\"chemical/x-mopac-input\" \"mop\" \"mopcrt\" \"mpc\" \"dat\" \"zmt\")
+  (\"chemical/x-mopac-out\" \"moo\") (\"chemical/x-mopac-vib\" \"mvb\")
+  (\"chemical/x-ncbi-asn1\" \"asn\") (\"chemical/x-ncbi-asn1-ascii\" \"prt\" \"ent\")
+  (\"chemical/x-ncbi-asn1-binary\" \"val\" \"aso\")
+  (\"chemical/x-ncbi-asn1-spec\" \"asn\") (\"chemical/x-pdb\" \"pdb\" \"ent\")
+  (\"chemical/x-rosdal\" \"ros\") (\"chemical/x-swissprot\" \"sw\")
+  (\"chemical/x-vamas-iso14976\" \"vms\") (\"chemical/x-vmd\" \"vmd\")
+  (\"chemical/x-xtel\" \"xtel\") (\"chemical/x-xyz\" \"xyz\") (\"image/gif\" \"gif\")
+  (\"image/ief\" \"ief\") (\"image/jpeg\" \"jpeg\" \"jpg\" \"jpe\") (\"image/pcx\" \"pcx\")
+  (\"image/png\" \"png\") (\"image/svg+xml\" \"svg\" \"svgz\")
+  (\"image/tiff\" \"tiff\" \"tif\") (\"image/vnd.djvu\" \"djvu\" \"djv\")
+  (\"image/vnd.wap.wbmp\" \"wbmp\") (\"image/x-cmu-raster\" \"ras\")
+  (\"image/x-coreldraw\" \"cdr\") (\"image/x-coreldrawpattern\" \"pat\")
+  (\"image/x-coreldrawtemplate\" \"cdt\") (\"image/x-corelphotopaint\" \"cpt\")
+  (\"image/x-icon\" \"ico\") (\"image/x-jg\" \"art\") (\"image/x-jng\" \"jng\")
+  (\"image/x-ms-bmp\" \"bmp\") (\"image/x-photoshop\" \"psd\")
+  (\"image/x-portable-anymap\" \"pnm\") (\"image/x-portable-bitmap\" \"pbm\")
+  (\"image/x-portable-graymap\" \"pgm\") (\"image/x-portable-pixmap\" \"ppm\")
+  (\"image/x-rgb\" \"rgb\") (\"image/x-xbitmap\" \"xbm\") (\"image/x-xpixmap\" \"xpm\")
+  (\"image/x-xwindowdump\" \"xwd\") (\"model/iges\" \"igs\" \"iges\")
+  (\"model/mesh\" \"msh\" \"mesh\" \"silo\") (\"model/vrml\" \"wrl\" \"vrml\")
+  (\"text/calendar\" \"ics\" \"icz\") (\"text/comma-separated-values\" \"csv\")
+  (\"text/css\" \"css\") (\"text/h323\" \"323\") (\"text/html\" \"html\" \"htm\" \"shtml\")
+  (\"text/iuls\" \"uls\") (\"text/mathml\" \"mml\")
+  (\"text/plain\" \"asc\" \"txt\" \"text\" \"diff\" \"pot\") (\"text/richtext\" \"rtx\")
+  (\"text/rtf\" \"rtf\") (\"text/scriptlet\" \"sct\" \"wsc\") (\"text/texmacs\" \"tm\" \"ts\")
+  (\"text/tab-separated-values\" \"tsv\")
+  (\"text/vnd.sun.j2me.app-descriptor\" \"jad\") (\"text/vnd.wap.wml\" \"wml\")
+  (\"text/vnd.wap.wmlscript\" \"wmls\") (\"text/x-bibtex\" \"bib\")
+  (\"text/x-boo\" \"boo\") (\"text/x-c++hdr\" \"h++\" \"hpp\" \"hxx\" \"hh\")
+  (\"text/x-c++src\" \"c++\" \"cpp\" \"cxx\" \"cc\") (\"text/x-chdr\" \"h\")
+  (\"text/x-component\" \"htc\") (\"text/x-csh\" \"csh\") (\"text/x-csrc\" \"c\")
+  (\"text/x-dsrc\" \"d\") (\"text/x-haskell\" \"hs\") (\"text/x-java\" \"java\")
+  (\"text/javascript\" \"js\") (\"text/x-literate-haskell\" \"lhs\")
+  (\"text/x-moc\" \"moc\") (\"text/x-pascal\" \"pp\" \"as\") (\"text/x-pcs-gcd\" \"gcd\")
+  (\"text/x-perl\" \"pl\" \"pm\") (\"text/x-python\" \"py\") (\"text/x-setext\" \"etx\")
+  (\"text/x-sh\" \"sh\") (\"text/x-tcl\" \"tcl\" \"tk\")
+  (\"text/x-tex\" \"tex\" \"ltx\" \"sty\" \"cls\") (\"text/x-vcalendar\" \"vcs\")
+  (\"text/x-vcard\" \"vcf\") (\"video/dl\" \"dl\") (\"video/dv\" \"dif\" \"dv\")
+  (\"video/fli\" \"fli\") (\"video/gl\" \"gl\") (\"video/mpeg\" \"mpeg\" \"mpg\" \"mpe\")
+  (\"video/mp4\" \"mp4\") (\"video/quicktime\" \"qt\" \"mov\")
+  (\"video/vnd.mpegurl\" \"mxu\") (\"video/x-la-asf\" \"lsf\" \"lsx\")
+  (\"video/x-mng\" \"mng\") (\"video/x-ms-asf\" \"asf\" \"asx\") (\"video/x-ms-wm\" \"wm\")
+  (\"video/x-ms-wmv\" \"wmv\") (\"video/x-ms-wmx\" \"wmx\") (\"video/x-ms-wvx\" \"wvx\")
+  (\"video/x-msvideo\" \"avi\") (\"video/x-sgi-movie\" \"movie\")
+  (\"x-conference/x-cooltalk\" \"ice\") (\"x-world/x-vrml\" \"vrm\" \"vrml\" \"wrl\"))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MIME-TYPE-HASH*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION "A hash table which maps file suffixes to MIME types."
+     :INITIAL-VALUE "(LET ((TOOT::HASH (MAKE-HASH-TABLE :TEST #'EQUALP)))
+  (LOOP TOOT::FOR (TYPE . TOOT::SUFFIXES) TOOT::IN TOOT::*MIME-TYPE-LIST*
+        DO (LOOP TOOT::FOR TOOT::SUFFIX TOOT::IN TOOT::SUFFIXES
+                 DO (SETF (GETHASH TOOT::SUFFIX TOOT::HASH) TYPE)))
+  TOOT::HASH)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GUESS-MIME-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "EXTENSION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ESCAPE-FOR-HTML" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Escapes the characters #\\<, #\\>, #\\', #\\\", and #\\& for HTML output.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RFC-1123-DATE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TIME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "GET-UNIVERSAL-TIME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP
+         T))))
+     :DOCUMENTATION
+     "Generates a time string according to RFC 1123.  Default is current time.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ISO-TIME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TIME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "GET-UNIVERSAL-TIME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP
+         T))))
+     :DOCUMENTATION
+     "Returns the universal time TIME as a string in full ISO format.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TMP-FILENAME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POSSIBLE-TMP-FILENAME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUOTE-STRING" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Quotes string according to RFC 2616's definition of `quoted-string'.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "UPGRADE-VECTOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NEW-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONVERTER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a vector with the same length and the same elements as
+VECTOR (a variable holding a vector) but having element type
+NEW-TYPE.  If CONVERTER is not NIL, it should designate a function
+which will be applied to each element of VECTOR before the result is
+stored in the new vector.  The resulting vector will have a fill
+pointer set to its end.
+
+The macro also uses SETF to store the new vector in VECTOR.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "URL-DECODE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "EXTERNAL-FORMAT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "*DEFAULT-EXTERNAL-FORMAT*" :PACKAGE-NAME "TOOT" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Decodes a URL-encoded STRING which is assumed to be encoded using
+the external format EXTERNAL-FORMAT.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FORM-URL-ENCODED-LIST-TO-ALIST" :PACKAGE-NAME "TOOT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORM-URL-ENCODED-LIST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "EXTERNAL-FORMAT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "*DEFAULT-EXTERNAL-FORMAT*" :PACKAGE-NAME "TOOT" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Converts a list FORM-URL-ENCODED-LIST of name/value pairs into an
+alist.  Both names and values are url-decoded while doing this.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "URL-ENCODE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "EXTERNAL-FORMAT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "*DEFAULT-EXTERNAL-FORMAT*" :PACKAGE-NAME "TOOT" :EXTERNALP T)))
+     :DOCUMENTATION
+     "URL-encodes a string using the external format EXTERNAL-FORMAT.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-CONTENT-TYPE-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONTENT-TYPE-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads and parses a `Content-Type' header and returns it as three
+values - the type, the subtype, and the requests' character set as
+specified in the 'charset' parameter in the header, if there is one
+and if the content type is \"text\".  CONTENT-TYPE-HEADER is supposed
+to be the corresponding header value as a string.")
+    (:TYPE :FUNCTION :SYMBOL (:NAME "SANS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ARGS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TO-REMOVE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL (:NAME "COOKIE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL :READERS
+       ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :WRITERS NIL
+       :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "EXPIRES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "EXPIRES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PATH" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "PATH" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DOMAIN" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "DOMAIN" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SECURE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "SECURE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HTTP-ONLY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HTTP-ONLY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "COOKIE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "COOKIE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Ensure COOKIE has a correct slot-value for NAME.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRINGIFY-COOKIE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "COOKIE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HTTP-TOKEN-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "TOKEN" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Tests whether TOKEN is a string which is a valid 'token'
+according to HTTP/1.1 (RFC 2068).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-TIMEOUTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "USOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "READ-TIMEOUT" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "WRITE-TIMEOUT" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION
+     "Sets up timeouts on the given USOCKET object.  READ-TIMEOUT is the
+read timeout period, WRITE-TIMEOUT is the write timeout, specified in
+(fractional) seconds.  The timeouts can either be implemented using
+the low-level socket options SO_RCVTIMEO and SO_SNDTIMEO or some
+other, implementation specific mechanism.  On platforms that do not
+support separate read and write timeouts, both must be equal or an
+error will be signaled.  READ-TIMEOUT and WRITE-TIMEOUT may be NIL,
+which means that the corresponding socket timeout value will not be
+set.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "EXECUTE-ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION
+     "Called on a taskmaster which should call accept-connections on the acceptor.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "HANDLE-INCOMING-CONNECTION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Called on a taskmaster to handle a new connection by calling process-connection on acceptor.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SHUTDOWN" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :DOCUMENTATION
+     "Shutdown the taskmaster, cleaning up any threads it created.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "SINGLE-THREADED-TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EXECUTE-ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "SINGLE-THREADED-TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP
+        NIL))
+      (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLE-INCOMING-CONNECTION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "SINGLE-THREADED-TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP
+        NIL))
+      (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SHUTDOWN" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "SINGLE-THREADED-TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-MAX-THREAD-COUNT*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "100")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-MAX-ACCEPT-COUNT*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(+ TOOT::*DEFAULT-MAX-THREAD-COUNT* 20)")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "THREAD-PER-CONNECTION-TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "A taskmaster that starts one thread for listening
+to incoming requests and one new thread for each incoming connection.
+
+If MAX-THREAD-COUNT is null, a new thread will always be created for
+each request.
+
+If MAX-THREAD-COUNT is supplied, the number of request threads is
+limited to that.  Furthermore, if MAX-ACCEPT-COUNT is not supplied, an
+HTTP 503 will be sent if the thread limit is exceeded.  Otherwise, if
+MAX-ACCEPT-COUNT is supplied, it must be greater than MAX-THREAD-COUNT;
+in this case, requests are accepted up to MAX-ACCEPT-COUNT, and only
+then is HTTP 503 sent.
+
+In a load-balanced environment with multiple Toot servers, it's
+reasonable to provide MAX-THREAD-COUNT but leave MAX-ACCEPT-COUNT null.
+This will immediately result in HTTP 503 when one server is out of
+resources, so the load balancer can try to find another server.
+
+In an environment with a single Toot server, it's reasonable
+to provide both MAX-THREAD-COUNT and a somewhat larger value for
+MAX-ACCEPT-COUNT.  This will cause a server that's almost out of
+resources to wait a bit; if the server is completely out of resources,
+then the reply will be HTTP 503.
+
+This is the default taskmaster implementation for multi-threaded Lisp
+implementations."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ACCEPTOR-PROCESS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ACCEPTOR-PROCESS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MAX-THREAD-COUNT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "TASKMASTER-MAX-THREAD-COUNT" :PACKAGE-NAME "TOOT" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MAX-ACCEPT-COUNT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "TASKMASTER-MAX-ACCEPT-COUNT" :PACKAGE-NAME "TOOT" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REQUEST-COUNT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "TASKMASTER-REQUEST-COUNT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REQUEST-COUNT-LOCK" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "TASKMASTER-REQUEST-COUNT-LOCK" :PACKAGE-NAME "TOOT" :EXTERNALP
+         NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "WAIT-QUEUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS
+       ((:NAME "TASKMASTER-WAIT-QUEUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "WAIT-LOCK" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS
+       ((:NAME "TASKMASTER-WAIT-LOCK" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "WORKER-THREAD-NAME-FORMAT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "TASKMASTER-WORKER-THREAD-NAME-FORMAT" :PACKAGE-NAME "TOOT"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "THREAD-PER-CONNECTION-TASKMASTER" :PACKAGE-NAME "TOOT"
+        :EXTERNALP NIL))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INIT-ARGS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Ensure the if MAX-ACCEPT-COUNT is supplied, that it is greater than MAX-THREAD-COUNT.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EXECUTE-ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "THREAD-PER-CONNECTION-TASKMASTER" :PACKAGE-NAME "TOOT"
+        :EXTERNALP NIL))
+      (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLE-INCOMING-CONNECTION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "THREAD-PER-CONNECTION-TASKMASTER" :PACKAGE-NAME "TOOT"
+        :EXTERNALP NIL))
+      (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SHUTDOWN" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "THREAD-PER-CONNECTION-TASKMASTER" :PACKAGE-NAME "TOOT"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INCREMENT-TASKMASTER-REQUEST-COUNT" :PACKAGE-NAME "TOOT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECREMENT-TASKMASTER-REQUEST-COUNT" :PACKAGE-NAME "TOOT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NOTIFY-FREE-CONNECTION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WAIT-FOR-FREE-CONNECTION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-CONNECTION-HANDLER-THREAD" :PACKAGE-NAME "TOOT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Create a thread for handling a single request")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LISTEN-THREAD-NAME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONNECTION-HANDLER-THREAD-NAME" :PACKAGE-NAME "TOOT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "LOG-ACCESS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Write a log entry for the request to the access log.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "LOG-MESSAGE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "LOG-LEVEL" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "FORMAT-STRING" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Write a log entry to the message log.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOG-ACCESS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "NULL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOG-MESSAGE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "NULL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "LOG-LEVEL" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "FORMAT-STRING" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "STREAM-LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "A logger that writes to a given stream." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DESTINATION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "DESTINATION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LOCK" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "LOCK" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION NIL)))
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-LOGGER*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(MAKE-INSTANCE 'TOOT:STREAM-LOGGER :DESTINATION *ERROR-OUTPUT*)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOG-ACCESS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "STREAM-LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOG-MESSAGE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "STREAM-LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+      (:NAME "LOG-LEVEL" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "FORMAT-STRING" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "HANDLE-REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Used by the acceptor to handle a request. Returns
+  true if the handler actually sends a response. (This is arranged by
+  a default :around method. If for some reason a more-specific :around
+  method is defined, it must return the same value.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLE-REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLE-REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLE-REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERATE-ERROR-PAGE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BACKTRACE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Used by acceptor to generate an error page for a
+  request based on the http status code.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GENERATE-ERROR-PAGE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BACKTRACE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GENERATE-ERROR-PAGE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BACKTRACE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "The object that listens on a socket for connections." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL :READERS
+       ((:NAME "PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :WRITERS NIL
+       :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ADDRESS" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "ADDRESS" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL :READERS
+       ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :WRITERS NIL
+       :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PERSISTENT-CONNECTIONS-P" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "PERSISTENT-CONNECTIONS-P" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "READ-TIMEOUT" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "READ-TIMEOUT" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "WRITE-TIMEOUT" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "WRITE-TIMEOUT" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LISTEN-BACKLOG" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "LISTEN-BACKLOG" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SSL-CERTIFICATE-FILE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "SSL-CERTIFICATE-FILE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SSL-PRIVATE-KEY-FILE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "SSL-PRIVATE-KEY-FILE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SSL-PRIVATE-KEY-PASSWORD" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "SSL-PRIVATE-KEY-PASSWORD" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ERROR-GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "ERROR-GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ACCESS-LOGGGER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "ACCESS-LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MESSAGE-LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "MESSAGE-LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LISTEN-SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "LISTEN-SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SHUTDOWN-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "SHUTDOWN-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REQUESTS-IN-PROGRESS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "REQUESTS-IN-PROGRESS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SHUTDOWN-QUEUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "SHUTDOWN-QUEUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SHUTDOWN-LOCK" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "SHUTDOWN-LOCK" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REMOTE-ADDR" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "REMOTE-ADDR" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REMOTE-PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "REMOTE-PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REQUEST-METHOD" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       NIL :READERS
+       ((:NAME "REQUEST-METHOD" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SERVER-PROTOCOL" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       NIL :READERS
+       ((:NAME "SERVER-PROTOCOL" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REQUEST-URI" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "REQUEST-URI" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "GET-PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       NIL :READERS
+       ((:NAME "GET-PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "POST-PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       NIL :READERS
+       ((:NAME "POST-PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BODY-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "BODY-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BODY-OCTETS" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "BODY-OCTETS" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REQUEST-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       NIL :READERS
+       ((:NAME "REQUEST-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COOKIES-IN" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "COOKIES-IN" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STATUS-CODE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "STATUS-CODE" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONTENT-LENGTH" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "CONTENT-LENGTH" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RESPONSE-CHARSET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "RESPONSE-CHARSET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RESPONSE-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "RESPONSE-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COOKIES-OUT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "COOKIES-OUT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HEADERS-SENT-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HEADERS-SENT-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CLOSE-STREAM-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CLOSE-STREAM-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONTENT-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CONTENT-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TMP-FILES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "TMP-FILES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-QUERY-STRING" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST-URI" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-COOKIES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REQUEST-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOG-MESSAGE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+      (:NAME "LOG-LEVEL" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "FORMAT-STRING" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOG-MESSAGE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+      (:NAME "LOG-LEVEL" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "FORMAT-STRING" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ACCEPT-CONNECTIONS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION
+     "Accept connections on our listen socket and hand them back to the
+taskmaster via handle-incoming-connection. Called by taskmaster's
+execute-acceptor.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROCESS-CONNECTION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Actually process the connection accepted via accept connection.
+Called by taskmaster's handle-incoming-connection, possibly in a
+different thread than accept-connection is running in.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROCESS-REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Process a single request. Called repeatedly by process-connection.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-SOCKET-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SETUP-SSL-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FINISH-RESPONSE-BODY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-LOG-WARNING" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "WARNING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-LOG-ERROR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BACKTRACE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REPORT-ERROR-TO-CLIENT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BACKTRACE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ERROR-BODY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BACKTRACE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DRAIN-BODY-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-TMP-FILES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Reads incoming headers from the client via STREAM. Returns as
+multiple values the headers as an alist, the request-method, the URI,
+and the protocol of the request. The reading of the headers is handled
+by Chunga's read-http-headers method.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-INITIAL-REQUEST-LINE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINTABLE-ASCII-CHAR-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-PEER-ADDRESS-AND-PORT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the peer address and port of the socket SOCKET as two
+values.  The address is returned as a string in dotted IP address
+notation.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "POST-PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Lazily fill in the post-parameters slot with data from the request body.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BODY-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BODY-OCTETS" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-POST-PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Read the post parameters from the body of the request and return them as an alist.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUEST-BODY-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return a stream from which the body of the request can be read. If
+the request specified a content-length, this stream will not read
+beyond it. And if the request is using chunked transfer encoding, the
+stream will be a chunked stream that will return :eof when it gets to
+the end of the input. After the request has been handled, any input
+remaining on the stream will be drained.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-BODY-OCTETS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Read the post data and return it as a vector of octets.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHARSET-TO-EXTERNAL-FORMAT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CHARSET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-APPLICATION/X-WWW-FORM-URLENCODED" :PACKAGE-NAME "TOOT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "EXTERNAL-FORMAT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-MULTIPART/FORM-DATA" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "EXTERNAL-FORMAT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Parse the REQUEST body as multipart/form-data, assuming that its
+content type has already been verified.  Returns the form data as
+alist or NIL if there was no data or the data could not be parsed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-RFC2388-FORM-DATA" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTENT-TYPE-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "EXTERNAL-FORMAT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "TMP-FILENAME-GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates an alist of POST parameters from the stream STREAM which is
+supposed to be of content type 'multipart/form-data'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONVERT-HACK" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXTERNAL-FORMAT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The rfc2388 code is buggy in that it operates on a character stream
+and thus only accepts encodings which are 8 bit transparent. In order
+to support different encodings for parameter values submitted, we post
+process whatever string values the rfc2388 package has returned.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHUNKING-INPUT-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Whether input chunking is currently switched on for the acceptor's
+content stream.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTERNAL-FORMAT-FROM-CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION
+     "Creates and returns an external format corresponding to the value
+of the content type header provided in CONTENT-TYPE.  If the content
+type was not set or if the character set specified was invalid, NIL is
+returned.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-BAD-REQUEST-RESPONSE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ADDITIONAL-INFO" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-SERVICE-UNAVAILABLE-RESPONSE" :PACKAGE-NAME "TOOT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "SOCKET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Send a response to the client before we've created a request
+object. This can be used by taskmasters when they cannot accept a
+connection.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-SIMPLE-RESPONSE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STATUS-CODE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "CONTENT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-RESPONSE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "CONTENT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      ((:NAME "CHARSET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "*DEFAULT-CHARSET*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)))
+     :DOCUMENTATION "Send a full response with the given content as the body.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-RESPONSE-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "CONTENT-LENGTH" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "CHARSET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Send the response headers and return the stream to which the body
+of the response can be written. The stream is a binary stream. The
+public API function, SEND-HEADERS will wrap that stream in a
+flexi-stream based on the content-type and charset, if needed. Thus
+function is for functions that are going to take care of encoding the
+response themselves, such as SERVE-FILE, which just dumps an already
+encoded to the steam as octets. If the request was a HEAD request we
+dynamically abort rather than returning a stream.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FINALIZE-RESPONSE-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set certain headers automatically based on values in the request object.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LENGTH-KNOWN-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KEEP-ALIVE-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Should the current connection be kept alive? Secondary value
+indicates whether the client explicitly requested keep-alive. (Always
+the same as the primary value for HTTP/1.0 but potentially different
+in HTTP/1.1.)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONNECTION-VALUES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-HEADER-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Make a stream just for writing the HTTP headers.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEXT-TYPE-P" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FULL-CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the value for the Content-Type header, including a charset if it's a text/* type.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-LINE-CRLF" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FMT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-STATUS-LINE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STATUS-CODE" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-COOKIES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COOKIES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-HEADER-LINE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ERROR-CSS*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE "\"
+body {
+  font-family: \\\"Gill Sans\\\", sans-serif;
+  width: 600px;
+  margin: 1in auto;
+
+}
+
+h1 { font-size: 64px; }
+
+div {
+  text-align: center;
+  background: #ddddff;
+  padding: 10px;
+  border: thin solid black;
+  height: 300px;
+}
+\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DEFAULT-ERROR-MESSAGE-GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BACKTRACE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "A function that generates a bare-bones error page to be used as an error page generator.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REASON-PHRASE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STATUS-CODE" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :DOCUMENTATION
+     "Returns a reason phrase for the HTTP return code STATUS-CODE (which
+should be an integer) or NIL for return codes Toot doesn't know.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "START-SERVER" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "Must specify handler."))
+      (:NAME "PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Instantiate an acceptor and start it listening.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "START-ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)) :DOCUMENTATION
+     "Start an existing acceptor listening for connections.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STOP-ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SOFT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Stop an acceptor from listening for connections. It can be
+restarted with START-ACCEPTOR.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUEST-SCHEME" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Get the scheme part of the request's URI.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUEST-HOST" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Get the host part of the request's URI.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUEST-PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Get the port part of the request's URI.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUEST-PATH" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Get the path part of the request's URI.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUEST-QUERY" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Get the query part of the request's URI.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUEST-AUTHORITY" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Get the authority part of the request's URI.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-RESPONSE-BODY" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Send the response headers (any already set plus any more set via
+keyword arguments to this macro) and bind the stream to which the
+response body can be written to STREAM.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESPONSE-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the current value of the outgoing http header named NAME.
+NAME should be a keyword or a string.")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RESPONSE-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Changes the current value of the outgoing http header named NAME (a
+keyword or a string). If a header with this name doesn't exist, it is
+created.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESPONSE-SENT-P" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Has a response been sent.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "*DEFAULT-CONTENT-TYPE*" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+      ((:NAME "CHARSET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "*DEFAULT-CHARSET*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+      ((:NAME "STATUS-CODE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "+HTTP-OK+" :PACKAGE-NAME "TOOT" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Send the headers and return a stream to which the body of the reply
+can be written. If the content-type is text/* type, the stream
+returned will be a character stream that will encode the response
+properly for the charset specified. If the request was a HEAD request
+we dynamically abort rather than returning a stream.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ABORT-REQUEST-HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "RESPONSE-STATUS-CODE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Abort the handling of a request, sending instead a response with
+the given response-status-code and either the given body or a default
+body based on the error code. A request can only be aborted if
+SEND-HEADERS has not been called. (SEND-HEADERS is called by
+WITH-RESPONSE-BODY). If a handler neither generates a response nor
+aborts, then a 404: Not Found response will be sent.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUEST-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the incoming header with name NAME. NAME can be a
+keyword (recommended) or a string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AUTHORIZATION" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns as two values the user and password (if any) as encoded in
+the 'AUTHORIZATION' header. Returns NIL if there is no such header.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-PARAMETER" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the GET parameter with name NAME (a string) - or NIL if
+there is none. Search is case-sensitive.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POST-PARAMETER" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the POST parameter with name NAME (a string) - or NIL if
+there is none. Search is case-sensitive.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARAMETER" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the GET or the POST parameter with name NAME (a string) -
+or NIL if there is none. If both a GET and a POST parameter with the
+same name exist the GET parameter is returned. Search is
+case-sensitive.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REAL-REMOTE-ADDR" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the 'X-Forwarded-For' incoming http header as the
+second value in the form of a list of IP addresses and the first
+element of this list as the first value if this header exists.
+Otherwise returns the value of REMOTE-ADDR as the only value.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SERVE-FILE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "PATHNAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      ((:NAME "CHARSET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "*DEFAULT-CHARSET*" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Serve the file denoted by PATHNAME. Sends a content type header
+corresponding to CONTENT-TYPE or (if that is NIL) tries to determine
+the content type via the file's suffix. Aborts the request with 404:
+Not found if the file does not exist. Also handles if-modified-since
+and range requests appropriately.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NO-CACHE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Adds appropriate response headers to completely prevent caching on
+most browsers.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REDIRECT" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "TARGET" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "CODE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "+HTTP-MOVED-TEMPORARILY+" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+      (:NAME "PROTOCOL" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "HOST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION
+     "Redirects the browser to TARGET with status code CODE. Target must
+be a string and CODE should be one of the 3xx status codes. If TARGET
+is a full URL starting with a scheme, HOST, PORT and PROTOCOL are
+ignored. Otherwise, TARGET should denote the path part of a URL and
+the protocol, host, and port can be specified via keyword args. Any
+values not specified will be taken from the current request. (Note,
+however, that if no port was specified in the Host: header of the
+request, the redirect will likewise have no explicit port; if the
+protocol was changed this will result in a redirect to the default
+port for the new protocol. CODE must be a 3xx redirection code and
+will be sent as status code.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUIRE-AUTHORIZATION" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "REALM" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) "Toot"))
+     :DOCUMENTATION
+     "Sends 401: Authorization required reply to require basic HTTP
+authentication (see RFC 2617) for the realm REALM.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HANDLE-IF-MODIFIED-SINCE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TIME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Handles the If-Modified-Since header of REQUEST, sending an '304:
+Not modified' response if the time represented by the UTC TIME is the
+same as the value in the If-Modified-Since header. Also sets the Last
+Modified header in the response to TIME.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HANDLE-RANGE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "BYTES-AVAILABLE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "If the request contains a Range header returns the starting
+position and the number of bytes to transfer. Otherwise returns 0 and
+bytes-available. An invalid specified range is reported to the client
+immediately with a '416: Requested range not satisfiable' response.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COOKIE-VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Get the value of the cookie with the given name sent by the client
+or NIL if no such cookie was sent.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-COOKIE" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) "")
+      (:NAME "EXPIRES" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "DOMAIN" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "SECURE" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "HTTP-ONLY" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Set a cookie to be sent with the reply.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COOKIE-OUT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the current value of the outgoing cookie named
+NAME. Search is case-sensitive.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "STATIC-FILE-HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "A handler that serves files found under a given
+  root directory. Checks the path before serving the file with
+  specified path-checker which should be a function that takes the
+  path and returns true if it is safe. If the path checker returns
+  false, the request is aborted with 403: Forbidden."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ROOT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "ROOT" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PATH-CHECKER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "PATH-CHECKER" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "H" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+       (:NAME "STATIC-FILE-HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLE-REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "STATIC-FILE-HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SAFE-PATHNAME-P" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)) :DOCUMENTATION
+     "Verify that a path, translated to a file doesn't contain any tricky
+bits such as '..'")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-INDEX" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "FILENAME" :PACKAGE-NAME "TOOT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T) "index")
+      ((:NAME "EXTENSION" :PACKAGE-NAME "TOOT" :EXTERNALP NIL) "html"))
+     :DOCUMENTATION
+     "Add an index file name to a directory filename. Defaults to index.html"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*SHOW-LISP-BACKTRACES-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "TASKMASTER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-REQUESTED-RANGE-NOT-SATISFIABLE+" :PACKAGE-NAME "TOOT"
+     :EXTERNALP T)
+    (:NAME "+HTTP-SWITCHING-PROTOCOLS+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-PAYMENT-REQUIRED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "MESSAGE-LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "ADD-INDEX" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "STATIC-FILE-HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-TEMPORARY-REDIRECT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "ERROR-GENERATOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "URL-ENCODE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*DEFAULT-CONNECTION-TIMEOUT*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "ABORT-REQUEST-HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "PARAMETER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*DEFAULT-EXTERNAL-FORMAT*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-SEE-OTHER+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-BAD-REQUEST+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*LISP-WARNINGS-LOG-LEVEL*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUIRE-AUTHORIZATION" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-USE-PROXY+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-FORBIDDEN+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "GET-PARAMETER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUEST-HOST" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-PARTIAL-CONTENT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-REQUEST-URI-TOO-LARGE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "GENERATE-ERROR-PAGE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*DEFAULT-CONTENT-TYPE*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*TOOT-VERSION*" :PACKAGE-NAME "TOOT-ASD" :EXTERNALP NIL)
+    (:NAME "HANDLE-REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "BODY-STREAM" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*LISP-ERRORS-LOG-LEVEL*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "HANDLE-RANGE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-EXPECTATION-FAILED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-INTERNAL-SERVER-ERROR+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REMOTE-ADDR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "START-ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "STOP-ACCEPTOR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "NO-CACHE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "URL-DECODE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUEST-METHOD" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-MULTI-STATUS+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-SERVICE-UNAVAILABLE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*TMP-DIRECTORY*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUEST-AUTHORITY" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "RESPONSE-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-NOT-FOUND+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "SAFE-PATHNAME-P" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-MULTIPLE-CHOICES+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "STREAM-LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-LENGTH-REQUIRED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "STATUS-CODE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "COOKIES-IN" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-REQUEST-TIME-OUT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REDIRECT" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*SHOW-LISP-ERRORS-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-NOT-IMPLEMENTED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "CONTENT-TYPE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "SEND-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-OK+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUEST-QUERY" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-RESET-CONTENT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-PROXY-AUTHENTICATION-REQUIRED+" :PACKAGE-NAME "TOOT"
+     :EXTERNALP T)
+    (:NAME "PERSISTENT-CONNECTIONS-P" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-REQUEST-ENTITY-TOO-LARGE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-GONE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "START-SERVER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-CONFLICT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REASON-PHRASE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "SERVE-FILE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "POST-PARAMETER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-ACCEPTED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-AUTHORIZATION-REQUIRED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "GET-PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUEST-HEADER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-PRECONDITION-FAILED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "BODY-OCTETS" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUEST-PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "POST-PARAMETERS" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-FAILED-DEPENDENCY+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*HEADER-STREAM*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "COOKIE-VALUE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-MOVED-TEMPORARILY+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*LOG-LISP-BACKTRACES-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "SERVER-PROTOCOL" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*LOG-LISP-ERRORS-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "AUTHORIZATION" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-MOVED-PERMANENTLY+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-NO-CONTENT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "CONTENT-LENGTH" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "ADDRESS" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-CONTINUE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "ESCAPE-FOR-HTML" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "RESPONSE-SENT-P" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUEST-URI" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "SET-COOKIE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REAL-REMOTE-ADDR" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "READ-TIMEOUT" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-CREATED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-NON-AUTHORITATIVE-INFORMATION+" :PACKAGE-NAME "TOOT"
+     :EXTERNALP T)
+    (:NAME "ACCESS-LOGGER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-GATEWAY-TIME-OUT+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUEST-PATH" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUEST-SCHEME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-VERSION-NOT-SUPPORTED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "WRITE-TIMEOUT" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*LOG-LISP-WARNINGS-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REQUEST-HEADERS" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "REMOTE-PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-NOT-MODIFIED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "WITH-RESPONSE-BODY" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-METHOD-NOT-ALLOWED+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "HANDLE-IF-MODIFIED-SINCE" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-NOT-ACCEPTABLE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-UNSUPPORTED-MEDIA-TYPE+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "NAME" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "+HTTP-BAD-GATEWAY+" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+    (:NAME "*DEBUG-ERRORS-P*" :PACKAGE-NAME "TOOT" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME "-TESTS" :FULL-NAME "TOOT-TESTS" :DOCUMENTATION
+   "Sanity tests for Toot." :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TEST-ACCEPTOR*" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEST-DOCUMENT-DIRECTORY" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SUB-DIRECTORY" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "START-TEST-SERVER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "START-TRIVIAL-SERVER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PORT" :PACKAGE-NAME "TOOT" :EXTERNALP T) 0))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRIVIAL-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESET-TEST-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENOUGH-URL" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "URL" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+      (:NAME "URL-PREFIX" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the relative portion of URL relative to URL-PREFIX, similar
+to what ENOUGH-NAMESTRING does for pathnames.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESOLVE-FILE" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+      (:NAME "DOCUMENT-ROOT" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "SEARCH-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HANDLERS" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HANDLERS" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-SEARCH-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SUB-HANDLERS" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEARCH-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+      (:NAME "SUB-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HANDLE-REQUEST" :PACKAGE-NAME "TOOT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "TOOT" :EXTERNALP T)
+       (:NAME "SEARCH-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+      (:NAME "REQUEST" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-EXACT-PATH-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+      (:NAME "SUB-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Make a handler that handles the request with SUB-HANDLER if the
+file name of the request is exactly the given PATH.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEST-HANDLER" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FORM-TEST-GET-PARAMS" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FORM-TEST-PARAMS" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FORM-TEST-OCTETS" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FORM-TEST-STREAM" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REQUEST" :PACKAGE-NAME "TOOT-TESTS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS NIL)))

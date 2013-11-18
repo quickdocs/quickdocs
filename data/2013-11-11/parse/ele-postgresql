@@ -1,0 +1,7 @@
+
+(:TYPE :SYSTEM :NAME "ele-postgresql" :AUTHOR
+ "Robert L. Read <read@robertlread.net>" :MAINTAINER
+ "Robert L. Read <read@robertlread.net>" :VERSION "0.6.0" :LICENCE "GPL"
+ :DESCRIPTION "PostgreSQL based Object respository for Common Lisp"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("ELE-CLSQL" "CLSQL-POSTGRESQL-SOCKET")
+ :PACKAGE-LIST NIL)

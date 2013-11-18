@@ -1,0 +1,221 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "cl-protobufs-tests"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+STYLE-WARNING: Implicitly creating new generic function PROTOBUFS-IMPLEMENTATION:PROTO-SLOT.
+STYLE-WARNING: Implicitly creating new generic function (COMMON-LISP:SETF PROTOBUFS-IMPLEMENTATION:PROTO-SLOT).
+STYLE-WARNING: Implicitly creating new generic function ASDF/INTERFACE::COMPONENT-SELF-DEPENDENCIES.
+STYLE-WARNING: Implicitly creating new generic function ASDF/INTERFACE::OPERATION-DESCRIPTION.
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/cl-protobufs-20130720-git/tests/wire-tests.lisp
+; in: DEFINE-TEST ZIG-ZAG-TEST
+;     (PROTOBUFS-IMPLEMENTATION:ZIG-ZAG-ENCODE64 PROTOBUFS-TEST::N)
+; --> LOCALLY LOGXOR 
+; ==>
+;   (ASH PROTOBUFS-TEST::N 1)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (OR
+;                                (INTEGER -75123905439571256 -75123905439571256)
+;                                (INTEGER 856912304801416 856912304801416)
+;                                (INTEGER -3612 -3612) (INTEGER 14927 14927)
+;                                (INTEGER -1 1)), not a FIXNUM.
+;       The result is a (VALUES
+;                        (OR (INTEGER -2 2) (INTEGER 29854 29854)
+;                            (INTEGER -7224 -7224)
+;                            (INTEGER 1713824609602832 1713824609602832)
+;                            (INTEGER -150247810879142512 -150247810879142512))
+;                        &OPTIONAL), not a (VALUES FIXNUM &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (OR
+;                                (INTEGER -75123905439571256 -75123905439571256)
+;                                (INTEGER 856912304801416 856912304801416)
+;                                (INTEGER -3612 -3612) (INTEGER 14927 14927)
+;                                (INTEGER -1 1)), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES
+;                        (OR (INTEGER -2 2) (INTEGER 29854 29854)
+;                            (INTEGER -7224 -7224)
+;                            (INTEGER 1713824609602832 1713824609602832)
+;                            (INTEGER -150247810879142512 -150247810879142512))
+;                        &OPTIONAL), not a (VALUES (UNSIGNED-BYTE 32) &REST T).
+;       etc.
+
+; ==>
+;   (ASH PROTOBUFS-TEST::N -63)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (OR
+;                                (INTEGER -75123905439571256 -75123905439571256)
+;                                (INTEGER 856912304801416 856912304801416)
+;                                (INTEGER -3612 -3612) (INTEGER 14927 14927)
+;                                (INTEGER -1 1)), not a FIXNUM.
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (OR
+;                                (INTEGER -75123905439571256 -75123905439571256)
+;                                (INTEGER 856912304801416 856912304801416)
+;                                (INTEGER -3612 -3612) (INTEGER 14927 14927)
+;                                (INTEGER -1 1)), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (INTEGER -1 0) &OPTIONAL), not a (VALUES
+;                                                                 (UNSIGNED-BYTE
+;                                                                  32)
+;                                                                 &REST T).
+;       etc.
+
+; --> LOCALLY 
+; ==>
+;   (LOGXOR (ASH PROTOBUFS-TEST::N 1) (ASH PROTOBUFS-TEST::N -63))
+; 
+; note: forced to do static-fun Two-arg-xor (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (OR (INTEGER -2 2) (INTEGER 29854 29854)
+;                                   (INTEGER -7224 -7224)
+;                                   (INTEGER 1713824609602832 1713824609602832)
+;                                   (INTEGER -150247810879142512
+;                                    -150247810879142512)), not a FIXNUM.
+;       The result is a (VALUES (SIGNED-BYTE 59) &OPTIONAL), not a (VALUES FIXNUM
+;                                                                          &REST
+;                                                                          T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (OR (INTEGER -2 2) (INTEGER 29854 29854)
+;                                   (INTEGER -7224 -7224)
+;                                   (INTEGER 1713824609602832 1713824609602832)
+;                                   (INTEGER -150247810879142512
+;                                    -150247810879142512)), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (SIGNED-BYTE 59) &OPTIONAL), not a (VALUES
+;                                                                   (SIGNED-BYTE
+;                                                                    32)
+;                                                                   &REST T).
+;       etc.
+
+; --> LOCALLY LOGXOR 
+; ==>
+;   (ASH PROTOBUFS-TEST::N 1)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (OR
+;                                (INTEGER -75123905439571256 -75123905439571256)
+;                                (INTEGER 856912304801416 856912304801416)
+;                                (INTEGER -3612 -3612) (INTEGER 14927 14927)
+;                                (INTEGER -1 1)), not a FIXNUM.
+;       The result is a (VALUES
+;                        (OR (INTEGER -2 2) (INTEGER 29854 29854)
+;                            (INTEGER -7224 -7224)
+;                            (INTEGER 1713824609602832 1713824609602832)
+;                            (INTEGER -150247810879142512 -150247810879142512))
+;                        &OPTIONAL), not a (VALUES FIXNUM &REST T).
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (OR
+;                                (INTEGER -75123905439571256 -75123905439571256)
+;                                (INTEGER 856912304801416 856912304801416)
+;                                (INTEGER -3612 -3612) (INTEGER 14927 14927)
+;                                (INTEGER -1 1)), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES
+;                        (OR (INTEGER -2 2) (INTEGER 29854 29854)
+;                            (INTEGER -7224 -7224)
+;                            (INTEGER 1713824609602832 1713824609602832)
+;                            (INTEGER -150247810879142512 -150247810879142512))
+;                        &OPTIONAL), not a (VALUES (UNSIGNED-BYTE 32) &REST T).
+;       etc.
+
+; ==>
+;   (ASH PROTOBUFS-TEST::N -63)
+; 
+; note: forced to do full call
+;       unable to do inline ASH (cost 2) because:
+;       The first argument is a (OR
+;                                (INTEGER -75123905439571256 -75123905439571256)
+;                                (INTEGER 856912304801416 856912304801416)
+;                                (INTEGER -3612 -3612) (INTEGER 14927 14927)
+;                                (INTEGER -1 1)), not a FIXNUM.
+;       unable to do inline ASH (cost 3) because:
+;       The first argument is a (OR
+;                                (INTEGER -75123905439571256 -75123905439571256)
+;                                (INTEGER 856912304801416 856912304801416)
+;                                (INTEGER -3612 -3612) (INTEGER 14927 14927)
+;                                (INTEGER -1 1)), not a (UNSIGNED-BYTE 32).
+;       The result is a (VALUES (INTEGER -1 0) &OPTIONAL), not a (VALUES
+;                                                                 (UNSIGNED-BYTE
+;                                                                  32)
+;                                                                 &REST T).
+;       etc.
+
+; --> LOCALLY 
+; ==>
+;   (LOGXOR (ASH PROTOBUFS-TEST::N 1) (ASH PROTOBUFS-TEST::N -63))
+; 
+; note: forced to do static-fun Two-arg-xor (cost 53)
+;       unable to do inline fixnum arithmetic (cost 2) because:
+;       The first argument is a (OR (INTEGER -2 2) (INTEGER 29854 29854)
+;                                   (INTEGER -7224 -7224)
+;                                   (INTEGER 1713824609602832 1713824609602832)
+;                                   (INTEGER -150247810879142512
+;                                    -150247810879142512)), not a FIXNUM.
+;       The result is a (VALUES (SIGNED-BYTE 59) &OPTIONAL), not a (VALUES FIXNUM
+;                                                                          &REST
+;                                                                          T).
+;       unable to do inline (signed-byte 32) arithmetic (cost 3) because:
+;       The first argument is a (OR (INTEGER -2 2) (INTEGER 29854 29854)
+;                                   (INTEGER -7224 -7224)
+;                                   (INTEGER 1713824609602832 1713824609602832)
+;                                   (INTEGER -150247810879142512
+;                                    -150247810879142512)), not a (SIGNED-BYTE 32).
+;       The result is a (VALUES (SIGNED-BYTE 59) &OPTIONAL), not a (VALUES
+;                                                                   (SIGNED-BYTE
+;                                                                    32)
+;                                                                   &REST T).
+;       etc.
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/cl-protobufs-20130720-git/tests/wire-tests.lisp
+; in: DEFINE-TEST ENCODE/DECODE-INTS-TESTS
+;     (EVERY
+;      #'(LAMBDA (PROTOBUFS-TEST::X) (= PROTOBUFS-TEST::X PROTOBUFS-TEST::FILLER))
+;      (SUBSEQ PROTOBUFS-TEST::BUF PROTOBUFS-TEST::INDEX))
+; --> LET BLOCK FLET MAP TRULY-THE SB-KERNEL:%MAP LET DO BLOCK LET TAGBODY 
+; --> TAGBODY LET FUNCALL 
+; ==>
+;   (SB-C::%FUNCALL (SB-KERNEL:%COERCE-CALLABLE-TO-FUN SB-C::FUN)
+;                   (LOCALLY
+;                    (DECLARE (OPTIMIZE (SB-C::INSERT-ARRAY-BOUNDS-CHECKS 0)))
+;                    (AREF #:G198 SB-INT:INDEX)))
+; 
+; note: implementation limitation: couldn't inline expand because expansion refers to the optimized away object #<SB-C::CTRAN 1 {CDD5B29}>.
+
+; --> LET BLOCK FLET MAP TRULY-THE SB-KERNEL:%MAP LET DO BLOCK LET TAGBODY 
+; --> TAGBODY LET FUNCALL SB-C::%FUNCALL BLOCK 
+; ==>
+;   (LET ((SB-IMPL::PRED-VALUE (FUNCALL #:PRED168 #:G165)))
+;     (UNLESS SB-IMPL::PRED-VALUE (RETURN-FROM #:BLOCK166 NIL)))
+; 
+; note: deleting unused function
+;   (LET ((SB-IMPL::PRED-VALUE (FUNCALL #:PRED168 #:G165)))
+;     )
+
+; --> LET BLOCK FLET MAP TRULY-THE SB-KERNEL:%MAP LET DO BLOCK LET TAGBODY 
+; --> TAGBODY LET FUNCALL 
+; ==>
+;   (SB-C::%FUNCALL (SB-KERNEL:%COERCE-CALLABLE-TO-FUN SB-C::FUN)
+;                   (LOCALLY
+;                    (DECLARE (OPTIMIZE (SB-C::INSERT-ARRAY-BOUNDS-CHECKS 0)))
+;                    (AREF #:G198 SB-INT:INDEX)))
+; 
+; note: deleting unused function
+;   (SB-C::LOCAL-INLINE (FLET #:WRAPPER167 :IN ENCODE/DECODE-INTS-TESTS))
+; 
+; compilation unit finished
+;   printed 9 notes
+Error: There is no method on
+       #<STANDARD-GENERIC-FUNCTION PROTOBUFS:OBJECT-SIZE (18)> with no
+       qualifiers and specializers
+       (#<BUILT-IN-CLASS T> #<SB-MOP:EQL-SPECIALIZER {BB95309}>).

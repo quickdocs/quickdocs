@@ -1,0 +1,128 @@
+
+(:TYPE :SYSTEM :NAME "uri-template" :AUTHOR
+ "Vladimir Sedach <vsedach@gmail.com>" :MAINTAINER NIL :VERSION NIL :LICENCE
+ "LLGPLv3" :DESCRIPTION
+ "An implementation of the URI Template proposed standard draft version 01."
+ :LONG-DESCRIPTION
+ "An implementation of the URI Template proposed standard draft version 01.
+Lets you easily create and parse URIs by using the URI Template reader macro syntax."
+ :DEPENDS-ON ("CL-PPCRE" "NAMED-READTABLES" "FLEXI-STREAMS") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "URI-TEMPLATE" :FULL-NAME "URI-TEMPLATE" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "URI-ENCODE?" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+     :DOCUMENTATION
+     "Controls whether URI encoding/escaping is done on the templated value.
+True by default."
+     :INITIAL-VALUE "T")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "URI-ENCODE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "STR" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION "URI encodes/escapes the given string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-URI-TEMPLATE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RECURSIVE-P" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "A function suitable for inserting into the readtable so you can
+read URI templates from your own dispatch character.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "MAYBE-URI-ENCODE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "X" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "URI-TEMPLATE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TEMPLATE-ARGS" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The car of the list that the URI template reader produces. A
+function or macro.
+
+This symbol also names the named-readtables readtable that provides
+the #U dispatch macro.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "URI-TEMPLATE-READER" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SUBCHAR" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "ARG" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENABLE-URI-TEMPLATE-SYNTAX" :PACKAGE-NAME "URI-TEMPLATE"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Binds the #U dispatch character to read a URI template.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "URI-DECODE?" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+     :DOCUMENTATION
+     "Controls whether URI decoding/unescaping is done on the templated value when destructuring.
+True by default."
+     :INITIAL-VALUE "T")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "URI-DECODE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "STR" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Decodes URI encoded/escaped characters in the given string.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WEAK-REGISTER-GROUPS-BIND" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "VARS" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "REGEX" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "STR" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "URI-TEMPLATE-BIND" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TEMPLATE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL))
+      (:NAME "URI" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Binds URI template placeholders (which must be symbols) in given
+URI, as well as attempting to bind a set of standard URI components to
+their respective parts of the given URI. Body executes only if all
+explicitly specified URI template placeholders can be bound.
+
+Given the example URI http://user@www.foo.com:8080/dir/abc?bar=baz&xyz=1#hash
+The standard URI components look like:
+
+%uri-scheme     http
+%uri-authority  user@www.foo.com:8080
+%uri-user       user
+%uri-host       www.foo.com
+%uri-port       8080
+%uri-path       /dir/abc
+%uri-directory  /dir/
+%uri-file       abc
+%uri-query      bar=baz&xyz=1
+%uri-fragment   hash
+%uri-head       http://user@www.foo.com:8080
+%uri-tail       /dir/abc?bar=baz&xyz=1#hash"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "URI-DECODE?" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-FILE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-QUERY" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-TAIL" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "URI-ENCODE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-PATH" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-DIRECTORY" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-HOST" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "URI-DECODE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-USER" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "READ-URI-TEMPLATE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "URI-TEMPLATE" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-AUTHORITY" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-FRAGMENT" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "ENABLE-URI-TEMPLATE-SYNTAX" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP
+     T)
+    (:NAME "URI-ENCODE?" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-SCHEME" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-HEAD" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "%URI-PORT" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)
+    (:NAME "URI-TEMPLATE-BIND" :PACKAGE-NAME "URI-TEMPLATE" :EXTERNALP T)))))

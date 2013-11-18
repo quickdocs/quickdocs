@@ -1,0 +1,519 @@
+
+(:TYPE :SYSTEM :NAME "darts.lib.wbtree" :AUTHOR "Dirk Esser" :MAINTAINER
+ "Dirk Esser" :VERSION "0.1" :LICENCE "MIT" :DESCRIPTION
+ "Weight-balanced binary tree" :LONG-DESCRIPTION "" :DEPENDS-ON NIL
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "DARTS.LIB.WBTREE" :FULL-NAME "DARTS.LIB.WBTREE"
+   :DOCUMENTATION "Generalized weight-balanced binary search trees. This
+package provides a variant of the weight-balanced binary trees implemented
+in package DARTS.LIB.PTREE. The variant exposed here can be used with arbitrary
+key types, provided, a total order is defined on the keys, for which a suitable
+predicate function (in the sense of #'<) exists."
+   :SYMBOL-LIST
+   ((:TYPE :CONSTANT :SYMBOL
+     (:NAME "+WEIGHT+" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "4")
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "WBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Weight balanced binary tree. This structure defines the basic
+   building blocks for the nodes of a WB tree. Each node consists
+   of the following information:
+
+   - key: the node's key value. The value of this field is undefined
+     for the node representing an empty tree. 
+   - value: the value associated with `key'. The actual value is
+     undefined, if the node is representing the empty tree.
+   - count: number of key/value pairs in this node, i.e., 0, if this
+     is the empty node, and 1 + left-count + right-count otherwise.
+   - left: the left subtree. Either the empty tree, or a proper WB
+     tree such, that all keys are \"less than\" this node's key.
+   - right: the right subtree. Either the empty tree, or a proper WB
+     tree such, that all keys are greater than\" this node's key.
+
+   Applications deal only with struct types, which are derived from
+   this one via `:include'."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NODE-KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NODE-VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NODE-COUNT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NODE-LEFT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NODE-RIGHT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-WBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "NODE-KEY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM0" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "NODE-VALUE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM1" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "NODE-COUNT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM2" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       0)
+      (((:NAME "NODE-LEFT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM3" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "NODE-RIGHT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM4" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OB" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "WBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "LEFT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "RIGHT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+      (:NAME "NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-EMPTY-P" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION "Tests, whether `node' represents an empty tree.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-SIZE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Answers the number of valid key/value pairs contained in `tree'")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-NODE-VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Obtains the value associated with `node'. If `node' is the empty
+   tree, raises a condition of type `simple-error'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-NODE-KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Obtains the key associated with `node' If `node' is the empty
+   tree, raises a condition of type `simple-error'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-NODE-LEFT-SUBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Obtains the left subtree of `node' or `node' itself, if it is 
+   the empty tree")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-NODE-RIGHT-SUBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Obtains the right subtree of `node' or `node' itself, if it is 
+   the empty tree")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "WBTREE-INFORMATION" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION "Provides meta-information about the concrete WB tree
+   subtype implemented by `node'. Each WB tree subtype defines a suitable
+   method on this function, which provides (as values) the following
+   information:
+
+   - the comparison predicate used by the subtype
+   - the constructor function for nodes of this particular type
+   - the canonical empty tree value
+   - the type's name (a symbol)
+
+   All functions manipulating WB trees use this function to obtain the
+   information required to actually handle instances of the subtype.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-FUNCTION" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "NAME" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "INIT-FORM" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+        (:NAME "NAME" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-MINIMUM-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Answers the node with the smallest (in the sense of the subtype's
+   comparison function) key present in `tree'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-MAXIMUM-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Answers the node with the largest (in the sense of the subtype's
+   comparison function) key present in `tree'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-UPPER-BOUNDARY-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Finds the node with the smallest key in `tree', which is greater
+   than or equal to `key' according to the subtype's comparison 
+   function.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-LOWER-BOUNDARY-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Finds the node with the largest key in `tree', which is less
+   than or equal to `key' according to the subtype's comparison 
+   function.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-FIND-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Finds the node in `tree', whose key is equal to `key'. If no 
+   matching node is found, this function returns nil.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-FIND" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DEFAULT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Finds the value associated with `key' in `tree'. This function
+   returns two values: the value associated with `key' as primary
+   value or `default', if no matching node could be found. The second 
+   value is a generalized boolean value, which indicates, whether 
+   the node was found or not.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ROTATE-ONCE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DIRECTION" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LEFT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "RIGHT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ROTATE-TWICE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DIRECTION" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LEFT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "RIGHT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REBALANCE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LEFT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "RIGHT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-UPDATE*" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LESSP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "EMPTY-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-UPDATE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns a copy of tree, in which `key' has been associated with
+   `value', potentially replacing any previous binding for `key' in
+   `tree'. If there is already an association of `key' in tree with
+   a value equal to `value' (which is determined via predicate 
+   function `test'), then the original tree is returned instead. The
+   default value of `test' is eql.
+
+   This function returns a secondary value, which indicates, which
+   changes have been performed in the resulting tree when compared
+   to the original `tree'. Possible values are:
+
+   - nil, if there was already a suitable association for `key' and
+     `value' in `tree'.
+   - :replaced, if there was an association for `key', which has
+     been replaced.
+   - :added, if the key was not present in `tree', and a new assocation
+     has been added.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-MINIMUM" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE*" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LEFT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "RIGHT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PTREE-REMOVE*" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LESSP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-REMOVE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Answers a copy of `tree', in which any association of `key' 
+   has been removed. Returns `tree' instead, if there is no entry
+   matching `key' in `tree'.
+
+   This function returns as secondary the WB tree node, which
+   has been removed in the copy returned as primary value, or nil,
+   if no matching node was found.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-MAP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DIRECTION" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "FORWARD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "COLLECTP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "START" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "HAVE-START" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+      ((:NAME "END" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "HAVE-END" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)))
+     :DOCUMENTATION "Maps `function' across all nodes of `tree'. If the value of
+   `direction' is :forward (the default), then the nodes are visited
+   in proper tree order (i.e., in ascending key order as determined
+   by the tree's comparison function). If the value is :backward, then
+   the nodes are visited in the opposite order.
+
+   If `start' is provided, traversal starts at the smallest key, which
+   is greater than or equal to `start', when direction is :forward, or
+   with the node, whose key is the largest still less than or equal to 
+   `start', if `direction' is :backward. The start node is passed to
+   `function'.
+
+   If `end' is provided, traversal stops at the node with smallest key,
+   which is larger than or equal to `end' when iterating in :forward
+   direction, or at the node with the largest key still smaller than or
+   equal to `end', when iterating backwards. In either case, the stop
+   node is not passed down to `function'.
+
+   If `collectp', the primary return values of each invocation of 
+   `function' are collected into a list, which is then returned as 
+   primary (and only) value of `wbtree-map' itself. If not `collectp',
+   return values of `function' are ignored, and wbtree-map returns nil.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-WBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+        (:NAME "VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+       (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "OPTIONS" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONCAT-3" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LEFT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "RIGHT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LESSP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "EMPTY-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SPLIT-LT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LESSP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "EMPTY-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SPLIT-GT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LESSP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "EMPTY-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONCAT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TREE1" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE2" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LESSP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "MAKE-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "EMPTY-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-UNION" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE1" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE2" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Answers the tree, which is the union of `tree1' and `tree2',
+   which must both be WB trees of the same subtype. The resulting
+   tree contains entries for all keys, which are present in either
+   `tree1' or `tree2' (or both). If a key is present in both trees,
+   the resulting tree will associate it with the value taken from
+   `tree2'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-DIFFERENCE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE1" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE2" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION "Answers a copy of `tree1', in which all entries have been
+   removed, which match keys present in `tree2'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-INTERSECTION" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "TREE1" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE2" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION "Answers the tree, which is the intersection of `tree1' and 
+   `tree2', which must both be WB trees of the same subtype. The 
+   resulting tree contains entries for all keys, which are present 
+   in `tree1' as well as `tree2', and uses the values of `tree2'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-ITERATOR" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DIRECTION" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "FORWARD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-EQUAL" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE1" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "TREE2" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-WBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "LESSP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-CHECK-INVARIANTS" :PACKAGE-NAME "DARTS.LIB.WBTREE"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-REBALANCE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Generates a fully balanced tree from `tree'. This function answers a
+   tree of the same kind as `tree', which contains the same key/value pairs
+   as `tree'. However, the copy returned is fully balanced. Note, that this
+   optimization often does not really pay off.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WBTREE-LOAD-FORM" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+      (:NAME "CONSTRUCTOR-CELL" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP
+       NIL)
+      (:NAME "EMPTY-CELL" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-LOAD-FORM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL)
+       (:NAME "WBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENVIRONMENT" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "WBTREE-EMPTY-P" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-REMOVE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREEP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-NODE-LEFT-SUBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE"
+     :EXTERNALP T)
+    (:NAME "WBTREE-UPDATE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-NODE-KEY" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-DIFFERENCE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-NODE-RIGHT-SUBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE"
+     :EXTERNALP T)
+    (:NAME "WBTREE-MAP" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-CHECK-INVARIANTS" :PACKAGE-NAME "DARTS.LIB.WBTREE"
+     :EXTERNALP T)
+    (:NAME "WBTREE-REBALANCE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-SIZE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "DEFINE-WBTREE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-INTERSECTION" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-LOWER-BOUNDARY-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE"
+     :EXTERNALP T)
+    (:NAME "WBTREE-UPPER-BOUNDARY-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE"
+     :EXTERNALP T)
+    (:NAME "WBTREE-UNION" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-NODE-VALUE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-FIND-NODE" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-FIND" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-EQUAL" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)
+    (:NAME "WBTREE-ITERATOR" :PACKAGE-NAME "DARTS.LIB.WBTREE" :EXTERNALP T)))))

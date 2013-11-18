@@ -1,0 +1,133 @@
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.def-20130813-darcs/source/namespace-late.lisp" (written 12 NOV 2013 06:02:26 PM):
+; compiling (IN-PACKAGE :HU.DWIM.DEF)
+; compiling (HU.DWIM.UTIL:WITH-MUFFLED-REDEFINITION-WARNINGS (DEF FUNCTION ...) ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.def-20130813-darcs/source/namespace-late-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.059
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.util-20131111-darcs/source/threads.lisp" (written 12 NOV 2013 06:02:28 PM):
+; compiling (IN-PACKAGE :HU.DWIM.UTIL)
+; compiling (DEF (NAMESPACE :WEAKNESS ...) ...)
+; compiling (DEF GLOBAL-VARIABLE ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF (MACRO E) ...)
+; compiling (IMPORT (QUOTE SB-SYS:DEADLINE-TIMEOUT) ...)
+; compiling (EXPORT (QUOTE SB-SYS:DEADLINE-TIMEOUT) ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.util-20131111-darcs/source/threads-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.022
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/package.lisp" (written 12 NOV 2013 06:02:26 PM):
+; compiling (IN-PACKAGE :HU.DWIM.DEF)
+; compiling (DEF PACKAGE ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/package-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.027
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/api.lisp" (written 12 NOV 2013 06:02:26 PM):
+; compiling (IN-PACKAGE :HU.DWIM.LOGGER)
+; compiling (DEF (GENERIC E) ...)
+; compiling (DEF (GENERIC E) ...)
+; compiling (DEF (GENERIC E) ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF CLASS* ...)
+; compiling (DEF (FUNCTION E) ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/api-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.012
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/logger.lisp" (written 12 NOV 2013 06:02:26 PM):
+; compiling (IN-PACKAGE :HU.DWIM.LOGGER)
+; compiling (DEF (CONSTANT E) ...)
+; compiling (DEF (CONSTANT E) ...)
+; compiling (DEF (CONSTANT E) ...)
+; compiling (DEF (CONSTANT E) ...)
+; compiling (DEF (CONSTANT E) ...)
+; compiling (DEF (CONSTANT E) ...)
+; compiling (DEF (CONSTANT E ...) ...)
+; compiling (DEF TYPE ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF PRINT-OBJECT ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF (NAMESPACE :FINDER-NAME ...) ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF COMPILER-MACRO ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF FUNCTION ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF FUNCTION ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF FUNCTION ...)
+; compiling (DEF FUNCTION ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF FUNCTION ...)
+; compiling (DEF (MACRO E) ...)
+; compiling (DEF WITH-MACRO ...)
+; compiling (DEF (SPECIAL-VARIABLE :DOCUMENTATION ...) ...)
+; compiling (DEF FUNCTION ...)
+; compiling (DEF FUNCTION ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF FUNCTION ...)
+; compiling (DEF (MACRO E) ...)
+; compiling (DEF (DEFINER E ...) ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/logger-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.147
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/formatter.lisp" (written 12 NOV 2013 06:02:26 PM):
+; compiling (IN-PACKAGE :HU.DWIM.LOGGER)
+; compiling (DEF CONSTANT ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF METHOD ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/formatter-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.030
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/appender.lisp" (written 12 NOV 2013 06:02:26 PM):
+; compiling (IN-PACKAGE :HU.DWIM.LOGGER)
+; compiling (DEF FUNCTION ...)
+; compiling (DEF (FUNCTION O) ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF PRINT-OBJECT ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF (SPECIAL-VARIABLE E) ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF PRINT-OBJECT ...)
+; compiling (DEF FUNCTION ...)
+; compiling (DEF (WITH-MACRO* :MACRO-ONLY-ARGUMENTS ...) ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF GENERIC ...)
+; compiling (DEF CONSTANT ...)
+; compiling (DEF (NAMESPACE :WEAKNESS ...) ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF CONSTRUCTOR ...)
+; compiling (DEF WITH-MACRO ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF (FUNCTION E) ...)
+; compiling (DEF (CLASS* E) ...)
+; compiling (DEF METHOD ...)
+; compiling (DEF (FUNCTION E) ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/appender-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.156
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/root-logger.lisp" (written 12 NOV 2013 06:02:26 PM):
+; compiling (IN-PACKAGE :HU.DWIM.LOGGER)
+; compiling (DEF (LOGGER E) ...)
+; compiling (DEF (FUNCTION E) ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.logger-20130312-darcs/source/root-logger-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.072
+
+(:TYPE :SYSTEM :NAME "hu.dwim.computed-class+hu.dwim.logger" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL :LICENCE NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("HU.DWIM.COMPUTED-CLASS" "HU.DWIM.LOGGER") :PACKAGE-LIST NIL)

@@ -1,0 +1,5 @@
+
+(:TYPE :SYSTEM :NAME "cl-syntax-annot" :AUTHOR "Tomohiro Matsuyama" :MAINTAINER
+ NIL :VERSION "0.2" :LICENCE "LLGPL" :DESCRIPTION
+ "CL-Syntax Reader Syntax for cl-annot" :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CL-SYNTAX" "CL-ANNOT") :PACKAGE-LIST NIL)

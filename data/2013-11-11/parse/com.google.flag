@@ -1,0 +1,213 @@
+
+(:TYPE :SYSTEM :NAME "com.google.flag" :AUTHOR "Robert Brown" :MAINTAINER NIL
+ :VERSION "1.2" :LICENCE
+ "New BSD license.  See the copyright messages in individual files."
+ :DESCRIPTION "Unix command line flag parsing." :LONG-DESCRIPTION
+ "An implementation of Google's gflags command line flag parsing library."
+ :DEPENDS-ON ("COM.GOOGLE.BASE") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "COM.GOOGLE.FLAG" :FULL-NAME "COM.GOOGLE.FLAG"
+   :DOCUMENTATION "Command line flag parsing." :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "FLAG" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "A global flag that can be initialized by parsing a command line argument string."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "NAME" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION "Symbol holding this flag's value.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HELP" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "HELP" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION "Help message describing this flag.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PARSER" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "PARSER" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Function designator that names a parser function for the flag.  The parser
+takes a string as argument and must return two values, the parsed flag value and
+a boolean indicating whether the parse was successful.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TYPE-SPECIFIER" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "TYPE-SPECIFIER" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP
+         NIL))
+       :WRITERS NIL :DOCUMENTATION "Type of the flag's value.")))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BOOLEAN-FLAG-P" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FLAG" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns true if FLAG is a boolean flag; otherwise, returns false.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REGISTERED-FLAGS*" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP
+      NIL)
+     :DOCUMENTATION
+     "Association list mapping flag selector strings to FLAG instances."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-FLAG" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SELECTOR" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Searches for the registered flag corresponding to the SELECTOR string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REGISTER-FLAG" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SELECTOR" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+      (:NAME "FLAG" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Stores FLAG in a database of registered flags under key SELECTOR.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-BOOLEAN" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Parses a STRING representing a boolean value.  Returns two values, the
+boolean and a second boolean indicating whether the parse was successful.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-KEYWORD" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns a symbol in the keyword package with the same name as STRING and T to
+indicate that parsing STRING was successful.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-SYMBOL" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "If STRING, converted to upper case, represents a package-qualified symbol,
+returns two values, the symbol and T.  Otherwise, returns NIL and NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-STRING" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns two values, STRING and T, to indicate that the parse was (trivially)
+successful.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VALID-FLOAT-CHARACTERS-P" :PACKAGE-NAME "COM.GOOGLE.FLAG"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FLOAT-TYPE" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns true if every character of STRING is one that may be produced when
+printing a FLOAT-TYPE floating point number.  Otherwise, returns false.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-FLOAT" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPECTED-TYPE" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Parses STRING, which represents a floating point value of EXPECTED-TYPE.
+Returns two values, the floating point number and a boolean indicating whether
+the parse was successful.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-SINGLE-FLOAT" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Parses STRING, which represents a single precision floating point value.
+Returns two values, the single-float number and a boolean indicating whether the
+parse was successful.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-DOUBLE-FLOAT" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Parses STRING, which represents a double precision floating point value.
+Returns two values, the double-float number and a boolean indicating whether the
+parse was successful.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FLAG-PARSER" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TYPE-SPEC" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Maps TYPE-SPEC, a Lisp type specifier form, into a designator for a function
+that can parse the string representation of a TYPE-SPEC value.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VALIDATE-ARGUMENTS" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+      (:NAME "DEFAULT-VALUE-SUPPLIED-P" :PACKAGE-NAME "COM.GOOGLE.FLAG"
+       :EXTERNALP NIL)
+      (:NAME "SELECTOR-SUPPLIED-P" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP
+       NIL)
+      (:NAME "TYPE-SUPPLIED-P" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+      (:NAME "SELECTOR" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+      (:NAME "BOOLEANP" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL))
+     :DOCUMENTATION "Validates arguments supplied to DEFINE-FLAG.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-FLAG" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DEFAULT-VALUE" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "DEFAULT-VALUE-SUPPLIED-P" :PACKAGE-NAME "COM.GOOGLE.FLAG"
+        :EXTERNALP NIL))
+      ((:NAME "SELECTOR" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "SELECTOR-SUPPLIED-P" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP
+        NIL))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "TYPE-SUPPLIED-P" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP
+        NIL))
+      ((:NAME "HELP" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL) "")
+      ((:NAME "PARSER" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "PARSER-SUPPLIED-P" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP
+        NIL))
+      ((:NAME "DOCUMENTATION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "DOCUMENTATION-SUPPLIED-P" :PACKAGE-NAME "COM.GOOGLE.FLAG"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Defines a global variable NAME of type TYPE, holding value DEFAULT-VALUE,
+that can be set via the Unix command line to \"value\" with argument \"--SELECTOR=value\"
+or arguments \"--SELECTOR value\".  As a special case, flags of type \"boolean\" can
+additionally be set to true with \"--SELECTOR\" and to false with \"--noSELECTOR\".
+
+Optionally, associates a HELP string with the flag and a DOCUMENTATION string
+with NAME.
+
+Values for flags defined to be of boolean, string, keyword, integer, or floating
+point type are parsed by built-in parsers.  For flags of other types supply
+PARSER, a function designator for a function that converts a string into a value
+of type TYPE.  The parser must return two values, the parsed flag value and a
+boolean indicating whether the parse was successful.
+
+Examples:
+
+    (define-flag *debug-mode*
+      :default-value nil
+      :selector \"debug\"
+      :type boolean
+      :help \"Turn on debugging mode?\"
+      :documentation \"Is debugging mode turned on?\")
+
+    (define-flag *ip-address*
+      :default-value (make-instance 'ip-address ...)
+      :selector \"ip_address\"
+      :type (satisfies ip-address-p)
+      :parser ip-address-parser
+      :help \"An internet protocol address.\")")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-COMMAND-LINE" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ARGUMENTS" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Parses ARGUMENTS, a list of command line argument strings.  If a registered
+flag is found in ARGUMENTS, sets the flag's value.  Returns a copy of ARGUMENTS,
+but with all recognized flag arguments removed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMMAND-LINE" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Returns the Unix command line as a list of strings."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "COMMAND-LINE" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP T)
+    (:NAME "PARSE-COMMAND-LINE" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP T)
+    (:NAME "DEFINE-FLAG" :PACKAGE-NAME "COM.GOOGLE.FLAG" :EXTERNALP T)))))

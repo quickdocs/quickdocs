@@ -1,0 +1,243 @@
+
+(:TYPE :SYSTEM :NAME "http-parse" :AUTHOR
+ "Andrew Danger Lyon <orthecreedence@gmail.com>" :MAINTAINER NIL :VERSION
+ "0.1.7" :LICENCE "MIT" :DESCRIPTION
+ "A library for parsing HTTP requests/responses (synchronous or asynchronous)."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("BABEL" "CL-PPCRE") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "HTTP-PARSE" :FULL-NAME "HTTP-PARSE" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "APPEND-ARRAY" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ARR1" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+      (:NAME "ARR2" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL))
+     :DOCUMENTATION "Create an array, made up of arr1 followed by arr2.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-NON-WHITESPACE-POS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEQ" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL) 0))
+     :DOCUMENTATION
+     "Find the position of the first non-whitespace character in a sequence.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T) :SUPER-CLASS-LIST
+     NIL :DOCUMENTATION
+     "Base HTTP class, holds data common to both requests and responses."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VERSION" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HTTP-VERSION" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HEADERS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HTTP-HEADERS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STORE-BODY" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "HTTP-STORE-BODY" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BODY" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HTTP-BODY" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "HTTP-REQUEST" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+     :SUPER-CLASS-LIST ((:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+     :DOCUMENTATION
+     "HTTP request class, extends `http` and holds all request-specific data."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "HTTP-METHOD" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RESOURCE" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HTTP-RESOURCE" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "HTTP-RESPONSE" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+     :SUPER-CLASS-LIST ((:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+     :DOCUMENTATION
+     "HTTP response class, extends `http` and holds all response-specific data."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STATUS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HTTP-STATUS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STATUS-TEXT" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "HTTP-STATUS-TEXT" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+       (:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+      (:NAME "S" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+       (:NAME "HTTP-REQUEST" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+      (:NAME "S" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+       (:NAME "HTTP-RESPONSE" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+      (:NAME "S" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SCANNER-HEADER-PARSE-LINE*" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "Create a regex scanner for splitting header lines up."
+     :INITIAL-VALUE
+     "(CL-PPCRE:CREATE-SCANNER \"\\\\r\\\\n\" :MULTI-LINE-MODE T)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SCANNER-HEADER-PARSE-KV*" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "Create a regex scanner for splitting header kv pairs up."
+     :INITIAL-VALUE "(CL-PPCRE:CREATE-SCANNER \":[ s]+\" :MULTI-LINE-MODE T)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SCANNER-NUMERIC*" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Create a regex scanner that detects if a string can be converted to a numver."
+     :INITIAL-VALUE "(CL-PPCRE:CREATE-SCANNER \"^[0-9.]+$\")")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SCANNER-FIND-FIRST-HEADER*" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "Create a scanner to find the first header in a string."
+     :INITIAL-VALUE
+     "(CL-PPCRE:CREATE-SCANNER \"^*[a-z-]+: .*\" :CASE-INSENSITIVE-MODE T
+                         :MULTI-LINE-MODE T)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-HEADER-BLOCK" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BYTES" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "GET-PREVIOUS-LINE" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Given the bytes of an HTTP request/response, pull out only the headers and
+   optionally the line above the start of the headers. Returns the headers as a
+   string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONVERT-HEADERS-PLIST" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "HEADER-STR" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL))
+     :DOCUMENTATION "Pull out headers in a plist from a string.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "PARSE-HEADERS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+      (:NAME "BYTES" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Given a slew of HTTP bytes, parse the headers out of them along with any
+     other useful information lurking in there (status code, resource, etc).
+     Returns the HTTP object passed in.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PARSE-HEADERS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+       (:NAME "HTTP-REQUEST" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+      ((:NAME "BYTES" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+       (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PARSE-HEADERS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+       (:NAME "HTTP-RESPONSE" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T))
+      ((:NAME "BYTES" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+       (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-COMPLETE-CHUNKS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "DATA" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Given a chunk (octet vector) of HTTP data, return only the data from the
+   *complete* chunks in the data and return the position in the byte vector of
+   the start of the next chunk, and lastly return whether the last chunk (the
+   0-byte chunk) has been parsed (ie, HTTP body complete).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-PARSER" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEADER-CALLBACK" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+      (:NAME "BODY-CALLBACK" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+      (:NAME "MULTIPART-CALLBACK" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+      (:NAME "FINISH-CALLBACK" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+      (:NAME "STORE-BODY" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return a closure that parses an HTTP request/response by calling it with
+   the bytes received as its only argument. The closure returns three values:
+   the http object passed in, a boolean representing whether the headers have
+   been fully parsed, and a boolean representing whether the request/response
+   is finished (blank body, all body bytes accounted for, or 0-length chunk
+   received).
+   
+   During the parsing, the closure will call (if specified) the `header-callback`
+   with all the headers as a plist once they are fully parsed, and the
+   `body-callback` with the body once either it finishes parsing (if we have
+   Content-Length) or once for each set of completed chunks sent, which allows
+   streaming the body as it comes in. If a multipart callback is given, it will
+   be called at least once for each form field present in the multipart form
+   data.
+
+   The `:finish-callback` will be called when the HTTP payload is fully
+   processed.
+   
+   The :store-body keyword indicates to the parser that we wish to keep the
+   body (in its entirety) in the http object passed in (accessible via the
+   http-body accessor). Otherwise, the body will be discarded as it's parsed
+   (but remember, will still be sent to the body-callback as it comes in).
+   
+   Parsing can be forced to completion by passing :EOF into the data arg. It
+   is recommended to do this if the client/server closes the connection before
+   you do.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SCANNER-CONTENT-DISPOSITION-KV-PAIRS*" :PACKAGE-NAME "HTTP-PARSE"
+      :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Grabs the key/value pairs from a Content-Disposition header."
+     :INITIAL-VALUE
+     "(CL-PPCRE:CREATE-SCANNER \"([a-z-]+)=\\\"([^\\\"]+)\\\"\" :CASE-INSENSITIVE-MODE T)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-HEADER-KV-PAIRS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONTENT-DISPOSITION-HEADER-STR" :PACKAGE-NAME "HTTP-PARSE"
+       :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Given a content-disposition header value, pull out the key/value pairs in it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-MULTIPART-PARSER" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "HEADERS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL)
+      (:NAME "CALLBACK" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Make a multipart parser. Returns a closure that accepts a byte array of data
+   from an HTTP body. Can be sent in in chunks. Callback will be called whenever
+   a complete data chunk is sent in (called for each part in the data chunk) or
+   as a continuation of a chunk that complete headers were sent in for but
+   didn't finish sending in its body."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "HTTP-VERSION" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-HEADER-CALLBACK" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "MAKE-PARSER" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "MAKE-MULTIPART-PARSER" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-RESPONSE" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-STORE-BODY" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-RESOURCE" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-REQUEST" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-BODY" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-STATUS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-BODY-CALLBACK" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-METHOD" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-HEADERS" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)
+    (:NAME "HTTP-STATUS-TEXT" :PACKAGE-NAME "HTTP-PARSE" :EXTERNALP T)))))

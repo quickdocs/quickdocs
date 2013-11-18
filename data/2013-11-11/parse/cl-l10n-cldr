@@ -1,0 +1,5 @@
+
+(:TYPE :SYSTEM :NAME "cl-l10n-cldr" :AUTHOR NIL :MAINTAINER NIL :VERSION
+ "1.8.0" :LICENCE NIL :DESCRIPTION
+ "The necessary CLDR files for cl-l10n packaged in a QuickLisp friendly way."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST NIL)

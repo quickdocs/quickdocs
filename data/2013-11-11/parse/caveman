@@ -1,0 +1,1012 @@
+
+(:TYPE :SYSTEM :NAME "caveman" :AUTHOR "Eitarow Fukamachi" :MAINTAINER NIL
+ :VERSION "12.8.0" :LICENCE "LLGPL" :DESCRIPTION
+ "Web Application Framework for Common Lisp" :LONG-DESCRIPTION
+ "# Caveman - A micro web framework for Common Lisp
+
+Caveman is a micro web framework for Common Lisp, based on [Clack](http://clacklisp.org).
+
+* [https://github.com/fukamachi/caveman](https://github.com/fukamachi/caveman)
+
+## Usage
+
+```common-lisp
+@url GET \"/hi\"
+(defun say-hi (params)
+  \"Hello, World!\")
+```
+
+## What's Caveman
+
+Caveman is a micro web framework on [Clack](http://clacklisp.org).
+
+Why we should use \"Framework\" or something even if we already have Clack. You know Clack provides a very extensible environment for web application. We can build applications from isolated parts of Clack like kneading dough clay.
+
+But Clack isn't a real framework. If you say that Clack is a collection of cells, Caveman is a newborn baby. Caveman provides a minimum set for building web applications. You can decorate the baby as you like, of course, and also you can replace any parts in it.
+
+Caveman has following features:
+
+* Thin
+* Extensible
+* Easy to understand
+
+## Installation
+
+Caveman is available on [Quicklisp](https://www.quicklisp.org/beta/).
+
+```common-lisp
+(ql:quickload :caveman)
+```
+
+## Getting started
+
+First, you have to generate a skeleton project.
+
+```common-lisp
+(caveman.skeleton:generate #p\"lib/myapp/\")
+```
+
+Then a project skeleton is generated at `lib/myapp/`. The new project can be loaded and runs on this state.
+
+```common-lisp
+(ql:quickload :myapp)
+(myapp:start)
+```
+
+Now you can access to http://localhost:5000/ and then Caveman may show you \"Hello, Caveman!\".
+
+### Route
+
+Caveman provides an useful annotation \"@url\" to define a controller (You don't already know the meaning of \"annotation\"? Check [cl-annot](https://github.com/arielnetworks/cl-annot) out). It has same rules to [Clack.App.Route](http://quickdocs.org/clack/api#system-clack-app-route), it is an HTTP method paired with URL-matching pattern.
+
+```common-lisp
+@url GET \"/\"
+(defun index (params) ...)
+
+@url POST \"/\"
+(defun index (params) ...)
+
+@url PUT \"/\"
+(defun index (params) ...)
+
+@url DELETE \"/\"
+(defun index (params) ...)
+
+@url OPTIONS \"/\"
+(defun index (params) ...)
+
+;; For all methods
+@url ANY \"/\"
+(defun index (params) ...)
+```
+
+Route pattern may contain \"keyword\" to put the value into the argument.
+
+```common-lisp
+@url GET \"/hello/:name\"
+(defun hello (params)
+  (format nil \"Hello, ~A\" (getf params :name)))
+```
+
+The above controller will be invoked when you access to \"/hello/Eitarow\" and \"/hello/Tomohiro\", and then `(getf params :name)` will be \"Eitarow\" and \"Tomohiro\".
+
+Route patterns may also contain \"wildcard\" parameters. They are accessible to run `(getf params :splat)`.
+
+```common-lisp
+@url GET \"/say/*/to/*\"
+(defun say (params)
+  ; matches /say/hello/to/world
+  (getf params :splat) ;=> (\"hello\" \"world\")
+  )
+
+@url GET \"/download/*.*\"
+(defun download ()
+  ; matches /download/path/to/file.xml
+  (getf params :splat) ;=> (\"path/to/file\" \"xml\")
+  )
+```
+
+### Multiple values in params
+
+If there are multiple values for the same key in query parameters (ex. ?item-id=1&item-id=2), the `param` would be like `(:|item-id| 1 :|item-id| 2)`. However, `getf` will return only the first one.
+
+```common-lisp
+(getf '(:|item-id| 1 :|item-id| 2) :|item-id|)
+;=> 1
+```
+
+For getting both of them as a list, [multival-plist](https://github.com/fukamachi/multival-plist) will help you.
+
+```common-lisp
+(import 'multival-plist:getf-all)
+
+(getf-all '(:|item-id| 1 :|item-id| 2) :|item-id|)
+;=> (1 2)
+```
+
+### Passing
+
+Normally, routes are matched in the order they are defined. Only the first route matched is invoked and rest of them just will be ignored. But, a route can punt processing to the next matching route using `next-route`.
+
+```common-lisp
+@url GET \"/guess/:who\"
+(defun guess-me (params)
+  (if (string= (getf params :who) \"Eitarow\")
+      \"You got me!\"
+      (next-route)))
+
+@url GET \"/guess/*\"
+(defun guess-anyone (params)
+  \"You missed!\")
+```
+
+### Return Value
+
+You can return following format as the result in actions.
+
+* String
+* Pathname
+* Clack's response list (containing Status, Headers and Body)
+
+### View
+
+Caveman adopt CL-EMB as the default template engine. A package, named `myapp.view.emb`, will be generated in your project which has one function `render`. It is simply execute `emb:execute-emb` and return the result as a string.
+
+Of course, you can use other template engines, such as \"cl-markup\".
+
+### Configuration
+
+Caveman uses \".lisp\" file as configuration file in `#p\"config/\"` directory. When a project is just generated, you might be able to find `dev.lisp` in it. It will be used when \"start\" the project application with \"dev\" mode.
+
+```common-lisp
+;; config/dev.lisp
+`(:static-path #p\"static/\"
+  :log-path #p\"log/\"
+  :template-path #p\"templates/\"
+  :application-root ,(asdf:component-pathname
+                      (asdf:find-system :myapp))
+  :server :hunchentoot
+  :port 5000
+  :database-type :sqlite3
+  :database-connection-spec (,(namestring
+                               (asdf:system-relative-pathname
+                                :myapp
+                                \"sqlite3.db\"))))
+```
+
+Obviously, this is just a plist. You can use following keys in there.
+
+* `:application-root` (Pathname): Pathname of the application root.
+* `:static-path` (Pathname): Relative pathname of a static files directory from the root.
+* `:log-path` (Pathname): Relative pathname of a log files directory from the root.
+* `:template-path` (Pathname): Relative pathname of a template directory from the root.
+* `:port` (Integer): Server port.
+* `:server` (Keyword): Clack.Handler's server type. (ex. `:hunchentoot`)
+
+And following stuffs will be used by Clack.Middleware.Clsql  for integrating CLSQL.
+
+* `:database-type` (Keyword)
+* `:database-connection-spec` (List)
+
+You can access to the configuration plist anywhere, by using `caveman:config`.
+
+```common-lisp
+(caveman:config)
+;;=> (:static-path #p\"public/\" :template-path ...)
+(caveman:config :server)
+;;=> :hunchentoot
+```
+
+### Helper
+
+* `context`
+* `with-context-variables`
+* `config`
+* `app-path`
+* `url-for`
+* `redirect-to`
+* `forward-to`
+* `current-uri`
+* `current-mode`
+
+### Session
+
+`caveman:*session*` is a hash table which represents a session for the current user.
+
+## More practical
+
+### Extend the Context
+
+### Database
+
+## Author
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## Contributors
+
+* Tomohiro Matsuyama (tomo@cx4a.org)
+
+## Copyright
+
+Copyright (c) 2011 Eitarow Fukamachi
+
+## License
+
+Licensed under the LLGPL License.
+"
+ :DEPENDS-ON
+ ("CLACK" "ANAPHORA" "CL-PPCRE" "CL-SYNTAX" "CL-SYNTAX-ANNOT" "CL-FAD" "CL-EMB"
+  "LOCAL-TIME" "CL-PROJECT")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CAVEMAN" :FULL-NAME "CAVEMAN" :DOCUMENTATION "# 
+Caveman - main package.
+
+
+## DESCRIPTION
+
+This package is main package just for convenient. Your Caveman Application may use this package.
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONFIG" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CAVEMAN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CURRENT-MODE" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "APP-PATH" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PATHS" :PACKAGE-NAME "CAVEMAN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REDIRECT-TO" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "URL-OR-ACTION" :PACKAGE-NAME "CAVEMAN" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PARAMS" :PACKAGE-NAME "CAVEMAN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FORWARD-TO" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PARAMS" :PACKAGE-NAME "CAVEMAN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CURRENT-URI" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "NEXT-ROUTE" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T)
+    (:NAME "*SESSION*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "URL-FOR" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T)
+    (:NAME "*REQUEST*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "*CONTEXT*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "FORWARD-TO" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T)
+    (:NAME "APP-PATH" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T)
+    (:NAME "CONFIG" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T)
+    (:NAME "URL" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T)
+    (:NAME "*RESPONSE*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "CONTEXT" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "REDIRECT-TO" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T)
+    (:NAME "DEFROUTE" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T)
+    (:NAME "CURRENT-MODE" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T)
+    (:NAME "WITH-CONTEXT-VARIABLES" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP
+     T)
+    (:NAME "CURRENT-URI" :PACKAGE-NAME "CAVEMAN" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".APP" :FULL-NAME "CAVEMAN.APP" :DOCUMENTATION "# 
+Caveman.App - Caveman Application Class.
+
+
+## SYNOPSIS
+
+    (defclass <myapp-app> (<app>) ())
+    (defvar *app* (make-instance '<myapp-app>))
+    (call *app*)
+
+## DESCRIPTION
+
+Caveman.App provides a base class `<app>' for Caveman Applications.
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## SEE ALSO
+
+* Clack.Component
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*NEXT-ROUTE-FUNCTION*" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A function called when `next-route' is invoked. This will be overwritten in `dispatch-with-rules'."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "<APP>" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T) :SUPER-CLASS-LIST
+     ((:NAME "<COMPONENT>" :PACKAGE-NAME "CLACK.COMPONENT" :EXTERNALP T))
+     :DOCUMENTATION
+     "Base class for Caveman Application. All Caveman Application must inherit this class."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ROUTING-RULES" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ROUTING-RULES" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CALL" :PACKAGE-NAME "CLACK.COMPONENT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL)
+       (:NAME "<APP>" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T))
+      (:NAME "ENV" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CALL" :PACKAGE-NAME "CLACK.COMPONENT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL)
+       (:NAME "<APP>" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T))
+      (:NAME "ENV" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Overriding method. This method will be called for each request.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DISPATCH-WITH-RULES" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "RULES" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-ROUTE" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL)
+       (:NAME "<APP>" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T))
+      (:NAME "ROUTING-RULE" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL))
+     :DOCUMENTATION "Add a routing rule to the Application.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEXT-ROUTE" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NOT-FOUND" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "An action when no routing rules are found.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOOKUP-ROUTE" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL)
+       (:NAME "<APP>" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T))
+      (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Lookup a routing rule with SYMBOL from the application.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MEMBER-RULE" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATH-INFO" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+      (:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RULES" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ALLOW-HEAD" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "LOOKUP-ROUTE" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T)
+    (:NAME "ADD-ROUTE" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T)
+    (:NAME "NOT-FOUND" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T)
+    (:NAME "<APP>" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T)
+    (:NAME "NEXT-ROUTE" :PACKAGE-NAME "CAVEMAN.APP" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".PROJECT" :FULL-NAME "CAVEMAN.PROJECT" :DOCUMENTATION
+   "# 
+Caveman.Project - Caveman Project Class.
+
+
+## SYNOPSIS
+
+    ;; Usually you shouldn't write this code.
+    ;; These code will be generated by `caveman.skeleton:generate'.
+    (defclass <myapp> (<project>) ())
+    (defmethod build ((this <myapp>) &optional app)
+      (builder ...))
+    (defmethod load-config ((this <myapp) mode)
+      ;; override if you want.
+      )
+
+## DESCRIPTION
+
+Caveman.Project provides a base class `<project>' for Caveman Project. Project manages how to build applications and middlewares and loads configuration.
+
+Usually you don't have to cave about this package because `caveman.skeleton:generate' will generate code for you.
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## SEE ALSO
+
+* Clack.Builder
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "<PROJECT>" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "<COMPONENT>" :PACKAGE-NAME "CLACK.COMPONENT" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONFIG" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "CONFIG" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ACCEPTOR" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ACCEPTOR" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DEBUG-MODE-P" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "DEBUG-MODE-P" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MODE" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "PROJECT-MODE" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "BUILD" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PROJECT" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Build up an application for this project and return it. This method must be implemented in subclasses.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SLURP-FILE" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Read a specified file and return the content as a sequence.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOAD-CONFIG" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL)
+       (:NAME "<PROJECT>" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T))
+      (:NAME "MODE" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL)
+       (:NAME "<PROJECT>" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "MODE" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL)
+       (:NAME "DEV" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      (:NAME "DEBUG" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LAZY" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL)
+       (:NAME "<PROJECT>" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PORT" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL)
+      (:NAME "SERVER" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STOP" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP NIL)
+       (:NAME "<PROJECT>" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)))
+     :DOCUMENTATION "Stop a server."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "START" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)
+    (:NAME "DEBUG-MODE-P" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)
+    (:NAME "BUILD" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)
+    (:NAME "CONFIG" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)
+    (:NAME "PROJECT-MODE" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)
+    (:NAME "STOP" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)
+    (:NAME "LOAD-CONFIG" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)
+    (:NAME "<PROJECT>" :PACKAGE-NAME "CAVEMAN.PROJECT" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".REQUEST" :FULL-NAME "CAVEMAN.REQUEST" :DOCUMENTATION
+   "# 
+Caveman.Request - Request class for Caveman.
+
+
+## DESCRIPTION
+
+Caveman.Request is a request class for Caveman. Caveman creates a `<request>' instance for each request and bind it to `*request*'.
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## SEE ALSO
+
+* Clack.Request
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "<REQUEST>" :PACKAGE-NAME "CAVEMAN.REQUEST" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "<REQUEST>" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T))
+     :DOCUMENTATION "Class for Caveman Request." :SLOT-LIST NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-REQUEST" :PACKAGE-NAME "CAVEMAN.REQUEST" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "REQ" :PACKAGE-NAME "CAVEMAN.REQUEST" :EXTERNALP NIL))
+     :DOCUMENTATION "Construct a request instance."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "PATH-INFO" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "REQUEST-METHOD" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "BODY-PARAMETER" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "SERVER-PROTOCOL" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "SERVER-PORT" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "URI-SCHEME" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "REMOTE-PORT" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "SECUREP" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "REMOTE-ADDR" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "COOKIES" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "UPLOADS" :PACKAGE-NAME "CAVEMAN.REQUEST" :EXTERNALP T)
+    (:NAME "PARAMETER" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "REQUEST-URI" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "SCRIPT-NAME" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "MAKE-REQUEST" :PACKAGE-NAME "CAVEMAN.REQUEST" :EXTERNALP T)
+    (:NAME "<REQUEST>" :PACKAGE-NAME "CAVEMAN.REQUEST" :EXTERNALP T)
+    (:NAME "CLACK-HANDLER" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "QUERY-PARAMETER" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "RAW-BODY" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "REFERER" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "USER-AGENT" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "SERVER-NAME" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "CONTENT-LENGTH" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "QUERY-STRING" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)
+    (:NAME "CONTENT-TYPE" :PACKAGE-NAME "CLACK.REQUEST" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".RESPONSE" :FULL-NAME "CAVEMAN.RESPONSE"
+   :DOCUMENTATION "# 
+Caveman.Response - Response class for Caveman.
+
+
+## DESCRIPTION
+
+Caveman.Response is a response class for Caveman. Caveman creates a `<response>' instance for each request and bind it to `*response*'. It will be used in response phase.
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## SEE ALSO
+
+* Clack.Response
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "<RESPONSE>" :PACKAGE-NAME "CAVEMAN.RESPONSE" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "<RESPONSE>" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T))
+     :DOCUMENTATION "Class for Caveman Response." :SLOT-LIST NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-RESPONSE" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STATUS" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T)
+      (:NAME "HEADERS" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T))
+     :DOCUMENTATION "Construct a response instance."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "STATUS" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T)
+    (:NAME "<RESPONSE>" :PACKAGE-NAME "CAVEMAN.RESPONSE" :EXTERNALP T)
+    (:NAME "MAKE-RESPONSE" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T)
+    (:NAME "SET-COOKIE" :PACKAGE-NAME "CAVEMAN.RESPONSE" :EXTERNALP T)
+    (:NAME "HEADERS" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T)
+    (:NAME "BODY" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T)
+    (:NAME "FINALIZE" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T)
+    (:NAME "REDIRECT" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T)
+    (:NAME "PUSH-HEADER" :PACKAGE-NAME "CLACK.RESPONSE" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".CONTEXT" :FULL-NAME "CAVEMAN.CONTEXT" :DOCUMENTATION
+   "# 
+Caveman.Context - Managing current state for each request.
+
+
+## SYNOPSIS
+
+    ;; In the controller.
+    
+    ;; Get context object.
+    (context)
+    ;=> #<HASH-TABLE :TEST EQL size 0/60 #x3020025FF5FD>
+    
+    ;; Access to each value.
+    (context :hoge)
+    ;=> \"Something set to :hoge.\"
+    
+    ;; Set to context
+    (setf (context :hoge) \"hogehoge\")
+
+## DESCRIPTION
+
+Caveman.Context is for managing current state for each request. It is called \"Context\" in Caveman.
+
+Specifically, context is a hash table in global scope. you can access it with a function `context'. See SYNOPSIS for details.
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PROJECT*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+     :DOCUMENTATION "Special variable to store current Caveman application.
+Don't set to this variable directly. This is designed to be bound in lexical let."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CONTEXT*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+     :DOCUMENTATION "Special variable to store Caveman Context, a hash table.
+Don't set to this variable directly. This is designed to be bound in lexical let."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REQUEST*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+     :DOCUMENTATION
+     "Special variable to store Caveman Request, a instance of `<request>' in Caveman.Request package.
+Don't set to this variable directly. This is designed to be bound in lexical let."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*RESPONSE*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+     :DOCUMENTATION
+     "Special variable to store Caveman Response, a instance of `<response>' in Caveman.Response package.
+Don't set to this variable directly. This is designed to be bound in lexical let."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SESSION*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+     :DOCUMENTATION "Special variable to store session.
+Don't set to this variable directly. This is designed to be bound in lexical let."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CONTEXT" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "REQ" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP NIL))
+     :DOCUMENTATION "Create a new Context.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONTEXT" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP NIL))
+     :DOCUMENTATION "
+Access to current context. If key is specified, return the value in current context.
+If not, just return a current context.
+
+Example:
+  (context)
+  ;=> #<HASH-TABLE :TEST EQL size 0/60 #x3020025FF5FD>
+  (context :request)
+  ;=> #<CAVEMAN.REQUEST:<REQUEST> #x3020024FCCFD>
+")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTEXT" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VAL" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-CONTEXT-VARIABLES" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "VARS" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*CONTEXT*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "*REQUEST*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "MAKE-CONTEXT" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "*PROJECT*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "*SESSION*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "WITH-CONTEXT-VARIABLES" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP
+     T)
+    (:NAME "CONTEXT" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)
+    (:NAME "*RESPONSE*" :PACKAGE-NAME "CAVEMAN.CONTEXT" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".MIDDLEWARE.CONTEXT" :FULL-NAME
+   "CAVEMAN.MIDDLEWARE.CONTEXT" :DOCUMENTATION "# 
+Caveman.Middleware.Context - Clack Middleware to set context for each request.
+
+
+## DESCRIPTION
+
+This is a Clack Middleware to ensure context is set for each request.
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## SEE ALSO
+
+* Caveman.Context
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "<CAVEMAN-MIDDLEWARE-CONTEXT>" :PACKAGE-NAME
+      "CAVEMAN.MIDDLEWARE.CONTEXT" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "<MIDDLEWARE>" :PACKAGE-NAME "CLACK.MIDDLEWARE" :EXTERNALP T))
+     :DOCUMENTATION "Clack Middleware to set context for each request."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CALL" :PACKAGE-NAME "CLACK.COMPONENT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.MIDDLEWARE.CONTEXT" :EXTERNALP NIL)
+       (:NAME "<CAVEMAN-MIDDLEWARE-CONTEXT>" :PACKAGE-NAME
+        "CAVEMAN.MIDDLEWARE.CONTEXT" :EXTERNALP T))
+      (:NAME "REQ" :PACKAGE-NAME "CAVEMAN.MIDDLEWARE.CONTEXT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "<CAVEMAN-MIDDLEWARE-CONTEXT>" :PACKAGE-NAME
+     "CAVEMAN.MIDDLEWARE.CONTEXT" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".SKELETON" :FULL-NAME "CAVEMAN.SKELETON"
+   :DOCUMENTATION "# 
+Caveman.Skeleton - Generating Application Skeleton.
+
+
+## SYNOPSIS
+
+    (caveman.skeleton:generate #p\"lib/myapp\")
+
+## DESCRIPTION
+
+Caveman.Skeleton provides a way to create a new Caveman Application.
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SKELETON-DIRECTORY*" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "#P\"/home/quickdocs_dev/quicklisp/dists/quicklisp/software/caveman-20131111-git/v1/skeleton/\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GENERATE" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PARAMS" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP NIL)
+      (:NAME "DESCRIPTION" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP NIL)
+      (:NAME "AUTHOR" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP NIL)
+      (:NAME "EMAIL" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP NIL)
+      (:NAME "LICENSE" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP NIL)
+      (:NAME "DEPENDS-ON" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Generate a skeleton of Caveman Application.
+`name' must be a symbol or a keyword. `path' must be a pathname. If `path' isn't specified, generate a skeleton to current directory."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "GENERATE" :PACKAGE-NAME "CAVEMAN.SKELETON" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".ROUTE" :FULL-NAME "CAVEMAN.ROUTE" :DOCUMENTATION
+   "# Caveman.Route
+
+
+## SYNOPSIS
+
+    ;; for Function
+    @url GET \"/login\"
+    (defun login (req)
+      ;; response
+      )
+
+    ;; for Clack Component
+    @url GET \"/member/:id\"
+    (defclass <member-profile> (<component>) ())
+    (defmethod call ((this <member-profile>) req)
+      ;; response
+      )
+
+## DESCRIPTION
+
+Caveman.Route provides an useful annotation `url' to define a Caveman Action.
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :MACRO :SYMBOL
+     (:NAME "URL" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "URL-RULE" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP NIL)
+      (:NAME "FORM" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP NIL))
+     :DOCUMENTATION "Useful annotation to define actions.
+
+Example:
+  ;; for Function
+  @url GET \"/login\"
+  (defun login (req)
+    ;; response
+    )
+
+  ;; for Clack Component
+  @url GET \"/member/:id\"
+  (defclass <member-profile> (<component>) ())
+  (defmethod call ((this <member-profile>) req)
+    ;; response
+    )")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFROUTE" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "URL-RULE" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP NIL)
+      (:NAME "FORM" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP NIL))
+     :DOCUMENTATION "Recreation of @URL annotation in S-expression form")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "URL->ROUTING-RULE" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "URL-RULE" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP NIL)
+      (:NAME "FORM" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP NIL))
+     :DOCUMENTATION "
+Convert action form into a routing rule, a list.
+
+Example:
+  ((member-profile #<url-rule> #'member-profile)
+   (login-form #<url-rule> #'login-form))
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-QUERY-PARAMETERS" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "BASE-URL" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP NIL)
+      (:NAME "PARAMS" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP NIL))
+     :DOCUMENTATION "Add a query parameters string of PARAMS to BASE-URL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "URL-FOR" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PARAMS" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP NIL))
+     :DOCUMENTATION "
+Make an URL for the action with PARAMS.
+
+Example:
+  @url GET \"/animals/:type\"
+  (defun animals (params))
+
+  (url-for 'animals :type \"cat\")
+  ;; => \"/animals/cat\"
+"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "URL-FOR" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T)
+    (:NAME "URL" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T)
+    (:NAME "DEFROUTE" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T)
+    (:NAME "URL->ROUTING-RULE" :PACKAGE-NAME "CAVEMAN.ROUTE" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".WIDGET" :FULL-NAME "CAVEMAN.WIDGET" :DOCUMENTATION "# 
+Caveman.Widget - Base component for View widget.
+
+
+## DESCRIPTION
+
+* <caveman-widget>
+* render
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "<CAVEMAN-WIDGET>" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION "Base class of view widget."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VIEW" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP T) :ACCESSORS
+       ((:NAME "VIEW" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP T)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP NIL)
+       (:NAME "<CAVEMAN-WIDGET>" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PARAMS" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "<CAVEMAN-WIDGET>" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP T)
+    (:NAME "VIEW" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP T)
+    (:NAME "RENDER" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".WIDGET.FORM" :FULL-NAME "CAVEMAN.WIDGET.FORM"
+   :DOCUMENTATION "# 
+Caveman.Widget.Form - Widget for generating 'form'.
+
+
+## SYNOPSIS
+
+    (defvar form (make-form
+                  :method :POST
+                  :action \"/post\"
+                  :components other-widgets))
+    (add form widget)
+    (render form)
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "<CAVEMAN-WIDGET-FORM>" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "<CAVEMAN-WIDGET>" :PACKAGE-NAME "CAVEMAN.WIDGET" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ACTION" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "FORM-ACTION" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "FORM-METHOD" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COMPONENTS" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "FORM-COMPONENTS" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP NIL)
+       (:NAME "<CAVEMAN-WIDGET-FORM>" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM"
+        :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITARGS" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-FORM" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "A synonim for `(make-instance '<caveman-widget-form> ...)`.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP NIL)
+       (:NAME "<CAVEMAN-WIDGET-FORM>" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM"
+        :EXTERNALP T))
+      (:NAME "WIDGET" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Add another widget to this form. That will be rendered in 'form' tag.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VALIDATE" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP NIL)
+       (:NAME "<CAVEMAN-WIDGET-FORM>" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM"
+        :EXTERNALP T))
+      (:NAME "VALUES" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "<CAVEMAN-WIDGET-FORM>" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM"
+     :EXTERNALP T)
+    (:NAME "MAKE-FORM" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP T)
+    (:NAME "VALIDATE" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP T)
+    (:NAME "ADD" :PACKAGE-NAME "CAVEMAN.WIDGET.FORM" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".VIEW.FUNCTION" :FULL-NAME "CAVEMAN.VIEW.FUNCTION"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "CAVEMAN.VIEW.FUNCTION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FN" :PACKAGE-NAME "CAVEMAN.VIEW.FUNCTION" :EXTERNALP NIL)
+      (:NAME "PARAMS" :PACKAGE-NAME "CAVEMAN.VIEW.FUNCTION" :EXTERNALP NIL))
+     :DOCUMENTATION "Render function for Functions."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "RENDER" :PACKAGE-NAME "CAVEMAN.VIEW.FUNCTION" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".VIEW.EMB" :FULL-NAME "CAVEMAN.VIEW.EMB"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "RENDER" :PACKAGE-NAME "CAVEMAN.VIEW.EMB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FILE" :PACKAGE-NAME "CAVEMAN.VIEW.EMB" :EXTERNALP NIL)
+      (:NAME "PARAMS" :PACKAGE-NAME "CAVEMAN.VIEW.EMB" :EXTERNALP NIL))
+     :DOCUMENTATION "Render function for CL-EMB templates."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "RENDER" :PACKAGE-NAME "CAVEMAN.VIEW.EMB" :EXTERNALP T)))))

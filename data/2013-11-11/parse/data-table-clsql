@@ -1,0 +1,6 @@
+
+(:TYPE :SYSTEM :NAME "data-table-clsql" :AUTHOR NIL :MAINTAINER NIL :VERSION
+ "0.1" :LICENCE "BSD" :DESCRIPTION
+ "A library providing a data-table class, and useful functionality around this"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("ITERATE" "CLSQL" "CLSQL-HELPER" "COLLECTORS" "DATA-TABLE") :PACKAGE-LIST NIL)

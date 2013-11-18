@@ -1,0 +1,21 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "cl-glfw-opengl-version_3_1"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+; 
+; compilation unit aborted
+;   caught 3 fatal ERROR conditions
+Error: The constant CL-GLFW-OPENGL:+MAX-VARYING-COMPONENTS+ is being redefined
+       (from 35659 to :UNABLE-TO-RESOLVE)
+See also:
+  The ANSI Standard, Macro DEFCONSTANT
+  The SBCL Manual, Node "Idiosyncrasies"

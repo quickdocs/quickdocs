@@ -1,0 +1,90 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "regression"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/gendl-20130813-git/regression/assembly-output/source/bracket-test.lisp
+; in: DEFINE-OBJECT BRACKET-TEST
+;     (GENDL:WITH-FORMAT (SURF:STEP "/tmp/try.stp" :ASSEMBLY? T)
+;       (GENDL:WRITE-THE BRACKET::BRACKET BRACKET::CAD-OUTPUT-TREE))
+; --> LET OR LET IF OR THE PATHNAMEP 
+; ==>
+;   "/tmp/try.stp"
+; 
+; note: deleting unreachable code
+
+; --> LET LET IF 
+; ==>
+;   "/tmp/try.stp"
+; 
+; note: deleting unreachable code
+
+; --> LET LET UNWIND-PROTECT FLET BLOCK WHEN IF AND IF OR LET IF OR THE 
+; --> PATHNAMEP 
+; ==>
+;   "/tmp/try.stp"
+; 
+; note: deleting unreachable code
+; 
+; compilation unit finished
+;   printed 3 notes
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/gendl-20130813-git/regression/source/iges-writer.lisp
+; in: DEFINE-OBJECT IGES-WRITER-TEST
+;     (GENDL:WITH-FORMAT (SURF:IGES GDL-LIFT-TESTS::OUTPUT)
+;       (GENDL:WRITE-THE GDL-LIFT-TESTS::TEST-PART (GDL-LIFT-TESTS::BREPS 0)
+;                        GDL-LIFT-TESTS::CAD-OUTPUT))
+; --> LET LET IF 
+; ==>
+;   GDL-LIFT-TESTS::OUTPUT
+; 
+; note: deleting unreachable code
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/gendl-20130813-git/regression/source/iges-writer.lisp
+; in: DEFINE-OBJECT IGES-WRITER-TEST-2
+;     (GENDL:WITH-FORMAT (SURF:IGES GDL-LIFT-TESTS::OUTPUT)
+;       (GENDL:WRITE-THE GDL-LIFT-TESTS::TEST-PART (GDL-LIFT-TESTS::BREPS 0)
+;                        GDL-LIFT-TESTS::CAD-OUTPUT))
+; --> LET LET IF 
+; ==>
+;   GDL-LIFT-TESTS::OUTPUT
+; 
+; note: deleting unreachable code
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/gendl-20130813-git/regression/source/iges-writer.lisp
+; in: DEFINE-OBJECT IGES-TEST-TREE
+;     (GENDL:WITH-FORMAT (SURF:IGES GDL-LIFT-TESTS::OUTPUT-FILE)
+;       (GENDL:WRITE-THE GDL-LIFT-TESTS::CAD-OUTPUT-TREE))
+; --> LET LET IF 
+; ==>
+;   GDL-LIFT-TESTS::OUTPUT-FILE
+; 
+; note: deleting unreachable code
+; 
+; compilation unit finished
+;   printed 3 notes
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/gendl-20130813-git/regression/source/step-writer.lisp
+; in: DEFINE-OBJECT STEP-WRITER-TEST
+;     (GENDL:WITH-FORMAT (SURF:STEP GDL-LIFT-TESTS::OUTPUT)
+;       (GENDL:WRITE-THE GDL-LIFT-TESTS::TEST-PART (GDL-LIFT-TESTS::BREPS 0)
+;                        GDL-LIFT-TESTS::CAD-OUTPUT))
+; --> LET LET IF 
+; ==>
+;   GDL-LIFT-TESTS::OUTPUT
+; 
+; note: deleting unreachable code
+; 
+; compilation unit finished
+;   printed 1 note
+WARNING: There is no class named GDL-LIFT-UTILS::GDL-REGRESSION-TESTS.
+Error: There is no class named GDL-LIFT-UTILS::GDL-REGRESSION-TESTS.

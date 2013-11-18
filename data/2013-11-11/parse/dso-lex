@@ -1,0 +1,88 @@
+
+(:TYPE :SYSTEM :NAME "dso-lex" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL
+ :LICENCE NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CL-PPCRE" "DSO-UTIL") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "DSO-LEX" :FULL-NAME "DSO-LEX" :DOCUMENTATION
+   "Allows the definition of lexers.  See DEFLEXER." :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "ANCHOR-AND-MODE" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "REGEX" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRAP" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMBINE" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "REGEX-LIST" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BREAK-DEFS" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "DEFS" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GREEDY-LEXER-FORM" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "INPUT-VAR" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)
+      (:NAME "START-VAR" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)
+      (:NAME "DEFS" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LEXER-FORM" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "INPUT-VAR" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)
+      (:NAME "START-VAR" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)
+      (:NAME "DEFS" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-LEXER" :PACKAGE-NAME "DSO-LEX" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DEFS" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PRIORITY-ONLY" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a lexer function.  The DEFS consists of token-class
+definitions, each being a list of a regular expression, the name of
+the class, and an optional filter.  The returned function takes as
+arguments an input sequence and an optional start position, and
+returning the matched token-class, image, and image-length as values.
+
+Unless PRIORITY-ONLY is true, the longest match will win, and
+rule-priority will only be used to break ties.  Otherwise, the first
+match wins.
+
+Example:
+
+ (let ((lexer (make-lexer '((\"[0-9]+\" number parse-integer)
+                            (\"[a-zA-Z]\" letter)))))
+   (funcall lexer \"2pi\" 1))")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFLEXER" :PACKAGE-NAME "DSO-LEX" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)
+      ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "PRIORITY-ONLY" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DEFS" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Defines a lexer, called as a function of the given NAME, and returning
+the matched token-class, image, and image-length as values.  The body
+consists of token-class definitions, each being a list of a regular
+expression, the name of the class, and an optional filter.
+
+Unless PRIORITY-ONLY is true, the longest match will win, and
+rule-priority will only be used to break ties.  Otherwise, the first
+match wins.
+
+Example:
+
+ (deflexer lexer ()
+   (\"[0-9]+\" number parse-integer)
+   (\"[a-zA-Z]\" letter))
+
+ (lexer \"2pi\" 1)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LEX-ALL" :PACKAGE-NAME "DSO-LEX" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "LEXER" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL)
+      (:NAME "INPUT" :PACKAGE-NAME "DSO-LEX" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "DEFLEXER" :PACKAGE-NAME "DSO-LEX" :EXTERNALP T)
+    (:NAME "LEX-ALL" :PACKAGE-NAME "DSO-LEX" :EXTERNALP T)
+    (:NAME "MAKE-LEXER" :PACKAGE-NAME "DSO-LEX" :EXTERNALP T)))))

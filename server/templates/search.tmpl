@@ -1,0 +1,36 @@
+<header>
+  <% @if query %>
+  <h2>Search Results</h2>
+  <div class="search-query">for <strong><% @var query %></strong></span>
+  <% @else %>
+  <h2>All <%= (format nil "~:D" (length (getf env :releases))) %> Projects</h2>
+  <% @endif %>
+  <br />
+</header>
+
+<% @if query %>
+<p class="search-results-summary"><%=
+      (format nil "<strong>~:D</strong> project~:P ~:*~[are~;is~:;are~] found." (length (getf env :releases)))
+   %></p>
+<% @endif %>
+
+<% @if releases %>
+<ul class="search-result-container">
+<% @loop releases %>
+  <li class="search-result">
+    <span class="project-name">
+      <a href="/<%= (emb::url-encode (slot env :name)) %>/"><%= (slot env :name) %></a>
+    </span>
+    <span class="ql-version">
+      <%= (slot env :release-version) %>
+    </span>
+    <p class="description"><%= (slot env :description) %></p>
+    <% (when (quickdocs.model.project:project-download-count env) %>
+    <div class="download-count"><span class="lsf">download</span>&nbsp;<%= (emb::echo (format nil "~:D" (quickdocs.model.project:project-download-count env))) %></div>
+    <% ) %>
+  </li>
+<% @endloop %>
+</ul>
+<% @endif %>
+
+<% @include footer %>

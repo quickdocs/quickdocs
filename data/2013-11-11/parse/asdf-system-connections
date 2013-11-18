@@ -1,0 +1,7 @@
+
+(:TYPE :SYSTEM :NAME "asdf-system-connections" :AUTHOR
+ "Gary Warren King <gwking@metabang.com>" :MAINTAINER
+ "Gary Warren King <gwking@metabang.com>" :VERSION "0.8.4" :LICENCE
+ "MIT Style License" :DESCRIPTION
+ "Allows for ASDF system to be connected so that auto-loading may occur."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST NIL)

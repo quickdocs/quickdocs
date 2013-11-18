@@ -1,0 +1,118 @@
+
+(:TYPE :SYSTEM :NAME "cl-project" :AUTHOR "Eitarow Fukamachi" :MAINTAINER NIL
+ :VERSION "0.1" :LICENCE "LLGPL" :DESCRIPTION
+ "Generate a skeleton for modern project" :LONG-DESCRIPTION
+ "# CL-Project - Generate modern project skeletons 
+
+## Usage
+
+    (cl-project:make-project #p\"lib/cl-sample/\"
+      :author \"Eitarow Fukamachi\"
+      :email \"e.arrows@gmail.com\"
+      :license \"LLGPL\"
+      :depends-on '(clack cl-annot))
+    
+    ;-> writing /Users/fukamachi/Programs/lib/cl-sample/.gitignore
+        writing /Users/fukamachi/Programs/lib/cl-sample/README.markdown
+        writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample-test.asd
+        writing /Users/fukamachi/Programs/lib/cl-sample/cl-sample.asd
+        writing /Users/fukamachi/Programs/lib/cl-sample/src/hogehoge.lisp
+        writing /Users/fukamachi/Programs/lib/cl-sample/t/hogehoge.lisp
+    ;=> T
+
+## What's the difference from other generators?
+
+### 1. Flexible templates
+
+CL-Project supports more parameters to embed, by using [CL-EMB](http://common-lisp.net/project/cl-emb/) to represent the skeleton files (See \"cl-project/skeleton/\").
+
+### 2. One package per file style (Modern)
+
+A modern CL project should be in accordance with [some rules](http://labs.ariel-networks.com/cl-style-guide.html). For instance, one file must have one package in it.
+
+### 3. Recommends unit testing
+
+Modern projects should have some unit tests. CL-Project generates a system for unit testing, so you can begin writing unit tests as soon as the project is generated.
+
+## Parameters
+
+All parameters are optional.
+
+* `:name`: Project name. If this key isn't specified, the directory name will be used.
+* `:description`: Short description for the new project.
+* `:author`: Your name.
+* `:email`: Your e-mail address.
+* `:license`: License of the new project.
+* `:depends-on`: A list of dependencies.
+
+## Author
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## Copyright
+
+Copyright (c) 2011 Eitarow Fukamachi (e.arrows@gmail.com)
+
+## License
+
+Licensed under the LLGPL License.
+"
+ :DEPENDS-ON
+ ("ANAPHORA" "CL-EMB" "CL-FAD" "CL-PPCRE" "CL-ANNOT" "CL-SYNTAX"
+  "CL-SYNTAX-ANNOT" "LOCAL-TIME")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-PROJECT" :FULL-NAME "CL-PROJECT" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SKELETON-DIRECTORY*" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP T)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "#P\"/home/quickdocs_dev/quicklisp/dists/quicklisp/software/cl-project-20130128-git/skeleton/\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SKELETON-PARAMETERS*" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-PROJECT" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PARAMS" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "DESCRIPTION" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "AUTHOR" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "EMAIL" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "LICENSE" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "DEPENDS-ON" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Generate a skeleton.
+`path' must be a pathname or a string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GENERATE-SKELETON" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SOURCE-DIR" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "TARGET-DIR" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL))
+     :DOCUMENTATION "General skeleton generator.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-DIRECTORY" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SOURCE-DIR" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "TARGET-DIR" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL))
+     :DOCUMENTATION "Copy a directory recursively.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-FILE-TO-DIR" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SOURCE-PATH" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "TARGET-DIR" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL))
+     :DOCUMENTATION "Copy a file to target directory.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-FILE-TO-FILE" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SOURCE-PATH" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL)
+      (:NAME "TARGET-PATH" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP NIL))
+     :DOCUMENTATION "Copy a file `source-path` to the `target-path`."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "GENERATE-SKELETON" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP T)
+    (:NAME "*SKELETON-DIRECTORY*" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP T)
+    (:NAME "MAKE-PROJECT" :PACKAGE-NAME "CL-PROJECT" :EXTERNALP T)))))

@@ -1,0 +1,4 @@
+
+(:TYPE :SYSTEM :NAME "blas-complex" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL
+ :LICENCE NIL :DESCRIPTION "BLAS routines for complex double-float  matrices"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("blas-real") :PACKAGE-LIST NIL)

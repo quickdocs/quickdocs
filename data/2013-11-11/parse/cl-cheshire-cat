@@ -1,0 +1,1214 @@
+
+(:TYPE :SYSTEM :NAME "cl-cheshire-cat" :AUTHOR
+ "Mathieu Lemoine <mlemoine@mentel.com>, Mentel Inc." :MAINTAINER NIL :VERSION
+ "0.1" :LICENCE "3-clause BSD" :DESCRIPTION
+ "Cheshire Cat HTTP Redirection Server" :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("cl-ppcre" "hunchentoot" "cl-store" "alexandria" "usocket" "split-sequence"
+  "cl-fad")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-CHESHIRE-CAT" :FULL-NAME "CL-CHESHIRE-CAT"
+   :DOCUMENTATION "Cheshire Cat (HTTP Redirection Server) main package"
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-CIDR-LIST" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Parse a comma-separated list of IPv4 CIDR specifications (such as
+\"a.b.c.d/n, e.f.g.h/m\"). The CIDR prefix may be omited. Return a list of CIDR
+specification, each being of the form (IP prefix-length).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IP-CIDR-MATCH-P" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "IP1" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "IP2" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PREFIX-LENGTH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       32))
+     :DOCUMENTATION
+     "Check if both IPs are in the same network with respect to this CIDR prefix-length.
+
+Each IPs can be either:
+ * 32-bit positive integer (host order),
+ * a four element integer list representing IPv4 address, i.e. #(127 0 0 1),
+ * a string containing an IP addres in dotted notation.
+
+For example, to check A.B.C.D against a.b.c.d/n, this function could be invoked
+as (ip-cidr-match-p #(A B C D) #(a b c d) n).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-BAD-REQUEST" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "MESSAGE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "HTTP-CODE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "+HTTP-BAD-REQUEST+" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Error handling, abort the URL processing to signal an error to the client.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-INTEGER-OR-NIL" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Just like parse-integer, but if string is nil, returns (values nil nil) instead of throwing an error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPUTE-URI" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Append each parameter in the query string to the path. path is expected not
+to have any query-string.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "TWO-STEPS-START-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "ACCEPTOR" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T))
+     :DOCUMENTATION "This acceptor implementation allow a two-step start: 1. the
+first step `start-listening` starts the socket without starting to accept
+connections 2. the second setp `start` starts to accept connection This system
+allow for example to daemonize the process and drop privileges before starting
+to accept connections."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-LISTENING" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACCEPTOR" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T)
+       (:NAME "TWO-STEPS-START-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Remove the shutdown state from the acceptor before starting to listen")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "ACCEPTOR" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T)
+       (:NAME "TWO-STEPS-START-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "If the first step was not run yet, run it. Then start the acceptor
+taskmaster. Inspired from hunchentoot default implementation.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "Root class for Query String operations." :SLOT-LIST NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLASS<-QSU-OPERATION" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "OPERATION" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the class corresponding to this query-string operation.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QSU-OPERATION<-CLASS" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns the query-string operation corresponding to this class.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-OPERATION" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the operation of this update.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "OPERATION" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITARGS" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Generic generation of a query string update. <pre>operation</pre> must be one
+  of :clear, :add, :rename or :update and initargs is the list of initargs for
+  the qs-{operation} class.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "QSU-KEY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Return the information required to identify this
+  update. Usually a list of the form (operation &optional name match)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-KEY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Default method returns (operation name).")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-KEY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Default method returns (operation name).")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*QSU-GENERIC-READERS*" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "List of query string update generic readers"
+     :INITIAL-VALUE "'NIL")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-GENERIC-QSU-READER" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DEFAULT-VALUE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Create a generic function and an associated method for
+  query-string-update. This allow every reader to be used with any instance of
+  query-string-update.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "QSU-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Generic query string update reader for NAME.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Default value for NAME reader.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Default value for NAME reader.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "QSU-NEW-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Generic query string update reader for NEW-NAME.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-NEW-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Default value for NEW-NAME reader.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-NEW-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Default value for NEW-NAME reader.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "QSU-VALUE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Generic query string update reader for VALUE.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-VALUE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Default value for VALUE reader.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-VALUE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Default value for VALUE reader.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "QSU-MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Generic query string update reader for MATCH.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Default value for MATCH reader.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Default value for MATCH reader.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "QSU-REPLACEMENT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Generic query string update reader for REPLACEMENT.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-REPLACEMENT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Default value for REPLACEMENT reader.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-REPLACEMENT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Default value for REPLACEMENT reader.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "UPDATE-QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "DOMAIN-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "This function (destructively) updates query-string to apply
+  the specified query-string update. query-string is expected to be an alist of
+  get parameters.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "QSU-SUMMARY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "This method converts the redirection rule to the
+  alist ((:operation . operation) params)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-SUMMARY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-SUMMARY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Print a meaningful summarized representation of redirection
+rules. Redirection rules are not readably printable.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNSUMMARIZE-QUERY-STRING-UPDATE%" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SUMMARY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the list of arguments to give to make-instance to recreate a similar
+query-string-update.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+QSU-CODE+" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :DOCUMENTATION "cl-store type-code for query string updates."
+     :INITIAL-VALUE
+     "(CL-STORE:REGISTER-CODE 210 'CL-CHESHIRE-CAT::QUERY-STRING-UPDATE)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INTERNAL-STORE-OBJECT" :PACKAGE-NAME "CL-STORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "G217" :PACKAGE-NAME NIL :EXTERNALP NIL)
+       (:NAME "CL-STORE" :PACKAGE-NAME "CL-STORE" :EXTERNALP T))
+      ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Definition for storing an object of type QUERY-STRING-UPDATE with backend CL-STORE")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INTERNAL-RESTORE-OBJECT" :PACKAGE-NAME "CL-STORE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "G224" :PACKAGE-NAME NIL :EXTERNALP NIL)
+       (:NAME "CL-STORE" :PACKAGE-NAME "CL-STORE" :EXTERNALP T))
+      ((:NAME "G225" :PACKAGE-NAME NIL :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+          :EXTERNALP NIL))))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "QS-CLEAR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Clear the query string. Since this class has no state nor
+  parameters, it's a singleton."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UPDATE-QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QS-CLEAR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+      (:NAME "QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "DOMAIN-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "This method return an empty new alist.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "QS-ADD" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Add a new parameter at the beginning the query string."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "QSU-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Name of the parameter to create.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VALUE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "QSU-VALUE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Value of the parameter to create. If the value
+  is :path or :domain, the corresponding part of the URL will be used as the
+  value.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UPDATE-QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QS-ADD" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+      (:NAME "QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "DOMAIN-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This method adds a new parameter at the beginning of the query string")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-KEY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QS-CLEAR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)))
+     :DOCUMENTATION "This method always returns '(:clear).")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "QS-RENAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Rename the parameter in the query string." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "QSU-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Name of the parameter to rename (old name).")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NEW-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "QSU-NEW-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "New name for the parameter to rename.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UPDATE-QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QS-RENAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+      (:NAME "QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "DOMAIN-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This method renames a query string parameter. If there are several query
+  string parameters with this name, only the first one is renamed. If there is
+  no such parameter, do nothing.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "QS-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Use a regex to modify the value of a parameter in the query string."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "QSU-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Name of the parameter to update.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "QSU-MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Regex to match the old value of the parameter")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REPLACEMENT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "QSU-REPLACEMENT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+         NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Replacement string to generate the new value of the parameter")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MATCHER" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "QSU-MATCHER" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Compiled regex matcher")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QS-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITARGS" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Creates the regex matcher.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UPDATE-QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QS-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+      (:NAME "QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "DOMAIN-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This method updates the value of a parameter using a regex replacement. If
+  there are several query string parameters with this name, only the first one
+  is renamed. If there is no such parameter, do nothing.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QSU-KEY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QS-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)))
+     :DOCUMENTATION "This methods returns (:update name match).")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "QS-DELETE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "QUERY-STRING-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Remove a parameter from the query string." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "QSU-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Name of the parameter to delete.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UPDATE-QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "QS-DELETE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+      (:NAME "QUERY-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "DOMAIN-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This method deletes a query string parameter. If there are several query
+  string parameters with this name, only the first one is deleted. If there is
+  no such parameter, do nothing.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION "Root class for redirection rules."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "KIND" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "RR-KIND" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A selector for the matching alogrithm
+                         used for this rule.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "RR-MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The matching pattern used for this
+                         rule.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MATCHER" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "RR-MATCHER" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "The matching closure implementing this
+                         rule matching algorithm and performing the
+                         replacement.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REPLACEMENT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "RR-REPLACEMENT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The replacement specification for this
+                         string. If it's null, this rule does not modify its
+                         target-string.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HTTP-CODE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "RR-HTTP-CODE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The HTTP Status Code sent when this
+                         rule is applied. Can be overwritten by a subsequent
+                         rule.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PROTOCOL" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "RR-PROTOCOL" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "The protocol to use after
+                         redirection (HTTP or HTTPS)")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PORT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "RR-PORT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "Port to use for the
+                         redirection. Default depends on the protocol")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "QUERY-STRING-UPDATES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "RR-QS-UPDATES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "List of query string update performed
+                         when this rule match.")))
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RESOLVE-RR-MATCHER" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function update the <pre>matcher</pre> slot of <pre>rule</pre> so
+<pre>rr-matching-p</pre> can be used. It is the only function allowed to modify
+the <pre>matcher</pre> slot")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITARGS" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Ensures the initialization of the <pre>matcher</pre> slot and the type of the
+http-code slot.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RR-KIND" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-KIND" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION
+     "Ensures that every modification of the <pre>kind</pre> slot is updating the
+<pre>matcher</pre> slot.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RR-MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION
+     "Ensures that every modification of the <pre>match</pre> slot is updating the
+<pre>matcher</pre> slot.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RR-REPLACEMENT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-REPLACEMENT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION
+     "Ensures that every modification of the <pre>replacement</pre> slot is
+updating the <pre>matcher</pre> slot.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RR-HTTP-CODE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-HTTP-CODE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Ensures the type of the http-code slot.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RR-KEY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function returns the pair (kind match) for this rule.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RR-SUMMARY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SERIALIZE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "This method converts the redirection rule to the list (kind
+  match replacement . options)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RR-SUMMARY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SERIALIZE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This method converts the redirection rule to the list (kind match
+replacement http-code)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RR-SUMMARY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SERIALIZE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This method converts the redirection rule to the list (kind match
+replacement http-code)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Print a meaningful summarized representation of redirection
+rules. Redirection rules are not readably printable.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REDIRECTION-RULE=" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE1" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "RULE2" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function checks whether two redirection rules are equals.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RR-MATCHING-P" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "TARGET-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function checks whether a redirection rule is matching for this haystack.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-REGEX-MATCHER" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "REPLACEMENT" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function creates the matcher for a rule based on a regex.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "URI-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Class for redirection rules applied to URIs (path part of the
+  URL, no query-string)."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RESOLVE-RR-MATCHER" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "URI-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION
+     "This function updates the <pre>matcher</pre> slot for a URI redirection rule.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+URI-REDIRECTION-RULE-CODE+" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :DOCUMENTATION "cl-store type-code for URI redirection rules."
+     :INITIAL-VALUE
+     "(CL-STORE:REGISTER-CODE 201 'CL-CHESHIRE-CAT::URI-REDIRECTION-RULE)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INTERNAL-STORE-OBJECT" :PACKAGE-NAME "CL-STORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "G224" :PACKAGE-NAME NIL :EXTERNALP NIL)
+       (:NAME "CL-STORE" :PACKAGE-NAME "CL-STORE" :EXTERNALP T))
+      ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "URI-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        NIL))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Definition for storing an object of type URI-REDIRECTION-RULE with backend CL-STORE")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INTERNAL-RESTORE-OBJECT" :PACKAGE-NAME "CL-STORE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "G231" :PACKAGE-NAME NIL :EXTERNALP NIL)
+       (:NAME "CL-STORE" :PACKAGE-NAME "CL-STORE" :EXTERNALP T))
+      ((:NAME "G232" :PACKAGE-NAME NIL :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "URI-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+          :EXTERNALP NIL))))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOMAIN-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Class for redirection rules applied to domain names."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "URI-RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "DRR-URI-RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "List of URI redirection rules for the domain names
+              matching this redirection rule.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RR-SUMMARY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "DOMAIN-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+        :EXTERNALP NIL))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SERIALIZE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This method adds the list of uri rules in the case of serialization.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RESOLVE-RR-MATCHER" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "DOMAIN-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "This function updates the <pre>matcher</pre> slot for a domain name redirection rule.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+DOMAIN-REDIRECTION-RULE-CODE+" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :DOCUMENTATION "cl-store type-code for domain name redirection rules."
+     :INITIAL-VALUE
+     "(CL-STORE:REGISTER-CODE 200 'CL-CHESHIRE-CAT::DOMAIN-REDIRECTION-RULE)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INTERNAL-STORE-OBJECT" :PACKAGE-NAME "CL-STORE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "G324" :PACKAGE-NAME NIL :EXTERNALP NIL)
+       (:NAME "CL-STORE" :PACKAGE-NAME "CL-STORE" :EXTERNALP T))
+      ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "DOMAIN-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+        :EXTERNALP NIL))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Definition for storing an object of type DOMAIN-REDIRECTION-RULE with backend CL-STORE")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INTERNAL-RESTORE-OBJECT" :PACKAGE-NAME "CL-STORE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "G331" :PACKAGE-NAME NIL :EXTERNALP NIL)
+       (:NAME "CL-STORE" :PACKAGE-NAME "CL-STORE" :EXTERNALP T))
+      ((:NAME "G332" :PACKAGE-NAME NIL :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "DOMAIN-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+          :EXTERNALP NIL))))
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DRR-IS-LOOP-P" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DRR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-P" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Check if the domain name rule effect is empty, thus resulting in a loop.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-QS-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "This function add a new query string update operation to a redirection
+  rule. <pre>position</pre> is the position at which the rule will be inserted
+  in <pre>rules</pre>. If <pre>position</pre> is nil or unspecified,
+  <pre>rule</pre> will be inserted at the begining of <pre>rules</pre>.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-QS-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "OPERATION" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function removes the query string update designated by operation name
+and match.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-QS-UPDATE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "OPERATION" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-P" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function returns the query string update designated by operation name
+and match.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ADD-DOMAIN-NAME-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "This macro adds <pre>rule</pre> (applying to domaine names) in
+<pre>rules</pre>. <pre>position</pre> is the position at which the rule will be
+inserted in <pre>rules</pre>. If <pre>position</pre> is nil or unspecified,
+<pre>rule</pre> will be inserted at the begining of <pre>rules</pre>.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "REMOVE-DOMAIN-NAME-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "KIND" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This macro removes the rule from <pre>rule</pre> with matching
+<pre>kind</pre> and <pre>match</pre>. <pre>rule</pre> must match exactly. If no
+such rule is found, returns silently.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-DOMAIN-NAME-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "KIND" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-P" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function returns the domain name rule with matching <pre>kind</pre> and
+<pre>match</pre> in <pre>rules</pre> or nil if none was found. if
+<pre>error-p</pre> is true, an error of type <pre>rs-no-such-domain-rule</pre>
+is raised instead.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-URI-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DOMAIN-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+       :EXTERNALP NIL)
+      (:NAME "URI-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "This function adds <pre>rule</pre> (applying to URIs) to
+<pre>domain-redirection-rule</pre>. <pre>position</pre> is the position at which
+the rule will be inserted in <pre>rules</pre>. If <pre>position</pre> is nil or
+unspecified, <pre>rule</pre> will be inserted at the begining of
+<pre>rules</pre>.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-URI-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DOMAIN-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+       :EXTERNALP NIL)
+      (:NAME "KIND" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This macro removes the rule from <pre>rule</pre> with matching
+<pre>kind</pre> and <pre>match</pre>. <pre>rule</pre> must match exactly. If no
+such rule is found, returns silently.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-URI-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DOMAIN-REDIRECTION-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+       :EXTERNALP NIL)
+      (:NAME "KIND" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "MATCH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-P" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function returns the URI rule with matching <pre>kind</pre> and
+<pre>match</pre> in <pre>domain-redirection-rule</pre> or nil if none was
+found. if <pre>error-p</pre> is true, an error of type
+<pre>rs-no-such-uri-rule</pre> is raised instead.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+DEFAULT-DOMAIN-NAME-RULE+" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Domain name rule with default behaviour. This should be treated as a
+  constant, If the object, value or binding is modified behaviour is
+  undefined."
+     :INITIAL-VALUE
+     "(MAKE-INSTANCE 'CL-CHESHIRE-CAT::DOMAIN-REDIRECTION-RULE :KIND :REGEX :MATCH
+               '(:SEQUENCE :MODELESS-START-ANCHOR (:NEGATIVE-LOOKAHEAD \"www.\"))
+               :REPLACEMENT \"www.\" :HTTP-CODE
+               HUNCHENTOOT:+HTTP-MOVED-PERMANENTLY+)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "APPLY-DEFAULT-DOMAIN-NAME-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DOMAIN-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function applies the default domain name redirection: if the domain-name
+  does not start with a \"www.\",returns a permanent redirect to the same URL
+  prepended with \"www.\", raise a rs-loop-detected condition otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "APPLY-RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TARGET-STRING" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function looks through the list of rules to find a matching rule for
+<pre>target-string</pre>. The three returns values are:
+
+ * Whether a rule was find or not,
+ * The rewritten target string,
+ * The matching rule.
+
+If no such rule is found, all three values are nil.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MERGE-REDIRECTION-PARAMETERS-LIST" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "PARAMETER-READERS" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "This function merges a list of parameters from a list of rules.
+For each element of parameter-readers, a parameter is extracted from each rule
+and the last one non-null is returned.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MERGE-REDIRECTION-PARAMETER" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LISTS" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function merges a set parameters (return the last non-null one).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPUTE-REDIRECTION" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "DOMAIN-NAME" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "URI" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function computes the actual value of the redirection for this
+domain-name and URI, following this set of rules. It return the
+list (new-domain-name new-uri . redirection-parameters)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UPDATE-RULE%" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "UPDATE-SPECS" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Updates a rule, each update spec should be (\"new-{ATTRIBUTE}\"
+  . \"{NEW-VALUE}\").")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADMIN-DOMAIN-NAME-RULES-HANDLER%" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       T))
+     :DOCUMENTATION "Handler for domain name rules management")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADMIN-URI-RULES-HANDLER%" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "DOMAIN-NAME-RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Handler for URI rules management.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADMIN-QUERY-STRING-HANDLER%" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "RULE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Handler for query-string operation")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADMIN-HANDLER" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       T))
+     :DOCUMENTATION "Management handler.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+      T)
+     :SUPER-CLASS-LIST
+     ((:NAME "TWO-STEPS-START-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+       :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Custom hunchentoot:acceptor implementing the behavior of the
+  redirection server."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ADMIN-HOST" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "REDIRECTION-ACCEPTOR-ADMIN-HOST" :PACKAGE-NAME
+         "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The domain name used to manage this
+                    redirection acceptor.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ADMIN-ALLOWED" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "REDIRECTION-ACCEPTOR-ADMIN-ALLOWED" :PACKAGE-NAME
+         "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A list of CIDR block specifications. Each item
+                    of this list is a pair (IP prefix-length). IP is recommended
+                    to a string using the decimal dotted notation but could also
+                    be an host order 32 bytes integer or an host order byte
+                    vector.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "REDIRECTION-ACCEPTOR-RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The list of redirection rules used by this
+                    acceptor.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RULES-DIRECTORY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "REDIRECTION-ACCEPTOR-RULES-DIRECTORY" :PACKAGE-NAME
+         "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The directory in which rules will be
+                    stored. Only the default rule file can be out of this
+                    directory.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RULES-FILE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "REDIRECTION-ACCEPTOR-RULES-FILE" :PACKAGE-NAME
+         "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "The default file used to store the
+                    rules. This is set when loading the rules from the file.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+       (:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITARGS" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Ensures there is no error template directory.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REDIRECTION-ACCEPTOR-RULES-DIRECTORY" :PACKAGE-NAME
+       "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEW-DIRECTORY" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+      ((:NAME "ACCEPTOR" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T)
+       (:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        T)))
+     :DOCUMENTATION
+     "Ensures the directory is a directory with no name and the crr type.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ACCEPTOR-DISPATCH-REQUEST" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "ACCEPTOR" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T)
+       (:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        T))
+      (:NAME "REQUEST" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This request dispatcher processes each HTTP request and handle adequatly the
+request.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ACCEPTOR-LOG-ACCESS" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACCEPTOR" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T)
+       (:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+        T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RETURN-CODE" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T))
+     :DOCUMENTATION
+     "Adapted syntax for access log, just like the default, but include the host to.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRELOAD-RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       T)
+      (:NAME "FILE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This function restore the list of rules from file and set them as the list of
+  rules for this acceptor. It's also registering the rule-file for future
+  references.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LOAD-RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       T)
+      (:NAME "FILE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Save all the rules in mentioned file.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SAVE-RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+       T)
+      (:NAME "FILE" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Save all the rules in mentioned file."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "PRELOAD-RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP T)
+    (:NAME "DRR-URI-RULES" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP T)
+    (:NAME "REDIRECTION-ACCEPTOR-RULE-DIRECTORY" :PACKAGE-NAME
+     "CL-CHESHIRE-CAT" :EXTERNALP T)
+    (:NAME "REDIRECTION-ACCEPTOR" :PACKAGE-NAME "CL-CHESHIRE-CAT" :EXTERNALP
+     T)))
+  (:TYPE :PACKAGE :NAME "ORG.TFEB.HAX.SINGLETON-CLASSES" :FULL-NAME
+   "ORG.TFEB.HAX.SINGLETON-CLASSES" :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "SINGLETON-CLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "STANDARD-CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "INSTANCE" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+        :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VALIDATE-SUPERCLASS" :PACKAGE-NAME "SB-MOP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "SINGLETON-CLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+        :EXTERNALP T))
+      ((:NAME "SUPERCLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+        :EXTERNALP NIL)
+       (:NAME "STANDARD-CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VALIDATE-SUPERCLASS" :PACKAGE-NAME "SB-MOP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "SINGLETON-CLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+        :EXTERNALP T))
+      ((:NAME "SUPERCLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+        :EXTERNALP NIL)
+       (:NAME "SINGLETON-CLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VALIDATE-SUPERCLASS" :PACKAGE-NAME "SB-MOP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STANDARD-CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "SUPERCLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+        :EXTERNALP NIL)
+       (:NAME "SINGLETON-CLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "SINGLETON-CLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+        :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SINGLETON-CLASSES*" :PACKAGE-NAME
+      "ORG.TFEB.HAX.SINGLETON-CLASSES" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "'NIL")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "C" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES" :EXTERNALP
+        NIL)
+       (:NAME "SINGLETON-CLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+        :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESET-SINGLETON-CLASSES" :PACKAGE-NAME
+      "ORG.TFEB.HAX.SINGLETON-CLASSES" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "SINGLETON-CLASS" :PACKAGE-NAME "ORG.TFEB.HAX.SINGLETON-CLASSES"
+     :EXTERNALP T)
+    (:NAME "RESET-SINGLETON-CLASSES" :PACKAGE-NAME
+     "ORG.TFEB.HAX.SINGLETON-CLASSES" :EXTERNALP T)))))

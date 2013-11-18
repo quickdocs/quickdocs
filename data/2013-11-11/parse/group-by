@@ -1,0 +1,245 @@
+
+(:TYPE :SYSTEM :NAME "group-by" :AUTHOR NIL :MAINTAINER NIL :VERSION "0.1"
+ :LICENCE "BSD" :DESCRIPTION
+ "A Common Lisp library to help group data into trees (of various
+formats) based on common/shared values"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("ITERATE" "ALEXANDRIA") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "GROUP-BY" :FULL-NAME "GROUP-BY" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "GROUP-BY" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "KEY" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "VALUE" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CDR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "KEY-FN" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "TEST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQUAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "groups the list into an alist using the key function and value function to group by key,
+with a list of all values for that key.
+
+key is used to determine the key in the a-list
+value is used to determin the value in the a-list
+key-fn is passed as the :key to assoc
+test is passed as the :test to assoc
+
+eg: (group-by '((a 1 2) (a 3 4) (b 5 6)))
+=> ((A (1 2) (3 4)) (B (5 6)))")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CATEGORIZE-ITEM" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ITEM" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+      (:NAME "ROOT" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Insert a new item into a grouped list ")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CATEGORIZE-ITEM" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ITEM" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+      ((:NAME "ROOT" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+      (:NAME "TESTS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Categorize a new item into an alist as produced by group-by-repeated
+     This will create new category nodes if necessary")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GROUP-BY-REPEATED" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+      (:NAME "TESTS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns an alist tree that represents the items in the list as categorized
+   by keys (compared with tests)
+    ex: ((a 3 sam) (c 4 bob) (a 3 ted))
+
+
+   keys: a list of key functions that describe the categorizations in order
+   tests: how we are testing whether or not two keys are equal, defaults to #'equal
+  ")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "This class represents a list that we have grouped by multiple key values
+     ala one of the group-by-repeatedly functions "
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ORIG-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "ORIG-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "GROUPING-IMPLEMENTATION" :PACKAGE-NAME "GROUP-BY" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "GROUPING-IMPLEMENTATION" :PACKAGE-NAME "GROUP-BY" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "What data structure should be used to perform the grouping :list, :hash-table")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "KEYS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T) :ACCESSORS
+       ((:NAME "KEYS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "A list of key functions we will use to group the list")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TESTS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T) :ACCESSORS
+       ((:NAME "TESTS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "A list of test functions we will use to test key equality
+      tree: defaults to #'equal
+      hash-table: this be a single hash-equality symbol (defaults to 'equal)")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "%CHILD-GROUPINGS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "%CHILD-GROUPINGS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "%ITEMS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "%ITEMS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PARENT-GROUPING" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "PARENT-GROUPING" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "If this is a subgrouping of another grouped-list, what is the parent grouping we are apart of (mostly for testing)")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "KEY-VALUE" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T) :ACCESSORS
+       ((:NAME "KEY-VALUE" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "If this is a subgrouping of another grouped-list, what is the key this grouped-list represents in the parent grouping (mostly for testing)")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHILD-GROUPINGS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GL" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       (:NAME "GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "HASH-TABLE-ITERATOR-159" :PACKAGE-NAME NIL :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "INP" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TESTS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+      ((:NAME "GROUPING-IMPLEMENTATION" :PACKAGE-NAME "GROUP-BY" :EXTERNALP
+        NIL)
+       (:NAME "ALIST" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Given a list of input, produce a grouped-list CLOS object that contains
+the original list, configuration about the groupings and the result tree
+of grouped-list objects
+
+''keys'': a list of keys to group by<br />
+''tests'': a list of tests to compare the keys with<br />
+
+''grouping-implmentation'': What data structure should be used to perform the grouping<br />
+  '':alist, :tree , :hash-table''<br />
+  The implementation doesnt change the output, but it does change
+  the performance characteristics of the grouped-object (see:
+  grouped-list-speed-tester for help deciding which to use)
+  ")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "O" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       (:NAME "GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-SINGLE-SUB-CATEGORY" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "GL" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+      (:NAME "KEY-VALUE" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TEST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CATEGORIZE-ITEM" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ITEM" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+      ((:NAME "ROOT" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       (:NAME "GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ADD-ITEM-TO-GROUPING" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ITEM" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+      ((:NAME "GL" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       (:NAME "GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)))
+     :DOCUMENTATION
+     "puts a new item in the grouping of the grouped list (but not in the original list)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%GROUPING-ITEMS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "GL" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       (:NAME "GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)))
+     :DOCUMENTATION "Returns the items in a given group")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-CHILD-GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GL" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       (:NAME "GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T))
+      (:NAME "KEY-VALUE" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+      (:NAME "GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ITEMS-IN-GROUP" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "GL" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+       (:NAME "GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY-VALUES" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL))
+     :DOCUMENTATION
+     " a list of key values that will produce a list of all the items in a given group")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GROUPED-LIST-SPEED-TESTER" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+      (:NAME "TESTS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+      (:NAME "HASH-TESTS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL)
+      ((:NAME "ITERATIONS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL) 10)
+      (:NAME "ACTIONS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "A function to help asses which implementation will work best in your given scenario
+   actions : (lambda (gl) ...) -to help test whatever grouped list
+             operations you will need to do repeatedly
+
+  "))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "CHILD-GROUPINGS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "ADD-ITEM-TO-GROUPING" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "GROUP-BY-REPEATED" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "CATEGORIZE-ITEM" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "MAKE-GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "TESTS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "KEYS" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "PARENT-GROUPING" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "ITEMS-IN-GROUP" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "GROUP-BY" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "KEY-VALUE" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "MAKE-CHILD-GROUPED-LIST" :PACKAGE-NAME "GROUP-BY" :EXTERNALP T)
+    (:NAME "GROUPED-LIST-SPEED-TESTER" :PACKAGE-NAME "GROUP-BY" :EXTERNALP
+     T)))))

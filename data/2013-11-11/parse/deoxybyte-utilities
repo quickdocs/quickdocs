@@ -1,0 +1,1468 @@
+
+(:TYPE :SYSTEM :NAME "deoxybyte-utilities" :AUTHOR "Keith James" :MAINTAINER
+ NIL :VERSION "0.10.1" :LICENCE "GPL v3" :DESCRIPTION NIL :LONG-DESCRIPTION NIL
+ :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "UK.CO.DEOXYBYTE-UTILITIES" :FULL-NAME
+   "UK.CO.DEOXYBYTE-UTILITIES" :DOCUMENTATION
+   "The deoxybyte-utilities system provides general
+purpose utilities. These are for the most part simple, standalone
+functions and macros. Once a particular function or macro has been
+written more than once or twice in other systems, it normally gets
+moved here.
+
+Given the fluid nature of the contents of this system, its package's
+exported symbols are intended primarily for use by other deoxybyte
+packages."
+   :SYMBOL-LIST
+   ((:TYPE :GENERIC :SYMBOL
+     (:NAME "MESSAGE-OF" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Returns the condition message string.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MESSAGE-OF" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FORMATTED-CONDITION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MESSAGE-OF" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "SIMPLE-TEXT-CONDITION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "OCTET" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NIBBLE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "UINT8" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "INT8" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "UINT16" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "INT16" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "UINT32" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "INT32" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "ARRAY-INDEX" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "VECTOR-INDEX" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "SIMPLE-OCTET-VECTOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-GENSYMS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "NAMES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+        NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "FUNCALL-IF-FN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARG" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "If FUNCTION is not null, funcalls FUNCTION on ARG, otherwise
+returns ARG.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "COPY-VECTOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "SOURCE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "SOURCE-START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+       :EXTERNALP NIL)
+      (:NAME "SOURCE-END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "DEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "DEST-START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Copies elements SOURCE indices SOURCE-START and SOURCE-END to DEST,
+inserting them into DEST at DEST-START onwards. If the function KEY is
+supplied, it is applied to each element of SOURCE prior to its
+insertion into DEST.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "CHECK-ARGUMENTS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TEST-FORM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "ARGUMENTS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERROR-MESSAGE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+       :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MESSAGE-ARGUMENTS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+       :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Checks the validity of ARGUMENTS. If TEST-FORM returns false an
+{define-condition invalid-argument-error} is raised. The default error
+message may be refined with an additional ERROR-MESSAGE.
+
+Arguments:
+
+- test-form (form): A form to be evaluated. If the form returns NIL,
+  an error is raised.
+- arguments (list symbols): A list of symbols to which argument values
+  are bound.
+
+Optional:
+
+- error-message (string): An error message string.
+
+Rest:
+
+- message-arguments (forms): Forms that evaluate to arguments for the
+  error message.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFGENERATOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "MORE-FORM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "NEXT-FORM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CURRENT-FORM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+       :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a generator function that may be passed to any of the
+generator utility functions {defun has-more-p} , {defun next}
+and {defun current} .
+
+Arguments:
+
+- more-form (form): A form that returns T if the generator can supply
+  more values, or NIL otherwise. Used by {defun has-more-p } .
+
+- next-form (form): A form that returns the next value of the
+  generator. Used by {defun next} .
+
+Optional:
+
+- current-form (form): A form that returns the current value of the
+  generator. Used by {defun current} .
+
+Returns:
+- A form that evaluates to an anonymous function.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CURRENT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GEN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the current value of generator function GEN.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEXT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GEN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the next available value from generator function GEN.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HAS-MORE-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "GEN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns T if generator function GEN has more available values, or
+NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONSUME" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CON" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION "Applies consumer function CON with arguments ARGS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COLLECT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GEN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "N" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL) 1))
+     :DOCUMENTATION
+     "Returns a list of up to N values collected from generator function
+GEN. Uses {defun has-more-p} to test the generator and may return an
+empty list if no items are available.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DISCARD" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "GEN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "N" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL) 1))
+     :DOCUMENTATION
+     "Discards up to N values collected from generator function GEN. Uses
+{defun has-more-p} to test the generator and finally returns the
+number of values actually discarded.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DISCARDING-IF" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "GEN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a new generator function that discards values from
+generator function GEN while they satisfy TEST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IOTA" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      ((:NAME "STEP" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 1))
+     :DOCUMENTATION
+     "Generates a list of COUNT integers from START (defaults to 0) with
+subsequent integers STEP (defaults to 1) greater than the last, or
+less, if a negative STEP is given.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NUMBER-GENERATOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      ((:NAME "STEP" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 1))
+     :DOCUMENTATION
+     "Creates a closure of zero arity that returns an integer from START
+with subsequent integers incrementing by STEP greater than the last,
+or less, is a negative step is given.
+
+Optional:
+
+- start (integer): the start value, defaults to 0.
+- step (integer): the step size, defaults to 1.
+
+Returns:
+
+- A closure of zero arity.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-NUMERIC-SELECTOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAME" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       (:NAME "NUM-BINS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+        NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+         NIL)
+        0)
+       ((:NAME "END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+        ((:NAME "+" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+          NIL)
+         (:NAME "NUM-BINS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+          NIL)))
+       ((:NAME "OUT-OF-BOUNDS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+         :EXTERNALP NIL)
+        (:NAME "ERROR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION "Defines a local function NAME that accepts a single fixnum
+argument and returns an integer between 0 and NUM-BINS, indicating in
+which of NUM-BINS sequential, equal-sized bins that value belongs.
+
+Arguments:
+
+- name (symbol): the local function name.
+- num-bins (integer): the number of bins into which values are to be
+  assigned.
+
+Key:
+
+- start (number): the lower bound of the range of values to be binned,
+  defaults to 0.
+- end (number): the upper bound of the range of values to be binned.
+- oob-error (boolean): if T the function will throw an
+  INVALID-ARGUMENT-ERROR when passed values less than START or greater
+  than END, otherwise the function will return NIL.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-CATEGORICAL-BINNER" :PACKAGE-NAME
+      "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CATEGORIES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Creates a closure that accepts a single fixnum argument. The argument
+value is assigned to the appropriate bin and that bin's total is
+incremented. The closure returns two values, the bins as an array of
+fixnums and the total number of times values did not fall into any
+category. Note that the return values are cumulative across calls
+because the counters are closed over.
+
+Arguments:
+
+- value (symbol): a symbol to which values are bound on the subsequent
+category forms.
+
+Rest:
+
+- categories (forms): test forms, one for each bin, that evaluate to a
+generalized boolean. These forms are evaulated in the order given in
+to assign values to bins.
+
+For example, counting numbers into four bins of odd/positive,
+odd/negative, even/positive and even/negative.
+
+;;; (define-categorical-binner x
+;;;    (and (oddp x) (plusp x))
+;;;    (and (oddp x) (minusp x))
+;;;    (and (evenp x) (plusp x))
+;;;    (and (evenp x) (minusp x)))
+
+Returns:
+
+- A closure accepting a numeric value.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUOTEDP" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns T if FORM is quoted.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ASSOCDR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "ALIST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the cdr of the cons cell returned by calling (assoc KEY
+ALIST ARGS).")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "RASSOCAR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VAL" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "ALIST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the car of the cons cell returned by calling (rassoc KEY
+ALIST ARGS).")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "RPLASSOC" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "ALIST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "VAL" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Performs destructive replacement with VAL (using RPLACD) of the cdr
+of the cons returned when calling assoc on ALIST with KEY and ARGS.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ASSOCPUSH" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "ALIST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "VAL" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Pushes VAL onto the cdr of the cons returned from ALIST by calling
+assoc with KEY and ARGS.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ASSOCPOP" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "ALIST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Pops a value from the cdr of the cons returned from ALIST by
+calling assoc with KEY and ARGS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOTTED-PAIR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Returns T if LIST is a dotted pair, or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROPER-LIST-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns T if LIST is a proper list, or NIL otherwise. A proper list
+is defined as a list whose terminal cdr is NIL. This function does not
+test the list for circularity.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SPLICE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OBJ" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "N" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION "Splices atom or (a copy of) list OBJ into a copy of LIST at
+position N.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NSPLICE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OBJ" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "N" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Destructively splices atom or list OBJ into LIST at position N.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INTERSPERSE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OBJ" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list containing the members of LIST interspersed with
+OBJ.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FLATTEN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a new list containing the members of TREE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXACTLY-N" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "N" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "FIRST-SEQ" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MORE-SEQS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Analagous to the ANSI standard functions EVERY and SOME, except
+that this function returns T if exactly N tests of PREDICATE are true,
+or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXACTLY-ONE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "FIRST-SEQ" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MORE-SEQS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Analagous to the ANSI standard functions EVERY and SOME, except
+that this function returns T if exactly one test of PREDICATE is true,
+or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COLLECT-KEY-VALUES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEYWORDS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "ARG-LIST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "For all keywords in list KEYWORDS, finds the keyword and its value
+in ARG-LIST, a list containing only keyword and value pairs. Returns
+two values, a list of matched keywords and a list of their
+corresponding values.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KEY-VALUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEYWORD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARG-LIST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns the current value of KEYWORD in list ARG-LIST, a list
+containing only keyword and value pairs.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-KEY-VALUES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEYWORDS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "ARG-LIST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns two values, a copy of ARG-LIST, a list containing only
+keyword and value pairs, with KEYWORDS and their values removed and an
+alist containing KEYWORDS and their corresponding values.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MODIFY-KEY-VALUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEYWORD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARG-LIST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "MOD-FN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FN-ARGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns a copy of ARG-LIST where the value corresponding to KEYWORD
+has been replaced by the result of applying MOD-FN to that
+value. MOD-FN must be a function that accepts KEYWORDS's value and may
+accept additional arguments supplied in FN-ARGS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CANONICAL-FN-ARGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LAMBDA-LIST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      (:NAME "FN-ARGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns a canonical version of FN-ARGS corresponding to LAMBDA-LIST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LINEAR-UNION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "LIST1" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "LIST2" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list that is the union of LIST1 and LIST2, in linear
+time. See CL:UNION for the meaning of KEY and TEST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LINEAR-INTERSECTION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LIST1" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "LIST2" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list that is the intersection of LIST1 and LIST2, in
+linear time. See CL:INTERSECTION for the meaning of KEY and TEST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LINEAR-SET-DIFFERENCE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LIST1" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "LIST2" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list that is the set difference of LIST1 and LIST2, in
+linear time. See CL:SET-DIFFERENCE for the meaning of KEY and TEST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LINEAR-SET-EXCLUSIVE-OR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LIST1" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "LIST2" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list that is the set exclusive-or of LIST1 and LIST2, in
+linear time. See CL:SET-EXCLUSIVE-OR for the meaning of KEY and TEST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LINEAR-SUBSETP" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LIST1" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "LIST2" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns T if LIST1 is a subset of LIST2, in linear time. See
+CL:SUBSETP for the meaning of KEY and TEST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LINEAR-SET-EQUAL" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LIST1" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "LIST2" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VECTOR-POSITIONS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ELT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      (:NAME "END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns a list of indices into VECTOR between START and END where
+ELT is present according to TEST (which defaults to EQL).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VECTOR-SPLIT-INDICES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ELT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      (:NAME "END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns two values, a list of start indices and a list of end
+indices into VECTOR between START and END such that if used as
+start/end arguments to subseq, VECTOR will be split on ELT. ELT is
+compared with elements in VECTOR using TEST, which defaults to EQL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VECTOR-SPLIT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "ELT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      (:NAME "END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "REMOVE-EMPTY-SUBSEQS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+       :EXTERNALP NIL)
+      (:NAME "DISPLACE-TO-VECTOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+       :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list of vectors made by splitting VECTOR at ELT, between
+START and END. ELT is compared with elements in VECTOR using TEST,
+which defaults to EQL. If REMOVE-EMPTY-SUBSEQS is T, any empty
+subsequences will be omitted from the returned list. If
+DISPLACE-TO-VECTOR id T, the returned subsequences will be displaced
+to the actual subsequences within VECTOR and will therefore share
+structure with VECTOR.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BINARY-SEARCH" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ITEM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "<" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      ((:NAME "END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION "Searches for ITEM in VECTOR by binary search.
+
+Arguments:
+
+- vector (vector): A sorted vector to be searched.
+- item (object): The item to be found.
+
+Key:
+
+- test (function): The test used to compare ITEM with VECTOR elements.
+- key (function): A key function with which to transform VECTOR elements.
+- start (fixnum): The lower bound index of the search in VECTOR.
+- end (fixnum): The upper bound index of the search in VECTOR.
+
+Returns:
+- An object, or NIL.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*WHITESPACE-CHARS*" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP NIL)
+     :DOCUMENTATION "Whitespace characters." :INITIAL-VALUE
+     "(MAKE-ARRAY 5 :ELEMENT-TYPE 'BASE-CHAR :INITIAL-CONTENTS
+            '(#\\  #\\Tab #\\Return #\\Newline #\\Page))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONTROL-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns T if CHAR is an ASCII control character (all characters
+with codes 0-31, inclusive, and the character with code 127), or NIL
+otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WHITESPACE-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns T if CHAR is one of the currently bound set of whitespace
+characters (defaults to #Space #Tab #Return #Linefeed and
+#FormFeed), or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WHITESPACE-STRING-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns T if all the characters in STR are whitespace as defined by
+WHITESPACE-CHAR-P, or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONTENT-STRING-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns T if any of the characters in STR are not whitespace as
+defined by WHITESPACE-CHAR-P, or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMPTY-STRING-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns T if STR is a zero-length string or contains only
+whitespace as defined by WHITESPACE-CHAR-P, or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONTAINS-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHAR=" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns T if STR contains CHAR, determined by TEST (defaults to
+CHAR=) or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HAS-CHAR-AT-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INDEX" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHAR=" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns T if STR has CHAR at INDEX, determined by TEST (defaults to
+CHAR=), or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STARTS-WITH-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHAR=" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns T if STR has CHAR at index 0, determined by TEST (defaults
+to CHAR=), or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENDS-WITH-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHAR=" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION "Returns T if STR has CHAR at its last index, determined by
+TEST (defaults to CHAR=), or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVERY-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INDICES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Applies predicate TEST to characters of string STR indicated by
+INDICES and returns T if all those characters match TEST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STARTS-WITH-STRING-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR1" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "STR2" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING=" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns T if STR1 starts with STR2, determined by TEST (defaults to
+STRING=), or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENDS-WITH-STRING-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR1" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "STR2" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING=" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns T if STR1 ends with STR2, determined by TEST (defaults to
+STRING=), or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONCAT-STRINGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STRS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a new simple-string created by concatenating, in the order
+supplied, the simple-strings contained in the vector STRS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TXT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STRINGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns the result of concatenating STRINGS, separated by spaces.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STRINGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Returns the result of concatenating strings STRINGS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-POSITIONS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      (:NAME "END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-SPLIT-INDICES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      (:NAME "END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns two values, a list of start indices and a list of end
+indices into STR between START and END such that if used as start/end
+arguments to subseq, STR will be split on CHAR. CHAR is compared with
+elements in STR using TEST, which defaults to EQL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-SPLIT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      (:NAME "END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "REMOVE-EMPTY-SUBSTRINGS" :PACKAGE-NAME
+       "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list of strings made by splitting simple-string STR at
+CHAR, between START and END. If REMOVE-EMPTY-SUBSEQS is T, any empty
+subsequences will be omitted from the returned list.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OCTETS-TO-STRING" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OCTETS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      ((:NAME "END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "END-SUPPLIED-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION "Returns a new simple-base-string created from the values in
+OCTET-VECTOR, a simple-array of (unsigned-byte 8), between indices
+START and END. The elements of the returned string are the result of
+calling code-char on the respective elements of OCTET-VECTOR.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-TO-OCTETS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       0)
+      ((:NAME "END" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "END-SUPPLIED-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Returns a new vector of octets created from the simple-string
+STR, between indices START and END. The elements of the returned
+vector are the result of calling char-code on the respective
+characters of STR.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-CLASSES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "PACKAGE-NAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SUPERCLASS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+        NIL)
+       ((:NAME "FIND-CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STANDARD-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))))
+     :DOCUMENTATION
+     "Returns a list of all classes defined in package PACKAGE-NAME,
+optionally restricted to those classes that have SUPERCLASS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-EXTERNAL-CLASSES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PACKAGE-NAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SUPERCLASS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+        NIL)
+       ((:NAME "FIND-CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION "Returns a list of all exported classes defined in package
+PACKAGE-NAME, optionally restricted to those classes that have
+SUPERCLASS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-EXTERNAL-GENERIC-FUNCTIONS" :PACKAGE-NAME
+      "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PACKAGE-NAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns a list of all the external generic functions in package
+PACKAGE-NAME.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFSMFUN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "ARGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "BINDINGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL)
+      ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STATES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION
+     "Returns a function that encapsulates a finite state machine over STATES.
+
+Arguments:
+
+- name (symbol): The name of the function.
+- args (lambda list): The function lambda list.
+- bindings (list): A list of parallel bindings (as for LET).
+
+Rest:
+
+- states (list): A list of forms describing the state
+  transitions. Each state form consists of a symbol that denotes a
+  current state and a series of conditional forms that act indicate
+  potential states that may be reached from the current state. The
+  tests are evaluated in turn as in a COND form.
+
+     (current-state (test1 next-state1 &rest actions)
+                    (test2 next-state2 &rest actions)
+                    (t nil))
+
+  When a test returns T, the machine moves to the next state once the
+  current state's action forms are evaluated. A next state of NIL
+  indicates termination, at which point the function returns the
+  result of evaluating the last action form.
+
+  For example, the following definition returns a function that
+  partitions a DNA sequence into base triples (codons).
+
+   ;;; (defsmfun codon-iterator (seq &key (start 0))
+   ;;;   ((i start)
+   ;;;    (len (length-of seq))
+   ;;;    (codons ())
+   ;;;    (codon ()))
+   ;;;   ((base0 ((< i len) base1
+   ;;;            (setf codon (list (element-of seq i)))
+   ;;;            (incf i))
+   ;;;            (t nil
+   ;;;               (reverse codons)))
+   ;;;    (base1 ((< i len) base2
+   ;;;            (push (element-of seq i) codon)
+   ;;;            (incf i))
+   ;;;           (t nil
+   ;;;              (reverse codons)))
+   ;;;    (base2 ((< i len) base0
+   ;;;            (push (element-of seq i) codon)
+   ;;;            (push (reverse codon) codons)
+   ;;;            (incf i))
+   ;;;           (t nil
+   ;;;              (reverse codons)))))
+
+Returns:
+
+- A function.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFSM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STATES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION "Defines a finite state machine over STATES.
+
+Arguments:
+
+- states (list): A list of forms describing the state transitions. See
+  {defun defsmfun} .
+
+For example:
+
+   ;;; (let* ((seq (make-dna \"atggtgcct\"))
+   ;;;        (i 0)
+   ;;;        (len (length-of seq))
+   ;;;        (codons ())
+   ;;;        (codon ()))
+   ;;;   (defsm ((base0 ((< i len) base1
+   ;;;                   (setf codon (list (element-of seq i)))
+   ;;;                   (incf i))
+   ;;;                  (t nil
+   ;;;                     (reverse codons)))
+   ;;;           (base1 ((< i len) base2
+   ;;;                   (push (element-of seq i) codon)
+   ;;;                   (incf i))
+   ;;;                  (t nil
+   ;;;                     (reverse codons)))
+   ;;;           (base2 ((< i len) base0
+   ;;;                   (push (element-of seq i) codon)
+   ;;;                   (push (reverse codon) codons)
+   ;;;                   (incf i))
+   ;;;                  (t nil
+   ;;;                     (reverse codons)))))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CONDITIONAL" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ACCEPTORS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "A FIFO queue. For consistency, all functions that operate on a
+QUEUE carry the QUEUE- prefix, even though this results in tautology
+for some functions, such as QUEUE-ENQUEUE/QUEUE-DEQUEUE. This is a
+standard way of making a linked-list queue; the QUEUE structure
+contains pointers to both the head and tail of a single list."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HEAD" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TAIL" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "HEAD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM0" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "TAIL" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM1" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-ENQUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ITEM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Inserts ITEM at the end of QUEUE and returns QUEUE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-DEQUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION
+     "Removes one item from the front of QUEUE and returns two values.
+The first value is the item, or NIL if QUEUE was empty and the second
+value is T if an item was dequeued, or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-DEQUEUE-IF" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Removes items from QUEUE that pass predicate TEST, returning two
+values, QUEUE and a list of the deleted items. The KEY keyword
+argument is the same as for C:DELETE-IF.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-APPEND" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LISTS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Inserts LISTS of items at the end of QUEUE and returns QUEUE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-CLEAR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION
+     "Removes all items from queue, returning two values, the queue and a
+  list of all the items that were in the queue.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-FIRST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns the first item in QUEUE, without removing it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-LAST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns the last item in QUEUE, without removing it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-NTH" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns the Nth item in QUEUE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-EMPTY-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns T if QUEUE is empty, or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-LENGTH" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T))
+     :DOCUMENTATION "Returns the length of QUEUE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-POSITION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ITEM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns the zero-based index of ITEM in QUEUE, or NIL if ITEM is
+not present. The TEST and KEY keyword arguments are the same as for
+CL:POSITION.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUEUE-DELETE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "ITEM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      ((:NAME "TEST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION "Deletes the first occurrence of ITEM in QUEUE, if present,
+returning QUEUE. The TEST and KEY keyword arguments are the same as
+for CL:DELETE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HAS-SUPERCLASS-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SUPERCLASS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Returns T if CLASS has SUPERCLASS, or NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DIRECT-SUPERCLASSES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Returns a list of the direct superclasses of CLASS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DIRECT-SUBCLASSES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Returns a list of the direct subclasses of CLASS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-SUPERCLASSES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "CEILING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "FIND-CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STANDARD-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))))
+     :DOCUMENTATION "Returns a list of all superclasses of CLASS, up to, but not
+including, class CEILING. The class CEILING defaults to
+STANDARD-OBJECT.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-SPECIALIZED-METHODS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "CEILING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "FIND-CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STANDARD-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))))
+     :DOCUMENTATION
+     "Returns a list of all methods specialized on CLASS, up to, but not
+including, class CEILING. The class CEILING defaults to
+STANDARD-OBJECT.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-SPECIALIZED-GENERIC-FUNCTIONS" :PACKAGE-NAME
+      "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "CEILING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "FIND-CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STANDARD-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))))
+     :DOCUMENTATION
+     "Returns a list of all generic functions specialized on CLASS, up to,
+but not including, class CEILING. The class CEILING defaults to
+STANDARD-OBJECT.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-SLOTS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Returns a sorted list of all slots of CLASS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SLOT-DOCUMENTATION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SLOT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP NIL)
+      (:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Returns the documentation string for SLOT of CLASS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-SLOT-DEFINITIONS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Returns a list of all slot definitions of CLASS."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "WHITESPACE-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "FLATTEN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "VECTOR-POSITIONS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "LINEAR-SUBSETP" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "CURRENT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "EXACTLY-N" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "DIRECT-SUPERCLASSES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "RPLASSOC" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "WITH-GENSYMS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "INTERSPERSE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "ASSOCPUSH" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "HAS-CHAR-AT-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "ALL-SUPERCLASSES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "STRING-SPLIT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "ALL-SPECIALIZED-GENERIC-FUNCTIONS" :PACKAGE-NAME
+     "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "DEFSMFUN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "NIBBLE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "CONTENT-STRING-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "KEY-VALUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "INT8" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "EVERY-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "FUNCALL-IF-FN" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "QUEUE-HEAD" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "STRING-TO-OCTETS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "CONTROL-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "STARTS-WITH-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "QUEUE-APPEND" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "INVALID-OPERATION-ERROR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "DEFGENERATOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "INVALID-ARGUMENT-ERROR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "VECTOR-SPLIT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "QUEUE-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "QUEUE-CLEAR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "MODIFY-KEY-VALUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "SPLICE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "OCTETS-TO-STRING" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "QUEUE-EMPTY-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "LINEAR-SET-DIFFERENCE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "CONCAT-STRINGS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "STRING-SPLIT-INDICES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "SLOT-DOCUMENTATION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "COLLECT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "EXACTLY-ONE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "VECTOR-SPLIT-INDICES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "CHECK-ARGUMENTS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "DEPRECATION-WARNING" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "COPY-VECTOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "QUEUE-FIRST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "QUEUE-NTH" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "LINEAR-SET-EXCLUSIVE-OR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "ALL-SPECIALIZED-METHODS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "PROPER-LIST-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "HAS-SUPERCLASS-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "DOTTED-PAIR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "LINEAR-UNION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "MESSAGE-OF" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "LINEAR-SET-EQUAL" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "QUEUE-ENQUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "MAKE-QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "NSPLICE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "TXT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "ALL-EXTERNAL-GENERIC-FUNCTIONS" :PACKAGE-NAME
+     "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "QUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "ALL-CLASSES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "BINARY-SEARCH" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "VECTOR-INDEX" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "STRING-POSITIONS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "INT16" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "UINT16" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "WITH-NUMERIC-SELECTOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "STARTS-WITH-STRING-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "SIMPLE-TEXT-CONDITION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "MISSING-ARGUMENT-ERROR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "ALL-EXTERNAL-CLASSES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "WHITESPACE-STRING-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "REMOVE-KEY-VALUES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "QUEUE-LAST" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "NUMBER-GENERATOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "QUEUE-DELETE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "LINEAR-INTERSECTION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "DEFSM" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "HAS-MORE-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "UINT8" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "DISCARD" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "IOTA" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "OCTET" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "ALL-SLOTS" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "ASSOCDR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "NEXT" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "ARRAY-INDEX" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "QUEUE-DEQUEUE-IF" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "UINT32" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "FORMATTED-CONDITION" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "ENDS-WITH-STRING-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "INT32" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "ENDS-WITH-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "STR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "DISCARDING-IF" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "CONSUME" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "RASSOCAR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "COLLECT-KEY-VALUES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "QUEUE-DEQUEUE" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP
+     T)
+    (:NAME "DEFINE-CATEGORICAL-BINNER" :PACKAGE-NAME
+     "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "EMPTY-STRING-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "ASSOCPOP" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES" :EXTERNALP T)
+    (:NAME "CONTAINS-CHAR-P" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "SIMPLE-OCTET-VECTOR" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)
+    (:NAME "DIRECT-SUBCLASSES" :PACKAGE-NAME "UK.CO.DEOXYBYTE-UTILITIES"
+     :EXTERNALP T)))))

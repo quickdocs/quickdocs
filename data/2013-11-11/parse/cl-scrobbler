@@ -1,0 +1,396 @@
+
+(:TYPE :SYSTEM :NAME "cl-scrobbler" :AUTHOR
+ "Brit Butler <redline6561@gmail.com>" :MAINTAINER NIL :VERSION "0.4" :LICENCE
+ "BSD" :DESCRIPTION "A library for scrobbling to last.fm" :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("MD5" "FLEXI-STREAMS" "DRAKMA" "ST-JSON" "CL-STORE" "ARNESI")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-SCROBBLER" :FULL-NAME "CL-SCROBBLER" :DOCUMENTATION
+   "Homepage: <a href=\"http://github.com/redline6561/cl-scrobbler\">Github</a>"
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*API-VERSION*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION "The current Last.fm API version." :INITIAL-VALUE
+     "\"2.0\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*API-URL*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION "The URL for Last.fm API calls." :INITIAL-VALUE
+     "(FORMAT NIL \"http://ws.audioscrobbler.com/~D/\" CL-SCROBBLER::*API-VERSION*)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*API-KEY*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION "A valid Last.fm API key." :INITIAL-VALUE
+     "\"33019c2bf2e0ef2c78893ac864a94f20\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*API-SECRET*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION "A valid Last.fm API secret key." :INITIAL-VALUE
+     "\"c1374522165ddf37486a4ed20f2af335\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CONFIG-DIR*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :DOCUMENTATION
+     "The directory to store the session key, scrobble cache and log in."
+     :INITIAL-VALUE "\"\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SESSION-KEY*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION "The session key used to authenticate calls to last.fm."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SCROBBLE-COUNT*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :DOCUMENTATION
+     "The number of songs needed in the queue before an attempt to scrobble is
+made."
+     :INITIAL-VALUE "5")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SCROBBLE-P*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "This variable determines whether or not songs are added to the scrobble
+cache."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*NOW-PLAYING-P*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "This variable determines whether the user's now playing status is updated."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SAVE-SETTINGS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Persist the *SCROBBLE-COUNT*, *SCROBBLE-P* and *NOW-PLAYING-P* settings.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESTORE-SETTINGS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Restore the *SCROBBLE-COUNT*, *SCROBBLE-P* and *NOW-PLAYING-P* variables.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SCROBBLE-CACHE*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A queue of cached scrobbles to send when last.fm is available."
+     :INITIAL-VALUE "(MAKE-INSTANCE 'IT.BESE.ARNESI:QUEUE)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CACHE-CONTENTS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Get a copy of the contents of the *SCROBBLE-CACHE*.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PERSIST-CACHE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Persist the cache to disk.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESTORE-CACHE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Restore the cache from disk.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-TO-CACHE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SCROBBLE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION "Add the SCROBBLE to the cache and serialize it to disk.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-FROM-CACHE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Remove the last scrobble from the cache and persist the cache.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ERROR-CODES*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A list of Last.fm Error codes. Duh. From http://www.last.fm/api/errorcodes"
+     :INITIAL-VALUE "'((1 . \"This error does not exist\")
+  (2 . \"Invalid Service - This service does not exist\")
+  (3 . \"Invalid Method - No method with that name in this package\")
+  (4
+   . \"Authentication Failed - You do not have permission to access this service\")
+  (5 . \"Invalid Format - This service doesn't exist in that format\")
+  (6 . \"Invalid Parameters - Your request is missing a required paramter\")
+  (7 . \"Invalid Resource specified\")
+  (8
+   . \"Operation failed - Most likely the backend service failed. Please try again.\")
+  (9 . \"Invalid Session Key - Please reauthenticate\")
+  (10 . \"Invalid API Key - You must be granted a valid key by last.fm\")
+  (11
+   . \"Service Offline - This service is temporarily offline. Try again later\")
+  (12
+   . \"Subscribers Only - This station is only available to paid last.fm customers\")
+  (13 . \"Invalid Method Signature supplied\")
+  (14 . \"Unauthorized Token - This token has not been authorized\")
+  (15 . \"This item is not available for streaming\")
+  (16 . \"The service is temporarily unavailable, please try again\")
+  (17 . \"Login - Requires the user to be logged in\")
+  (18
+   . \"Trial Expired: The user has no free radio plays left. Subscription required\")
+  (19 . \"This error does not exist\")
+  (20
+   . \"Not Enough Content - There is not enough content to play this station\")
+  (21
+   . \"Not Enough Members - This group does not have enough members for radio\")
+  (22 . \"Not Enough Fans - This artist does not have enough fans for radio\")
+  (23 . \"Not Enough Neighbours - There are not enough neighbours for radio\")
+  (24
+   . \"No Peak Radio - This user is not allowed to listen to radio during peak usage\")
+  (25 . \"Radio Not Found - Radio station not found\")
+  (26
+   . \"API Key Suspended - This application is not allowed to make requests to the web services\")
+  (27 . \"Deprecated - This type of request is no longer supported\")
+  (29
+   . \"Rate Limit Exceded - Your IP has made too many requests in a short period, exceeding our API guidelines\"))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ERROR-MESSAGE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ERRCODE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Retrieve the error message corresponding to the number ERRCODE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-LOG-ENTRY" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Format ARGS and append the line to the cl-scrobbler log file, creating it
+if it does not exist.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-LOGGING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Execute BODY in a handler-case such that network failure or any error message
+from the server results in logging the error to disk via ADD-LOG-ENTRY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MKSTR" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SYMB" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KSYMB" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SIMPLIFIED-CAMEL-CASE-TO-LISP" :PACKAGE-NAME "CL-SCROBBLER"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CAMEL-STRING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION "Lispify camelCase or CamelCase strings to camel-case.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SIMPLIFIED-LISP-TO-CAMEL-CASE" :PACKAGE-NAME "CL-SCROBBLER"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LISP-STRING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This is a very naive lisp symbol to camel-case converter. It is not designed
+to be robust, merely to handle local variables in the typical lisp style.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNIX-TIMESTAMP" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Cross-implementation abstraction to get the current time measured from the
+unix epoch (1/1/1970). Should return (values sec nano-sec).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MD5SUM" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Creates an MD5 byte-array of STRING and prints it as lower-case hexadecimal.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONFIG-FILE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "NAME" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return a pathname for NAME under *CONFIG-DIR* ensuring the directory exists.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FROB-LASTFM-NAME" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Lispify Last.fm method names. i.e. \"auth.getToken\" -> 'get-token")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FROB-SYMBOL" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SYMB" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "camelCase Lisp symbols. i.e. 'frob-lisp-symbol -> \"frobLispSymbol\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-PARAM" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SYM" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+      (:NAME "VAL" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return a cons, or list of conses if VAL is a list, suitable for use as a POST
+parameter or GET queryparam in a last.fm call. SYM is converted to a camelCase
+string and, if VAL is a list, append C-style array indices to SYM.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-SIGNATURE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARAMS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION "Construct an API method signature from PARAMS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LASTFM-CALL" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARAMS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "GET" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Make an HTTP request to the *API-URL* with the specified METHOD and PARAMS.
+PARAMS should be a list of dotted pairs.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFCALL" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+      (:NAME "PARAMETERS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+      ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "DOCS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+       ((:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "GET" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Define a function named by (FROB-LASTFM-NAME NAME) which calls the API method
+named by NAME with the given PARAMETERS. The result is bound to RESPONSE, the
+HTTP status code to STATUS and the headers to HEADERS, then BODY is executed in
+this environment. Note that this macro is thus unhygienic. DOCS is used to
+supply a docstring and METHOD determines the HTTP method to use.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-TOKEN" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Get an Unauthorized Token for initiating an authenticated session.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUEST-USER-AUTH" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "TOKEN" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION "Ask the user to authorize cl-scrobbler to submit songs.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-SESSION" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "TOKEN" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Get a Session Token for scrobbling. Last.fm recommends storing these
+in a secure fashion as they generally have an infinite lifetime.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AUTHORIZE-SCROBBLING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Authorize cl-scrobbler to scrobble to an account, saving the session key in
+a binary file and setting the *SESSION-KEY* global on success.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-SESSION-KEY" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Attempt to retrieve session key from disk. If it is not present, authorize
+a new session with last.fm and store the key for future use.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LAST-SEEK*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "The destination position in seconds of the last seek in the current track."
+     :INITIAL-VALUE "0")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SKIPPED*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Either NIL or the position in seconds before the user skipped to the next
+track."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SONG-INFO*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A list of (track artist length timestamp) of type (string string int string)
+or NIL."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SONG-INFO-FN*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :DOCUMENTATION
+     "This is a lambda or named function intended to take no arguments and return
+a list where the first element is the track name, the second is the artist and
+the third is the track length in seconds."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SONG-TIME-FN*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :DOCUMENTATION
+     "This is a lambda or named function intended to take no arguments and return
+the current position in the track in seconds."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UPDATE-NOW-PLAYING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TRACK" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+      (:NAME "ARTIST" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+      (:NAME "SK" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION "Update the Now Playing status on last.fm.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCROBBLE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TRACK" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+      (:NAME "TIMESTAMP" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+      (:NAME "ARTIST" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+      (:NAME "SK" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL))
+     :DOCUMENTATION "Scrobble the track!")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VALID-SCROBBLE-P" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Last.fm defines a valid scrobble as a track that is over 30 seconds long
+which has been played for over half its length OR 4 minutes. We extend this
+notion such that playtime must have occurred without seeking.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-QUEUE-SCROBBLE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "When valid (as determined by VALID-SCROBBLE-P), add a song to the queue to be
+scrobbled. If there is a network failure, the track will be stored for later
+scrobbling when a connection is reestablished.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TOGGLE-SCROBBLING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Toggle whether or not new songs are added to the queue.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TOGGLE-NOW-PLAYING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Toggle whether or not the Now Playing status is updated with each song.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-NOW-PLAYING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Update the now playing status when *NOW-PLAYING-P* is non-NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UPDATE-LAST-SEEK" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Set *LAST-SEEK* to the current track position via *SONG-TIME-FN*.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UPDATE-SONG-INFO" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Set *SONG-INFO* to a list of (track artist duration timestamp) via
+*SONG-INFO-FN* and UNIX-TIMESTAMP.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UPDATE-SKIPPED" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Set *SKIPPED* to the current track position via *SONG-TIME-FN*.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ATTEMPT-SCROBBLE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Peek at *SCROBBLE-CACHE* and attempt to scrobble the next song. If
+successful, remove the song from the cache and persist it to disk.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCROBBLER-INIT" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Ensure needed variables are set, restore the cache and settings if present
+and, if scrobbling is enabled, restore or acquire a session key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCROBBLER-LOOP" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Loop indefinitely. If there are at least *SCROBBLE-COUNT* songs queued,
+scrobble until the queue is empty or errors occur. Sleep 2 minutes and repeat."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*SCROBBLE-COUNT*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "TOGGLE-NOW-PLAYING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "*SONG-INFO-FN*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "SCROBBLER-INIT" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "SCROBBLER-LOOP" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "UPDATE-SONG-INFO" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "SET-NOW-PLAYING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "UPDATE-SKIPPED" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "*SONG-TIME-FN*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "TOGGLE-SCROBBLING" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "UPDATE-LAST-SEEK" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "MAYBE-QUEUE-SCROBBLE" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "CACHE-CONTENTS" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)
+    (:NAME "*CONFIG-DIR*" :PACKAGE-NAME "CL-SCROBBLER" :EXTERNALP T)))))

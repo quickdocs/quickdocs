@@ -1,0 +1,5 @@
+
+(:TYPE :SYSTEM :NAME "mcclim-png-bitmaps" :AUTHOR NIL :MAINTAINER NIL :VERSION
+ NIL :LICENCE NIL :DESCRIPTION
+ "Support for PNG images in McCLIM bitmap reading functions." :LONG-DESCRIPTION
+ NIL :DEPENDS-ON ("MCCLIM" "PNG-READ") :PACKAGE-LIST NIL)

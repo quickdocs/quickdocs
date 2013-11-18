@@ -1,0 +1,83 @@
+
+(:TYPE :SYSTEM :NAME "http-parse-test" :AUTHOR
+ "Andrew Danger Lyon <orthecreedence@gmail.com>" :MAINTAINER NIL :VERSION "0.1"
+ :LICENCE "MIT" :DESCRIPTION "Tests for http-parse." :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("HTTP-PARSE" "BABEL" "EOS") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "HTTP-PARSE-TEST" :FULL-NAME "HTTP-PARSE-TEST"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "TO-BYTES" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TO-STRING" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BYTES" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FILE-CONTENTS" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL))
+     :DOCUMENTATION "Read an entire file in binary form.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-FILE" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL)
+      (:NAME "CONTENTS" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL))
+     :DOCUMENTATION "Write a binary sequence to a file.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HTTP-RESPONSE1*" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(FORMAT NIL \"~
+HTTP/1.1 100 Continue~c~c~
+HTTP/1.1 100 Continue~c~c~
+HTTP/1.1 200 OK~c~c~
+Content-Type: text/plain~c~c~
+Content-Length: 13~c~c~
+~c~c~
+{name:andrew}\"
+        #\\Return #\\Newline #\\Return #\\Newline #\\Return #\\Newline #\\Return
+        #\\Newline #\\Return #\\Newline #\\Return #\\Newline)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HTTP-RESPONSE2*" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(FORMAT NIL \"~
+HTTP/1.1 200 OK~c~c~
+Content-Type: application/vnd.musio.users~c~c~
+Transfer-Encoding: chunked~c~c~
+Cache-Control: public; max-age=69~c~c~
+~c~c~
+B~c~c~
+{name:lucy,~c~c~
+6~c~c~
+age:3,~c~c~
+2f~c~c~
+likes:[acting sheepish,running,peeing,barking]}~c~c~
+0~c~c\"
+        #\\Return #\\Newline #\\Return #\\Newline #\\Return #\\Newline #\\Return
+        #\\Newline #\\Return #\\Newline #\\Return #\\Newline #\\Return #\\Newline
+        #\\Return #\\Newline #\\Return #\\Newline #\\Return #\\Newline #\\Return
+        #\\Newline #\\Return #\\Newline #\\Return #\\Newline)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HTTP-REQUEST1*" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(FORMAT NIL \"~
+POST /users/dead HTTP/1.1~c~c~
+Host: betthefarm.facebook.ru~c~c~
+Content-Type: application/vnd.musio.users~c~c~
+Transfer-Encoding: chunked~c~c~
+~c~c~
+C~c~c~
+{name:larry,~c~c~
+8~c~c~
+age:512,~c~c~
+25~c~c~
+likes:[cussin,bitin,stealin,fightin]}~c~c~
+0~c~c\"
+        #\\Return #\\Newline #\\Return #\\Newline #\\Return #\\Newline #\\Return
+        #\\Newline #\\Return #\\Newline #\\Return #\\Newline #\\Return #\\Newline
+        #\\Return #\\Newline #\\Return #\\Newline #\\Return #\\Newline #\\Return
+        #\\Newline #\\Return #\\Newline)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RUN-TESTS" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "RUN-TESTS" :PACKAGE-NAME "HTTP-PARSE-TEST" :EXTERNALP T)))))

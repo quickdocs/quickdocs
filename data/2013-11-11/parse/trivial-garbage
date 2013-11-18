@@ -1,0 +1,181 @@
+; cc -m32 -I/home/quickdocs_dev/quicklisp/dists/quicklisp/software/cffi_0.11.2/ -o /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/osicat-20130720-git/posix/basic-unixint /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/osicat-20130720-git/posix/basic-unixint.c
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/osicat-20130720-git/posix/basic-unixint /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/osicat-20130720-git/posix/basic-unixint.grovel-tmp.lisp
+; cc -m32 -I/home/quickdocs_dev/quicklisp/dists/quicklisp/software/cffi_0.11.2/ -o /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/osicat-20130720-git/posix/unixint /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/osicat-20130720-git/posix/unixint.c
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/osicat-20130720-git/posix/unixint /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/osicat-20130720-git/posix/unixint.grovel-tmp.lisp
+; cc -m32 -I/home/quickdocs_dev/quicklisp/dists/quicklisp/software/cffi_0.11.2/ -shared -fPIC -o /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/osicat-20130720-git/posix/libosicat.so /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/osicat-20130720-git/posix/wrappers.c
+
+(:TYPE :SYSTEM :NAME "trivial-garbage" :AUTHOR
+ "Luis Oliveira <loliveira@common-lisp.net>" :MAINTAINER NIL :VERSION NIL
+ :LICENCE "Public Domain" :DESCRIPTION
+ "Portable finalizers, weak hash-tables and weak pointers." :LONG-DESCRIPTION
+ NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "TRIVIAL-GARBAGE" :FULL-NAME "TRIVIAL-GARBAGE"
+   :DOCUMENTATION
+   "@a[http://common-lisp.net/project/trivial-garbage]{trivial-garbage}
+    provides a portable API to finalizers, weak hash-tables and weak
+    pointers on all major implementations of the Common Lisp
+    programming language. For a good introduction to these
+    data-structures, have a look at
+    @a[http://www.haible.de/bruno/papers/cs/weak/WeakDatastructures-writeup.html]{Weak
+    References: Data Types and Implementation} by Bruno Haible.
+
+    Source code is available at
+    @a[https://github.com/trivial-garbage/trivial-garbage]{github},
+    which you are welcome to use for submitting patches and/or
+    @a[https://github.com/trivial-garbage/trivial-garbage/issues]{bug
+    reports}. Discussion takes place on
+    @a[http://lists.common-lisp.net/cgi-bin/mailman/listinfo/trivial-garbage-devel]{trivial-garbage-devel at common-lisp.net}.
+
+    @begin[Weak Pointers]{section}
+    A @em{weak pointer} holds an object in a way that does not prevent
+    it from being reclaimed by the garbage collector.  An object
+    referenced only by weak pointers is considered unreachable (or
+    \"weakly reachable\") and so may be collected at any time. When
+    that happens, the weak pointer's value becomes @code{nil}.
+
+    @aboutfun{make-weak-pointer}
+    @aboutfun{weak-pointer-value}
+    @aboutfun{weak-pointer-p}
+    @end{section}
+
+    @begin[Weak Hash-Tables]{section}
+    A @em{weak hash-table} is one that weakly references its keys
+    and/or values. When both key and value are unreachable (or weakly
+    reachable) that pair is reclaimed by the garbage collector.
+
+    @aboutfun{make-weak-hash-table}
+    @aboutfun{hash-table-weakness}
+    @end{section}
+
+    @begin[Finalizers]{section}
+    A @em{finalizer} is a hook that is executed after a given object
+    has been reclaimed by the garbage collector.
+
+    @aboutfun{finalize}
+    @aboutfun{cancel-finalization}
+    @end{section}"
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "GC" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FULL" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL)
+      (:NAME "VERBOSE" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Initiates a garbage collection. @code{full} forces the collection
+   of all generations, when applicable. When @code{verbose} is
+   @em{true}, diagnostic information about the collection is printed
+   if possible.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-WEAK-POINTER" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates a new weak pointer which points to @code{object}. For
+   portability reasons, @code{object} must not be @code{nil}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WEAK-POINTER-P" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns @em{true} if @code{object} is a weak pointer and @code{nil}
+   otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WEAK-POINTER-VALUE" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "WEAK-POINTER" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "If @code{weak-pointer} is valid, returns its value. Otherwise,
+   returns @code{nil}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WEAKNESS-KEYWORD-ARG" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "WEAKNESS" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*WEAKNESS-WARNINGS*" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "List of weaknesses that have already been warned about this
+   session.  Used by `weakness-missing'."
+     :INITIAL-VALUE "'NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WEAKNESS-MISSING" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WEAKNESS" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL)
+      (:NAME "ERRORP" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal an error or warning, depending on ERRORP, about lack of Lisp
+   support for WEAKNESS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WEAKNESS-KEYWORD-OPT" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "WEAKNESS" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL)
+      (:NAME "ERRORP" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-WEAK-HASH-TABLE" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WEAKNESS" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL)
+      ((:NAME "WEAKNESS-MATTERS" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP
+        NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Returns a new weak hash table. In addition to the standard
+   arguments accepted by @code{cl:make-hash-table}, this function adds
+   extra keywords: @code{:weakness} being the kind of weak table it
+   should create, and @code{:weakness-matters} being whether an error
+   should be signalled when that weakness isn't available (the default
+   is to signal an error).  @code{weakness} can be one of @code{:key},
+   @code{:value}, @code{:key-or-value}, @code{:key-and-value}.
+
+   If @code{weakness} is @code{:key} or @code{:value}, an entry is
+   kept as long as its key or value is reachable, respectively. If
+   @code{weakness} is @code{:key-or-value} or @code{:key-and-value},
+   an entry is kept if either or both of its key and value are
+   reachable, respectively.
+
+   @code{tg::make-hash-table} is available as an alias for this
+   function should you wish to import it into your package and shadow
+   @code{cl:make-hash-table}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-HASH-TABLE" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HASH-TABLE-WEAKNESS" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "HT" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns one of @code{nil}, @code{:key}, @code{:value},
+   @code{:key-or-value} or @code{:key-and-value}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FINALIZE" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL)
+      (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Pushes a new @code{function} to the @code{object}'s list of
+   finalizers. @code{function} should take no arguments. Returns
+   @code{object}.
+
+   @b{Note:} @code{function} should not attempt to look at
+   @code{object} by closing over it because that will prevent it from
+   being garbage collected.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CANCEL-FINALIZATION" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP NIL))
+     :DOCUMENTATION "Cancels all of @code{object}'s finalizers, if any."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "MAKE-WEAK-POINTER" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+    (:NAME "CANCEL-FINALIZATION" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+    (:NAME "WEAK-POINTER-VALUE" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+    (:NAME "HASH-TABLE-WEAKNESS" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+    (:NAME "MAKE-WEAK-HASH-TABLE" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+    (:NAME "GC" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+    (:NAME "WEAK-POINTER-P" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)
+    (:NAME "FINALIZE" :PACKAGE-NAME "TRIVIAL-GARBAGE" :EXTERNALP T)))))

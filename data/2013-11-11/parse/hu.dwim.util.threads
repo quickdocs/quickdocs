@@ -1,0 +1,4 @@
+
+(:TYPE :SYSTEM :NAME "hu.dwim.util.threads" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL :LICENCE NIL :DESCRIPTION
+ "Various utilities used by the dwim.hu team. Threading related utilities for a bit more dependency." :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("BORDEAUX-THREADS" "HU.DWIM.DEF.NAMESPACE" "HU.DWIM.UTIL") :PACKAGE-LIST NIL)

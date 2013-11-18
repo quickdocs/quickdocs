@@ -1,0 +1,1322 @@
+
+(:TYPE :SYSTEM :NAME "cl-mediawiki" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL
+ :LICENCE NIL :DESCRIPTION "A tool to help talk to mediawiki's api."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("CXML" "DRAKMA" "ALEXANDRIA") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "NET.ACCELERATION.CL-MEDIAWIKI" :FULL-NAME
+   "NET.ACCELERATION.CL-MEDIAWIKI" :DOCUMENTATION
+   "This package provides a client to the mediawiki API, which is used 
+by Wikipedia among others.
+
+Exported functions fairly closely mirror the command structure of the
+API, which is summarized here: http://en.wikipedia.org/w/api.php
+
+ Usage example:
+ ;; setup to use only Wikipedia
+ CL-USER> (setf cl-mediawiki:*mediawiki* 
+                (cl-mediawiki:with-mediawiki (\"http://en.wikipedia.org/w\") 
+                 cl-mediawiki:*mediawiki*))
+
+ ;; get content of article titled Pigment
+ CL-USER> (cl-mediawiki:get-page-content \"Pigment\")
+
+ ;; get the revids and sizes of its last 10 revisions
+ CL-USER> (cl-mediawiki:get-revisions \"Pigment\" :rvprop \"ids|user|size\" :rvlimit 10)
+
+Further documentation is in README.mediawiki."
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-LIST" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "X" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL))
+     :DOCUMENTATION "just ensure that you have alist")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SYMBOLIZE-STRING" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PACKAGE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "KEYWORD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION "Turns a string into a happy symbol
+
+   ex: ''foo bar_bast'' -> FOO-BAR-BAST
+  ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-SXML-TREE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Do a depth first traversal of some set of trees calling fn on every non-nil element. ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-TREE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PRED" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TREE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "find a tree based on a predicate")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-NODES-BY-NAME" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TREE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "find all sxml nodes with a given name ")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "MEDIAWIKI" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "URL" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "URL" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "AUTH" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "AUTH" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COOKIE-JAR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "COOKIE-JAR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MEDIAWIKI*" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :DOCUMENTATION
+     "the current instance of media wiki we are dealing with (mostly for use with with-mediawiki)"
+     :INITIAL-VALUE "NIL")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-MEDIAWIKI" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJ" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-API-REQUEST" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "API-PARAMS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "BASIC-AUTHORIZATION" :PACKAGE-NAME
+        "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+       ((:NAME "AUTH" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+         NIL)
+        (:NAME "*MEDIAWIKI*" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+         :EXTERNALP T)))
+      ((:NAME "FORCE-SSL" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FORCE-SSL-P" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL))
+      ((:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "GET" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Calls the media wiki api providing the specified parameters")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-EXTERNAL-FORMAT*" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP T)
+     :DOCUMENTATION "sets as the drakma default coding system" :INITIAL-VALUE
+     ":UTF-8")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-PARAMETERS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARAMS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Takes a list of bindings (:key :val) and prepares them for transit
+   by converting them to strings
+   (if either the pair is nil or the value is nil, we drop that param)
+  ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-API-RESPONSE-TO-SXML" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONTENT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SXML-ATTRIBUTE-VALUE" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "ALIST" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONVERT-SXML-ATTRIBS-TO-ALIST" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SXML-ATTRIBS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ERR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       (:NAME "MEDIA-WIKI-ERROR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHECK-SXML-FOR-ERROR" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "XML" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "search the response for <api><error attribs></api>")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+DEFAULT-QUERY-PARAMS+" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "The parameters that are available for any action=query api call"
+     :INITIAL-VALUE
+     "'(NET.ACCELERATION.CL-MEDIAWIKI::TITLES NET.ACCELERATION.CL-MEDIAWIKI::PAGEIDS
+  NET.ACCELERATION.CL-MEDIAWIKI::REVIDS NET.ACCELERATION.CL-MEDIAWIKI::PROP
+  LIST NET.ACCELERATION.CL-MEDIAWIKI::META
+  NET.ACCELERATION.CL-MEDIAWIKI::GENERATOR
+  NET.ACCELERATION.CL-MEDIAWIKI::REDIRECTS
+  NET.ACCELERATION.CL-MEDIAWIKI::INDEXPAGEIDS EXPORT
+  NET.ACCELERATION.CL-MEDIAWIKI::EXPORTNOWRAP)")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-PROXY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CORE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REQ" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "BASED-ON" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "PROPS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "DOC" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      ((:NAME "PROCESSOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "GET" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Defines a function with NAME with REQ required parameters. The
+symbols in the BASED-ON and PROPS lists are concatenated with pairs
+from the CORE list and passed to the MAKE-PARAMETERS function.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LOGIN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LGNAME" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LGPASSWORD" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LGDOMAIN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%LOGIN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "LGNAME" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LGPASSWORD" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LGDOMAIN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "LGTOKEN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "
+  This module is used to login and get the authentication tokens. 
+  In the event of a successful log-in, a cookie will be attached
+  to your session. In the event of a failed log-in, you will not 
+  be able to attempt another log-in through this method for 5 seconds.
+  This is to prevent password guessing by automated password crackers.
+
+This module only accepts POST requests.
+Parameters:
+  lgname         - User Name
+  lgpassword     - Password
+  lgdomain       - Domain (optional)
+  lgtoken        - Login token obtained in first request
+Example:
+  api.php?action=login&lgname=user&lgpassword=password ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIST-CATEGORY-MEMBERS" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CMTITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CMENDSORTKEY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "CMSTARTSORTKEY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "CMEND" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "CMSTART" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "CMDIR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "CMSORT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "CMLIMIT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "CMCONTINUE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "CMNAMESPACE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "CMPROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REQUESTID" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "MAXAGE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "SMAXAGE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "MAXLAG" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "VERSION" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL))
+     :DOCUMENTATION "List all pages in a given category.
+
+Parameters:
+  cmtitle        - Which category to enumerate (required). Must include Category: prefix
+  cmprop         - What pieces of information to include
+                   Values (separate with '|'): ids, title, sortkey, timestamp
+                   Default: ids|title
+  cmnamespace    - Only include pages in these namespaces
+                   Values (separate with '|'): 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 100, 101
+  cmcontinue     - For large categories, give the value retured from previous query
+  cmlimit        - The maximum number of pages to return.
+                   No more than 500 (5000 for bots) allowed.
+                   Default: 10
+  cmsort         - Property to sort by. One value: sortkey, timestamp,Default: sortkey
+  cmdir          - In which direction to sort. One value: asc, desc Default: asc
+  cmstart        - Timestamp to start listing from. Can only be used with cmsort=timestamp
+  cmend          - Timestamp to end listing at. Can only be used with cmsort=timestamp
+  cmstartsortkey - Sortkey to start listing from. Can only be used with cmsort=sortkey
+  cmendsortkey   - Sortkey to end listing at. Can only be used with cmsort=sortkey
+
+ Examples:
+   Get first 10 pages in [[Category:Physics]]:
+     (list-category-members \"Category:Physics\")
+
+   Get page info about first 10 pages in [[Category:Physics]]:
+     (list-category-members \"Category:Physics\" :prop 'info)
+
+  Returns a list of alists, each representing a CategoryMember
+    alist keys are: :title :ns :pageid
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-PAGE-CONTENT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RVSECTION" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Get the content for a given page.
+
+Does not accept revid. To get the content of older pages, use
+get-revisions with the rvprop content tag.
+
+Parameters:
+  titles - the title of the page
+
+  rvsection      - only retrieve the content of this section
+                   (a number indicating which section, not the section name)
+
+ Examples: (get-page-content \"Physics\")
+
+ Returns: a string with the given page content
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-PAGE-CONTENT-BY-REVID" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RVSECTION" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Get the content for a given revid
+
+Parameters:
+  revids - the revision id of the page
+
+  rvsection      - only retrieve the content of this section
+                   (a number indicating which section, not the section name)
+
+ Examples: (get-page-content 446445813)
+
+ Returns: a string with the given page content
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%PARSE-TEXT-SECTIONS" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TEXT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "parses the given text and lists sections in that content.
+returns list of (number name anchor rvsection)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIST-PAGE-SECTIONS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PAGE-TITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL))
+     :DOCUMENTATION
+     "lists sections in a page, returns list of (number name anchor rvsection)
+
+rvsection is suitable to for the :rvsection param of get-page-content
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-PAGE-SECTION" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PAGE-TITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "SECTION-NAME" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL))
+     :DOCUMENTATION
+     "searches the the given page for the given section name. returns nil or (number name anchor rvsection)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PAGES-THAT-EMBED" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "EITITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EILIMIT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "EIFILTERREDIR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EINAMESPACE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EICONTINUE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "List pages that embed a given template or other page
+
+Parameters:
+  eititle        - Title to search. If null, titles= parameter will be used instead, but will be obsolete soon.
+  eicontinue     - When more results are available, use this to continue.
+  einamespace    - The namespace to enumerate.
+                   Values (separate with '|'): 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 100, 101, 102, 103
+  eifilterredir  - How to filter for redirects
+                   One value: all, redirects, nonredirects
+                   Default: all
+  eilimit        - How many total pages to return.
+                   No more than 500 (5000 for bots) allowed.
+                   Default: 10
+
+ Examples: (pages-that-embed \"Template:Client\")
+
+ Returns: a list of pagetitles and a continuation (if there is one)
+")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "TOKEN-BAG" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PAGE-ATTRIBUTES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "PAGE-ATTRIBUTES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "An alist of page attributes returned by the api")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TIMESTAMP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "TIMESTAMP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TOKENS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "TOKENS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "either a single token, or an
+            alist mapping type to value")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN-BAG" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       (:NAME "TOKEN-BAG" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EDIT-TOKEN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN-BAG" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       (:NAME "TOKEN-BAG" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MOVE-TOKEN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN-BAG" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       (:NAME "TOKEN-BAG" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-TOKEN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "TOKEN-BAG" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       (:NAME "TOKEN-BAG" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-ACTION-TOKENS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "INTOKEN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       (:NAME "EDIT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Gets the tokens necessary for perform edits.
+
+Parameters:
+  titles - the title of the page we wish to edit
+  intoken - which tokens do we want (out of :edit :move :delete :block :unblock  or a list of those)
+
+ Examples: (get-action-tokens \"Physics\")
+           (get-action-tokens \"Physics\" :intoken '(:edit :move :delete))
+           (get-action-tokens '(\"Main Page\" \"User:Russ\") :intoken '(:move :edit :delete :protect))
+
+ Returns: a token bag (or list of them if you asked for multiple pages) 
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-PAGE-INFO" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Gets the info for a given page as an alist
+
+Parameters:
+  titles - the title of the page we wish to retrieve the info of
+
+ Returns: an alist of attributes about the page
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-IMAGE-INFO" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IIURLHEIGHT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "IIURLWIDTH" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "IIEND" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "IISTART" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "IILIMIT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      ((:NAME "IIPROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       "timestamp|user|comment|url|size|sha1|mime|metadata|archivename")
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Gets the info for a given image (or file) as an alist
+
+Parameters:
+  titles - the title of the image we wish to retrieve the info of
+  iiprop - Which properties to get
+           Possible values (separate with '|'): timestamp, user, comment, url,
+           size, sha1, mime, metadata, archivename. Default is all.
+  iilimit - How many image revisions to return (1 by default)
+  iistart - Timestamp to start listing from. Use this to continue a previous 
+            query.
+  iiend - Timestamp to stop listing at
+  iiurlwidth - If iiprop=url is set, a URL to an image scaled to this width will
+               be returned as well. Old versions of images can't be scaled
+  iiurlheight - Similar to iiurlwidth
+
+Example: (get-image-info \"Image:Albert Einstein Head.jpg\" :iiprop \"user|comment\")
+
+Returns: a list of alists of attributes about the requested revisions of the
+         image, and a continuation if there is one.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-REVISIONS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      ((:NAME "RVPROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       "ids|flags|timestamp|user|comment|size")
+      ((:NAME "RVLIMIT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       550)
+      (:NAME "RVSTARTID" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "RVENDID" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RVSTART" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RVEND" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RVDIR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RVUSER" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RVEXCLUDEUSER" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "RVCONTINUE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "RVDIFFTO" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL))
+     :DOCUMENTATION "Gets the revisions of a page.
+
+Parameters:
+  titles         - the title of the page we wish to retrieve the info of
+  rvprop:        - Which properties to get for each revision
+                   Possible values (separate with '|'): ids, flags, timestamp, 
+                   user, comment, size, content. Default is all except content.
+  rvcontinue: -    When more results are available, use this to continue
+                   (This is different from the returned continuation.)
+  rvlimit: 	 - The maximum number of revisions to return (enum)
+  rvstartid: 	 - Revision ID to start listing from. (enum)
+  rvendid: 	 - Revision ID to stop listing at. (enum)
+  rvstart: 	 - Timestamp to start listing from. (enum)
+  rvend: 	 - Timestamp to end listing at. (enum)
+  rvdir: 	 - Direction to list in. (enum)
+                   Possible values: older, newer.
+                   Default: older
+  rvuser: 	 - Only list revisions made by this user
+  rvexcludeuser: - Do not list revisions made by this user
+  rvdiffto:      - Revision ID to diff each revision to.
+                   Possible values (an id, \"prev\", \"next\" or \"cur\"). 
+
+ Examples: (get-revisions \"Pigment\" :rvprop \"ids|user|size\" :rvlimit 10)
+           (get-revisions \"Physics\" :rvlimit 10)
+
+ Returns: list of revisions as alists and (if there is one) a continuation, 
+which is the rvstart id to pass in the next call to get more results.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-LINKS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PLCONTINUE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      ((:NAME "PLNAMESPACE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PLLIMIT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       5000)
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Gets a list of all links on the provided pages.
+
+Parameters:
+  titles         - the title of the page we wish to retrieve the info of
+  pllimit        - How many links to return. Default: 10. No more than 500 (5000 for bots) allowed.
+  plcontinue     - When more results are available, use this to continue.
+  plnamespace    - Only list links to pages in these namespaces.
+                   (For example, set plnamespace to 0 to get only article links in Wikipedia.)
+
+Examples: 
+  ; gets 10 results
+  (get-links \"Pigment\" :pllimit 10) 
+
+  ; gets 10 results, then gets 10 more using a continuation token
+  (multiple-value-bind (firstresults continuation-token) 
+		  (get-links \"Pigment\" :pllimit 10)
+		(let ((secondresults (get-links \"Pigment\" :pllimit 10 :plcontinue continuation-token)))
+		  (list firstresults secondresults)))
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RECENT-CHANGES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "RCSTART" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RCEND" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RCDIR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RCNAMESPACE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      ((:NAME "RCPROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       "user|comment|title|timestamp|ids")
+      (:NAME "RCSHOW" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RCLIMIT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RCTYPE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Enumerates the recent changes
+
+Parameters:
+  rcstart        - The timestamp to start enumerating from.
+  rcend          - The timestamp to end enumerating.
+  rcdir          - In which direction to enumerate.
+                   One value: newer, older
+                   Default: older
+  rcnamespace    - Filter log entries to only this namespace(s)
+                   Values (separate with '|'): 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 100, 101, 102, 103
+  rctitles       - Filter log entries to only these page titles
+  rcprop         - Include additional pieces of information
+                   Values (separate with '|'): user, comment, flags, timestamp, title, ids, sizes, redirect, patrolled
+                   Default: title|timestamp|ids
+  rcshow         - Show only items that meet this criteria.
+                   For example, to see only minor edits done by logged-in users, set show=minor|!anon
+                   Values (separate with '|'): minor, !minor, bot, !bot, anon, !anon, redirect, !redirect, patrolled, !patrolled
+  rclimit        - How many total changes to return.
+                   No more than 500 (5000 for bots) allowed.
+                   Default: 10
+  rctype         - Which types of changes to show.
+                   Values (separate with '|'): edit, new, log
+
+ Returns: 
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-CONTRIBS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "UCUSER" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "UCSHOW" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      ((:NAME "UCPROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       "comment|title|timestamp|ids")
+      (:NAME "UCNAMESPACE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "UCDIR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "UCUSERPREFIX" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "UCEND" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "UCSTART" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "UCLIMIT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "EXPORTNOWRAP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INDEXPAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REDIRECTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "GENERATOR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "META" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PROP" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "REVIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "PAGEIDS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TITLES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "  Get all edits by a user
+Parameters:
+  uclimit        - The maximum number of contributions to return.
+                   No more than 500 (5000 for bots) allowed.
+                   Default: 10
+  ucstart        - The start timestamp to return from.
+  ucend          - The end timestamp to return to.
+  ucuser         - The user to retrieve contributions for.
+  ucuserprefix   - Retrieve contibutions for all users whose names begin with this value. Overrides ucuser.
+  ucdir          - The direction to search (older or newer).
+                   One value: newer, older
+                   Default: older
+  ucnamespace    - Only list contributions in these namespaces
+                   Values (separate with '|'): 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 100, 101, 102, 103
+  ucprop         - Include additional pieces of information
+                   Values (separate with '|'): ids, title, timestamp, comment, flags
+                   Default: ids|title|timestamp|flags|comment
+  ucshow         - Show only items that meet this criteria, e.g. non minor edits only: show=!minor
+                   Values (separate with '|'): minor, !minor
+
+")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "APPENDF" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LISTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for APPEND. Appends LISTS to the place designated by the first argument.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "QUERY-RESULT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "Accumulating result to a get-revisions-result query.
+
+  Use has-more-results-p to check if there are more results available.
+  Use get-more-results to get them through one or more queries."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RESULTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "RESULTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+         :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CLOSURE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HAS-MORE-RESULTS-P" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "QR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       (:NAME "QUERY-RESULT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns nil, or the closure used for a single follow-up query")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GET-MORE-RESULTS-ONCE" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "QR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       (:NAME "QUERY-RESULT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP T)))
+     :DOCUMENTATION "Fetches more results with one follow-up query.
+
+   Updates the query-result object with these new results.
+   Returns the object, and the number of new items fetched.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GET-MORE-RESULTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "QR" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       (:NAME "QUERY-RESULT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "AT-LEAST" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       0)
+      ((:NAME "PAUSE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       1))
+     :DOCUMENTATION
+     "Fetches AT-LEAST more results, re-querying every PAUSE seconds if necessary.
+
+   If AT-LEAST is nil, repeats until it gets all results.
+   Updates the query-result object with these new results.
+   Returns the object, and the number of new items fetched.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-REVISIONS-AND-CLOSURE" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Like get-revisions, but also returns a closure for a follow-up query.
+
+   This closure can be called outside of a with-mediawiki form.
+
+   Example:
+    (multiple-value-list (with-mediawiki (\"http://en.wikipedia.org/w\")
+       (get-revisions-and-closure \"Pigment\" :rvlimit 3)))
+    (multiple-value-list (funcall (elt * 2)))
+    (multiple-value-list (funcall (elt * 2)))
+    etc..")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-REVISIONS-RESULT" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Like get-revisions, but returns a query-result object")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHECK-API-RESPONSE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "XML" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "NAME" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "DATUM" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     " Checks for the expected 'success' message in the node matching the
+name parameter
+
+signals match-errors assertion-errors and media-wiki-errors, printing
+datum in error messages.
+
+returns values:
+ 1. the xml response
+ 2. the alist of node attributes for the node we checked for success
+  ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHECK-EDIT-RESPONSE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DATUM" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "XML" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Checks for the expected 'success' message
+
+   signals match-errors assertion-errors and media-wiki-errors,
+   printing datum in error messages.
+  ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-PAGE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TEXT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SUMMARY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       "cl-mediawiki:create-page")
+      ((:NAME "OVERRIDE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Creates a new wiki page
+   If override is true, replace the existing page with the text passed in (if the page already exists)
+  ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-NEW-PAGE-SECTION" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "SECTION-TITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "SECTION-TEXT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NO-CREATE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates a new == section-title ==  at the bottom of the page. followed by the specified text")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "APPEND-TEXT-TO-PAGE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TEXT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NO-CREATE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      ((:NAME "SUMMARY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       "cl-mediawiki:append-text-to-page"))
+     :DOCUMENTATION
+     "appends the text the the end of the page (will create the page if neccessary, unless no-create is passed)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PREPEND-TEXT-TO-PAGE" :PACKAGE-NAME
+      "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TEXT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SUMMARY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       "cl-mediawiki:prepend-text-to-page")
+      (:NAME "NO-CREATE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL))
+     :DOCUMENTATION "Adds the text to the beginning of the page named title
+   (will create the page if neccessary unless no-create is true)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-PAGE-CONTENT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TEXT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NO-CREATE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      ((:NAME "SUMMARY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       "cl-mediawiki:set-page-content"))
+     :DOCUMENTATION
+     "sets the text of a wiki page 'title' to the specified 'text',
+
+     title: The wiki page to set the content of
+     text: The new content that the wiki page should have
+     no-create:, do not create the wiki page if it does not exist
+     summary: The comment associated with changing the page content
+    ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-SECTION-CONTENT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TITLE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "RVSECTION" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "TEXT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SUMMARY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       "cl-mediawiki:set-section-content"))
+     :DOCUMENTATION
+     "Sets the text of section 'rvsection' on page 'title' to 'text'. 'text' MUST contain the section title markup!")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REGEX-REPLACE-ALL" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "TARGET-PAGE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "REPLACEMENT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DEFAULT-CONTENT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      ((:NAME "SUMMARY" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       "cl-mediawiki:regex-replace-all"))
+     :DOCUMENTATION
+     "Does a regex find/replace on the target page. If the page is empty, will set to default content if provided
+    Works by calling get-content then regex-replacing on the content, then calling set-content ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UPLOAD" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "PATH" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "FILENAME" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       ((:NAME "FILE-NAMESTRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "PATH" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+         NIL)))
+      ((:NAME "COMMENT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+        :EXTERNALP NIL)
+       "uploaded via cl-mediawiki")
+      ((:NAME "TEXT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       "")
+      (:NAME "WATCH" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+       NIL)
+      (:NAME "IGNOREWARNINGS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+       :EXTERNALP NIL)
+      (:NAME "&AUX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PATH" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+        NIL)
+       ((:NAME "TRUENAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "PATH" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+         NIL))))
+     :DOCUMENTATION "uploads a file from a local path.
+
+returns 2 values:
+ 1. string for the filename according to mediawiki (eg: Foo.png)
+ 2. string for the wikimarkup to link to the file (eg: [[File:Foo.png]])"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "RESULTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+     T)
+    (:NAME "*DEFAULT-EXTERNAL-FORMAT*" :PACKAGE-NAME
+     "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP T)
+    (:NAME "SET-PAGE-CONTENT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "GET-LINKS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+     T)
+    (:NAME "GET-MORE-RESULTS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "HAS-MORE-RESULTS-P" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "PAGES-THAT-EMBED" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "ADD-NEW-PAGE-SECTION" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "*MEDIAWIKI*" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "PREPEND-TEXT-TO-PAGE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "CREATE-PAGE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "USER-CONTRIBS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "GET-PAGE-CONTENT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "WITH-MEDIAWIKI" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "RECENT-CHANGES" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "LOGIN" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP T)
+    (:NAME "SET-SECTION-CONTENT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "GET-REVISIONS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "GET-REVISIONS-RESULT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "REGEX-REPLACE-ALL" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "QUERY-RESULT" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "GET-PAGE-INFO" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "APPEND-TEXT-TO-PAGE" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "FIND-PAGE-SECTION" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "MEDIAWIKI" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+     T)
+    (:NAME "LIST-PAGE-SECTIONS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "GET-IMAGE-INFO" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "GET-ACTION-TOKENS" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI"
+     :EXTERNALP T)
+    (:NAME "UPLOAD" :PACKAGE-NAME "NET.ACCELERATION.CL-MEDIAWIKI" :EXTERNALP
+     T)))))

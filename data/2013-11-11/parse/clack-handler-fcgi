@@ -1,0 +1,128 @@
+
+(:TYPE :SYSTEM :NAME "clack-handler-fcgi" :AUTHOR "Eitarow Fukamachi"
+ :MAINTAINER NIL :VERSION "12.3" :LICENCE "LLGPL" :DESCRIPTION
+ "Clack handler for FastCGI." :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CLACK" "CL-SYNTAX" "CL-SYNTAX-ANNOT" "CL-FASTCGI" "ALEXANDRIA"
+  "BORDEAUX-THREADS" "FLEXI-STREAMS" "ANAPHORA" "CL-PPCRE" "SPLIT-SEQUENCE"
+  "USOCKET")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CLACK.HANDLER.FCGI" :FULL-NAME "CLACK.HANDLER.FCGI"
+   :DOCUMENTATION "# 
+Clack.Handler.Fcgi - Clack handler for FastCGI.
+
+
+## SYNOPSIS
+
+    ;; Start server
+    (run (lambda (env)
+           '(200 nil (\"ok\")))
+         :port 9000)
+    
+    ;; Using clackup
+    (clackup (lambda (env)
+               '(200 nil (\"ok\")))
+             :server :fcgi
+             :port 9000)
+
+## DESCRIPTION
+
+Clack.Handler.Fcgi is a Clack handler to run any Clack application as a FastCGI application. This handler depends on the library \"cl-fastcgi\", so it only works on SBCL, CMUCL, GNU CLISP, Clozure CL, LispWorks and ECL.
+
+Here's an example using Nginx.
+
+    # nginx.conf
+    worker_processes  1;
+    
+    events {
+        worker_connections  1024;
+    }
+    
+    http {
+        server {
+            listen       8080;
+            server_name  localhost;
+            location / {
+                   include_fastcgi_params;
+                   fastcgi_pass   127.0.0.1:9000;
+            }
+        }
+    }
+
+This configuration to opens port 8080 to web browsers, and listens for the Lisp process on port 9000.
+
+Run Clack application by `clackup`.
+
+    (clack:clackup (lambda (env) '(200 nil (\"Hello, FastCGI!\")))
+      :server :fcgi
+      :port 9000)
+
+Now, you can access [http://localhost:8080/](http://localhost:8080/) and Clack should show you \"Hello, FastCGI!\".
+
+## AUTHOR
+
+Eitarow Fukamachi (e.arrows@gmail.com)
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "<FCGI-ACCEPTOR>" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PORT" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "ACCEPTOR-PORT" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP
+         NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SOCKET" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "ACCEPTOR-SOCKET" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FILE-DESCRIPTOR" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "ACCEPTOR-FILE-DESCRIPTOR" :PACKAGE-NAME "CLACK.HANDLER.FCGI"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACCEPTOR" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL)
+       (:NAME "<FCGI-ACCEPTOR>" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP
+        NIL))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RUN" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "APP" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DEBUG" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PORT" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL) 9000)
+      (:NAME "FD" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL))
+     :DOCUMENTATION "Start FastCGI server.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STOP" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ACCEPTOR" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HANDLE-RESPONSE" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "REQ" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL)
+      (:NAME "RES" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUEST->PLIST" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REQ" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP NIL))
+     :DOCUMENTATION "Convert Request from server into a plist
+before passing to Clack application."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "STOP" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP T)
+    (:NAME "RUN" :PACKAGE-NAME "CLACK.HANDLER.FCGI" :EXTERNALP T)))))

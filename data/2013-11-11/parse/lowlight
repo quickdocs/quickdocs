@@ -1,0 +1,151 @@
+
+(:TYPE :SYSTEM :NAME "lowlight" :AUTHOR
+ "Christoph Finkensiep <chfin@freenet.de>" :MAINTAINER NIL :VERSION NIL
+ :LICENCE "MIT" :DESCRIPTION "A simple and flexible syntax highlighter"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CL-PPCRE" "ALEXANDRIA" "SPINNERET" "CL-WHO") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "LOWLIGHT" :FULL-NAME "LOWLIGHT" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*STYLES*" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRAP" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "FN" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "N" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "LST" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COLL" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROCESS-SUBSTRING" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "N" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "WRAPPER" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CAT-STRINGS" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LST" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STRS" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROCESS-RULE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "N" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "WRAPPER" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "LST" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HTMLIFIER" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TO-HTML" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LST" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MD-REGEX" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BLOCKS" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MD-WRAPPER" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STYLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIGHT" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STYLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "INPUT" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL))
+     :DOCUMENTATION "=> a highlighted string
+Highlights `input`.
+The used style is given by `style`.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIGHT-FILE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STYLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "IN" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OUT" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "CSS" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "TITLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "RAW" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL))
+     :DOCUMENTATION "=> `t`
+Highlights the file given by `in`.
+The used style is denoted by `style`.
+If given, the result is written to the file `out`,
+otherwise `in` is used, with the file ending replaced by html.
+If given, `css` is used as the href parameter to a css relation
+and `title` is used as the page title.
+If `raw` is `t` the highlighted code is *not* wrapped into a html skeleton.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIGHT-BLOCKS" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STYLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "INPUT" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "BLOCKS" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+       (:NAME "STYLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)))
+     :DOCUMENTATION "=> a highlighted string
+Takes all blocks between three backticks followed by a language specifier, and three closing backticks.
+The language specifiers are given by `blocks` which is either a single item or a list.
+The block markers are converted to strings by `~a` and matched case-independently
+(so you can use keywords here, `:common-lisp` matches `` ```common-lisp ``).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIGHT-FILE-BLOCKS" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STYLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "IN" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OUT" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      ((:NAME "BLOCKS" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+       (:NAME "STYLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)))
+     :DOCUMENTATION "=> `t`
+Highlights all blocks (see [`light-blocks`](#apiref-light-blocks)).
+`in` and `out` behave similar to [`light-file`](#apiref-light-file).")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-STYLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STYLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL))
+     :DOCUMENTATION "Defines a new style.
+`style` is the name of the style, typically a keyword.
+`clauses` are lists of the form `(regex n result*)`,
+where `regex` is either a string literal or a list
+beginning with a format string followed by format parameters.
+`n` is the number of registers in the regex (which must be constant!).
+The results return the highlighted string parts, which are either strings
+(not highlighted) or a cons cell,
+where the `car` is the css class and the `cdr` is the highlighted string.
+Inside the result clauses use the local macro `$` to access the regex registers,
+so `($ 1)` returns the first register.
+Note, that all text matched by the regex must appear in the results,
+otherwise it will be discarded.
+So if you want to highlight all `,` preceded by a `:`,
+the clause should look like this:
+`(\"(:)(,)\" 2 ($ 1) (cons \"comma\" ($ 2)))`.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SYMBOL-CHARS*" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"[^\\\\s'`,\\\"\\\\(\\\\);]\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SYMBOL-STARTS*" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"[^\\\\s'`,\\\"\\\\(\\\\);:#]\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SPECIAL-OPERATORS*" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'(QUOTE IF PROGN LET LET* SETQ FLET LABELS MACROLET SYMBOL-MACROLET FUNCTION
+  BLOCK RETURN-FROM TAGBODY GO CATCH THROW UNWIND-PROTECT MULTIPLE-VALUE-CALL
+  VALUES EVAL-WHEN LOCALLY THE LOAD-TIME-VALUE PROGV)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*C-KEYWORDS*" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'(\"auto\" \"break\" \"case\" \"char\" \"const\" \"continue\" \"default\" \"do\" \"double\"
+  \"else\" \"enum\" \"extern\" \"float\" \"for\" \"goto\" \"if\" \"int\" \"long\" \"register\"
+  \"return\" \"short\" \"signed\" \"sizeof\" \"static\" \"struct\" \"switch\" \"typedef\"
+  \"union\" \"unsigned\" \"void\" \"volatile\" \"while\" \"__restrict\" \"_Bool\")"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "LIGHT-FILE-BLOCKS" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP T)
+    (:NAME "DEFINE-STYLE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP T)
+    (:NAME "LIGHT-BLOCKS" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP T)
+    (:NAME "LIGHT" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP T)
+    (:NAME "LIGHT-FILE" :PACKAGE-NAME "LOWLIGHT" :EXTERNALP T)))))

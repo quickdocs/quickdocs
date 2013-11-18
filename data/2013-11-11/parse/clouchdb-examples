@@ -1,0 +1,28 @@
+
+(:TYPE :SYSTEM :NAME "clouchdb-examples" :AUTHOR NIL :MAINTAINER NIL :VERSION
+ NIL :LICENCE NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("PARENSCRIPT" "CLOUCHDB") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CLOUCHDB-EXAMPLES" :FULL-NAME "CLOUCHDB-EXAMPLES"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXAMPLE1" :PACKAGE-NAME "CLOUCHDB-EXAMPLES" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Create a database, populate it with a single document. Retrieve
+that document and change a property in it, then update it in the
+database.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXAMPLE2" :PACKAGE-NAME "CLOUCHDB-EXAMPLES" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Create a database, populate it with some documents having various
+structures, create a view based on a field common to all
+documents (the 'tags' field), and then query those documents using the
+view and print the results.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXAMPLE3" :PACKAGE-NAME "CLOUCHDB-EXAMPLES" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Demonstrate the use of (query-document). Create a database,
+populate it with some documents representing countries,
+use (query-document) to operate on this data."))
+   :EXTERNAL-SYMBOLS NIL)))

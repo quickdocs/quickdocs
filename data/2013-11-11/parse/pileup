@@ -1,0 +1,323 @@
+
+(:TYPE :SYSTEM :NAME "pileup" :AUTHOR
+ "Nikodemus Siivola <nikodemus@random-state.net>" :MAINTAINER NIL :VERSION
+ "1.0.1" :LICENCE "MIT" :DESCRIPTION
+ "A portable, performant, and thread-safe binary heap / priority queue."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("ALEXANDRIA") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "PILEUP" :FULL-NAME "PILEUP" :DOCUMENTATION
+   "Pileup provides a thread-safe binary heap implementation." :SYMBOL-LIST
+   ((:TYPE :CONSTANT :SYMBOL
+     (:NAME "+EMPTY+" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :DOCUMENTATION NIL
+     :INITIAL-VALUE "'PILEUP::+EMPTY+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-HEAP-VECTOR" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SIZE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :STRUCT :SYMBOL (:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "A thread-safe binary heap.
+
+Heap operations which need the heap to remain consistent heap lock it. Users
+can also group multiple heap operations into atomic units using
+WITH-LOCKED-HEAP.
+
+Thread-safety is implemented using a single lock per heap. While Pileup heaps
+are fine for threaded use, a more specialized solution is recommended when the
+heap is highly contested between multiple threads.
+
+Important: Pileup heaps are not asynch-unwind safe: asynchronous interrupts
+causing non-local exits may leave the heap in an inconsistent state or lose
+data. Do not use INTERRUPT-THREAD or asychronous timeouts with Pileup.
+
+All slot names in HEAP are internal to the PILEUP package, so it is safe to
+subclass using eg. DEFSTRUCT :INCLUDE, as long as only the exported operations
+are used to accessor or modify heap state."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "%NAME" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "%VECTOR" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "%COUNT" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "%SIZE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "%PREDICATE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "%KEY" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FAST-PRED" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LOCK" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STATE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "NAME" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "%NAME" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "SIZE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "%SIZE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+       12)
+      (((:NAME "KEY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "%KEY" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&AUX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "%VECTOR" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+       ((:NAME "MAKE-HEAP-VECTOR" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+        (:NAME "%SIZE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)))
+      ((:NAME "%PREDICATE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+       (:NAME "PREDICATE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+      ((:NAME "FAST-PRED" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+       ((:NAME "LOCALLY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "DECLARE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         ((:NAME "MUFFLE-CONDITIONS" :PACKAGE-NAME "SB-EXT" :EXTERNALP T)
+          (:NAME "COMPILER-NOTE" :PACKAGE-NAME "SB-EXT" :EXTERNALP T)))
+        ((:NAME "IF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "%KEY" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+         ((:NAME "LAMBDA" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+          ((:NAME "X" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+           (:NAME "Y" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+          ((:NAME "DECLARE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+           ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+            (:NAME "%KEY" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+            (:NAME "%PREDICATE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+           ((:NAME "OPTIMIZE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+            ((:NAME "SPEED" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 3)
+            ((:NAME "DEBUG" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 0)
+            ((:NAME "SAFETY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 0)))
+          ((:NAME "LET" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+           (((:NAME "XX" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+             ((:NAME "FUNCALL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+              (:NAME "%KEY" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+              (:NAME "X" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)))
+            ((:NAME "YY" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+             ((:NAME "FUNCALL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+              (:NAME "%KEY" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+              (:NAME "Y" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))))
+           ((:NAME "FUNCALL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+            (:NAME "%PREDICATE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+            (:NAME "XX" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+            (:NAME "YY" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))))
+         (:NAME "%PREDICATE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)))))
+     :DOCUMENTATION "Constructs a HEAP.
+
+The PREDICATE determines the ordering of the heap. It must be a function of two
+arguments, returning true if the first argument should be closer to top of the
+heap than the second. If a predicate signals an error and causes a non-local
+exit from a heap operation, it may leave the heap in an inconsistent state and
+cause a subsequent heap operation to signal an error.
+
+If KEY is not NIL, it must be a function of one argument, and is used to
+extract values for use by PREDICATE for comparison.
+
+The NAME can be used to optionally specify a name for the heap: it affects only
+printing of the heap.
+
+The SIZE is the size of the storage initially reserved for the heap.
+Specifying size is not necessary: the heap will grow as necessary, but a
+reasonable estimate can improve performance by eliminating unnecessary copying
+by allocating sufficient storage immediately.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-HEAP-USING-FAST-PRED" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "%PREDICATE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+      (:NAME "FAST-PRED" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "NAME" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "%NAME" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "SIZE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "%SIZE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+       12)
+      (:NAME "&AUX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "%VECTOR" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+       ((:NAME "MAKE-HEAP-VECTOR" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+        (:NAME "%SIZE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TWO-ARG-PREDICATES*" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TWO-ARG-<" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "X" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+      (:NAME "Y" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TWO-ARG-<=" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "X" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+      (:NAME "Y" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TWO-ARG->" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "X" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+      (:NAME "Y" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TWO-ARG->=" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "X" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+      (:NAME "Y" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEAP-NAME" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the name of the heap. Heap name affects only printed
+representation of the heap. Can be changed using SETF unlike other heap
+properties.")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEAP-NAME" :PACKAGE-NAME "PILEUP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+      (:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEAP-PREDICATE" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the heap predicate, a function of two arguments, returning true if
+the first argument should be closer to te top of the heap than the second.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEAP-KEY" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the heap key, a function one argument used to extract values for
+use by the heap predicate. Heap key may also be NIL, meaning heap elements are
+used directly by the heap predicate.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEAP-COUNT" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the number of objects in the heap.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEAP-SIZE" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the reserved size of the heap. Note, this is not the same as the
+number of elements in the heap: see HEAP-COUNT for comparison.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEAP-EMPTY-P" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns true if the heap is empty, that is iff HEAP-COUNT is zero.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+       (:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-LOCKED-HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Executes BODY with HEAP locked. Heap operations which implicitly lock the
+heap are: HEAP-INSERT, HEAP-POP, HEAP-DELETE, and MAP-HEAP. Allows grouping
+multiple heap operations into atomic units.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "HEAP-SIZE-LIMIT" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Exclusive upper limit for heap size, based on ARRAY-DIMENSION-LIMIT.
+When an insertion is attempted and the heap cannot grow any further, an error
+is signaled."
+     :INITIAL-VALUE "(- ARRAY-DIMENSION-LIMIT 1)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "MAX-HEAP-SIZE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(- PILEUP:HEAP-SIZE-LIMIT 1)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHECK-HEAP-CLEAN" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+      (:NAME "WHAT" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ALLOW-TRAVERSE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEAP-INSERT" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ELT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T))
+     :DOCUMENTATION "Insert ELT to HEAP. Returns ELT.
+
+Locks the heap during its operation unless the current thread is already
+holding the heap lock via WITH-LOCKED-HEAP.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEAP-TOP" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns the element at the top of the HEAP without removing it, and a
+secondary value of T. Should the heap be empty, both the primary and the
+secondary values are NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEAP-POP" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)) :DOCUMENTATION
+     "Removes and returns the element at the top of the HEAP and a secondary value of T.
+Should the heap be empty, both the primary and the secondary values are NIL.
+
+Locks the heap during its operation unless the current thread is already
+holding the heap lock via WITH-LOCKED-HEAP.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%HEAP-DELETE" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "INDEX" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+      (:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEAP-DELETE" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ELT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Removes elements of the HEAP EQL to ELT. Returns T if one or more elements
+were found and removed, NIL otherwise.
+
+If COUNT is NIL (the default), removes all elements EQL to ELT, otherwise at
+most the indicated number.
+
+Locks the heap during its operation unless the current thread is already
+holding the heap lock via WITH-LOCKED-HEAP.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ORDERED" :PACKAGE-NAME "PILEUP" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Calls FUNCTION for each element in heap. Returns the heap.
+
+If ORDERED is true (the default), processes the elements in heap order from
+top down.
+
+If ORDERED is false, uses unordered traversal. Unordered traversal is faster
+and also works on heaps that have been corrupted by eg. the heap predicate
+performing a non-local exit from a heap operation.
+
+Attempts to insert or delete elements to the heap from FUNCTION will cause
+an error to be signalled.
+
+Locks the heap during its operation unless the current thread is already
+holding the heap lock via WITH-LOCKED-HEAP."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "MAP-HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "MAKE-HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-KEY" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-POP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-PREDICATE" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-SIZE-LIMIT" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-EMPTY-P" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-NAME" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-INSERT" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-COUNT" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "WITH-LOCKED-HEAP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-DELETE" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-TOP" :PACKAGE-NAME "PILEUP" :EXTERNALP T)
+    (:NAME "HEAP-SIZE" :PACKAGE-NAME "PILEUP" :EXTERNALP T)))))

@@ -1,0 +1,103 @@
+
+(:TYPE :SYSTEM :NAME "multival-plist" :AUTHOR "Eitarow Fukamachi" :MAINTAINER
+ NIL :VERSION "0.1" :LICENCE "LLGPL" :DESCRIPTION
+ "Property List stores multiple values per one key." :LONG-DESCRIPTION
+ "# Multival-Plist - Property List stores multiple values per one key.
+
+## Usage
+
+    (defparameter *plist* '(:foo 1 :bar 2 :foo 3))
+    
+    (getf *plist* :foo)
+    ;=> 1
+    (getf-all *plist* :foo)
+    ;=> (1 3)
+    
+    (remf-all *plist* :foo)
+    ;=> T
+    (getf-all *plist* :foo :undef)
+    ;=> :UNDEF
+
+## Description
+
+Multival-Plist provides utilities to handle Property Lists that may contain multiple values per key.
+
+## API Reference
+
+### [Function] getf-all (plist key &optional default)
+
+    *plist*
+    ;=> (:FOO 1 :BAR 2 :FOO 3)
+    (getf *plist* :foo)
+    ;=> 1
+    (getf-all *plist* :foo)
+    ;=> (1 3)
+
+This is a version of `getf` enabled to manage multiple keys. If the `plist` has two or more pairs that they have given `key` as a key, returns the values of each pairs as one list.
+
+### [Function] \\(setf getf-all\\) (val plist key &optional default)
+
+    (setf (getf-all *plist* :foo) '(\"Hello\" \"World\"))
+    ;; *plist* = '(:foo \"Hello\" :bar 2 :foo \"World\")
+    
+    ;; same as (setf (getf-all *plist* :foo) '(3000))
+    (setf (getf-all *plist* :foo) 3000)
+    ;; *plist* = '(:foo 3000 :bar 2)
+
+Changes the stored value(s) of the given `key`. This removes or adds pairs as necessary to store the new list.
+
+### [Macro] remf-all (plist key)
+
+    (remf-all *plist* :foo)
+
+Removes a key and associated values for the given `key`.
+
+## Author
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## Copyright
+
+Copyright (c) 2012 Eitarow Fukamachi (e.arrows@gmail.com)
+
+# License
+
+Licensed under the LLGPL License.
+"
+ :DEPENDS-ON ("CL-ANNOT" "CL-SYNTAX-ANNOT" "TRIVIAL-TYPES" "ALEXANDRIA")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "MULTIVAL-PLIST" :FULL-NAME "MULTIVAL-PLIST"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :MACRO :SYMBOL
+     (:NAME "REMF-ALL" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLIST" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL))
+     :DOCUMENTATION "Removes a key and associated values for the given `key'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GETF-ALL" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLIST" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DEFAULT" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "DEFAULT-P" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "This is a version of `getf' enabled to manage multiple keys. If the `plist' has two or more pairs that they have given `key' as a key, returns the values of each pairs as one list.")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "GETF-ALL" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VAL" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL)
+      (:NAME "PLIST" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DEFAULT" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "DEFAULT-P" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Changes the stored value(s) of the given `key'. This removes or adds pairs as necessary to store the new list."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "REMF-ALL" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP T)
+    (:NAME "GETF-ALL" :PACKAGE-NAME "MULTIVAL-PLIST" :EXTERNALP T)))))

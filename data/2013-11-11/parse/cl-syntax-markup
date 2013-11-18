@@ -1,0 +1,5 @@
+
+(:TYPE :SYSTEM :NAME "cl-syntax-markup" :AUTHOR "Tomohiro Matsuyama"
+ :MAINTAINER NIL :VERSION "0.2" :LICENCE "LLGPL" :DESCRIPTION
+ "CL-Syntax Reader Syntax for CL-Markup" :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CL-SYNTAX" "CL-MARKUP") :PACKAGE-LIST NIL)

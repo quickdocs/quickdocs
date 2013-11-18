@@ -1,0 +1,41 @@
+
+(:TYPE :SYSTEM :NAME "curry-compose-reader-macros" :AUTHOR
+ "Eric Schulte <schulte.eric@gmail.com>" :MAINTAINER NIL :VERSION "1.0.0"
+ :LICENCE "GPL V3" :DESCRIPTION
+ "reader macros for concise function partial application and composition"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("ALEXANDRIA") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CURRY-COMPOSE-READER-MACROS" :FULL-NAME
+   "CURRY-COMPOSE-READER-MACROS" :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENABLE-CURRY-COMPOSE-READER-MACROS" :PACKAGE-NAME
+      "CURRY-COMPOSE-READER-MACROS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Enable concise syntax for Alexandria's `curry', `rcurry' and `compose'.
+
+Calls to this function should be wrapped in `eval-when' as shown below
+to ensure evaluation during compilation.
+
+    (eval-when (:compile-toplevel :load-toplevel :execute)
+      (enable-curry-compose-reader-macros))
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LCURLY-BRACE-READER" :PACKAGE-NAME "CURRY-COMPOSE-READER-MACROS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INCHAR" :PACKAGE-NAME "CURRY-COMPOSE-READER-MACROS" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LSQUARE-BRACE-READER" :PACKAGE-NAME "CURRY-COMPOSE-READER-MACROS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INCHAR" :PACKAGE-NAME "CURRY-COMPOSE-READER-MACROS" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "_" :PACKAGE-NAME "CURRY-COMPOSE-READER-MACROS" :EXTERNALP T)
+    (:NAME "ENABLE-CURRY-COMPOSE-READER-MACROS" :PACKAGE-NAME
+     "CURRY-COMPOSE-READER-MACROS" :EXTERNALP T)))))

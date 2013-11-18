@@ -1,0 +1,329 @@
+
+(:TYPE :SYSTEM :NAME "sha3" :AUTHOR "Pierre R. Mai <pmai@pmsf.de>" :MAINTAINER
+ "Pierre R. Mai <pmai@pmsf.de>" :VERSION "1.0.0" :LICENCE "MIT/X11"
+ :DESCRIPTION "Secure Hash Algorithm 3 (Keccak) Implementation"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("sb-rotate-byte") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "SHA3" :FULL-NAME "SHA3" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*OPTIMIZE-DECLARATION*" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Global optimize declaration used for performance critical functions.
+This can be changed prior to compiling the package for debugging/testing
+purposes."
+     :INITIAL-VALUE "'(OPTIMIZE (SPEED 3) (SPACE 0) (SAFETY 0) (DEBUG 0))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRIVIAL-MACROEXPAND-ALL" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "ENV" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Trivial and very restricted code-walker used in partial evaluation macros.
+Only supports atoms and function forms, no special forms.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DOTIMES-UNROLLED" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "VAR" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+       (:NAME "LIMIT" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION "Unroll the loop body at compile-time.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KECCAK-STATE-COLUMNS+" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :DOCUMENTATION "Width of Keccak state in the x axis" :INITIAL-VALUE "5")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KECCAK-STATE-ROWS+" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :DOCUMENTATION "Width of Keccak state in the y axis" :INITIAL-VALUE "5")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KECCAK-STATE-LANES+" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :DOCUMENTATION "Total number of lanes in Keccak state" :INITIAL-VALUE
+     "(* SHA3::+KECCAK-STATE-COLUMNS+ SHA3::+KECCAK-STATE-ROWS+)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KECCAK-1600-LANE-WIDTH+" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :DOCUMENTATION "Lane width for Keccak-1600." :INITIAL-VALUE "64")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KECCAK-1600-LANE-BYTE-WIDTH+" :PACKAGE-NAME "SHA3" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "Lane width in bytes for Keccak-1600." :INITIAL-VALUE
+     "(TRUNCATE SHA3::+KECCAK-1600-LANE-WIDTH+ 8)")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "KECCAK-1600-LANE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*KECCAK-F-ROUND-CONSTANTS*" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :DOCUMENTATION "Keccak Round Constants" :INITIAL-VALUE
+     "(MAKE-ARRAY '(24) :ELEMENT-TYPE 'SHA3::KECCAK-1600-LANE :INITIAL-CONTENTS
+            (LOOP SHA3::WITH SHA3::LFRSTATE = 1
+                  SHA3::FOR SHA3::I SHA3::FROM 0 SHA3::BELOW 24
+                  SHA3::COLLECT (LOOP SHA3::WITH SHA3::CONST = 0
+                                      SHA3::FOR SHA3::J SHA3::FROM 0 SHA3::BELOW 7
+                                      SHA3::FOR SHA3::BIT-POSITION = (1-
+                                                                      (ASH 1
+                                                                           SHA3::J))
+                                      WHEN (LOGBITP 0 SHA3::LFRSTATE)
+                                      DO (SETQ SHA3::CONST
+                                                 (LOGXOR SHA3::CONST
+                                                         (ASH 1
+                                                              SHA3::BIT-POSITION)))
+                                      DO (SETQ SHA3::LFRSTATE
+                                                 (IF (LOGBITP 7 SHA3::LFRSTATE)
+                                                     (LOGXOR
+                                                      (LDB (BYTE 8 0)
+                                                           (ASH SHA3::LFRSTATE
+                                                                1))
+                                                      113)
+                                                     (ASH SHA3::LFRSTATE 1)))
+                                      SHA3::FINALLY (RETURN SHA3::CONST))))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*KECCAK-F-ROTATE-OFFSETS*" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :DOCUMENTATION "Keccak Rotate Offsets" :INITIAL-VALUE
+     "(MAKE-ARRAY (LIST SHA3::+KECCAK-STATE-COLUMNS+ SHA3::+KECCAK-STATE-ROWS+)
+            :ELEMENT-TYPE '(UNSIGNED-BYTE 8) :INITIAL-CONTENTS
+            '((0 36 3 41 18) (1 44 10 45 2) (62 6 43 15 61) (28 55 25 21 56)
+              (27 20 39 8 14)))")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "GET-ROTATE-OFFSET" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "X" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "Y" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PAD-MESSAGE-TO-WIDTH" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "MESSAGE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "BIT-WIDTH" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Destructively pad the given message to the given bit-width according to 
+Keccak padding rules and return the padded message.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KECCAK-STATE-SPLITS+" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :DOCUMENTATION "Number of lane splits" :INITIAL-VALUE "2")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KECCAK-STATE-PARTS+" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :DOCUMENTATION "Total number of partial lanes in Keccak state"
+     :INITIAL-VALUE
+     "(* SHA3::+KECCAK-STATE-LANES+ SHA3::+KECCAK-STATE-SPLITS+)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KECCAK-1600-PART-WIDTH+" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :DOCUMENTATION "Partial lane width for Keccak-1600." :INITIAL-VALUE "32")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KECCAK-1600-PART-BYTE-WIDTH+" :PACKAGE-NAME "SHA3" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "Partial lane width in bytes for Keccak-1600."
+     :INITIAL-VALUE "(TRUNCATE SHA3::+KECCAK-1600-PART-WIDTH+ 8)")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "KECCAK-1600-PART" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "KECCAK-1600-STATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-KECCAK-1600-STATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-INTERLEAVE-TABLE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-DEINTERLEAVE-TABLE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KECCAK-STATE-MERGE-INPUT" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "BIT-RATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "INPUT" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KECCAK-STATE-EXTRACT-OUTPUT" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "OUTPUT-BITS" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KECCAK-F-ROUND-CONSTANT" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "I" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "P" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KECCAK-F-ROT-PART" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "OFFSET" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KECCAK-F-ROT" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "VALUE-EVEN" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "VALUE-ODD" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "OFFSET" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-STATE-ACCESSORS" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STATES" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Bind the contents of the state(s) array(s) to local variables, and save 
+the content on normal form exit.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-TEMP-STATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "TEMPS" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION "Bind local variables for each temporary state.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-TEMP-ROWS" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ROWS" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+     :DOCUMENTATION "Bind local variables for each temporary row.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KECCAK-F" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "A" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)) :DOCUMENTATION NIL)
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "SHA3-STATE" :PACKAGE-NAME "SHA3" :EXTERNALP T) :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BIT-RATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BUFFER" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BUFFER-INDEX" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FINALIZED-P" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-SHA3-STATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BIT-RATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SHA3-INIT" :PACKAGE-NAME "SHA3" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUTPUT-BIT-LENGTH" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "OUTPUT-BIT-LENGTH-P" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+      ((:NAME "BIT-RATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+       ((:NAME "IF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "AND" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "OUTPUT-BIT-LENGTH-P" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+         (:NAME "OUTPUT-BIT-LENGTH" :PACKAGE-NAME "SHA3" :EXTERNALP NIL))
+        ((:NAME "-" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 1600
+         ((:NAME "*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 2
+          (:NAME "OUTPUT-BIT-LENGTH" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)))
+        1024)))
+     :DOCUMENTATION
+     "Create and return a new SHA-3 state.  If `output-bit-length' is specified
+then the state will run at the bit rate specified for the given output bit
+length.  If `output-bit-length' is unspecified, `bit-rate' can be specified
+to select a suitable bit rate.  If both are left unspecified then a default
+bit rate of 1024 bits is selected, which is suitable for arbitrary output
+bit lengths of up to 288 bits.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SHA3-COPY" :PACKAGE-NAME "SHA3" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return an independent copy of the SHA-3 state `state'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SHA3-UPDATE" :PACKAGE-NAME "SHA3" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Update the given SHA-3 state `state' from `vector', which must be
+a simple-array with element-type (unsigned-byte 8), bounded by `start'
+and `end', which must be numeric bounding-indices.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SHA3-FINAL" :PACKAGE-NAME "SHA3" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STATE" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUTPUT-BIT-LENGTH" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "OUTPUT-BIT-LENGTH-P" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "If the given SHA-3 state `state' has not already been finalized,
+finalize it by processing any remaining input in its buffer, with
+suitable padding as specified by the SHA-3 standard.  Returns the
+message digest as a simple-array of (unsigned-byte 8).  The length
+of the returned digest is determined either by the output bit length
+or bit rate specified on state creation, or for the special case of
+default parameters being used, by the optional keyword argument
+`output-bit-length'.  If the state has previously been finalized,
+the function will return the digest again.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SHA3-DIGEST-VECTOR" :PACKAGE-NAME "SHA3" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "SHA3" :EXTERNALP NIL)
+      ((:NAME "OUTPUT-BIT-LENGTH" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) 512))
+     :DOCUMENTATION
+     "Calculate an SHA-3 message-digest of data in `vector', which should
+be a 1d simple-array with element type (unsigned-byte 8), bounded by
+`start' and `end'.  The bit length of the message digest produced is
+controlled by `output-bit-length', which can take on the values 224,
+256, 288, 384 and 512, which is the default value.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+BUFFER-SIZE+" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :DOCUMENTATION
+     "Size of internal buffer to use for `sha3-digest-stream' and 
+`sha3-digest-file' operations."
+     :INITIAL-VALUE "(* 128 1024)")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "BUFFER-INDEX" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SHA3-DIGEST-STREAM" :PACKAGE-NAME "SHA3" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUTPUT-BIT-LENGTH" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) 512))
+     :DOCUMENTATION
+     "Calculate an SHA-3 message-digest of data read from `stream', which
+should be a stream with element type (unsigned-byte 8).  The bit
+length of the message digest produced is controlled by
+`output-bit-length', which can take on the values 224, 256, 288, 384
+and 512, which is the default value.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SHA3-DIGEST-FILE" :PACKAGE-NAME "SHA3" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PATHNAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "OUTPUT-BIT-LENGTH" :PACKAGE-NAME "SHA3" :EXTERNALP NIL) 512))
+     :DOCUMENTATION "Calculate an SHA-3 message-digest of the file specified by
+`pathname'.  The bit length of the message digest produced is
+controlled by `output-bit-length', which can take on the values 224,
+256, 288, 384 and 512, which is the default value."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "SHA3-INIT" :PACKAGE-NAME "SHA3" :EXTERNALP T)
+    (:NAME "SHA3-UPDATE" :PACKAGE-NAME "SHA3" :EXTERNALP T)
+    (:NAME "SHA3-STATE-P" :PACKAGE-NAME "SHA3" :EXTERNALP T)
+    (:NAME "SHA3-STATE" :PACKAGE-NAME "SHA3" :EXTERNALP T)
+    (:NAME "SHA3-COPY" :PACKAGE-NAME "SHA3" :EXTERNALP T)
+    (:NAME "SHA3-DIGEST-STREAM" :PACKAGE-NAME "SHA3" :EXTERNALP T)
+    (:NAME "SHA3-FINAL" :PACKAGE-NAME "SHA3" :EXTERNALP T)
+    (:NAME "SHA3-DIGEST-FILE" :PACKAGE-NAME "SHA3" :EXTERNALP T)
+    (:NAME "SHA3-DIGEST-VECTOR" :PACKAGE-NAME "SHA3" :EXTERNALP T)))))

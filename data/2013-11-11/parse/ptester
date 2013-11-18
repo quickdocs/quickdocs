@@ -1,0 +1,289 @@
+
+(:TYPE :SYSTEM :NAME "ptester" :AUTHOR
+ "Kevin Layer, Franz, Inc / Kevin Rosenberg" :MAINTAINER
+ "Kevin M. Rosenberg <kmr@debian.org>" :VERSION NIL :LICENCE "LLGPL"
+ :DESCRIPTION "Portable test harness package" :LONG-DESCRIPTION
+ "ptester is a portable testing framework based on Franz's tester module"
+ :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "PTESTER" :FULL-NAME "PTESTER" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "IF*-KEYWORD-LIST" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'(\"then\" \"thenret\" \"else\" \"elseif\")")
+    (:TYPE :MACRO :SYMBOL (:NAME "IF*" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*BREAK-ON-TEST-FAILURES*" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+     :DOCUMENTATION
+     "When a test failure occurs, common-lisp:break is called, allowing
+interactive debugging of the failure."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TEST-ERRORS*" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+     :DOCUMENTATION
+     "The value is the number of test errors which have occurred."
+     :INITIAL-VALUE "0")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TEST-SUCCESSES*" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+     :DOCUMENTATION
+     "The value is the number of test successes which have occurred."
+     :INITIAL-VALUE "0")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TEST-UNEXPECTED-FAILURES*" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+     :DOCUMENTATION
+     "The value is the number of unexpected test failures which have occurred."
+     :INITIAL-VALUE "0")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ERROR-PROTECT-TESTS*" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+     :DOCUMENTATION
+     "Protect each test from errors.  If an error occurs, then that will be
+taken as a test failure unless test-error is being used."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "TEST-VALUES-ERRORSET" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ANNOUNCE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "CATCH-BREAKS" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "TEST-VALUES" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ANNOUNCE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "CATCH-BREAKS" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL (:NAME "TEST" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "EXPECTED-VALUE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "TEST-FORM" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+       (:NAME "TEST-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+      ((:NAME "MULTIPLE-VALUES" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "MULTIPLE-VALUES-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+      ((:NAME "FAIL-INFO" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FAIL-INFO-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+      ((:NAME "KNOWN-FAILURE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "KNOWN-FAILURE-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+      (:NAME "ERRORSET" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "REPORTED-FORM" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      ((:NAME "WANTED-MESSAGE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "WANTED-MESSAGE-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+      ((:NAME "GOT-MESSAGE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "GOT-MESSAGE-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Perform a single test.  `expected-value' is the reference value for the
+test.  `test-form' is a form that will produce the value to be compared to
+the expected-value.  If the values are not the same, then an error is
+logged, otherwise a success is logged.
+
+Normally the comparison of values is done with `eql'.  The `test' keyword
+argument can be used to specify other comparison functions, such as eq,
+equal,equalp, string=, string-equal, etc.
+
+Normally, only the first return value from the test-form is considered,
+however if `multiple-values' is t, then all values returned from test-form
+are considered.
+
+`fail-info' allows more information to be printed with a test failure.
+
+`known-failure' marks the test as a known failure.  This allows for
+programs that do regression analysis on the output from a test run to
+discriminate on new versus known failures.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CONDITIONP" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONDITIONP" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "THING" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONDITIONP" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "THING" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "TEST-ERROR" :PACKAGE-NAME "PTESTER" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ANNOUNCE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "CATCH-BREAKS" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      ((:NAME "FAIL-INFO" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FAIL-INFO-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+      ((:NAME "KNOWN-FAILURE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "KNOWN-FAILURE-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+      ((:NAME "CONDITION-TYPE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "SIMPLE-ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      ((:NAME "INCLUDE-SUBTYPES" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "INCLUDE-SUBTYPES-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+      ((:NAME "FORMAT-CONTROL" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FORMAT-CONTROL-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+      ((:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FORMAT-ARGUMENTS-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION
+     "Test that `form' signals an error. The order of evaluation of the
+arguments is keywords first, then test form.
+
+If `announce' is non-nil, then cause the error message to be printed.
+
+The `catch-breaks' is non-nil then consider a call to common-lisp:break an
+`error'.
+
+`fail-info' allows more information to be printed with a test failure.
+
+`known-failure' marks the test as a known failure.  This allows for
+programs that do regression analysis on the output from a test run to
+discriminate on new versus known failures.
+
+If `condition-type' is non-nil, it should be a symbol naming a condition
+type, which is used to check against the signalled condition type.  The
+test will fail if they do not match.
+
+`include-subtypes', used with `condition-type', can be used to match a
+condition to an entire subclass of the condition type hierarchy.
+
+`format-control' and `format-arguments' can be used to check the error
+message itself.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "TEST-NO-ERROR" :PACKAGE-NAME "PTESTER" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ANNOUNCE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "CATCH-BREAKS" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      ((:NAME "FAIL-INFO" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FAIL-INFO-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+      ((:NAME "KNOWN-FAILURE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "KNOWN-FAILURE-GIVEN" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Test that `form' does not signal an error.  The order of evaluation of
+the arguments is keywords first, then test form.
+
+If `announce' is non-nil, then cause the error message to be printed.
+
+The `catch-breaks' is non-nil then consider a call to common-lisp:break an
+`error'.
+
+`fail-info' allows more information to be printed with a test failure.
+
+`known-failure' marks the test as a known failure.  This allows for
+programs that do regression analysis on the output from a test run to
+discriminate on new versus known failures.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*WARN-COOKIE*" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(CONS NIL NIL)")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "TEST-WARNING" :PACKAGE-NAME "PTESTER" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FAIL-INFO" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "KNOWN-FAILURE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Test that `form' signals a warning.  The order of evaluation of
+the arguments is keywords first, then test form.
+
+`fail-info' allows more information to be printed with a test failure.
+
+`known-failure' marks the test as a known failure.  This allows for
+programs that do regression analysis on the output from a test run to
+discriminate on new versus known failures.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "TEST-NO-WARNING" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FAIL-INFO" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "KNOWN-FAILURE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Test that `form' does not signal a warning.  The order of evaluation of
+the arguments is keywords first, then test form.
+
+`fail-info' allows more information to be printed with a test failure.
+
+`known-failure' marks the test as a known failure.  This allows for
+programs that do regression analysis on the output from a test run to
+discriminate on new versus known failures.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ANNOUNCE-TEST*" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ERRORSET" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEST-CHECK" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PREDICATE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "EXPECTED-RESULT" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "TEST-RESULTS" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "TEST-FORM" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "MULTIPLE-VALUES" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "FAIL-INFO" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "KNOWN-FAILURE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "WANTED-MESSAGE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "GOT-MESSAGE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "CONDITION-TYPE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INCLUDE-SUBTYPES" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "FORMAT-CONTROL" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "&AUX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FAIL" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "PREDICATE-FAILED" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "GOT" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+      (:NAME "WANTED" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-TESTS" :PACKAGE-NAME "PTESTER" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "NAME" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL) "unnamed"))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GC-PRINT-STATE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "GC-PRINT-STATE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+     :LAMBDA-LIST ((:NAME "STATE" :PACKAGE-NAME "PTESTER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*ERROR-PROTECT-TESTS*" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+    (:NAME "TEST" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+    (:NAME "TEST-NO-WARNING" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+    (:NAME "WITH-TESTS" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+    (:NAME "*TEST-ERRORS*" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+    (:NAME "*BREAK-ON-TEST-FAILURES*" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+    (:NAME "*TEST-UNEXPECTED-FAILURES*" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+    (:NAME "TEST-NO-ERROR" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+    (:NAME "TEST-ERROR" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+    (:NAME "TEST-WARNING" :PACKAGE-NAME "PTESTER" :EXTERNALP T)
+    (:NAME "*TEST-SUCCESSES*" :PACKAGE-NAME "PTESTER" :EXTERNALP T)))))

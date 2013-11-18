@@ -1,0 +1,164 @@
+
+(:TYPE :SYSTEM :NAME "com.informatimago.common-lisp.diagram" :AUTHOR
+ "Pascal J. Bourguignon <pjb@informatimago.com>" :MAINTAINER
+ "Pascal J. Bourguignon <pjb@informatimago.com>" :VERSION "1.2.1" :LICENCE
+ "AGPL3" :DESCRIPTION "(NeXTSTEP) Diagram! file generator." :LONG-DESCRIPTION "
+
+This package generates a Diagram text file drawing a tree.
+The tree drawn is a list whose car is the node displayed, and
+whose cdr is the list of children.
+
+"
+ :DEPENDS-ON ("com.informatimago.common-lisp.cesarum") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME ".TREE-TO-DIAGRAM" :FULL-NAME
+   "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :DOCUMENTATION "
+
+This package generates a Diagram! text file drawing a tree.
+The tree drawn is a list whose car is the node displayed, and
+whose cdr is the list of children.
+
+
+License:
+
+    AGPL3
+    
+    Copyright Pascal J. Bourguignon 1994 - 2012
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+    
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.
+    If not, see <http://www.gnu.org/licenses/>
+"
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "TREE-DIAGRAM-GENERATE-NODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "L" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "X" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "Y" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "NODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL))
+     :DOCUMENTATION "PRIVATE.
+DOES:    Generates the Diagram text for a node.
+n:       the Diagram symbol number (may be used in Diagram links).
+l:       the Diagram layer.
+x,y:     the coordinates.
+node:    the text in the node rectangle.
+RETURN:  a list (n' l' x' y') for the following brother node.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TREE-DIAGRAM-GENERATE-INHERIT" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "L" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "X" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "Y" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL))
+     :DOCUMENTATION "PRIVATE.
+DOES:    Generates the Diagram text for a 'inherit' symbol (vertical triangle).
+n:       the Diagram symbol number (may be used in Diagram links).
+l:       the Diagram layer.
+x,y:     the coordinates.
+RETURN:  a list (n' l' x' y') for the first child node.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TREE-DIAGRAM-GENERATE-ADJUST-X" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "INC" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL))
+     :DOCUMENTATION "PRIVATE.
+inc:     a list (n l x y) corresponding to the after last brother.
+RETURN:  a list (n' l' x' y') for the next uncle node.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TREE-DIAGRAM-GENERATE-TREE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "L" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "X" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "Y" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL))
+     :DOCUMENTATION "PRIVATE.
+DOES:    writes to the *standard-output* the Diagram text
+         for the subtree 'tree'.
+RETURN:  a list (n' l' x' y') for the next brother subtree.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TREE-TO-DIAGRAM" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL))
+     :DOCUMENTATION "
+PRE:    tree is a cons of the node and the list of children.
+DOES:   writes to the *standard-output* the Diagram file text.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TREE-DEPTH" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL))
+     :DOCUMENTATION "
+PRE:    tree is a cons of the node and the list of children.
+RETURN: the depth of the tree.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TREE-SIZE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL))
+     :DOCUMENTATION "
+PRE:    tree is a cons of the node and the list of children.
+RETURN: The size of the tree (number of nodes)
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TREE-GENERATE-RANDOM" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DEPTH" :PACKAGE-NAME "COM.INFORMATIMAGO.COMMON-LISP.CESARUM.LIST"
+       :EXTERNALP T)
+      (:NAME "WIDTH" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP NIL))
+     :DOCUMENTATION "
+RETURN:  A random tree with random number as node, of maximal depth `depth'
+         and where each node has a maximum of `width` children.
+NOTE:    The result can easily be degenreate (a single node,
+         or a much smaller tree).
+"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "TREE-GENERATE-RANDOM" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP T)
+    (:NAME "TREE-SIZE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP T)
+    (:NAME "TREE-TO-DIAGRAM" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP T)
+    (:NAME "TREE-DEPTH" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.DIAGRAM.TREE-TO-DIAGRAM" :EXTERNALP T)))))

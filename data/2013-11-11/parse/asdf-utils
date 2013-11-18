@@ -1,0 +1,6 @@
+
+(:TYPE :SYSTEM :NAME "asdf-utils" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL
+ :LICENCE "MIT" :DESCRIPTION "Utilities from ASDF, repackaged"
+ :LONG-DESCRIPTION
+ "A copy of some utilities initially developed as part of ASDF" :DEPENDS-ON NIL
+ :PACKAGE-LIST NIL)

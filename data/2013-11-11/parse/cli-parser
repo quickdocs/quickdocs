@@ -1,0 +1,316 @@
+
+(:TYPE :SYSTEM :NAME "cli-parser" :AUTHOR "Denis Bueno" :MAINTAINER NIL
+ :VERSION "0.1" :LICENCE "Copyright (c) 2005" :DESCRIPTION
+ "A command-line argument parser. Mostly parses options of the same form that getopt parses"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CLI-PARSER" :FULL-NAME "CLI-PARSER" :DOCUMENTATION
+   "Used for command-line-interface parsing, in the same tradition
+as getopt, but, a bit more convenient. The three main functions
+are:
+
+* CLI-PARSE
+* CLI-PARSE-HASH
+* CLI-PARSE-ASSOC
+
+CLI-PARSE actually just calls CLI-PARSE-HASH, which will parse a
+list of command-line arguments against a list of CLI-OPTION
+objects. CLI-PARSE-ASSOC, instead of returning a hash table of
+results like CLI-PARSE-HASH does, returns an assoc list of
+results.
+
+The idea is that you create a bunch of cli-option instances (via
+MAKE-CLI-OPTION) which represent all of the valid options the
+user may pass in to your program. The actual options passed
+in (as a list of strings, one for each option) along with the
+list of valid options are passed to cli-parse, which will give
+you a table of mappings, from the option to the setting specified
+by the user."
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "CLI-OPTION" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ABBREVIATION" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "CLI-OPTION-ABBR" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LONGNAME" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CLI-OPTION-FULL" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ARGUMENTSP" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "CLI-OPTION-REQUIRES-ARGUMENTS" :PACKAGE-NAME "CLI-PARSER"
+         :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DESCRIPTION" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "CLI-OPTION-DESCRIPTION" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "EXAMPLE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CLI-OPTION-EXAMPLE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "PPRINT-CLOS-CLASS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "INSTANCE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "SLOTS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "INTER-SLOT-NEWLINE-STYLE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP
+        NIL)
+       (:NAME "LINEAR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "INTRA-SLOT-NEWLINE-STYLE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP
+        NIL)
+       (:NAME "FILL" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "UNBOUND-MSG" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+       "<unbound>")
+      ((:NAME "SLOT-VALUE-CALLBACK" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "LAMBDA" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         ((:NAME "A1" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+          (:NAME "A2" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+         ((:NAME "DECLARE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+          ((:NAME "IGNORE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+           (:NAME "A1" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)))
+         (:NAME "A2" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)))))
+     :DOCUMENTATION "Pretty print the SLOTS of a CLOS class INSTANCE, to
+  STREAM.
+
+  INTER-SLOT-NEWLINE-STYLE and INTRA-SLOT-NEWLINE-STYLE may be any
+  value appropriate appropriate as the first argument to
+  PPRINT-NEWLINE. A newline of INTER-SLOT-NEWLINE-STYLE will be
+  printed between each of the slot-name/slot-value pairs of each
+  slot in SLOTS. A newline of INTRA-SLOT-NEWLINE-STYLE will be
+  printed between the slot-name and the slot-value of each slot
+  in SLOTS.
+
+  UNBOUND-MSG should be a string which will be printed as the
+  slot-value for any slot in INSTANCE which is unbound.
+
+  SLOT-VALUE-CALLBACK should be a function of two arguments, the
+  slot-name and the slot-value, which should return an object
+  which will be printed in place of the slot-value for
+  slot-name.
+
+  Example:
+
+  > (defclass foo () (a b))
+  #<STANDARD-CLASS FOO>
+  > (defmethod cl:print-object ((f foo) stream)
+      (pprint-clos-class f (a b) stream))
+  #<STANDARD-METHOD PRINT-OBJECT (FOO T) {4865E569}>
+  > (make-instance 'foo)
+  #<FOO :A <unbound> :B <unbound>>
+  > (setf (slot-value * 'a) 'bar)
+  BAR
+  > **
+  #<FOO :A BAR :B <unbound>>")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "O" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+       (:NAME "CLI-OPTION" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SINGLE-DASH*" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :DOCUMENTATION "Short option prefix." :INITIAL-VALUE "\"-\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DOUBLE-DASH*" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :DOCUMENTATION "Long option prefix." :INITIAL-VALUE "\"--\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*OPTION-VALUE-SEP*" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :DOCUMENTATION "String used to separate option values." :INITIAL-VALUE
+     "\" \"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*FOR-EXAMPLE-TEXT*" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :DOCUMENTATION "String used to display for example." :INITIAL-VALUE
+     "\"e.g\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FORMATTED-OPTION-STRING" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "OPTION" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLI-FORMATTED-OPTIONS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OPTION-LIST" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLI-USAGE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "COMMAND-NAME" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "OPTIONS-LIST" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION "Print the command line usage")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLI-PARSE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ARGS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "CLI-OPTS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION "See CLI-PARSE-HASH.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLI-PARSE-ASSOC" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ARGS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "CLI-OPTS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Parses command-line arguments much in the same format as the
+cl-args that getopt() parses. That is, if you call any program
+with: './prgm --opt1=value1 value2 -n', and you give
+\"--opt1=value1\", \"value2\" and \"-n\" to cli-parse-assoc, it
+returns and assoc-list of the form ((\"opt1\" (\"value1\"
+\"value2\")) (\"n\" nil)).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLI-PARSE-ASSOC-AUX" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ARGS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "RESULTS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION "Helper for cli-parse.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLI-PARSE-HASH" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ARGS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "CLI-OPTS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION "Parses command-line arguments in the same form as specified
+for CLI-PARSE-ASSOC, but returns a hash-table of the results,
+instead of an assoc list.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLI-PARSE-HASH-AUX" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ARGS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "CLI-OPTS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COALESCE-OPTIONS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "ARGS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION "Will convert a list of the form (\"--option-name=val1[,]\"
+\"val2[,]\" \" ... \"valn\" ...) to a list of the form
+(\"--option-name=val1 val2 val3\" ...).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COALESCE-OPTIONS-AUX" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ARGS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "RESULTS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION "Helper for coalesce-options.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OPT-NAME" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OPT" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)) :DOCUMENTATION
+     "Extract the name of an option: for example \"opt1\" is the name
+from \"--opt1=val1\". Will return the argument if it is neither.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "END-OPT-NAME" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "OPT" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the index of the end of the option-name. For example,
+end-opt-name would return 6 for the option \"--opt1=val1\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ABBR->FULL-OPT-NAME" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "OPT" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "CLI-OPTS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Converts an abbreviated option (i.e. \"o\") to its corresponding full
+option name. Returns the argument if no conversion is performed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TO-FULL-OPT-NAMES" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CL-ARGS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "CLI-OPTS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Converts any abbreviated option list of command-line options to the
+full option name.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TO-FULL-OPT-NAME" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ARGNAME" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "CLI-OPTS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Convert an option name to the full one, if necessary. Change \"o\"
+to \"outfile\", for example.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OPT-VALUES" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "OPT" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Extract the values of an option: for example \"val1\" is the value
+from \"--opt1=val1\". If no values are specified, this function
+returns nil.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OPT-P" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OPT" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)) :DOCUMENTATION
+     "Evaluates to true if opt is an abbreviated or a full option.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ABBR-OPT-P" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "OPT" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Test whether opt is a short option of the form \"-o[=val]\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FULL-OPT-P" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "OPT" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Test whether opt is a long option of the form \"--opt[=val]\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-TOKENIZE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "VAL-SEPARATORS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "INCLUDE-SEPARATORS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Breaks up a given string into string components by splitting
+the string every time an element of val-separator is
+encountered. Returns a list of strings, which are all the
+tokens. If include-separators is non-nil, the separators
+themselves will be included in the parse.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-TOKENIZE-AUX" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "VAL-SEPARATORS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "VALS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "INCLUDE-SEPARATORS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION "Helper for string-tokenize.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ST-FIRST-VAL" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "VAL-SEPARATORS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the first token by parsing str. Analagous to car, but for the
+string tokenizer, instead of for lists.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ST-REST-OF" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "VAL-SEPARATORS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the rest of the string, not including the first
+token. Analagous to cdr, but for the string tokenizer, instead of for
+lists.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ST-CLOSEST-VAL" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL)
+      (:NAME "VAL-SEPARATORS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the character in the string which both matches any of the
+val-separators and minimizes the distance between it and the index 0
+of the string. If there is no match, returns the length of the
+string."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "CLI-OPTION-REQUIRES-ARGUMENTS" :PACKAGE-NAME "CLI-PARSER"
+     :EXTERNALP T)
+    (:NAME "CLI-OPTION-FULL" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "CLI-PARSE-ASSOC" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "CLI-OPTION-DESCRIPTION" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "CLI-OPTION" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "CLI-OPTION-ABBR" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "CLI-OPTION-EXAMPLE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "CLI-OPTION-P" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "CLI-FORMATTED-OPTIONS" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "CLI-PARSE-HASH" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "MAKE-CLI-OPTION" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "CLI-PARSE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)
+    (:NAME "CLI-USAGE" :PACKAGE-NAME "CLI-PARSER" :EXTERNALP T)))))

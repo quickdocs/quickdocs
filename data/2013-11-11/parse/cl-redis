@@ -1,0 +1,1649 @@
+
+(:TYPE :SYSTEM :NAME "cl-redis" :AUTHOR
+ "Vsevolod Dyomkin <vseloved@gmail.com>, Oleksandr Manzyuk <manzyuk@gmail.com>"
+ :MAINTAINER "Vsevolod Dyomkin <vseloved@gmail.com>" :VERSION "2.3.7" :LICENCE
+ "MIT" :DESCRIPTION "A fast and robust Common Lisp client for Redis"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("RUTILS" "CL-PPCRE" "USOCKET" "FLEXI-STREAMS") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "REDIS" :FULL-NAME "REDIS" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "RADIX-VALUES" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "RADIX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-FLOAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "FLOAT-STRING" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "RADIX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) 10)
+      ((:NAME "JUNK-ALLOWED" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "SINGLE-FLOAT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "DECIMAL-CHARACTER" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) #\.))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+UTF8+" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :DOCUMENTATION NIL
+     :INITIAL-VALUE "'(:UTF-8 :EOL-STYLE :CRLF)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ECHO-P*" :PACKAGE-NAME "REDIS" :EXTERNALP T) :DOCUMENTATION
+     "Whether the server-client communication should be echoed to the
+stream specified by *ECHO-STREAM*.  The default is NIL, meaning no
+echoing."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ECHO-STREAM*" :PACKAGE-NAME "REDIS" :EXTERNALP T) :DOCUMENTATION
+     "A stream to which the server-client communication will be echoed
+for debugging purposes.  The default is *STANDARD-OUTPUT*."
+     :INITIAL-VALUE "*STANDARD-OUTPUT*")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CONNECTION*" :PACKAGE-NAME "REDIS" :EXTERNALP T) :DOCUMENTATION
+     "The current Redis connection." :INITIAL-VALUE "NIL")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REDIS-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "Representation of a Redis connection." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HOST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "CONN-HOST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "CONN-PORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SOCKET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CONN-SOCKET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "CONN-STREAM" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       (:NAME "REDIS-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONNECTION-OPEN-P" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CONN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Is the socket of CONNECTION open?")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OPEN-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Create a socket connection to the host and port of CONNECTION and
+set the socket of CONN to the associated socket.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLOSE-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Close the socket of CONN.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REOPEN-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CONN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Close and reopen CONN.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONNECTED-P" :PACKAGE-NAME "REDIS" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Is there a current connection?")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONNECT" :PACKAGE-NAME "REDIS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "HOST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) #(127 0 0 1))
+      ((:NAME "PORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) 6379))
+     :DOCUMENTATION "Connect to Redis server.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DISCONNECT" :PACKAGE-NAME "REDIS" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Disconnect from Redis server.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RECONNECT" :PACKAGE-NAME "REDIS" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Close and reopen the connection to Redis server.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "HOST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) #(127 0 0 1))
+       ((:NAME "PORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) 6379))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluate BODY with the current connection bound to a new connection
+specified by the given HOST and PORT")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "RECONNECT-RESTART-CASE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal the condition of type REDIS-CONNECTION-ERROR denoted by
+the given ERROR and COMMENT offering a :RECONNECT restart to re-evaluate BODY.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-RECONNECT-RESTART" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "When, during the execution of BODY, an error occurs that breaks
+the connection, a REDIS-CONNECTION-ERROR is signalled,
+offering a :RECONNECT restart that will re-evaluate body after
+the conenction is re-established.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-RECURSIVE-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "HOST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) #(127 0 0 1))
+       ((:NAME "PORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) 6379))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Execute BODY with *CONNECTION* bound to the default Redis
+connection. If connection is already established, reuse it.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-PERSISTENT-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "HOST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) #(127 0 0 1))
+       ((:NAME "PORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) 6379))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Execute BODY inside WITH-CONNECTION. But if connection is broken
+due to REDIS-CONNECTION-ERROR (a network error or timeout),
+transparently reopen it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FORMAT-REDIS-LINE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FMT" :PACKAGE-NAME "REASONABLE-UTILITIES.SHORT" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Write a CRLF-terminated string formatted according to the given control
+string FMT and its arguments ARGS to the stream of the current connection.
+If *ECHOP-P* is not NIL, write that string to *ECHO-STREAM*, too.")
+    (:TYPE :GENERIC :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Send a command to Redis server over a socket connection.
+CMD is the command name (a string or a symbol), and ARGS are its arguments
+(keyword arguments are also supported).")
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PIPELINED*" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :DOCUMENTATION
+     "Indicates, that commands are sent in pipelined mode." :INITIAL-VALUE
+     "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PIPELINE*" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :DOCUMENTATION
+     "A list of expected results from the current pipeline." :INITIAL-VALUE
+     "NIL")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-PIPELINING" :PACKAGE-NAME "REDIS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Delay execution of EXPECT's inside BODY to the end, so that all
+commands are first sent to the server and then their output is received
+and collected into a list.  So commands return :PIPELINED instead of the
+expected results.")
+    (:TYPE :GENERIC :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Receive and process the reply of the given type from Redis server.")
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-REDIS-IN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "LINE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEF-EXPECT-METHOD" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Define a specialized EXPECT method.  BODY may refer to the ~
+variable REPLY, which is bound to the reply received from Redis ~
+server with the first character removed.")
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "ANYTHING" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Receive and process status reply, which is just a string, preceeded with +.")
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STATUS" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Receive and process status reply, which is just a string, preceeded with +.")
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "INLINE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION "Receive and process the reply of type INLINE.")
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "BOOLEAN" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION "Receive and process the reply of type BOOLEAN.")
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "INTEGER" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION "Receive and process the reply of type INTEGER.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "READ-BULK-REPLY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "POST-PROCESSING" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      ((:NAME "ENCODING" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       (:NAME "+UTF8+" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "BULK" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION "Receive and process the reply of type BULK.")
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "MULTI" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION "Receive and process the reply of type MULTI.")
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "QUEUED" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION "Receive and process the reply of type QUEUED.")
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "PUBSUB" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "END" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "LIST" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "FLOAT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION "Receive and process the reply of type FLOAT.")
+    (:TYPE :METHOD :SYMBOL (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "BYTES" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION "Receive and process the reply of type BYTES.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CMD-PREFIX*" :PACKAGE-NAME "REDIS" :EXTERNALP T) :DOCUMENTATION
+     "Prefix for functions names that implement Redis commands." :INITIAL-VALUE
+     "'REDIS::RED")
+    (:TYPE :MACRO :SYMBOL (:NAME "DEF-CMD" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+      (:NAME "REPLY-TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "DOCSTRING" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Define and export a function with the name <*CMD-REDIX*>-<CMD> for
+processing a Redis command CMD.  Here REPLY-TYPE is the expected reply
+format.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PING" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Ping server.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUIT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Close the connection.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AUTH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "PASS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Simple password authentication if enabled.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SELECT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "INDEX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Select the DB having the specified index.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ECHO" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "MESSAGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns message.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXISTS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Test if a key exists.")
+    (:TYPE :FUNCTION :SYMBOL (:NAME "DEL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Delete a key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return the type of the value stored at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "PATTERN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return all the keys matching a given pattern.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RANDOMKEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Return a random key from the key space.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RENAME" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OLDNAME" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "NEWNAME" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Rename the old key in the new one, destroing the newname key if it
+already exists.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RENAMENX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OLDNAME" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "NEWNAME" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Rename the old key in the new one, if the newname key does not
+already exist.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXPIRE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "SECS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Set a time to live in SECS on KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXPIREAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "TIMESTAMP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set a timeout on KEY. After the timeout has expired, the key will
+automatically be deleted.
+EXPIREAT has the same effect and semantic as EXPIRE, but instead of
+specifying the number of seconds representing the TTL, it takes
+an absolute UNIX timestamp (seconds since January 1, 1970).
+As in the case of EXPIRE command, if key is updated before the timeout has
+expired, then the timeout is removed as if the PERSIST command was invoked
+on KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PEXPIRE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MILLISECONDS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Set a KEY's time to live in MILLISECONDS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PEXPIREAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MILLISECONDS-TIMESTAMP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set the expiration for a KEY as a Unix timestamp specified in milliseconds.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PERSIST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Remove the existing timeout on KEY.")
+    (:TYPE :FUNCTION :SYMBOL (:NAME "TTL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Get the time to live in seconds of KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PTTL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Get the time to live in milliseconds of KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MOVE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "DBINDEX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Move the key from the currently selected DB to the DB having as
+index dbindex.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "GET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "DESC" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "ALPHA" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Sort a Set or a List accordingly to the specified parameters.")
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "SORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OBJECT-REFCOUNT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The OBJECT command allows to inspect the internals of Redis Objects
+associated with keys. It is useful for debugging or to understand if your keys
+are using the specially encoded data types to save space. Your application may
+also use the information reported by the OBJECT command to implement application
+level key eviction policies when using Redis as a Cache.
+
+OBJECT REFCOUNT <key> returns the number of references of the value associated
+with the specified key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OBJECT-ENCODING" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The OBJECT command allows to inspect the internals of Redis Objects
+associated with keys. It is useful for debugging or to understand if your keys
+are using the specially encoded data types to save space. Your application may
+also use the information reported by the OBJECT command to implement application
+level key eviction policies when using Redis as a Cache.
+
+OBJECT ENCODING <key> returns the kind of internal representation used in order
+to store the value associated with a key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OBJECT-IDLETIME" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The OBJECT command allows to inspect the internals of Redis Objects
+associated with keys. It is useful for debugging or to understand if your keys
+are using the specially encoded data types to save space. Your application may
+also use the information reported by the OBJECT command to implement application
+level key eviction policies when using Redis as a Cache.
+
+OBJECT IDLETIME <key> returns the number of seconds since the object stored
+at the specified key is idle (not requested by read or write operations). While
+the value is returned in seconds the actual resolution of this timer is 10
+seconds, but may vary in future implementations.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DUMP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return a serialized version of the value stored at the specified KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "TTL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "SERIALIZED-VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Create a KEY using the provided SERIALIZED-VALUE,
+previously obtained using DUMP.")
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "RESTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MIGRATE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "HOST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "PORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "DESTINATION-DB" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "TIMEOUT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Atomically transfer a key from a Redis instance to another one.")
+    (:TYPE :FUNCTION :SYMBOL (:NAME "SET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Set a key to a string value.")
+    (:TYPE :FUNCTION :SYMBOL (:NAME "GET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Return the string value of the key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GETSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set a key to a string returning the old value of the key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MGET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Multi-get, return the strings values of the keys.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SETNX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Set a key to a string value if the key does not exist.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SETEX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "TIME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set KEY to hold the string VALUE and set KEY to timeout after a given number
+of seconds. This command is equivalent to executing the following commands:
+    SET mykey value
+    EXPIRE mykey seconds
+SETEX is atomic, and can be reproduced by using the previous two commands inside
+an MULTI/EXEC block. It is provided as a faster alternative to the given
+sequence of operations, because this operation is very common when Redis is used
+as a cache.
+An error is returned when seconds is invalid.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY-VALUE-PLIST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set multiple keys to multiple values in a single atomic operation.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MSETNX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY-VALUE-PLIST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set multiple keys to multiple values in a single atomic operation
+if none of the keys already exist.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INCR" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Increment the integer value of KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INCRBY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "INCREMENT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Increment the integer value of KEY by .")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INCRBYFLOAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "INCREMENT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Increment the float value of KEY by INCREMENT.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECR" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Decrement the integer value of KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECRBY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "DECREMENT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Decrement the integer value of KEY by DECREMENT.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "APPEND" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Append the specified string to the string stored at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SUBSTR" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Return a substring out of a larger string.
+Warning: left for backwards compatibility. It is now called: GETRANGE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRLEN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the length of the string value stored at KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SETBIT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "OFFSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Sets or clears the bit at OFFSET in the string value stored at KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GETBIT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "OFFSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the bit value at OFFSET in the string value stored at KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BITCOUNT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Count set bits in a string at KEY
+(with optional bounding indices START and END).")
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "BITCOUNT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BITOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OPERATION" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "DESTKEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Perform bitwise OPERATION between strings ar KEY and KEYS
+and store the result ad DSTKEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SETRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "OFFSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Overwrites part of the string stored at KEY, starting at the specified
+OFFSET, for the entire length of VALUE. If the OFFSET is larger than the
+current length of the string at KEY, the string is padded with zero-bytes
+to make OFFSET fit. Non-existing keys are considered as empty strings,
+so this command will make sure it holds a string large enough to be able
+to set value at OFFSET. Note that the maximum OFFSET that you can set
+is 229^-1 (536870911), as Redis Strings are limited to 512 megabytes.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GETRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "OFFSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the substring of the string value stored at key, determined by
+the offsets START and END (both are inclusive). Negative offsets can be
+used in order to provide an offset starting from the end of the string.
+So -1 means the last character, -2 the penultimate and so forth.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "FIELD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set the hash FIELD to the specified VALUE. Creates the hash if needed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HSETNX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "FIELD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set the hash FIELD to the specified VALUE, if the KEY doesn't exist yet.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HGET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "FIELD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Retrieve the value of the specified hash FIELD.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HMSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FIELDS-AND-VALUES" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Set the hash FIELDS to their respective VALUES.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HMGET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "FIELD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FIELDS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Get the values associated with the specified FIELDS in the hash
+stored at KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HINCRBY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "FIELD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Increment the integer value of the hash at KEY on FIELD with INTEGER.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HINCRBYFLOAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "FIELD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "INCREMENT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Increment the float value of the hash at KEY on FIELD with INCREMENT.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HEXISTS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "FIELD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Test for existence of a specified FIELD in a hash.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HDEL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "FIELD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Remove the specified FIELD from a hash.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HLEN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return the number of items in a hash.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HKEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return all the fields in a hash.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HVALS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return all the values in a hash.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HGETALL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return all the fields and associated values in a hash.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Append an element to the tail of the list value at KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Append an element to the head of the list value at KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RPUSHX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Inserts value at the tail of the list stored at KEY, only if KEY
+already exists and holds a list. In contrary to RPUSH, no operation
+will be performed when KEY does not yet exist.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LPUSHX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Inserts value at the head of the list stored at KEY, only if KEY
+already exists and holds a list. In contrary to LPUSH, no operation
+will be performed when KEY does not yet exist.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LLEN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return the length of the List value at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Return a range of elements from the List at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LTRIM" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Trim the list at key to the specified range of elements.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LINDEX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "INDEX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the element at index position from the List at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "INDEX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set a new value as the element at index position of the List at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LREM" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Remove the first-N, last-N, or all the elements matching value from
+the List at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LPOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return and remove (atomically) the first element of the List at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RPOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return and remove (atomically) the last element of the List at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BLPOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS-AND-TIMEOUT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Blocking LPOP.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BRPOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS-AND-TIMEOUT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Blocking RPOP.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RPOPLPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SOURCE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "DESTINATION" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Atomically returns and removes the last element (tail) of the list
+stored at SOURCE, and pushes the element at the first element (head) of the list
+stored at DESTINATION.
+For example: consider SOURCE holding the list a,b,c, and DESTINATION holding
+the list x,y,z. Executing RPOPLPUSH results in SOURCE holding a,b and
+DESTINATION holding c,x,y,z.
+If SOURCE does not exist, the value nil is returned and no operation is
+performed. If SOURCE and DESTINATION are the same, the operation is equivalent
+to removing the last element from the list and pushing it as first element
+of the list, so it can be considered as a list rotation command.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BRPOPLPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SOURCE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "DESTINATION" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "TIMEOUT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "BRPOPLPUSH is the blocking variant of RPOPLPUSH. When source contains
+elements, this command behaves exactly like RPOPLPUSH. When source is empty,
+Redis will block the connection until another client pushes to it or until
+TIMEOUT is reached. A TIMEOUT of zero can be used to block indefinitely.
+See RPOPLPUSH for more information.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LINSERT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "BEFORE/AFTER" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "PIVOT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Inserts VALUE in the list stored at KEY either BEFORE or AFTER
+the reference value PIVOT. When KEY does not exist, it is considered an empty
+list and no operation is performed. An error is returned when KEY exists,
+but does not hold a list value PIVOT.
+
+Note: before/after can only have 2 values: :before or :after.")
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "LINSERT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SADD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MEMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Add the specified member to the Set value at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SREM" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MEMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Remove the specified member from the Set value at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SPOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Remove and return (pop) a random element from the Set value at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SMOVE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SRCKEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "DSTKEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MEMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Move the specified member from one Set to another atomically.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCARD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return the number of elements (the cardinality) of the Set at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SISMEMBER" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MEMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Test if the specified value is a member of the Set at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SINTER" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the intersection between the Sets stored at key1, key2, ...,
+keyN.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SINTERSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "DSTKEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Compute the intersection between the Sets stored at key1, key2,
+..., keyN, and store the resulting Set at dstkey.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SUNION" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the union between the Sets stored at key1, key2, ..., keyN.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SUNIONSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "DSTKEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Compute the union between the Sets stored at key1, key2, ..., keyN,
+and store the resulting Set at dstkey.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SDIFF" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the difference between the Set stored at key1 and all the
+Sets key2, ..., keyN.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SDIFFSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "DSTKEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Compute the difference between the Set key1 and all the Sets key2,
+..., keyN, and store the resulting Set at dstkey.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SMEMBERS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return all the members of the Set value at key.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SRANDMEMBER" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Get one or COUNT random members from a set at KEY.
+When called with the additional count argument,
+return an array of count distinct elements if count is positive.
+If called with a negative count the behavior changes and the command
+is allowed to return the same element multiple times.
+In this case the numer of returned elements is the absolute
+value of the specified count.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZADD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "SCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MEMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Add the specified MEMBER to the Set value at KEY or update the
+SCORE if it already exist.  If nil is returned, the element already
+existed in the set.  Just the score was updated.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZREM" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MEMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Remove the specified MEMBER from the Set value at KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZINCRBY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "INCREMENT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MEMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "If the MEMBER already exists increment its score by INCREMENT,
+otherwise add the member setting INCREMENT as score.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZRANK" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MEMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Return the rank (or index) or MEMBER in the sorted set at KEY,
+with scores being ordered from low to high.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZREVRANK" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MEMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Return the rank (or index) or MEMBER in the sorted set at KEY,
+with scores being ordered from high to low.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WITHSCORES" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Return a range of elements from the sorted set at KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZREVRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WITHSCORES" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return a range of elements from the sorted set at KEY, exactly like
+ZRANGE, but the sorted set is ordered in traversed in reverse order,
+from the greatest to the smallest score.")
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "ZRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "ZREVRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MIN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MAX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WITHSCORES" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "LIMIT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns all the elements in the sorted set at KEY with a score between
+MIN and MAX (including elements with score equal to MIN or MAX).
+The elements are considered to be ordered from low to high scores.
+The elements having the same score are returned in lexicographical order (this
+follows from a property of the sorted set implementation in Redis and does not
+involve further computation).
+The optional LIMIT argument can be used to only get a range of the matching
+elements (similar to SELECT LIMIT offset, count in SQL).
+The optional WITHSCORES argument makes the command return both the element and
+its score, instead of the element alone.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZREVRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MAX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MIN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WITHSCORES" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "LIMIT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns all the elements in the sorted set at KEY with a score between
+MAX and MIN (including elements with score equal to MAX or MIN).
+In contrary to the default ordering of sorted sets, for this command the
+elements are considered to be ordered from high to low scores.
+The elements having the same score are returned in reverse lexicographical order.
+Apart from the reversed ordering, ZREVRANGEBYSCORE is similar to ZRANGEBYSCORE.")
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "ZRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "ZREVRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZCARD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return the cardinality (number of elements) of the sorted set at KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZCOUNT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MIN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MAX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns the number of elements in the sorted set at KEY with a score between
+MIN and MAX.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the score associated with the specified ELEMENT of the
+sorted set at KEY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZREMRANGEBYRANK" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MIN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MAX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Remove all the elements with rank >= MIN and rank <= MAX from the
+sorted set.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZREMRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MIN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MAX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Remove all the elements with score >= MIN and score <= MAX from the
+sorted set.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZUNIONSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "DSTKEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "N" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WEIGHTS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "AGGREGATE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Perform a union in DSTKEY over a number (N) of sorted sets at KEYS
+with optional WEIGHTS and AGGREGATE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ZINTERSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "DSTKEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "N" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WEIGHTS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "AGGREGATE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Perform an intersection in DSTKEY over a number (N) of sorted sets at KEYS
+with optional WEIGHTS and AGGREGATE.")
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "ZUNIONSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CMD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "ZINTERSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MULTI" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Redis atomic transactions' start.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXEC" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Redis atomic transactions' commit.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DISCARD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Redis atomic transactions' rollback.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WATCH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Marks the given keys to be watched for conditional execution of a transaction.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNWATCH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Flushes all the previously watched keys for a transaction.
+If you call EXEC or DISCARD, there's no need to manually call UNWATCH.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CHANNELS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Redis Public/Subscribe messaging paradigm implementation.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNSUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CHANNELS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Redis Public/Subscribe messaging paradigm implementation.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PSUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PATTERNS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Redis Public/Subscribe messaging paradigm implementation.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PUNSUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PATTERNS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Redis Public/Subscribe messaging paradigm implementation.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PUBLISH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CHANNEL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "MESSAGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Redis Public/Subscribe messaging paradigm implementation.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SAVE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Synchronously save the DB on disk.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BGSAVE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Asynchronously save the DB on disk.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LASTSAVE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Return the UNIX time stamp of the last successfully saving of the
+dataset on disk.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SHUTDOWN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Synchronously save the DB on disk, then shutdown the server.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BGREWRITEAOF" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Rewrite the append only file in background when it gets too big.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INFO" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Provide information and statistics about the server.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SLAVEOF" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "HOSTNAME" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "PORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Change the replication settings.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONFIG-GET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "PATTERN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Configure a Redis server at runtime: get glob PATTERN value.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONFIG-SET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "PARAMETER" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Configure a Redis server at runtime: set PARAMETER VALUE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONFIG-RESETSTAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Resets the statistics reported by Redis using the INFO command.
+These are the counters that are reset:
+Keyspace hits
+Keyspace misses
+Number of commands processed
+Number of connections received
+Number of expired keys")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FLUSHDB" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Remove all the keys of the currently selected DB.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FLUSHALL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Remove all the keys from all the databases.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DBSIZE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Return the number of keys in the current db.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SYNC" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Synchronize with slave.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SLOWLOG" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SUBCOMMAND" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGUMENT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Manages the Redis slow queries log.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVAL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SCRIPT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "NUMKEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY-VALUES" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Execute a Lua script server side.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVALSHA" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SHA1" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "NUMKEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY-VALUES" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Execute a stored Lua script server side.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCRIPT-LOAD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SCRIPT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)) :DOCUMENTATION
+     "Load the specified Lua script into the script cache.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCRIPT-EXISTS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SCRIPT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SCRIPTS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL))
+     :DOCUMENTATION "Check existence of scripts in the script cache.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCRIPT-KILL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Kill the script currently in execution.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCRIPT-FLUSH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Remove all the scripts from the script cache."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "RED-SETEX" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-BRPOPLPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZREVRANK" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-CONFIG-GET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-CONFIG-SET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SETBIT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LLEN" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HSETNX" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-PUNSUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-BITOP" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-BGSAVE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SUBSTR" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-TTL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-EXPIRE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-RENAMENX" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "WITH-PERSISTENT-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HGETALL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-RPOP" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "OPEN-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-MSET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "CLOSE-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-MGET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-GETBIT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-GETRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-DUMP" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-MIGRATE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-PTTL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZREVRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LASTSAVE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-DBSIZE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-INCR" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-RPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-WATCH" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SETRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-GETSET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LSET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-CONFIG-RESETSTAT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZINTERSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HMGET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SINTERSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LREM" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-RENAME" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SETNX" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "DEF-EXPECT-METHOD" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HINCRBY" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-PSUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "*ECHO-STREAM*" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LPUSHX" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-BRPOP" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SPOP" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZADD" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-EVALSHA" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HKEYS" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "*CONNECTION*" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "*CMD-PREFIX*" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HGET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SUNIONSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-DECRBY" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-FLUSHDB" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "REDIS-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-PERSIST" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-MOVE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SDIFF" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "REDIS-ERROR-REPLY" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SCRIPT-KILL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "TELL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "WITH-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZREVRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HVALS" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-OBJECT-IDLETIME" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-APPEND" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SADD" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HEXISTS" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-INCRBYFLOAT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SLAVEOF" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-QUIT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZREMRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SCARD" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SMOVE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-EXISTS" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "WITH-RECURSIVE-CONNECTION" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-FLUSHALL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-RANDOMKEY" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SORT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-PING" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "DEF-CMD" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-UNSUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZUNIONSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HMSET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-INFO" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-DEL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SCRIPT-LOAD" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-AUTH" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SYNC" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "DISCONNECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZREMRANGEBYRANK" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "REDIS-BAD-REPLY" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SAVE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-UNWATCH" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SREM" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-PEXPIREAT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-EXPIREAT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-RPOPLPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "*ECHO-P*" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZINCRBY" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RECONNECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-PUBLISH" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SHUTDOWN" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-INCRBY" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-RPUSHX" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-EXEC" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "WITH-PIPELINING" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-STRLEN" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZREM" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-MULTI" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SINTER" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-GET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-BITCOUNT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ECHO" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-DECR" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LINSERT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZCOUNT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "REDIS-ERROR" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SMEMBERS" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SRANDMEMBER" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "CONNECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LTRIM" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-PEXPIRE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "EXPECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SLOWLOG" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZRANK" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SISMEMBER" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LINDEX" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-DISCARD" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HSET" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "CONNECTED-P" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-EVAL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-OBJECT-REFCOUNT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-LPOP" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-OBJECT-ENCODING" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "REDIS-CONNECTION-ERROR" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-ZCARD" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HLEN" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SUNION" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SCRIPT-FLUSH" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-BGREWRITEAOF" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HDEL" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SELECT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-HINCRBYFLOAT" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-BLPOP" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-RESTORE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SDIFFSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-SCRIPT-EXISTS" :PACKAGE-NAME "REDIS" :EXTERNALP T)
+    (:NAME "RED-MSETNX" :PACKAGE-NAME "REDIS" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME "RED" :FULL-NAME "RED" :DOCUMENTATION NIL :SYMBOL-LIST
+   NIL :EXTERNAL-SYMBOLS
+   ((:NAME "BGREWRITEAOF" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SETNX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "EVALSHA" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "DISCARD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ECHO" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "OBJECT-IDLETIME" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "PUBLISH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SYNC" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZREMRANGEBYRANK" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "BRPOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "CONFIG-RESETSTAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SORT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HGET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SDIFFSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZREM" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "MSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "EXISTS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "CONFIG-SET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "PEXPIRE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "RENAME" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "PUNSUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "DUMP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "MULTI" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SETRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "INFO" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "MOVE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "PING" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SREM" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "RPOPLPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "BITCOUNT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SCARD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HEXISTS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "EXPIREAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "GETSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "MGET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LREM" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "UNSUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SETBIT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SUNION" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SLOWLOG" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SCRIPT-KILL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "PTTL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZREVRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZINCRBY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "RESTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "INCRBYFLOAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "EXEC" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "RPUSHX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LTRIM" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "INCRBY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZINTERSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "DEL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "DECR" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZRANK" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SUBSTR" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "APPEND" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "PSUBSCRIBE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HGETALL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "AUTH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SCRIPT-EXISTS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SDIFF" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LPOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "RPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "RANDOMKEY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "PERSIST" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SETEX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZREMRANGEBYSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "OBJECT-ENCODING" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "CONFIG-GET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SPOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SELECT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZSCORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "WATCH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "EVAL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "BRPOPLPUSH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HDEL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SMEMBERS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "PEXPIREAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZCOUNT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SCRIPT-FLUSH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "MSETNX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "GETRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "DBSIZE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "EXPIRE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SINTER" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SADD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZADD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LINSERT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LINDEX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "UNWATCH" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "BLPOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LLEN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HINCRBY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "DECRBY" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HMSET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HSETNX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SINTERSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "QUIT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SMOVE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "INCR" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "FLUSHALL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SUNIONSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SCRIPT-LOAD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "BGSAVE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "RPOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "GETBIT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SHUTDOWN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HMGET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SLAVEOF" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "RENAMENX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HINCRBYFLOAT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "STRLEN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZCARD" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "TYPE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "MIGRATE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "KEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "OBJECT-REFCOUNT" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SRANDMEMBER" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HVALS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "BITOP" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LPUSHX" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZREVRANK" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SISMEMBER" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "FLUSHDB" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HKEYS" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "GET" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZUNIONSTORE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "TTL" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "SAVE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "LASTSAVE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "ZREVRANGE" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)
+    (:NAME "HLEN" :PACKAGE-NAME "REDIS" :EXTERNALP NIL)))))

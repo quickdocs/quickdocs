@@ -1,0 +1,52 @@
+
+(:TYPE :SYSTEM :NAME "cl-netstrings" :AUTHOR "Daniel Janus" :MAINTAINER
+ "Daniel Janus" :VERSION "0.1" :LICENCE "MIT" :DESCRIPTION
+ "A library for handling netstrings as described in http://cr.yp.to/proto/netstrings.txt."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("ITERATE" "ARNESI") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "NETSTRINGS" :FULL-NAME "NETSTRINGS" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :CONSTANT :SYMBOL
+     (:NAME "+COLON+" :PACKAGE-NAME "NETSTRINGS" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE "(CHAR-CODE #\\:)")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+COMMA+" :PACKAGE-NAME "NETSTRINGS" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE "(CHAR-CODE #\\,)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DIGITP" :PACKAGE-NAME "NETSTRINGS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Checks whether BYTE represents a decimal digit in ASCII.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DIGITIZE" :PACKAGE-NAME "NETSTRINGS" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Converts a BYTE representing an ASCII decimal digit to that digit's
+numeric value.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-NETSTRING" :PACKAGE-NAME "NETSTRINGS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ENCODING" :PACKAGE-NAME "NETSTRINGS" :EXTERNALP NIL)
+       (:NAME "UTF-8" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Reads a netstring from STREAM.  STREAM must be a binary input
+stream that has an element type (UNSIGNED-BYTE 8).  After reading, the
+sequence of bytes is converted to an ordinary lisp string using
+ENCODING (see the documentation of ARNESI:OCTETS-TO-STRING for a list
+of available encodings).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-NETSTRING" :PACKAGE-NAME "NETSTRINGS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ENCODING" :PACKAGE-NAME "NETSTRINGS" :EXTERNALP NIL)
+       (:NAME "UTF-8" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Writes a STRING to STREAM as a netstring.  STREAM must be a binary
+output stream that has an element type (UNSIGNED-BYTE 8).  The string
+is converted to a sequence of bytes using ENCODING and then written to
+the stream.  See the documentation of ARNESI:OCTETS-TO-STRING for a
+list of available encodings."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "READ-NETSTRING" :PACKAGE-NAME "NETSTRINGS" :EXTERNALP T)
+    (:NAME "WRITE-NETSTRING" :PACKAGE-NAME "NETSTRINGS" :EXTERNALP T)))))

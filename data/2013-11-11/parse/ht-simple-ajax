@@ -1,0 +1,90 @@
+
+(:TYPE :SYSTEM :NAME "ht-simple-ajax" :AUTHOR "Martin Loetzsch" :MAINTAINER NIL
+ :VERSION "0.5" :LICENCE "BSD-style" :DESCRIPTION "simple AJAX for Hunchentoot"
+ :LONG-DESCRIPTION "See http://martin-loetzsch.de/ht-simple-ajax/" :DEPENDS-ON
+ ("HUNCHENTOOT") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "HT-SIMPLE-AJAX" :FULL-NAME "HT-SIMPLE-AJAX"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "AJAX-PROCESSOR" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "Maintains a list of lisp function that can be
+                   called from a client page."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LISP-FNS" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "LISP-FNS" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Maps the symbol names of the exported functions to
+                    their symbols")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "JS-FNS" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "JS-FNS" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Maps the symbol names of the exported functions to
+                    a javascript code that can call the function from
+                    within the client page")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SERVER-URI" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "SERVER-URI" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The uri which is used to handle ajax request")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONTENT-TYPE" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "CONTENT-TYPE" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The http content type that is sent with each response")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REPLY-EXTERNAL-FORMAT" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "REPLY-EXTERNAL-FORMAT" :PACKAGE-NAME "HUNCHENTOOT" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The format for the character output stream")))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-AJAX-DISPATCHER" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "PROCESSOR" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a hunchentoot dispatcher for an ajax processor")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-JS-SYMBOL" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "helper function for making 'foo_bar_' out of 'foo-bar?' ")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFUN-AJAX" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL)
+      (:NAME "PARAMS" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL)
+      ((:NAME "PROCESSOR" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL))
+     :DOCUMENTATION "Declares a defun that can be called from a client page.
+Example: (defun-ajax func1 (arg1 arg2) (*ajax-processor*)
+   (do-stuff))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GENERATE-PROLOGUE" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PROCESSOR" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates a <script> ... </script> html element that contains all the
+   client-side javascript code for the ajax communication. Include this 
+   script in the <head> </head> of each html page")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CALL-LISP-FUNCTION" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PROCESSOR" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "This is called from hunchentoot on each ajax request. It parses the 
+   parameters from the http request, calls the lisp function and returns
+   the response."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "CREATE-AJAX-DISPATCHER" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP
+     T)
+    (:NAME "GENERATE-PROLOGUE" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP T)
+    (:NAME "AJAX-PROCESSOR" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP T)
+    (:NAME "DEFUN-AJAX" :PACKAGE-NAME "HT-SIMPLE-AJAX" :EXTERNALP T)))))

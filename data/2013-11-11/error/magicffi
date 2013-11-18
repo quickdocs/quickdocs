@@ -1,0 +1,21 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "magicffi"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+; 
+; compilation unit aborted
+;   caught 2 fatal ERROR conditions
+Error: External process exited with code 1.
+Command was: "cc" "-m32" "-I/home/quickdocs_dev/quicklisp/dists/quicklisp/software/cffi_0.11.2/" "-o" "/home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/magicffi-20120703-git/grovel" "/home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/magicffi-20120703-git/grovel.c"
+Output was:
+/home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/magicffi-20120703-git/grovel.c:6:32: fatal error: /usr/include/magic.h: No such file or directory
+compilation terminated.

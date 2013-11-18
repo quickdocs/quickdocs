@@ -1,0 +1,1198 @@
+
+(:TYPE :SYSTEM :NAME "cl-unicode" :AUTHOR NIL :MAINTAINER NIL :VERSION "0.1.4"
+ :LICENCE NIL :DESCRIPTION "Portable Unicode Library" :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("CL-PPCRE") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-UNICODE" :FULL-NAME "CL-UNICODE" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :CONSTANT :SYMBOL
+     (:NAME "+CODE-POINT-LIMIT+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :DOCUMENTATION
+     "The smallest integer which is not a code point in the Unicode codespace."
+     :INITIAL-VALUE "1114112")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CANONICAL-NAMES*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash tables which maps property symbols (see PROPERTY-SYMBOL) to
+their \"canonical names\", i.e. to strings."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :TEST 'EQ :SIZE 500)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*NAMES-TO-CODE-POINTS*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash table which (case-insensitively) maps \"canonicalized\"
+character names to their code points."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :TEST 'EQUALP :SIZE 20000)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*UNICODE1-NAMES-TO-CODE-POINTS*" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash table which (case-insensitively) maps \"canonicalized\"
+Unicode 1.0 character names to their code points."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :TEST 'EQUALP :SIZE 2000)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CODE-POINTS-TO-NAMES*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash table which maps code points to the corresponding character
+names."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :SIZE 20000)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CODE-POINTS-TO-UNICODE1-NAMES*" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash table which maps code points to the corresponding Unicode
+1.0 character names."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :SIZE 2000)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CASE-MAPPINGS*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "A hash table which maps code points to three-element lists
+containing the lowercase, uppercase, and titlecasse mapping of the
+corresponding character (unless all of them are NIL)."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :SIZE 2100)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*GENERAL-CATEGORIES*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A list of all property symbols which denote general categories."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SCRIPTS*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "A list of all property symbols which denote scripts."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CODE-BLOCKS*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "A list of all property symbols which denote blocks."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*BINARY-PROPERTIES*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A list of all property symbols which denote binary properties."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*BIDI-CLASSES*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "A list of all property symbols which denote Bidi classes."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PROPERTY-MAP*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash table which (case-insensitively) maps \"canonicalized\"
+property names (including aliases) to the corresponding property
+symbols."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :TEST 'EQUALP :SIZE 1000)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PROPERTY-TESTS*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash table which maps property symbols to a test function which
+tests for the corresponding property."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :TEST 'EQ :SIZE 360)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JAMO-SHORT-NAMES*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash table which maps code points to their Jamo short names.
+Needed to compute Hangul syllable names - see COMPUTE-HANGUL-NAME."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :SIZE 70)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HANGUL-SYLLABLES-TO-CODE-POINTS*" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash table which (case-insensitively) maps Hangul syllable name
+parts to their code points."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :TEST 'EQUALP :SIZE 12000)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TRY-UNICODE1-NAMES-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :DOCUMENTATION
+     "This is the default value for the :TRY-UNICODE1-NAMES-P keyword
+argument to CHARACTER-NAMED."
+     :INITIAL-VALUE "T")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TRY-ABBREVIATIONS-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :DOCUMENTATION
+     "This is the default value for the :TRY-ABBREVIATIONS-P keyword
+argument to CHARACTER-NAMED."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SCRIPTS-TO-TRY*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :DOCUMENTATION
+     "This is the default value for the :SCRIPTS-TO-TRY keyword argument
+to CHARACTER-NAMED."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TRY-HEX-NOTATION-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :DOCUMENTATION
+     "This is the default value for the :TRY-HEX-NOTATION-P keyword
+argument to CHARACTER-NAMED."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TRY-LISP-NAMES-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :DOCUMENTATION "This is the default value for the :TRY-LISP-NAMES-P keyword
+argument to CHARACTER-NAMED."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PREVIOUS-READTABLES*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A stack which holds the previous readtables that have been pushed
+here by ENABLE-ALTERNATIVE-CHARACTER-SYNTAX."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HYPERDOC-BASE-URI*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"http://weitz.de/cl-unicode/\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HYPERDOC-LOOKUP" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-HEX" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Parses STRING as a hexadecimal number.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CANONICALIZE-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Converts the string NAME into a \"canonicalized\" name which can be
+used for unambiguous look-ups by removing all whitespace, hyphens, and
+underline characters.
+
+Tries not to remove hyphens preceded by spaces if this could lead to
+ambiguities as described in
+<http://unicode.org/unicode/reports/tr18/#Name_Properties>.
+
+All CL-UNICODE functions which accept string \"names\" for characters
+or properties will canonicalize the name first using this function and
+will then look up the name case-insensitively.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROPERTY-SYMBOL" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a symbol in the CL-UNICODE-NAMES package (which is only
+used for this purpose) which can stand in for the string NAME in
+look-ups.  The symbol's name is the result of \"canonicalizing\" and
+then upcasing NAME.
+
+A symbol returned by this function is only really useful and only
+actually a property symbol if the second return value is true.
+
+All exported functions of CL-UNICODE which return strings which are
+property names return the corresponding property symbol as their
+second return value.  All exported functions of CL-UNICODE which
+accept property names as arguments will also accept property symbols.
+
+See also PROPERTY-NAME.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REGISTER-PROPERTY-SYMBOL" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Converts NAME to a property symbol using PROPERTY-SYMBOL and
+\"registers\" it in the *CANONICAL-NAMES* hash table.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROPERTY-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns a name (not \"the\" name) for a property symbol SYMBOL if
+it is known to CL-UNICODE.  Note that
+
+  (STRING= (PROPERTY-NAME (PROPERTY-SYMBOL <string>)) <string>)
+
+is not necessarily true even if the property name is not NIL while
+
+  (EQ (PROPERTY-SYMBOL (PROPERTY-NAME <symbol>)) <symbol>)
+
+always holds if there is a property name for <symbol>.
+
+See also PROPERTY-SYMBOL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TREE-LOOKUP" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Looks up an attribute for CODE-POINT in the binary search tree
+TREE.  TREE is a tree as created by BUILD-TREE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRY-ABBREVIATIONS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "SCRIPTS-TO-TRY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Helper function called by CHARACTER-NAMED when the
+:TRY-ABBREVIATIONS-P keyword argument is true.  Tries to interpret
+NAME as an abbreviation for a longer Unicode name and returns the
+corresponding code point if it succeeds.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the simple case mapping for the character C
+(a code point or a Lisp character) in position POSITION where 0 means
+lowercase, 1 uppercase, and 2 titlecase.  Returns a character if
+WANT-CODE-POINT-P is NIL and a code point otherwise.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CJK-UNIFIED-IDEOGRAPH-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a true value if CODE-POINT is the code point of a CJK
+unified ideograph for which we can algorithmically derive the name.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-COMPUTE-CJK-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Computes the name for CODE-POINT if CODE-POINT denotes a CJK
+unified ideograph the name of which can be algorithmically derived.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-FIND-CJK-CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Computes the code point for NAME if NAME is the name of a CJK
+unified ideograph the name of which can be algorithmically derived.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-HANGUL-CONSTANT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Simple helper macro to define some constants needed for the Hangul
+algorithm below.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+S-BASE+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "The constant `SBase' from chapter 3 of the Unicode book."
+     :INITIAL-VALUE "44032")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+L-BASE+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "The constant `LBase' from chapter 3 of the Unicode book."
+     :INITIAL-VALUE "4352")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+V-BASE+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "The constant `VBase' from chapter 3 of the Unicode book."
+     :INITIAL-VALUE "4449")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+T-BASE+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "The constant `TBase' from chapter 3 of the Unicode book."
+     :INITIAL-VALUE "4519")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+V-COUNT+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "The constant `VCount' from chapter 3 of the Unicode book."
+     :INITIAL-VALUE "21")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+T-COUNT+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "The constant `TCount' from chapter 3 of the Unicode book."
+     :INITIAL-VALUE "28")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+N-COUNT+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION "The constant `NCount' from chapter 3 of the Unicode book."
+     :INITIAL-VALUE "(* CL-UNICODE::+V-COUNT+ CL-UNICODE::+T-COUNT+)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPUTE-HANGUL-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Algorithmically derives the Hangul syllable name (the part behind
+\"HANGUL SYLLABLE \") of the character with code point CODE-POINT as
+described in section 3.12 of the Unicode book.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+FIRST-HANGUL-SYLLABLE+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP
+      NIL)
+     :DOCUMENTATION
+     "The code point of the first Hangul syllable the name of which can
+be algorithmically derived."
+     :INITIAL-VALUE "44032")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+LAST-HANGUL-SYLLABLE+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "The code point of the last Hangul syllable the name of which can be
+algorithmically derived."
+     :INITIAL-VALUE "55203")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-HANGUL-NAMES" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Computes the names for all Hangul syllables and registers them in
+the *HANGUL-SYLLABLES-TO-CODE-POINTS* hash table.  Used for
+CHARACTER-NAMED.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HANGUL-SYLLABLE-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a true value if CODE-POINT is the code point of a Hangul
+syllable for which we can algorithmically derive the name.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-COMPUTE-HANGUL-SYLLABLE-NAME" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Computes the name for CODE-POINT if CODE-POINT denotes a Hangul
+syllable the name of which can be algorithmically derived.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-FIND-HANGUL-SYLLABLE-CODE-POINT" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Computes the code point for NAME if NAME is the name of a Hangul
+syllable the name of which can be algorithmically derived.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ENSURE-CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Helper macro so that C can be treated like a code point even if it
+is a Lisp character.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNICODE-NAME-READER" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARG" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The reader function used when the alternative character syntax is
+enabled.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%ENABLE-ALTERNATIVE-CHARACTER-SYNTAX" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Internal function used to enable alternative character syntax and
+store current readtable on stack.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%DISABLE-ALTERNATIVE-CHARACTER-SYNTAX" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Internal function used to restore previous readtable.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SIGNAL-UNICODE-ERROR" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORMAT-CONTROL" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Utility function to signal conditions of type SIMPLE-UNICODE-ERROR.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "UNICODE-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the Unicode name of a character as a string
+or NIL if there is no name for that particular character.  C can be
+the character's code point (a positive integer) or a (Lisp)
+character assuming its character code is also its Unicode code
+point.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNICODE-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNICODE-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNICODE-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNICODE-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "UNICODE1-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the Unicode 1.0 name of a character as a
+string or NIL if there is no name for that particular character.  This
+name is only non-NIL if it is significantly different from the Unicode
+name (see UNICODE-NAME).  For control characters, sometimes the ISO
+6429 name is returned instead.
+
+C can be the character's code point (a positive integer) or a (Lisp)
+character assuming its character code is also its Unicode code
+point.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNICODE1-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNICODE1-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNICODE1-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNICODE1-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHARACTER-NAMED" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      ((:NAME "TRY-UNICODE1-NAMES-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "*TRY-UNICODE1-NAMES-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP
+        T))
+      ((:NAME "TRY-ABBREVIATIONS-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "*TRY-ABBREVIATIONS-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T))
+      ((:NAME "SCRIPTS-TO-TRY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "*SCRIPTS-TO-TRY*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T))
+      ((:NAME "TRY-HEX-NOTATION-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "*TRY-HEX-NOTATION-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T))
+      ((:NAME "TRY-LISP-NAMES-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "*TRY-LISP-NAMES-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)))
+     :DOCUMENTATION "Returns the character which has the name NAME (a string) by
+looking up the Unicode name (see UNICODE-NAME).
+
+If TRY-UNICODE1-NAMES is true, the Unicode 1.0 name (see
+UNICODE1-NAME) will be used as a fallback.
+
+If TRY-ABBREVIATIONS-P is true, NAME is treated as an abbreviation as
+follows: If NAME contains a colon, it is interpreted as
+\"<script>:<short-name>\" and the function tries to look up, in turn,
+the characters named \"<script> <size> LETTER <short-name>\",
+\"<script> LETTER <short-name>\", and \"<script> <short-name>\" where
+<size> is \"SMALL\" if none of the characters in <short-name> is
+uppercase, \"CAPITAL\" otherwise.  If NAME does not contain a colon,
+the same algorithm as above is tried with NAME instead of <short-name>
+and each element of the list of strings SCRIPTS-TO-TRY as <string>.
+(SCRIPTS-TO-TRY can also be a single string which is interpreted as a
+one-element list.)
+
+If TRY-HEX-NOTATION-P is true, NAME can be of the form \"U+<x>\" where
+<x> is a hexadecimal number with four to six digits with the obvious
+meaning.
+
+If TRY-LISP-NAMES-P is true, the function returns the character with
+the character name NAME (if there is one) or, if NAME is exactly one
+character, it returns this character.
+
+All the keyword-governed alternatives are tried in the order they're
+described here.
+
+See also *TRY-UNICODE1-NAMES-P*, *TRY-ABBREVIATIONS-P*,
+*SCRIPTS-TO-TRY*, *TRY-HEX-NOTATION-P*, and *TRY-LISP-NAMES-P*.
+
+Returns the code point instead of the character if WANT-CODE-POINT-P
+is true.  This can be especially useful for Lisp implementations where
+CHAR-CODE-LIMIT is smaller than +CODE-POINT-LIMIT+.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SCRIPT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the script of a character as a string or
+NIL if there is no script for that particular character.  C can be the
+character's code point (a positive integer) or a (Lisp) character
+assuming its character code is also its Unicode code point.  The
+second return value (if there is one) is the property symbol of the
+script.
+
+See also SCRIPTS.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SCRIPT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SCRIPT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CODE-BLOCK" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the block of a character as a string or NIL
+if there is no block for that particular character.  C can be the
+character's code point (a positive integer) or a (Lisp) character
+assuming its character code is also its Unicode code point.  The
+second return value (if there is one) is the property symbol of the
+block.
+
+See also CODE-BLOCKS.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CODE-BLOCK" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CODE-BLOCK" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "AGE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the \"age\" of a character or NIL if there
+is no age entry for that particular character.  The age of a character
+is a list of two integers denoting the major and minor number of the
+Unicode version where the character first appeared.  C can be the
+character's code point (a positive integer) or a (Lisp) character
+assuming its character code is also its Unicode code point.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "AGE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "AGE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "GENERAL-CATEGORY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the general category of a character as a
+string.  C can be the character's code point (a positive integer) or
+a (Lisp) character assuming its character code is also its Unicode
+code point.  The second return value is the property symbol of the
+category.
+
+See also GENERAL-CATEGORIES.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GENERAL-CATEGORY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GENERAL-CATEGORY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GENERAL-CATEGORY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GENERAL-CATEGORY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "BIDI-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the bidirectional (\"Bidi\") class of a
+character as a string or NIL if there is no bidirectional class for
+that particular character.  C can be the character's code point (a
+positive integer) or a (Lisp) character assuming its character code
+is also its Unicode code point.  The second return value (if there is
+one) is the property symbol of the class.
+
+See also BIDI-CLASSES")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BIDI-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BIDI-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BIDI-MIRRORING-GLYPH" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the Bidi mirroring glyph for a character if the character
+has the \"BidiMirrored\" property and an appropriate mirroring glyph
+is defined.  C can be the character's code point (a positive integer)
+or a (Lisp) character assuming its character code is also its Unicode
+code point.
+
+Returns the code point instead of the character if WANT-CODE-POINT-P
+is true.  This can be especially useful for Lisp implementations where
+CHAR-CODE-LIMIT is smaller than +CODE-POINT-LIMIT+.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "NUMERIC-TYPE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the numeric type of a character as a string
+or NIL if that particular character has no numeric type.  C can be the
+character's code point (a positive integer) or a (Lisp) character
+assuming its character code is also its Unicode code point.  The
+second return value (if there is one) is the property symbol of the
+numeric type.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NUMERIC-TYPE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NUMERIC-TYPE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "NUMERIC-VALUE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the numeric value of a character as a Lisp
+rational or NIL (for NaN).  C can be the character's code point (a
+positive integer) or a (Lisp) character assuming its character code
+is also its Unicode code point.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NUMERIC-VALUE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NUMERIC-VALUE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "COMBINING-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the combining class of a character as a
+non-negative integer.  C can be the character's code point (a
+positive integer) or a (Lisp) character assuming its character code
+is also its Unicode code point.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMBINING-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMBINING-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMBINING-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMBINING-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "HAS-BINARY-PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Checks whether a character has the binary property
+PROPERTY.  C can be the character's code point (a positive integer)
+or a (Lisp) character assuming its character code is also its Unicode
+code point.  PROPERTY can be a string naming the property or the
+corresponding property symbol.  If a true value is returned, it is the
+property symbol.
+
+See also BINARY-PROPERTIES.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HAS-BINARY-PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PROPERTY-SYMBOL" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HAS-BINARY-PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PROPERTY-SYMBOL" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HAS-BINARY-PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PROPERTY-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HAS-BINARY-PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PROPERTY-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HAS-BINARY-PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HAS-BINARY-PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UPPERCASE-MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the simple uppercase mapping of a character.  C can be the
+character's code point (a positive integer) or a (Lisp) character
+assuming its character code is also its Unicode code point.  Returns
+the character itself if no such mapping is explicitly defined.  Note
+that case mapping only makes sense for characters with the \"LC\"
+property.
+
+Returns the code point instead of the character if WANT-CODE-POINT-P
+is true.  This can be especially useful for Lisp implementations where
+CHAR-CODE-LIMIT is smaller than +CODE-POINT-LIMIT+.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LOWERCASE-MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the simple lowercase mapping of a character.  C can be the
+character's code point (a positive integer) or a (Lisp) character
+assuming its character code is also its Unicode code point.  Returns
+the character itself if no such mapping is explicitly defined.  Note
+that case mapping only makes sense for characters with the \"LC\"
+property.
+
+Returns the code point instead of the character if WANT-CODE-POINT-P
+is true.  This can be especially useful for Lisp implementations where
+CHAR-CODE-LIMIT is smaller than +CODE-POINT-LIMIT+.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TITLECASE-MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the simple titlecase mapping of a character.  C can be the
+character's code point (a positive integer) or a (Lisp) character
+assuming its character code is also its Unicode code point.  Returns
+the character itself if no such mapping is explicitly defined.  Note
+that case mapping only makes sense for characters with the \"LC\"
+property.
+
+Returns the code point instead of the character if WANT-CODE-POINT-P
+is true.  This can be especially useful for Lisp implementations where
+CHAR-CODE-LIMIT is smaller than +CODE-POINT-LIMIT+.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GENERAL-CATEGORIES" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Returns a sorted list of all general categories known to
+CL-UNICODE.  These are the possible return values of
+GENERAL-CATEGORY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SCRIPTS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Returns a sorted list of all scripts known to CL-UNICODE.  These
+are the possible return values of SCRIPT.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CODE-BLOCKS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Returns a sorted list of all blocks known to CL-UNICODE.  These are
+the possible return values of CODE-BLOCK.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BINARY-PROPERTIES" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Returns a sorted list of all binary properties known to CL-UNICODE.
+These are the allowed second arguments (modulo canonicalization) to
+HAS-BINARY-PROPERTY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BIDI-CLASSES" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Returns a sorted list of all Bidi classes known to CL-UNICODE.
+These are the possible return values of BIDI-CLASS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RECOGNIZED-PROPERTIES" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ALL" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list of all property names known to CL-UNICODE.  These
+are the allowed second arguments (modulo canonicalization) to
+HAS-PROPERTY.  If ALL is true, known aliases (like \"Letter\" for
+\"L\") are also included.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "PROPERTY-TEST" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERRORP" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a unary function which can test code points
+or Lisp characters for the property PROPERTY.  PROPERTY is interpreted
+as in HAS-PROPERTY and PROPERTY-TEST is actually used internally by
+HAS-PROPERTY but might come in handy if you need a faster way to test
+for PROPERTY (as you're saving the time to look up the property).
+
+Returns NIL if no property named PROPERTY was found or signals an
+error if ERRORP is true.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROPERTY-TEST" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PROPERTY-SYMBOL" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERRORP" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROPERTY-TEST" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PROPERTY-SYMBOL" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERRORP" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROPERTY-TEST" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PROPERTY-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERRORP" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROPERTY-TEST" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PROPERTY-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERRORP" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HAS-PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "C" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Checks whether a character has the named property PROPERTY.
+PROPERTY can be a string naming a property (which will be used for
+look-up after canonicalization) or it can be a property symbol (see
+PROPERTY-SYMBOL).  C can be the character's code point (a positive
+integer) or a (Lisp) character assuming its character code is also
+its Unicode code point.
+
+\"Properties\" in the sense of CL-UNICODE can be names of general
+categories, scripts, blocks, binary properties, or Bidi classes,
+amongst other things.  If there are a block and a script with the same
+name (like, say, \"Cyrillic\"), the bare name denotes the script.
+Prepend \"Block:\" to the name to refer to the block.  (You can also
+prepend \"Script:\" to refer to the script unambiguously.)  Names of
+Bidi classes must be prepended with \"BidiClass:\" if there's a
+potential for ambiguity.
+
+This function also recognizes several aliases for properties (like
+\"Symbol\" for \"S\") and you can, as in Perl, prepend block names
+with \"In\" instead of \"Block:\" and most other properties with
+\"Is\".  See RECOGNIZED-PROPERTIES.
+
+See also PROPERTY-TEST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIST-ALL-CHARACTERS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WANT-CODE-POINT-P" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION "Lists all character (ordered by code point) which have the
+property PROPERTY where PROPERTY is interpreted as in HAS-PROPERTY.
+If WANT-CODE-POINT-P is true, a list of code points instead of a list
+of characters is returned.  (If CHAR-CODE-LIMIT is smaller than
++CODE-POINT-LIMIT+ in your Lisp implementation, the list of code
+points can actually be longer than the list of characters.).")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ENABLE-ALTERNATIVE-CHARACTER-SYNTAX" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Enables an alternative Lisp character syntax which /replaces/ the
+usual syntax: After a sharpsign and a backslash have been read, at
+least one more character is read.  Reading then continues as long as
+ASCII letters, digits, underlines, hyphens, colons, or plus signs are
+read.  The resulting string is then used as input to CHARACTER-NAMED
+to produce a character.
+
+This macro expands into an EVAL-WHEN so that if you use it as a
+top-level form in a file to be loaded and/or compiled it'll do what
+you expect.  Technically, this'll push the current readtable on a
+stack so that matching calls of this macro and
+DISABLE-ALTERNATIVE-CHARACTER-SYNTAX can be nested.
+
+Note that by default the alternative character syntax is not enabled
+after loading CL-UNICODE.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DISABLE-ALTERNATIVE-CHARACTER-SYNTAX" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Restores the readtable which was active before the last call to
+ENABLE-ALTERNATIVE-CHARACTER-SYNTAX.  If there was no such call, the
+standard readtable is used.
+
+This macro expands into an EVAL-WHEN so that if you use it as a
+top-level form in a file to be loaded and/or compiled it'll do what
+you expect.  Technically, this'll pop a readtable from the stack
+described in ENABLE-ALTERNATIVE-CHARACTER-SYNTAX so that matching
+calls of these macros can be nested.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SCRIPT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CODE-BLOCK" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "AGE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GENERAL-CATEGORY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BIDI-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NUMERIC-TYPE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NUMERIC-VALUE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMBINING-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BIDI-MIRRORING-GLYPH%" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BINARY-PROPS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CODE-POINT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSTALL-ONE-TEST" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PROPERTY-SYMBOL" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+      (:NAME "TEST-FUNCTION" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSTALL-SCRIPT-TESTS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSTALL-CODE-BLOCK-TESTS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSTALL-GENERAL-CATEGORY-TESTS" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSTALL-BINARY-PROPERTIES-TESTS" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSTALL-BIDI-CLASS-TESTS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSTALL-MISCELLANEOUS-TESTS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSTALL-TESTS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+XID-DIFFERENCE+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(IF (BOUNDP 'CL-UNICODE::+XID-DIFFERENCE+)
+    (SYMBOL-VALUE 'CL-UNICODE::+XID-DIFFERENCE+)
+    '(890 (12443 . 12444) (64606 . 64611) (65018 . 65019) 65136 65138 65140
+      65142 65144 65146 65148 65150))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DERIVED-MAP*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "`((\"Any\") (\"LC\" \"Lu\" \"Ll\" \"Lt\") (\"L\" \"LC\" \"Lm\" \"Lo\") (\"M\" \"Mn\" \"Mc\" \"Me\")
+  (\"N\" \"Nd\" \"Nl\" \"No\") (\"P\" \"Pc\" \"Pd\" \"Ps\" \"Pe\" \"Pi\" \"Pf\" \"Po\")
+  (\"S\" \"Sm\" \"Sc\" \"Sk\" \"So\") (\"Z\" \"Zs\" \"Zl\" \"Zp\") (\"C\" \"Cc\" \"Cf\" \"Cs\" \"Co\" \"Cn\")
+  (\"Math\" \"Sm\" \"OtherMath\") (\"Alphabetic\" \"L\" \"Nl\" \"OtherAlphabetic\")
+  (\"Lowercase\" \"Ll\" \"OtherLowercase\") (\"Uppercase\" \"Lu\" \"OtherUppercase\")
+  (\"GraphemeExtend\" \"Me\" \"Mn\" \"OtherGraphemeExtend\")
+  (\"GraphemeBase\" (\"C\" \"Zl\" \"Zp\" \"GraphemeExtend\"))
+  (\"IDStart\" \"L\" \"Nl\" \"OtherIDStart\" (\"PatternSyntax\" \"PatternWhiteSpace\"))
+  (\"IDContinue\" \"IDStart\" \"Mn\" \"Mc\" \"Nd\" \"Pc\" \"OtherIDContinue\"
+   (\"PatternSyntax\" \"PatternWhiteSpace\"))
+  (,\"XIDStart\" ,\"IDStart\"
+   (,@CL-UNICODE::+XID-DIFFERENCE+ 3635 3763 (65438 . 65439)))
+  (,\"XIDContinue\" ,\"IDContinue\" ,CL-UNICODE::+XID-DIFFERENCE+)
+  (\"DefaultIgnorableCodePoint\" \"OtherDefaultIgnorableCodePoint\" \"Cf\"
+   \"VariationSelector\" (\"WhiteSpace\" (65529 . 65531) (1536 . 1539) 1757 1807)))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BUILD-DERIVED-TEST-FUNCTION" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PROPERTY-DESIGNATORS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BUILD-DERIVED-TEST-FUNCTIONS" :PACKAGE-NAME "CL-UNICODE"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ALIAS-MAP*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'((\"L\" . \"Letter\") (\"LC\" . \"CasedLetter\") (\"Lu\" . \"UppercaseLetter\")
+  (\"Ll\" . \"LowercaseLetter\") (\"Lt\" . \"TitlecaseLetter\")
+  (\"Lm\" . \"ModifierLetter\") (\"Lo\" . \"OtherLetter\") (\"M\" . \"Mark\")
+  (\"Mn\" . \"NonspacingMark\") (\"Mc\" . \"SpacingMark\") (\"Me\" . \"EnclosingMark\")
+  (\"N\" . \"Number\") (\"Nd\" . \"DecimalNumber\") (\"Nl\" . \"LetterNumber\")
+  (\"No\" . \"OtherNumber\") (\"P\" . \"Punctuation\") (\"Pc\" . \"ConnectorPunctuation\")
+  (\"Pd\" . \"DashPunctuation\") (\"Ps\" . \"OpenPunctuation\")
+  (\"Pe\" . \"ClosePunctuation\") (\"Pi\" . \"InitialPunctuation\")
+  (\"Pf\" . \"FinalPunctuation\") (\"Po\" . \"OtherPunctuation\") (\"S\" . \"Symbol\")
+  (\"Sm\" . \"MathSymbol\") (\"Sc\" . \"CurrencySymbol\") (\"Sk\" . \"ModifierSymbol\")
+  (\"So\" . \"OtherSymbol\") (\"Z\" . \"Separator\") (\"Zs\" . \"SpaceSeparator\")
+  (\"Zl\" . \"LineSeparator\") (\"Zp\" . \"ParagraphSeparator\") (\"C\" . \"Other\")
+  (\"Cc\" . \"Control\") (\"Cf\" . \"Format\") (\"Cs\" . \"Surrogate\")
+  (\"Co\" . \"PrivateUse\") (\"Cn\" . \"Unassigned\") (\"Cn\" . \"NoncharacterCodePoint\"))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*BIDI-ALIAS-MAP*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'((\"L\" . \"LeftToRight\") (\"LRE\" . \"LeftToRightEmbedding\")
+  (\"LRO\" . \"LeftToRightOverride\") (\"R\" . \"RightToLeft\")
+  (\"AL\" . \"RightToLeftArabic\") (\"RLE\" . \"RightToLeftEmbedding\")
+  (\"RLO\" . \"RightToLeftOverride\") (\"PDF\" . \"PopDirectionalFormat\")
+  (\"EN\" . \"EuropeanNumber\") (\"ES\" . \"EuropeanNumberSeparator\")
+  (\"ET\" . \"EuropeanNumberTerminator\") (\"AN\" . \"ArabicNumber\")
+  (\"CS\" . \"CommonNumberSeparator\") (\"NSM\" . \"NonSpacingMark\")
+  (\"BN\" . \"BoundaryNeutral\") (\"B\" . \"ParagraphSeparator\")
+  (\"S\" . \"SegmentSeparator\") (\"WS\" . \"Whitespace\") (\"ON\" . \"OtherNeutral\"))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-ALIAS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NEW-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "OLD-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ONLY-IF-UNAMBIGUOUS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-ALIASES" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BUILD-ALL-PROPERTY-TESTS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "NUMERIC-VALUE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "COMBINING-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "PROPERTY-SYMBOL" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "LOWERCASE-MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "UNICODE-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "TITLECASE-MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "UNICODE1-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "+CODE-POINT-LIMIT+" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "GENERAL-CATEGORIES" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "NUMERIC-TYPE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "CODE-BLOCK" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "LIST-ALL-CHARACTERS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "UPPERCASE-MAPPING" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "*TRY-ABBREVIATIONS-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "*TRY-UNICODE1-NAMES-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "UNICODE-ERROR" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "SCRIPTS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "SCRIPT" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "PROPERTY-TEST" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "RECOGNIZED-PROPERTIES" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "*SCRIPTS-TO-TRY*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "BIDI-MIRRORING-GLYPH" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "ENABLE-ALTERNATIVE-CHARACTER-SYNTAX" :PACKAGE-NAME "CL-UNICODE"
+     :EXTERNALP T)
+    (:NAME "HAS-PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "BIDI-CLASS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "CANONICALIZE-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "AGE" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "*TRY-HEX-NOTATION-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "HAS-BINARY-PROPERTY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "PROPERTY-NAME" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "CHARACTER-NAMED" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "GENERAL-CATEGORY" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "BINARY-PROPERTIES" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "CODE-BLOCKS" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "BIDI-CLASSES" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "*TRY-LISP-NAMES-P*" :PACKAGE-NAME "CL-UNICODE" :EXTERNALP T)
+    (:NAME "DISABLE-ALTERNATIVE-CHARACTER-SYNTAX" :PACKAGE-NAME "CL-UNICODE"
+     :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME "-NAMES" :FULL-NAME "CL-UNICODE-NAMES" :DOCUMENTATION
+   NIL :SYMBOL-LIST NIL :EXTERNAL-SYMBOLS NIL)))

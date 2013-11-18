@@ -1,0 +1,379 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+WARNING: Initialized *WORKSPACE-DIRECTORY* using the path of the ASDF system called :hu.dwim.asdf to /home/quickdocs_dev/quicklisp/dists/quicklisp/software/ (beware of the possibility that it's been symlinked somewhere else)
+STYLE-WARNING: redefining SB-KERNEL:LINE-LENGTH in DEFUN
+Date/time: 2013-11-15-03:10An unhandled error condition has been signalled:
+                              There is no applicable method for the generic function
+                                #<STANDARD-GENERIC-FUNCTION HU.DWIM.PEREC::PERSISTENT-DIRECT-SUBCLASSES-OF (0)>
+                              when called with arguments
+                                (#<HU.DWIM.PEREC:PERSISTENT-CLASS HU.DWIM.PEREC:PERSISTENT-OBJECT-D>).
+
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {F573895}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {F57387D}>)
+3: (PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :DEBUGGER-FRAME :COUNT 536870911 :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE-TO-STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}>)
+5: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE #<SIMPLE-ERROR "~@<There is no applicable method for the generic function ~2I~_~S~
+          ~I~_when called with arguments ~2I~_~S.~:>" {F5704C1}> :OUTPUT #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :IF-EXISTS :APPEND :VERBOSE NIL)
+6: (QUICKDOCS.PARSER.ASDF::ASDF-SYSTEM-RELOAD #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">)
+7: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))
+8: (SB-THREAD::CALL-WITH-MUTEX #<CLOSURE (FLET SB-THREAD::WITH-MUTEX-THUNK :IN QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED) {B788F9DD}> #<SB-THREAD:MUTEX "system-load-lock" owner: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>> NIL T NIL)
+9: (QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec"> :FORCE NIL)
+10: ((:METHOD QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:SYSTEM)) #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">) [fast-method]
+11: ((LAMBDA ()))
+12: (SB-INT:SIMPLE-EVAL-IN-LEXENV (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))) #<NULL-LEXENV>)
+13: (EVAL (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))))
+14: (SHELLY.CORE:INTERPRET ("QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL)
+15: (SB-INT:SIMPLE-EVAL-IN-LEXENV (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL) #<NULL-LEXENV>)
+16: (EVAL (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL))
+17: (SB-IMPL::PROCESS-EVAL/LOAD-OPTIONS ((:EVAL . "(shelly.util::check-version \"0.5.8\")") (:EVAL . "(shelly.util::load-global-shlyfile)") (:EVAL . "(shelly.util::load-local-shlyfile #P\"/home/quickdocs_dev/quickdocs2/shlyfile.lisp\")") (:EVAL . "(shelly.core::interpret (list \"QUICKDOCS.PARSER.UTIL:WITH-RETRYING\" \"5\" \"(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \\\"hu.dwim.perec\\\"))\") :verbose nil)") (:EVAL . "(swank-backend:quit-lisp)")))
+18: (SB-IMPL::TOPLEVEL-INIT)
+19: ((FLET #:WITHOUT-INTERRUPTS-BODY-42 :IN SAVE-LISP-AND-DIE))
+20: ((LABELS SB-IMPL::RESTART-LISP :IN SAVE-LISP-AND-DIE))
+
+Date/time: 2013-11-15-03:10An unhandled error condition has been signalled:
+                              There is no applicable method for the generic function
+                                #<STANDARD-GENERIC-FUNCTION HU.DWIM.PEREC::DEPENDS-ON-OF (0)>
+                              when called with arguments
+                                (#<HU.DWIM.PEREC:PERSISTENT-CLASS HU.DWIM.PEREC:PERSISTENT-OBJECT-H>).
+
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {F90B005}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {F90AFE5}>)
+3: (PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :DEBUGGER-FRAME :COUNT 536870911 :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE-TO-STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}>)
+5: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE #<SIMPLE-ERROR "~@<There is no applicable method for the generic function ~2I~_~S~
+          ~I~_when called with arguments ~2I~_~S.~:>" {F9071B9}> :OUTPUT #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :IF-EXISTS :APPEND :VERBOSE NIL)
+6: (QUICKDOCS.PARSER.ASDF::ASDF-SYSTEM-RELOAD #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">)
+7: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))
+8: (SB-THREAD::CALL-WITH-MUTEX #<CLOSURE (FLET SB-THREAD::WITH-MUTEX-THUNK :IN QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED) {B788F9DD}> #<SB-THREAD:MUTEX "system-load-lock" owner: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>> NIL T NIL)
+9: (QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec"> :FORCE NIL)
+10: ((:METHOD QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:SYSTEM)) #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">) [fast-method]
+11: ((LAMBDA ()))
+12: (SB-INT:SIMPLE-EVAL-IN-LEXENV (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))) #<NULL-LEXENV>)
+13: (EVAL (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))))
+14: (SHELLY.CORE:INTERPRET ("QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL)
+15: (SB-INT:SIMPLE-EVAL-IN-LEXENV (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL) #<NULL-LEXENV>)
+16: (EVAL (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL))
+17: (SB-IMPL::PROCESS-EVAL/LOAD-OPTIONS ((:EVAL . "(shelly.util::check-version \"0.5.8\")") (:EVAL . "(shelly.util::load-global-shlyfile)") (:EVAL . "(shelly.util::load-local-shlyfile #P\"/home/quickdocs_dev/quickdocs2/shlyfile.lisp\")") (:EVAL . "(shelly.core::interpret (list \"QUICKDOCS.PARSER.UTIL:WITH-RETRYING\" \"5\" \"(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \\\"hu.dwim.perec\\\"))\") :verbose nil)") (:EVAL . "(swank-backend:quit-lisp)")))
+18: (SB-IMPL::TOPLEVEL-INIT)
+19: ((FLET #:WITHOUT-INTERRUPTS-BODY-42 :IN SAVE-LISP-AND-DIE))
+20: ((LABELS SB-IMPL::RESTART-LISP :IN SAVE-LISP-AND-DIE))
+
+Date/time: 2013-11-15-03:10An unhandled error condition has been signalled:
+                              There is no applicable method for the generic function
+                                #<STANDARD-GENERIC-FUNCTION HU.DWIM.PEREC::PERSISTENT-DIRECT-SUBCLASSES-OF (0)>
+                              when called with arguments
+                                (#<HU.DWIM.PEREC:PERSISTENT-CLASS HU.DWIM.PEREC::ENUMERATED-DEPENDENT-OBJECT>).
+
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {F02F6D5}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {F02F6BD}>)
+3: (PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :DEBUGGER-FRAME :COUNT 536870911 :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE-TO-STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}>)
+5: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE #<SIMPLE-ERROR "~@<There is no applicable method for the generic function ~2I~_~S~
+          ~I~_when called with arguments ~2I~_~S.~:>" {F02CBC1}> :OUTPUT #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :IF-EXISTS :APPEND :VERBOSE NIL)
+6: (QUICKDOCS.PARSER.ASDF::ASDF-SYSTEM-RELOAD #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">)
+7: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))
+8: (SB-THREAD::CALL-WITH-MUTEX #<CLOSURE (FLET SB-THREAD::WITH-MUTEX-THUNK :IN QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED) {B788F9DD}> #<SB-THREAD:MUTEX "system-load-lock" owner: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>> NIL T NIL)
+9: (QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec"> :FORCE NIL)
+10: ((:METHOD QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:SYSTEM)) #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">) [fast-method]
+11: ((LAMBDA ()))
+12: (SB-INT:SIMPLE-EVAL-IN-LEXENV (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))) #<NULL-LEXENV>)
+13: (EVAL (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))))
+14: (SHELLY.CORE:INTERPRET ("QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL)
+15: (SB-INT:SIMPLE-EVAL-IN-LEXENV (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL) #<NULL-LEXENV>)
+16: (EVAL (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL))
+17: (SB-IMPL::PROCESS-EVAL/LOAD-OPTIONS ((:EVAL . "(shelly.util::check-version \"0.5.8\")") (:EVAL . "(shelly.util::load-global-shlyfile)") (:EVAL . "(shelly.util::load-local-shlyfile #P\"/home/quickdocs_dev/quickdocs2/shlyfile.lisp\")") (:EVAL . "(shelly.core::interpret (list \"QUICKDOCS.PARSER.UTIL:WITH-RETRYING\" \"5\" \"(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \\\"hu.dwim.perec\\\"))\") :verbose nil)") (:EVAL . "(swank-backend:quit-lisp)")))
+18: (SB-IMPL::TOPLEVEL-INIT)
+19: ((FLET #:WITHOUT-INTERRUPTS-BODY-42 :IN SAVE-LISP-AND-DIE))
+20: ((LABELS SB-IMPL::RESTART-LISP :IN SAVE-LISP-AND-DIE))
+
+Date/time: 2013-11-15-03:10An unhandled error condition has been signalled:
+                              There is no applicable method for the generic function
+                                #<STANDARD-GENERIC-FUNCTION HU.DWIM.PEREC::DEPENDS-ON-ME-OF (0)>
+                              when called with arguments
+                                (#<HU.DWIM.PEREC:PERSISTENT-CLASS HU.DWIM.PEREC:PERSISTENT-OBJECT>).
+
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {F6CECBD}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {F6CECA5}>)
+3: (PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :DEBUGGER-FRAME :COUNT 536870911 :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE-TO-STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}>)
+5: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE #<SIMPLE-ERROR "~@<There is no applicable method for the generic function ~2I~_~S~
+          ~I~_when called with arguments ~2I~_~S.~:>" {F6CC5D1}> :OUTPUT #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :IF-EXISTS :APPEND :VERBOSE NIL)
+6: (QUICKDOCS.PARSER.ASDF::ASDF-SYSTEM-RELOAD #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">)
+7: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))
+8: (SB-THREAD::CALL-WITH-MUTEX #<CLOSURE (FLET SB-THREAD::WITH-MUTEX-THUNK :IN QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED) {B788F9DD}> #<SB-THREAD:MUTEX "system-load-lock" owner: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>> NIL T NIL)
+9: (QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec"> :FORCE NIL)
+10: ((:METHOD QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:SYSTEM)) #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">) [fast-method]
+11: ((LAMBDA ()))
+12: (SB-INT:SIMPLE-EVAL-IN-LEXENV (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))) #<NULL-LEXENV>)
+13: (EVAL (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))))
+14: (SHELLY.CORE:INTERPRET ("QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL)
+15: (SB-INT:SIMPLE-EVAL-IN-LEXENV (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL) #<NULL-LEXENV>)
+16: (EVAL (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL))
+17: (SB-IMPL::PROCESS-EVAL/LOAD-OPTIONS ((:EVAL . "(shelly.util::check-version \"0.5.8\")") (:EVAL . "(shelly.util::load-global-shlyfile)") (:EVAL . "(shelly.util::load-local-shlyfile #P\"/home/quickdocs_dev/quickdocs2/shlyfile.lisp\")") (:EVAL . "(shelly.core::interpret (list \"QUICKDOCS.PARSER.UTIL:WITH-RETRYING\" \"5\" \"(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \\\"hu.dwim.perec\\\"))\") :verbose nil)") (:EVAL . "(swank-backend:quit-lisp)")))
+18: (SB-IMPL::TOPLEVEL-INIT)
+19: ((FLET #:WITHOUT-INTERRUPTS-BODY-42 :IN SAVE-LISP-AND-DIE))
+20: ((LABELS SB-IMPL::RESTART-LISP :IN SAVE-LISP-AND-DIE))
+
+Date/time: 2013-11-15-03:10An unhandled error condition has been signalled:
+                              There is no applicable method for the generic function
+                                #<STANDARD-GENERIC-FUNCTION HU.DWIM.PEREC::PERSISTENT-DIRECT-SUBCLASSES-OF (0)>
+                              when called with arguments
+                                (#<HU.DWIM.PEREC:PERSISTENT-CLASS HU.DWIM.PEREC:VALIDITY-DEPENDENT-OBJECT>).
+
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {F4A1CF5}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {F4A1CDD}>)
+3: (PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :DEBUGGER-FRAME :COUNT 536870911 :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE-TO-STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}>)
+5: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE #<SIMPLE-ERROR "~@<There is no applicable method for the generic function ~2I~_~S~
+          ~I~_when called with arguments ~2I~_~S.~:>" {F49F469}> :OUTPUT #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :IF-EXISTS :APPEND :VERBOSE NIL)
+6: (QUICKDOCS.PARSER.ASDF::ASDF-SYSTEM-RELOAD #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">)
+7: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))
+8: (SB-THREAD::CALL-WITH-MUTEX #<CLOSURE (FLET SB-THREAD::WITH-MUTEX-THUNK :IN QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED) {B788F9DD}> #<SB-THREAD:MUTEX "system-load-lock" owner: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>> NIL T NIL)
+9: (QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec"> :FORCE NIL)
+10: ((:METHOD QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:SYSTEM)) #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">) [fast-method]
+11: ((LAMBDA ()))
+12: (SB-INT:SIMPLE-EVAL-IN-LEXENV (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))) #<NULL-LEXENV>)
+13: (EVAL (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))))
+14: (SHELLY.CORE:INTERPRET ("QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL)
+15: (SB-INT:SIMPLE-EVAL-IN-LEXENV (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL) #<NULL-LEXENV>)
+16: (EVAL (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL))
+17: (SB-IMPL::PROCESS-EVAL/LOAD-OPTIONS ((:EVAL . "(shelly.util::check-version \"0.5.8\")") (:EVAL . "(shelly.util::load-global-shlyfile)") (:EVAL . "(shelly.util::load-local-shlyfile #P\"/home/quickdocs_dev/quickdocs2/shlyfile.lisp\")") (:EVAL . "(shelly.core::interpret (list \"QUICKDOCS.PARSER.UTIL:WITH-RETRYING\" \"5\" \"(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \\\"hu.dwim.perec\\\"))\") :verbose nil)") (:EVAL . "(swank-backend:quit-lisp)")))
+18: (SB-IMPL::TOPLEVEL-INIT)
+19: ((FLET #:WITHOUT-INTERRUPTS-BODY-42 :IN SAVE-LISP-AND-DIE))
+20: ((LABELS SB-IMPL::RESTART-LISP :IN SAVE-LISP-AND-DIE))
+
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.perec-20131111-darcs/source/persistence/set.lisp
+; in: DEF PERSISTENT-ASSOCIATION*
+;     (HU.DWIM.DEF:DEF HU.DWIM.PEREC:PERSISTENT-ASSOCIATION*
+;                      ((:CLASS HU.DWIM.PEREC:PERSISTENT-SET :SLOT HU.DWIM.PEREC::ITEMS :TYPE (HU.DWIM.PEREC:SET HU.DWIM.PEREC:PERSISTENT-SET-ELEMENT))
+;                       (:CLASS HU.DWIM.PEREC:PERSISTENT-SET-ELEMENT :SLOT HU.DWIM.PEREC::SETS :TYPE (HU.DWIM.PEREC:SET HU.DWIM.PEREC:PERSISTENT-SET))))
+; ==>
+;   (HU.DWIM.PEREC:DEFPASSOCIATION*
+;     ((:CLASS HU.DWIM.PEREC:PERSISTENT-SET :SLOT HU.DWIM.PEREC::ITEMS :TYPE (HU.DWIM.PEREC:SET HU.DWIM.PEREC:PERSISTENT-SET-ELEMENT))
+;      (:CLASS HU.DWIM.PEREC:PERSISTENT-SET-ELEMENT :SLOT HU.DWIM.PEREC::SETS :TYPE (HU.DWIM.PEREC:SET HU.DWIM.PEREC:PERSISTENT-SET))))
+; 
+; caught ERROR:
+;   (during macroexpansion of (DEFPASSOCIATION*
+;     (# #)))
+;   There is no class named COMMON-LISP:NIL.
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.perec-20131111-darcs/source/persistence/set.lisp
+; in: DEF METHOD
+;     (HU.DWIM.DEF:DEF METHOD METABANG.CL-CONTAINERS:INSERT-ITEM
+;                      ((HU.DWIM.PEREC:SET HU.DWIM.PEREC:PERSISTENT-SET) (HU.DWIM.PEREC::ITEM HU.DWIM.PEREC:PERSISTENT-SET-ELEMENT))
+;                      (METABANG.CL-CONTAINERS:INSERT-ITEM (HU.DWIM.PEREC::ITEMS-OF* HU.DWIM.PEREC:SET) HU.DWIM.PEREC::ITEM))
+; --> PROGN LOCALLY DEFMETHOD PROGN EVAL-WHEN 
+; ==>
+;   (SB-PCL::%DEFMETHOD-EXPANDER METABANG.CL-CONTAINERS:INSERT-ITEM NIL
+;                                ((HU.DWIM.PEREC:SET HU.DWIM.PEREC:PERSISTENT-SET) (HU.DWIM.PEREC::ITEM HU.DWIM.PEREC:PERSISTENT-SET-ELEMENT))
+;                                ((METABANG.CL-CONTAINERS:INSERT-ITEM (HU.DWIM.PEREC::ITEMS-OF* HU.DWIM.PEREC:SET) HU.DWIM.PEREC::ITEM)))
+; 
+; caught ERROR:
+;   (during macroexpansion of (SB-PCL::%DEFMETHOD-EXPANDER INSERT-ITEM ...))
+;   There is no applicable method for the generic function
+;     #<COMMON-LISP:STANDARD-GENERIC-FUNCTION DEPENDS-ON-OF (0)>
+;   when called with arguments
+;     (#<PERSISTENT-CLASS PERSISTENT-SET>).
+
+; file: /home/quickdocs_dev/quicklisp/dists/quicklisp/software/hu.dwim.perec-20131111-darcs/source/persistence/set.lisp
+; in: DEF METHOD
+;     (HU.DWIM.DEF:DEF METHOD METABANG.CL-CONTAINERS:DELETE-ITEM
+;                      ((HU.DWIM.PEREC:SET HU.DWIM.PEREC:PERSISTENT-SET) (HU.DWIM.PEREC::ITEM HU.DWIM.PEREC:PERSISTENT-SET-ELEMENT))
+;                      (METABANG.CL-CONTAINERS:DELETE-ITEM (HU.DWIM.PEREC::ITEMS-OF* HU.DWIM.PEREC:SET) HU.DWIM.PEREC::ITEM))
+; --> PROGN LOCALLY DEFMETHOD PROGN EVAL-WHEN 
+; ==>
+;   (SB-PCL::%DEFMETHOD-EXPANDER METABANG.CL-CONTAINERS:DELETE-ITEM NIL
+;                                ((HU.DWIM.PEREC:SET HU.DWIM.PEREC:PERSISTENT-SET) (HU.DWIM.PEREC::ITEM HU.DWIM.PEREC:PERSISTENT-SET-ELEMENT))
+;                                ((METABANG.CL-CONTAINERS:DELETE-ITEM (HU.DWIM.PEREC::ITEMS-OF* HU.DWIM.PEREC:SET) HU.DWIM.PEREC::ITEM)))
+; 
+; caught ERROR:
+;   (during macroexpansion of (SB-PCL::%DEFMETHOD-EXPANDER DELETE-ITEM ...))
+;   There is no applicable method for the generic function
+;     #<COMMON-LISP:STANDARD-GENERIC-FUNCTION PERSISTENT-DIRECT-SUBCLASSES-OF (0)>
+;   when called with arguments
+;     (#<PERSISTENT-CLASS PERSISTENT-SET-ELEMENT>).
+; 
+; compilation unit finished
+;   caught 3 ERROR conditions
+Date/time: 2013-11-15-03:10An unhandled error condition has been signalled:
+                              COMPILE-FILE-ERROR while compiling #<HU.DWIM.CL-SOURCE-FILE "hu.dwim.perec" "source" "persistence" "set">
+
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {FA428CD}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {FA428B5}>)
+3: (PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :DEBUGGER-FRAME :COUNT 536870911 :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE-TO-STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}>)
+5: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE #<UIOP/LISP-BUILD:COMPILE-FILE-ERROR {FA3D8D9}> :OUTPUT #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :IF-EXISTS :APPEND :VERBOSE NIL)
+6: (QUICKDOCS.PARSER.ASDF::ASDF-SYSTEM-RELOAD #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">)
+7: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))
+8: (SB-THREAD::CALL-WITH-MUTEX #<CLOSURE (FLET SB-THREAD::WITH-MUTEX-THUNK :IN QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED) {B788F9DD}> #<SB-THREAD:MUTEX "system-load-lock" owner: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>> NIL T NIL)
+9: (QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec"> :FORCE NIL)
+10: ((:METHOD QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:SYSTEM)) #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">) [fast-method]
+11: ((LAMBDA ()))
+12: (SB-INT:SIMPLE-EVAL-IN-LEXENV (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))) #<NULL-LEXENV>)
+13: (EVAL (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))))
+14: (SHELLY.CORE:INTERPRET ("QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL)
+15: (SB-INT:SIMPLE-EVAL-IN-LEXENV (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL) #<NULL-LEXENV>)
+16: (EVAL (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL))
+17: (SB-IMPL::PROCESS-EVAL/LOAD-OPTIONS ((:EVAL . "(shelly.util::check-version \"0.5.8\")") (:EVAL . "(shelly.util::load-global-shlyfile)") (:EVAL . "(shelly.util::load-local-shlyfile #P\"/home/quickdocs_dev/quickdocs2/shlyfile.lisp\")") (:EVAL . "(shelly.core::interpret (list \"QUICKDOCS.PARSER.UTIL:WITH-RETRYING\" \"5\" \"(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \\\"hu.dwim.perec\\\"))\") :verbose nil)") (:EVAL . "(swank-backend:quit-lisp)")))
+18: (SB-IMPL::TOPLEVEL-INIT)
+19: ((FLET #:WITHOUT-INTERRUPTS-BODY-42 :IN SAVE-LISP-AND-DIE))
+20: ((LABELS SB-IMPL::RESTART-LISP :IN SAVE-LISP-AND-DIE))
+
+Date/time: 2013-11-15-03:10An unhandled error condition has been signalled:
+                              There is no applicable method for the generic function
+                                #<STANDARD-GENERIC-FUNCTION HU.DWIM.PEREC::PERSISTENT-DIRECT-SUBCLASSES-OF (0)>
+                              when called with arguments
+                                (#<HU.DWIM.PEREC:PERSISTENT-CLASS HU.DWIM.PEREC:TIME-DEPENDENT-OBJECT>).
+
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {D6C4CED}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {D6C4CD5}>)
+3: (PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :DEBUGGER-FRAME :COUNT 536870911 :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE-TO-STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}>)
+5: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE #<SIMPLE-ERROR "~@<There is no applicable method for the generic function ~2I~_~S~
+          ~I~_when called with arguments ~2I~_~S.~:>" {D6C1EC1}> :OUTPUT #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :IF-EXISTS :APPEND :VERBOSE NIL)
+6: (QUICKDOCS.PARSER.ASDF::ASDF-SYSTEM-RELOAD #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">)
+7: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))
+8: (SB-THREAD::CALL-WITH-MUTEX #<CLOSURE (FLET SB-THREAD::WITH-MUTEX-THUNK :IN QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED) {B788F9DD}> #<SB-THREAD:MUTEX "system-load-lock" owner: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>> NIL T NIL)
+9: (QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec"> :FORCE NIL)
+10: ((:METHOD QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:SYSTEM)) #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">) [fast-method]
+11: ((LAMBDA ()))
+12: (SB-INT:SIMPLE-EVAL-IN-LEXENV (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))) #<NULL-LEXENV>)
+13: (EVAL (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))))
+14: (SHELLY.CORE:INTERPRET ("QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL)
+15: (SB-INT:SIMPLE-EVAL-IN-LEXENV (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL) #<NULL-LEXENV>)
+16: (EVAL (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL))
+17: (SB-IMPL::PROCESS-EVAL/LOAD-OPTIONS ((:EVAL . "(shelly.util::check-version \"0.5.8\")") (:EVAL . "(shelly.util::load-global-shlyfile)") (:EVAL . "(shelly.util::load-local-shlyfile #P\"/home/quickdocs_dev/quickdocs2/shlyfile.lisp\")") (:EVAL . "(shelly.core::interpret (list \"QUICKDOCS.PARSER.UTIL:WITH-RETRYING\" \"5\" \"(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \\\"hu.dwim.perec\\\"))\") :verbose nil)") (:EVAL . "(swank-backend:quit-lisp)")))
+18: (SB-IMPL::TOPLEVEL-INIT)
+19: ((FLET #:WITHOUT-INTERRUPTS-BODY-42 :IN SAVE-LISP-AND-DIE))
+20: ((LABELS SB-IMPL::RESTART-LISP :IN SAVE-LISP-AND-DIE))
+
+Date/time: 2013-11-15-03:10An unhandled error condition has been signalled:
+                              There is no applicable method for the generic function
+                                #<STANDARD-GENERIC-FUNCTION HU.DWIM.PEREC::DEPENDS-ON-ME-OF (0)>
+                              when called with arguments
+                                (#<HU.DWIM.PEREC:PERSISTENT-CLASS HU.DWIM.PEREC:PERSISTENT-OBJECT-D>).
+
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {C6136D5}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {C6136BD}>)
+3: (PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :DEBUGGER-FRAME :COUNT 536870911 :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE-TO-STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}>)
+5: (TRIVIAL-BACKTRACE:PRINT-BACKTRACE #<SIMPLE-ERROR "~@<There is no applicable method for the generic function ~2I~_~S~
+          ~I~_when called with arguments ~2I~_~S.~:>" {C610D11}> :OUTPUT #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :IF-EXISTS :APPEND :VERBOSE NIL)
+6: (QUICKDOCS.PARSER.ASDF::ASDF-SYSTEM-RELOAD #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">)
+7: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))
+8: (SB-THREAD::CALL-WITH-MUTEX #<CLOSURE (FLET SB-THREAD::WITH-MUTEX-THUNK :IN QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED) {B788F9DD}> #<SB-THREAD:MUTEX "system-load-lock" owner: #<SB-THREAD:THREAD "main thread" RUNNING {B562909}>> NIL T NIL)
+9: (QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec"> :FORCE NIL)
+10: ((:METHOD QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:SYSTEM)) #<HU.DWIM.ASDF:HU.DWIM.SYSTEM "hu.dwim.perec">) [fast-method]
+11: ((LAMBDA ()))
+12: (SB-INT:SIMPLE-EVAL-IN-LEXENV (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))) #<NULL-LEXENV>)
+13: (EVAL (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "hu.dwim.perec"))))
+14: (SHELLY.CORE:INTERPRET ("QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL)
+15: (SB-INT:SIMPLE-EVAL-IN-LEXENV (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL) #<NULL-LEXENV>)
+16: (EVAL (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"hu.dwim.perec\"))") :VERBOSE NIL))
+17: (SB-IMPL::PROCESS-EVAL/LOAD-OPTIONS ((:EVAL . "(shelly.util::check-version \"0.5.8\")") (:EVAL . "(shelly.util::load-global-shlyfile)") (:EVAL . "(shelly.util::load-local-shlyfile #P\"/home/quickdocs_dev/quickdocs2/shlyfile.lisp\")") (:EVAL . "(shelly.core::interpret (list \"QUICKDOCS.PARSER.UTIL:WITH-RETRYING\" \"5\" \"(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \\\"hu.dwim.perec\\\"))\") :verbose nil)") (:EVAL . "(swank-backend:quit-lisp)")))
+18: (SB-IMPL::TOPLEVEL-INIT)
+19: ((FLET #:WITHOUT-INTERRUPTS-BODY-42 :IN SAVE-LISP-AND-DIE))
+20: ((LABELS SB-IMPL::RESTART-LISP :IN SAVE-LISP-AND-DIE))
+
+Error: There is no method on #<STANDARD-GENERIC-FUNCTION MAKE-INSTANCE (5)> with no qualifiers and specializers
+       (#<STANDARD-CLASS HU.DWIM.PEREC::IDENTITY-PRESERVING-CLASS>).

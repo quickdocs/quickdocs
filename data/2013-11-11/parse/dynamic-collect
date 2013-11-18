@@ -1,0 +1,51 @@
+
+(:TYPE :SYSTEM :NAME "dynamic-collect" :AUTHOR
+ "Robert Smith <quad@symbo1ics.com>" :MAINTAINER NIL :VERSION NIL :LICENCE
+ "BSD 3-clause (see LICENSE)" :DESCRIPTION
+ "A library for dynamic, continuable, and abortable collection."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "DYNAMIC-COLLECT" :FULL-NAME "DYNAMIC-COLLECT"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ENSURE-HANDLED-COLLECT*" :PACKAGE-NAME "DYNAMIC-COLLECT"
+      :EXTERNALP T)
+     :DOCUMENTATION "If T, ensure that COLLECT forms are inside
+  WITH-DYNAMIC-COLLECTION. If NIL, return the specified RETURN value
+  from COLLECT."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COLLECT" :PACKAGE-NAME "DYNAMIC-COLLECT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DATA" :PACKAGE-NAME "DYNAMIC-COLLECT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RETURN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "CONTINUEP" :PACKAGE-NAME "DYNAMIC-COLLECT" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "TAG" :PACKAGE-NAME "DYNAMIC-COLLECT" :EXTERNALP NIL))
+     :DOCUMENTATION "Collect the data DATA in a WITH-DYNAMIC-COLLECTION
+environment. Return the value RETURN from the form in the event the
+function is returned from.
+
+If CONTINUEP is null, then collecting will cease and the
+matching WITH-DYNAMIC-COLLECTION form will return.
+
+The TAG denotes at which WITH-DYNAMIC-COLLECTION form the DATA will be
+accumulated.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-DYNAMIC-COLLECTION" :PACKAGE-NAME "DYNAMIC-COLLECT"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "TAG" :PACKAGE-NAME "DYNAMIC-COLLECT" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "DYNAMIC-COLLECT" :EXTERNALP NIL))
+     :DOCUMENTATION "Dynamically collect messages that were signalled during the
+execution of BODY from COLLECT. Return a list of messages in the order
+they were collected. If TAG is provided, then only COLLECT forms which
+have the same tag will be accrued."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*ENSURE-HANDLED-COLLECT*" :PACKAGE-NAME "DYNAMIC-COLLECT"
+     :EXTERNALP T)
+    (:NAME "COLLECT" :PACKAGE-NAME "DYNAMIC-COLLECT" :EXTERNALP T)
+    (:NAME "WITH-DYNAMIC-COLLECTION" :PACKAGE-NAME "DYNAMIC-COLLECT" :EXTERNALP
+     T)))))

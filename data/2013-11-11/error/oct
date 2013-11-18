@@ -1,0 +1,25 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "oct"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+WARNING: UIOP/UTILITY:PARSE-VERSION: "2011-02-09" doesn't follow asdf version numbering convention
+WARNING: Invalid :version specifier "2011-02-09" for component "oct" from file #P"/home/quickdocs_dev/quicklisp/dists/quicklisp/software/oct-20110219-cvs/oct.asd", using NIL instead
+WARNING: Invalid :version specifier "2011-02-09" for component "oct" from file #P"/home/quickdocs_dev/quicklisp/dists/quicklisp/software/oct-20110219-cvs/oct.asd", using NIL instead
+; 
+; compilation unit aborted
+;   caught 3 fatal ERROR conditions
+Error: The constant NET.COMMON-LISP.OCT:+PI+ is being redefined (from
+       #q3.1415926535897932384626433832795028841971693993751058209749445923q0
+       to
+       #q3.1415926535897932384626433832795028841971693993751058209749445923q0)
+See also:
+  The ANSI Standard, Macro DEFCONSTANT
+  The SBCL Manual, Node "Idiosyncrasies"

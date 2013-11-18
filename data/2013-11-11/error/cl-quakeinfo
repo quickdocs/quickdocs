@@ -1,0 +1,34 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "cl-quakeinfo"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+; 
+; compilation unit aborted
+;   caught 2 fatal ERROR conditions
+Error: overwriting old FUN-INFO
+         #<SB-C::FUN-INFO
+           :ATTRIBUTES (SB-C:CALL SB-C:UNWIND SB-C:ANY)
+           :TEMPLATES (#<SB-C::VOP-INFO
+                         :NAME SB-VM::FILL-BLOCK-UB8-LE
+                         :ARG-TYPES ((:OR
+                                      #<SB-C:PRIMITIVE-TYPE
+                                        :NAME SB-VM::SIMPLE-ARRAY-UNSIGNED-BYTE-32>)
+                                     (:OR
+                                      #<SB-C:PRIMITIVE-TYPE
+                                        :NAME SB-VM::SIMPLE-ARRAY-UNSIGNED-BYTE-8>)
+                                     (:OR
+                                      #<SB-C:PRIMITIVE-TYPE
+                                        :NAME SB-VM::POSITIVE-FIXNUM>))
+                         :RESULT-TYPES NIL
+                         :LTN-POLICY :FAST-SAFE
+                         :COST 50>)>
+       for IRONCLAD::FILL-BLOCK-UB8-LE

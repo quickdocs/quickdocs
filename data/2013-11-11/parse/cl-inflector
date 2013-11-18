@@ -1,0 +1,121 @@
+
+(:TYPE :SYSTEM :NAME "cl-inflector" :AUTHOR NIL :MAINTAINER NIL :VERSION "0.1"
+ :LICENCE "MIT" :DESCRIPTION
+ "Functions to pluralize and singularize english languages words"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("CL-PPCRE" "ALEXANDRIA") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-INFLECTOR" :FULL-NAME "CL-INFLECTOR" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PLURALS*" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'((\"(.*[aeiou])z$\" \"\\\\1zzes\") (\"^(ox)$\" \"\\\\1en\") (\"([m|l])ouse$\" \"\\\\1ice\")
+  (\"(matr|vert|ind)(?:ix|ex)$\" \"\\\\1ices\") (\"(z|x|ch|ss|sh)$\" \"\\\\1es\")
+  (\"([^aeiouy]|qu)y$\" \"\\\\1ies\") (\"(hive)$\" \"\\\\1s\")
+  (\"(?:([^f])fe|([lr])f)$\" \"\\\\1\\\\2ves\") (\"sis$\" \"ses\") (\"([ti])um$\" \"\\\\1a\")
+  (\"(buffal|tomat)o$\" \"\\\\1oes\") (\"(bu)s$\" \"\\\\1ses\") (\"(alias|status)$\" \"\\\\1es\")
+  (\"(octop)us$\" \"\\\\1uses\") (\"(vir)us$\" \"\\\\1i\") (\"(ax|test)is$\" \"\\\\1es\")
+  (\"s$\" \"s\") (\"$\" \"s\"))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SINGULARS*" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'((\"(database)s$\" \"\\\\1\") (\"(.*[aeiou]z)zes$\" \"\\\\1\") (\"(matr)ices$\" \"\\\\1ix\")
+  (\"(vert|ind)ices$\" \"\\\\1ex\") (\"^(ox)en\" \"\\\\1\") (\"(alias|status)es$\" \"\\\\1\")
+  (\"(octop)(odes|uses)$\" \"\\\\1us\") (\"(octop|vir)i$\" \"\\\\1us\")
+  (\"(cris|ax|test)es$\" \"\\\\1is\") (\"(shoe)s$\" \"\\\\1\") (\"(o)es$\" \"\\\\1\")
+  (\"(bus)es$\" \"\\\\1\") (\"([m|l])ice$\" \"\\\\1ouse\") (\"(z|x|ch|ss|sh)es$\" \"\\\\1\")
+  (\"(m)ovies$\" \"\\\\1ovie\") (\"(s)eries$\" \"\\\\1eries\")
+  (\"([^aeiouy]|qu)ies$\" \"\\\\1y\") (\"([lr])ves$\" \"\\\\1f\") (\"(tive)s$\" \"\\\\1\")
+  (\"(hive)s$\" \"\\\\1\") (\"([^f])ves$\" \"\\\\1fe\") (\"(^analy)ses$\" \"\\\\1sis\")
+  (\"((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$\" \"\\\\1\\\\2sis\")
+  (\"([ti])a$\" \"\\\\1um\") (\"(n)ews$\" \"\\\\1ews\") (\"s$\" \"\"))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*UNCOUNTABLES*" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(LIST \"equipment\" \"information\" \"rice\" \"money\" \"species\" \"series\" \"fish\"
+      \"sheep\" \"jeans\" \"news\")")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*IRREGULARS*" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(ALEXANDRIA.0.DEV:PLIST-ALIST
+ (LIST \"is\" \"are\" \"person\" \"people\" \"man\" \"men\" \"woman\" \"women\" \"child\"
+       \"children\" \"move\" \"moves\" \"movie\" \"movies\" \"buzz\" \"buzzes\"))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNCOUNTABLE" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "WORD" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION "Notifies the inflector that a word is uncountable")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNCOUNTABLE?" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "WORD" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IRREGULAR" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "SINGULAR" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+      (:NAME "PLURAL" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION "Adds a irregular single-plural set to the irregular list")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IRREGULAR-PLURAL?" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "WORD" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IRREGULAR-SINGULAR?" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "WORD" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IRREGULAR?" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "WORD" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-IRREGULAR-SINGULAR" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PLURAL" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-IRREGULAR-PLURAL" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SINGULAR" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PLURAL" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+      (:NAME "REPLACEMENT" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Adds a plural rule, where RULE can be either a string or a regex, and REPLACEMENT can contain capture references defined in RULE")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PLURAL-OF" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "WORD" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the plural of a word if it's singular, or itself if already plural")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SINGULAR" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "RULE" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+      (:NAME "REPLACEMENT" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Adds a singular rule, where RULE can be either a string or a regex, and REPLACEMENT can contain capture references defined in RULE")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SINGULAR-OF" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "WORD" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the singular of a word if it's singular, or itself if already singular")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INFLECTOR-HELPER" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORD" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+      (:NAME "REGEXES" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PLURALIZE" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WORD" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PLURAL" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "PLURAL-OF" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+    (:NAME "IRREGULAR" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+    (:NAME "SINGULAR-OF" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+    (:NAME "UNCOUNTABLE?" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+    (:NAME "SINGULARIZE" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+    (:NAME "PLURALIZE" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+    (:NAME "IRREGULAR?" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)
+    (:NAME "UNCOUNTABLE" :PACKAGE-NAME "CL-INFLECTOR" :EXTERNALP T)))))

@@ -1,0 +1,734 @@
+
+(:TYPE :SYSTEM :NAME "swank-crew" :AUTHOR "Robert Brown" :MAINTAINER NIL
+ :VERSION "1.0" :LICENCE
+ "New BSD license.  See the copyright messages in individual files."
+ :DESCRIPTION "Distributed master/worker computing framework."
+ :LONG-DESCRIPTION
+ "Swank Crew is a framework for developing distributed master/worker
+applications.  It uses Slime's Swank protocol to transport data between
+machines, making the debugging of distributed applications easier."
+ :DEPENDS-ON
+ ("BORDEAUX-THREADS" "COM.GOOGLE.BASE" "COM.GOOGLE.FLAG" "OSICAT"
+  "SWANK-CLIENT")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "SWANK-CREW" :FULL-NAME "SWANK-CREW" :DOCUMENTATION
+   "Evaluate expressions on remote Lisps using the Swank protocol."
+   :SYMBOL-LIST
+   ((:TYPE :TYPE :SYMBOL
+     (:NAME "PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REX-PORT*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "CONNECT-INFO" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "Information needed when connecting to a worker's Swank server."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HOST-NAME" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "HOST-NAME" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION "Host the worker is running on.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "Port on which the worker's Swank server is listening for connections.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "A remote Lisp running a Swank server." :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LOCK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "LOCK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Lock protecting the mutable data of this worker.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONNECT-INFO" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "CONNECT-INFO" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Information used when connecting to this worker.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SET-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "SET-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Function called to record which worker is evaluating a form.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONNECTION" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "CONNECTION" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "When non-NIL, an open Swank connection to the worker.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "A pool of Swank workers to which Lisp forms can be sent for evaluation."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "The worker pool's ID.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MASTER-HOST-NAME" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "MASTER-HOST-NAME" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Host name of the master.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REX-PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "REX-PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION
+       "Port number for Swank remote execution requests to the master.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)) :WRITERS
+       ((:NAME "%WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :DOCUMENTATION "Vector containing all workers in the worker pool.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LOCK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "LOCK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Lock protecting IDLE-WORKERS, WORKER-AVAILABLE, and DISCONNECTING.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "IDLE-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "IDLE-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "List of currently idle workers.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "WORKER-AVAILABLE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "WORKER-AVAILABLE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Condition signaled when a worker becomes idle.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DISCONNECTING" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "DISCONNECTING" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Set non-NIL when the worker pool is being torn down to tell the reconnector
+thread it should exit.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REPLAY-FORMS-LOCK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "REPLAY-FORMS-LOCK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Lock that protects REPLAY-FORMS.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REPLAY-FORMS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "REPLAY-FORMS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "List containing all forms passed to EVAL-FORM-ALL-WORKERS that need to be
+replayed on new workers when they join the pool.")))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WORKER-COUNTS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns the number of idle, busy, and disconnected workers in WORKER-POOL.
+This function executes without locking WORKER-POOL, so it may return
+inconsistent information.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WORKER-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T))
+     :DOCUMENTATION "Returns the total number of workers in WORKER-POOL.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+       (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Prints WORKER-POOL to STREAM.  This function runs without locking
+WORKER-POOL, so it may output inconsistent information.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*WORKER-POOLS-LOCK*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :DOCUMENTATION "Lock protecting access to *WORKER-POOLS*." :INITIAL-VALUE
+     "(BORDEAUX-THREADS:MAKE-LOCK \"worker pools lock\")")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*WORKER-POOLS*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :DOCUMENTATION "Mapping from worker pool IDs to active worker pools."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE)")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+       (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL-ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the worker pool identified by WORKER-POOL-ID.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONNECT-INFOS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "CONNECT-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CONNECT-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONNECT-INFO" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "CLOSE-HANDLER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates a connection to a worker's Swank server using information in
+CONNECT-INFO.  Passes the thunk CLOSE-HANDLER to SWANK-CLIENT:SLIME-CONNECT, so
+that it is invoked when the connection closes.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONNECT-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CONNECT-INFO" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       (:NAME "CONNECT-INFO" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+      (:NAME "CLOSE-HANDLER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONNECT-LOCAL-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BASE-PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T))
+     :DOCUMENTATION
+     "Makes Swank connections to WORKER-COUNT workers on \"localhost\" and returns
+a WORKER-POOL containing them.  The Swank servers for the workers must be
+listening on WORKER-COUNT consecutively numbered ports, starting from
+BASE-PORT.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONNECT-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "HOST/PORT-ALIST" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Makes Swank connections to all the workers in HOST/PORT-ALIST and returns a
+WORKER-POOL containing them.  HOST/PORT-ALIST is a list of (host-name . port)
+pairs")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DISCONNECT-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T))
+     :DOCUMENTATION
+     "Closes the Swank connections of all connected workers in WORKER-POOL.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RECONNECT-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONNECT-INFO" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "CLOSE-HANDLER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reconnects to a Swank server using information in CONNECT-INFO.  Passes the
+thunk CLOSE-HANDLER to SWANK-CLIENT:SLIME-CONNECT, so that it is invoked when
+the connection closes.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RECONNECT-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "CONNECT-INFO" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       (:NAME "CONNECT-INFO" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+      (:NAME "CLOSE-HANDLER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+WORKER-RECONNECT-INTERVAL+" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "Seconds between attempts to reconnect workers."
+     :INITIAL-VALUE "#:G356")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+WORKER-RECONNECT-INTERVAL+" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "Seconds between attempts to reconnect workers."
+     :INITIAL-VALUE "#:G356")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RECONNECT-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T))
+     :DOCUMENTATION "Reconnects disconnected workers in WORKER-POOL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALLOCATE-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WORKER-TO-AVOID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Allocates and returns an idle worker from WORKER-POOL that is connected.  If
+WORKER-POOL is being shut down, then NIL is returned.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FREE-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T))
+     :DOCUMENTATION
+     "Changes the state of WORKER to idle, so that it's available for allocation.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALLOCATE-WORKER-AND-EVALUATE" :PACKAGE-NAME "SWANK-CREW"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "SET-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-DONE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Allocates a connected worker from WORKER-POOL and sends it FORM to evaluate.
+Returns the worker that was successfully allocated, or NIL if WORKER-POOL is
+shutting down.  SET-WORKER is a function that is called to tell the WORKER-DONE
+continuation what worker is evaluating FORM.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HANDLE-CONNECTION-CLOSED" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "DISCONNECTED-WORKER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T))
+     :DOCUMENTATION
+     "Called when the connection to DISCONNECTED-WORKER, a member of WORKER-POOL,
+is closed because of a call to SLIME-CLOSE, the death of the worker, or because
+of a communications error.  Moves all uncompleted work intended for
+DISCONNECTED-WORKER to another idle connected worker in WORKER-POOL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NO-WORKERS-P" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T))
+     :DOCUMENTATION "Returns T if WORKER-POOL is NIL or contains no workers.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVAL-ON-MASTER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "MAKE-WORK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RESULT-DONE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Iterates over the members of LIST calling MAKE-WORK on each one.  If
+RESULT-DONE is not NIL, it must be a function of two arguments.  In this case,
+after each application of MAKE-WORK to a LIST member, RESULT-DONE is called with
+the member's position in LIST and MAKE-WORK's result.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-EVALUATED-FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Adds FORM to the set of forms that need to be evaluated on a new worker when
+it joins WORKER-POOL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNEVALUATED-REPLAY-FORMS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL-ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "EVALUATED-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "For a worker that has executed EVALUATED-COUNT of the replay forms associated
+with the worker-pool identified by WORKER-POOL-ID, returns a list of the forms
+the worker needs to evaluate in order to be completely up to date.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-CAUGHT-UP-THEN-EVALUATE" :PACKAGE-NAME "SWANK-CREW"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "REPLAY-REQUIRED" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a form that when evaluated on a worker in WORKER-POOL ensures that
+the worker is caught up then evaluates FORM and returns its result.
+REPLAY-REQUIRED indicates whether new workers must evaluate FORM before being
+considered to be caught up.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DISPATCH-WORK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "MAKE-WORK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RESULT-DONE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "RETAIN-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "REPLAY-REQUIRED" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Traverses LIST, calling MAKE-WORK on each element to create a form that is
+then passed to a remote worker in WORKER-POOL for evaluation.  When
+RETAIN-WORKERS is true, each form is evaluated on a unique worker.  Otherwise,
+workers are reused and may process multiple forms.  In either case, the results
+of evaluating each form are collected into a list, which is returned when every
+remote worker is done.  If RESULT-DONE is not NIL, then it must be a function of
+two arguments.  In this case RESULT-DONE is called on the master as each worker
+returns a result.  The arguments to RESULT-DONE are an integer counter,
+indicating the work form's position in LIST, and the result of evaluating the
+form.  REPLAY-REQUIRED indicates whether new workers will have to perform the
+work generated by MAKE-WORK before being considered to be caught up.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVAL-FORM-ALL-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RESULT-DONE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      ((:NAME "REPLAY-REQUIRED" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Evaluates FORM on all workers in WORKER-POOL.  When RESULT-DONE is non-NIL,
+it must be a function of two arguments.  In this case RESULT-DONE is called as
+each worker returns a result with two arguments, a non-negative integer
+representing the order in which the work was dispatched and the worker's result.
+If REPLAY-REQUIRED is true, which is the default, FORM will be remembered and
+evaluated again for side effects on any new worker that joins POOL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARALLEL-MAPCAR" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "MAKE-WORK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RESULT-DONE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Traverses LIST, calling MAKE-WORK on each element to create a form that is
+then passed to a remote worker in WORKER-POOL for evaluation.  Results of
+evaluating each form are collected into a list, which is returned when every
+remote worker is done.  If RESULT-DONE is provided, then it must be a function
+of two arguments.  In this case RESULT-DONE is called on the master as each
+worker returns a result.  The arguments to RESULT-DONE are the position of the
+work in LIST and the worker's result.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARALLEL-REDUCE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "MAKE-WORK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITIAL-VALUE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "REDUCER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Traverses LIST, calling MAKE-WORK on each element to create a form that is
+then passed to a remote worker in WORKER-POOL for evaluation.  As results are
+returned, REDUCER, a binary function, is used to combine successive results in
+the manner of REDUCE.  INITIAL-VALUE is used as the starting value for the
+reduction computation.  The form
+
+  (parallel-reduce worker-pool make-work list initial-value reducer)
+
+is equivalent to
+
+  (reduce reducer
+          (mapcar (lambda (x) (eval (funcall make-work x))) list)
+          :initial-value initial-value)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*EVALUATION-ID-LOCK*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :DOCUMENTATION "Lock protecting access to *EVALUATION-ID*." :INITIAL-VALUE
+     "(BORDEAUX-THREADS:MAKE-LOCK \"eval id\")")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*EVALUATION-ID*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Counter used to generate a unique ID for EVALUATION instances."
+     :INITIAL-VALUE "0")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "EVALUATION" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "Stores the data needed to process incoming evaluation results."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Unique ID for this running evaluation request.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LOCK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "LOCK" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Lock protecting the access to this instance.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DONE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "DONE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "Is the computation done?")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DONE-CONDITION" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "DONE-CONDITION" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Condition variable notified when computation is done.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REPEATED-EVAL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "EVALUATION" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Stores the data needed to process an incoming repeated eval result."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RESULTS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "RESULTS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION "Vector holding returned results.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RESULTS-POSITION" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "RESULTS-POSITION" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Position where the next result will be recorded.")))
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*EVALS-LOCK*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :DOCUMENTATION "Lock protecting access to *EVALS*." :INITIAL-VALUE
+     "(BORDEAUX-THREADS:MAKE-LOCK \"evals\")")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*EVALS*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :DOCUMENTATION
+     "List containing an EVALUATION instance for each running computation."
+     :INITIAL-VALUE "'NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-EVAL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "EVAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Adds EVAL to the list of in-progress computations.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-EVAL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "EVAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Removes EVAL from the list of in-progress computations.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-EVAL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the running EVAL instance identified by ID, or NIL if no
+computation with that ID is currently running.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RECORD-REPEATED-RESULT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "RESULT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Stores RESULT as one of the values produced by the repeated evaluation
+identified by ID.  Returns a boolean indicating whether the worker should
+continue to call RECORD-REPEATED-RESULT with additional results.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REPEATED-WORK-FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a form for evaluation on a client of WORKER-POOL that ensures the
+client is caught up and then evaluates FORM for the repeated evaluation request
+identified by ID.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVAL-FORM-REPEATEDLY" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "RESULT-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "WORKER-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+       ((:NAME "WHEN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+        ((:NAME "WORKER-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+         (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)))))
+     :DOCUMENTATION
+     "Evaluates FORM, which must return a function of no arguments, on WORKER-COUNT
+workers in WORKER-POOL, then arranges for the workers to repeatedly call the
+function to create RESULT-COUNT results, which are returned in a list.
+WORKER-COUNT defaults to the number of workers in WORKER-POOL.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ASYNC-EVAL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "EVALUATION" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Data needed to process incoming asynchronous evaluation results."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RESULTS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "RESULTS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION
+       "List holding returned, but unprocessed, results.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RESULTS-AVAILABLE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "RESULTS-AVAILABLE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Condition notified when new results are available.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "STATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "State of the asynchronous computation, updated from results.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STATE-COUNTER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "STATE-COUNTER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Counter incremented each time STATE is updated.")))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ASYNC-RESULTS-LOOP" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ASYNC-EVAL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "UPDATE-STATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Handles incoming results for ASYNC-EVAL by calling UPDATE-STATE whenever
+ASYNC-EVAL holds unprocessed results.  UPDATE-STATE is called with two
+arguments, the work state and a list of the unprocessed results.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RECORD-ASYNC-RESULT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "RESULT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-STATE-COUNTER" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Stores RESULT as one of the values produced by the async evaluation
+identified by ID.  Returns a boolean indicating whether the worker should
+continue to call ASYNC-RESULT with additional results.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ASYNC-WORK-FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "INITIAL-STATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a form for evaluation on a client of WORKER-POOL that ensures the
+client is caught up and then evaluates FORM for the async evaluation request
+identified by ID.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVAL-REPEATEDLY-ASYNC-STATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+      (:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "INITIAL-STATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "UPDATE-STATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "WORKER-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+       ((:NAME "WHEN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+        ((:NAME "WORKER-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+         (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)))))
+     :DOCUMENTATION
+     "Evaluates FORM, which must return a function of one argument, on WORKER-COUNT
+workers in WORKER-POOL, then arranges for the workers to repeatedly call the
+work function and send its results back to the master.  The work function is
+passed a state argument, initially set to INITIAL-STATE, that the master can
+update asynchronously as it receives new results.
+
+On the master, the work state is initialized to INITIAL-STATE and UPDATE-STATE
+is called repeatedly to process results received from the workers.  UPDATE-STATE
+is called with two arguments, the current work state and a list containing all
+unprocessed work results.  UPDATE-STATE should return three values: the new work
+state, a boolean indicating whether the computation should end, and a boolean
+indicating whether the latest work state should be distributed to workers.  When
+UPDATE-STATE's second return value is true, EVAL-REPEATEDLY-ASYNC-STATE tells
+the workers to stop and returns the latest work state.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LAST-FORM-EVALED*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :DOCUMENTATION "The last form evaluated by the worker." :INITIAL-VALUE
+     "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LAST-RANDOM-STATE*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "The value of *RANDOM-STATE* right before the worker started evaluating
+*LAST-FORM-EVALED*."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LAST-REPEATED-EVAL-WORK-FUNCTION*" :PACKAGE-NAME "SWANK-CREW"
+      :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Thunk created by the current invocation of REPEATEDLY-EVALUATE to produce
+results for an EVAL-FORM-REPEATEDLY request on the master.  This variable is
+useful for debugging."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLEAR-DEBUGGING-INFO" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Sets all debugging global variables to NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DEBUGGING-FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns an expression that when evaluated returns the result of evaluating
+FORM.  In addition, the returned expression arranges to update the values of
+*LAST-FORM-EVALED* and *LAST-RANDOM-STATE* for ease of debugging.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REPLAY-FORMS-COUNTS-LOCK*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "Lock protecting access to *REPLAY-FORMS-COUNTS*."
+     :INITIAL-VALUE "(BORDEAUX-THREADS:MAKE-LOCK \"evaluated form count\")")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REPLAY-FORMS-COUNTS*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Mapping from worker pool IDs to the number of replay forms we have evaluated
+on this client for that pool."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FETCH-AND-EVALUATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "MASTER-HOST-NAME" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "MASTER-REX-PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-POOL-ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "LOCAL-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Fetches from the master and then evaluates all forms required to catch up
+with other workers in the pool identified by WORKER-POOL-ID on the master.  All
+replay forms after the first LOCAL-COUNT forms are fetched by making a Swank
+connection to MASTER-REX-PORT on host MASTER-HOST-NAME.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CATCH-UP-IF-NECESSARY" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "MASTER-HOST-NAME" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "MASTER-REX-PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-POOL-ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "POOL-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Ensures that the current client is up to date, that it has evaluated all
+POOL-COUNT replay forms associated with the pool identified by WORKER-POOL-ID.
+If it is necessary to evaluate forms in order to catch up, they are fetched by
+making a Swank connection to MASTER-REX-PORT on host MASTER-HOST-NAME.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVALUATE-FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "MASTER-HOST-NAME" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "MASTER-REX-PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "WORKER-POOL-ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "POOL-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "REPLAY-REQUIRED" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates FORM, but first ensures that this worker has evaluated all
+POOL-COUNT replay forms associated with the worker pool identified by
+WORKER-POOL-ID on the master.  When catching up is required, fetches forms by
+making a Swank connection to MASTER-REX-PORT on host MASTER-HOST-NAME.
+REPLAY-REQUIRED indicates whether FORM may need to be replayed in order to bring
+a worker up to date.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-MANY-RESULTS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEND-RESULT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "MASTER-HOST-NAME" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "MASTER-REX-PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates a Slime connection to MASTER-HOST-NAME on port MASTER-REX-PORT, then
+repeatedly calls SEND-RESULT with the new connection as argument.  Returns when
+SEND-RESULT returns NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REPEATEDLY-EVALUATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "MASTER-HOST-NAME" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "MASTER-REX-PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates FORM, which must return a function of no arguments, then calls that
+function repeatedly to produce results.  Each result is sent to the machine
+called MASTER-HOST-NAME by making a Swank connection to its MASTER-REX-PORT and
+remotely evaluating an expression that records the result.  ID is used on the
+master machine to correctly record the result.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ASYNC-EVALUATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORM" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "INITIAL-STATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "ID" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "MASTER-HOST-NAME" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL)
+      (:NAME "MASTER-REX-PORT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates FORM, which must return a work function of one argument, then calls
+that function repeatedly to produce results, each time passing it the current
+computation state.  At first this state is INITIAL-STATE, but the master may
+update the state asynchronously.  Each work result is sent to the machine called
+MASTER-HOST-NAME by making a Swank connection to its MASTER-REX-PORT and
+remotely evaluating an expression that records the result.  ID is used on the
+master machine to process results and on the worker to update the state."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "EVAL-FORM-REPEATEDLY" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+    (:NAME "PARALLEL-REDUCE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+    (:NAME "WORKER-COUNT" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+    (:NAME "EVAL-REPEATEDLY-ASYNC-STATE" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP
+     T)
+    (:NAME "DISCONNECT-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+    (:NAME "WORKER-POOL" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+    (:NAME "*REX-PORT*" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+    (:NAME "CONNECT-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+    (:NAME "PARALLEL-MAPCAR" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+    (:NAME "EVAL-FORM-ALL-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)
+    (:NAME "CONNECT-LOCAL-WORKERS" :PACKAGE-NAME "SWANK-CREW" :EXTERNALP T)))))

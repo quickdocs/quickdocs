@@ -1,0 +1,4 @@
+
+(:TYPE :SYSTEM :NAME "weblocks-yui" :AUTHOR "Jan Rychter" :MAINTAINER ""
+ :VERSION "0.0.1" :LICENCE "" :DESCRIPTION "YUI integration for weblocks"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("WEBLOCKS") :PACKAGE-LIST NIL)

@@ -1,0 +1,544 @@
+
+(:TYPE :SYSTEM :NAME "more-conditions" :AUTHOR
+ "Jan Moringen <jmoringe@techfak.uni-bielefeld.de>" :MAINTAINER
+ "Jan Moringen <jmoringe@techfak.uni-bielefeld.de>" :VERSION "0.4.2" :LICENCE
+ "LLGPLv3; see COPYING file for details." :DESCRIPTION
+ "This system provides some generic condition classes in
+conjunction with support functions and macros."
+ :LONG-DESCRIPTION "The idea is similar to
+`alexandria:required-argument' but more fine-grained.
+
+In addition, there is support for translating condition at layer
+boundaries in larger systems."
+ :DEPENDS-ON ("ALEXANDRIA") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "MORE-CONDITIONS" :FULL-NAME "MORE-CONDITIONS"
+   :DOCUMENTATION
+   "This package provides generic conditions and condition-related
+utilities.
+
+Conditions
+* `chainable-condition'
+* `missing-required-argument'
+  * `missing-required-initarg'
+* `incompatible-arguments'
+  * `incompatible-initargs'
+* `reference-condition'
+* `progress-condition'
+  * `simple-progress-condition'
+
+Condition helper functions
+* `maybe-print-cause'
+* `maybe-print-explanation'
+* `print-reference'
+
+Macros
+* `with-condition-translation'
+* `define-condition-translating-method'
+
+* `error-behavior-restart-cases'
+
+* `with-trivial-progress'
+* `with-sequence-progress'"
+   :SYMBOL-LIST
+   ((:TYPE :TYPE :SYMBOL
+     (:NAME "REFERENCE-SPEC" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REFERENCE-DOCUMENT" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SPEC" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION "Return the document of SPEC.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REFERENCE-PART" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SPEC" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION "Return the part of SPEC.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REFERENCE-LINK" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SPEC" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION "Return the link of SPEC.")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "PROGRESS-DESIGNATOR" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROGRESS->REAL" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PROGRESS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PRINT-REFERENCES*" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :DOCUMENTATION
+     "When non-nil, `reference-condition' instances print reference
+information in addition to the primary condition report."
+     :INITIAL-VALUE "T")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Return the condition that was signaled and caused CONDITION to be
+signaled.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ROOT-CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Return the condition that was originally signaled and eventually
+caused CONDITION to be signaled.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ROOT-CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ROOT-CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ROOT-CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHAINABLE-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-PRINT-CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COLON?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "AT?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Print the condition that caused CONDITION to be signaled (if any)
+onto STREAM.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-PRINT-EXPLANATION" :PACKAGE-NAME "MORE-CONDITIONS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COLON?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "AT?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Format the message contained in the `simple-condition' CONDITION on
+STREAM.
+
+If CONDITION does not have a message, print \".\". This is intended
+for messages which can be either
+
+     \"MESSAGE.\"
+  or \"MESSAGE: EXPLANATION\".
+
+When COLON? is non-nil, the explanation is printed in an indented
+logical block.
+
+When AT? is non-nil and CONDITION does not have an explanation,
+suppress printing \".\".")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MISSING-REQUIRED-ARGUMENT" :PACKAGE-NAME "MORE-CONDITIONS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PARAMETER" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal a `missing-required-argument' error for PARAMETER.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INCOMPATIBLE-ARGUMENTS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGUMENTS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal an `incompatible-arguments' error for ARGUMENTS which has to
+be of the form
+
+  PARAMETER1 VALUE1 PARAMETER2 VALUE2 ...")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MISSING-REQUIRED-INITARG" :PACKAGE-NAME "MORE-CONDITIONS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITARG" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal a `missing-required-initarg' error for CLASS and INITARG.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INCOMPATIBLE-INITARGS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITARGS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal an `incompatible-initargs' error for CLASS and INITARGS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINT-REFERENCE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SPEC" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "AT?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "COLON?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION "Print reference SPEC onto STREAM.
+AT? and COLON? are ignored.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CONDITION-REFERENCES" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Return a list of references (of type `reference-spec') which are
+associated to CONDITION.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONDITION-REFERENCES" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Return nil since arbitrary objects do not have references
+associated to them.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CONDITION-REFERENCES" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHAINABLE-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+        T)))
+     :DOCUMENTATION
+     "Merge references associated to CONDITION with those associated to
+the transitive causes of CONDITION.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+       (:NAME "REFERENCE-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+        T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "PROGRESS-CONDITION-MESSAGE" :PACKAGE-NAME "MORE-CONDITIONS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Return a string describing CONDITION or NULL")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROGRESS-CONDITION-MESSAGE" :PACKAGE-NAME "MORE-CONDITIONS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+       (:NAME "PROGRESS-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+        T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROGRESS-CONDITION-MESSAGE" :PACKAGE-NAME "MORE-CONDITIONS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "SIMPLE-PROGRESS-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+       (:NAME "SIMPLE-PROGRESS-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS"
+        :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROGRESS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OPERATION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "PROGRESS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+      (:NAME "FORMAT-CONTROL-OR-CONDITION-CLASS" :PACKAGE-NAME
+       "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS-OR-INITARGS" :PACKAGE-NAME "MORE-CONDITIONS"
+       :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal a progress condition indicating completion status PROGRESS
+for OPERATION.
+
+As with `cl:signal', `cl:error' and `cl:warn',
+FORMAT-CONTROL-OR-CONDITION-CLASS and FORMAT-ARGUMENTS-OR-INITARGS
+either specify a condition class and initargs or a report format
+control string and format arguments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROGRESSING" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OPERATION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-CONTROL-OR-CONDITION-CLASS" :PACKAGE-NAME
+       "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS-OR-INITARGS" :PACKAGE-NAME "MORE-CONDITIONS"
+       :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return a function which signals a progress condition for OPERATION
+and calls FUNCTION.
+
+As with `cl:signal', `cl:error' and `cl:warn',
+FORMAT-CONTROL-OR-CONDITION-CLASS and FORMAT-ARGUMENTS-OR-INITARGS
+either specify a condition class and initargs or a report format
+control string and format arguments. However, if
+FORMAT-CONTROL-OR-CONDITION-CLASS is nil, a format string which prints
+all arguments passed to FUNCTION is used.
+
+Example:
+
+  (let ((items '(1 2 3 4 5)))
+    (with-sequence-progress (:foo items)
+      (mapcar (progressing #'1+ :foo \"Frobbing\") items)))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINT-ARGUMENTS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PARAMETERS-AND-VALUES" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+       NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "AT?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "COLON?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION "Print PARAMETERS-AND-VALUES which has to be of the form
+
+  (PARAMETERS VALUES)
+
+onto STREAM. AT? and COLON? are ignored.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINT-PROGRESS-PERCENTAGE" :PACKAGE-NAME "MORE-CONDITIONS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PROGRESS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "COLON?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "AT?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-CONDITION-TRANSLATION" :PACKAGE-NAME "MORE-CONDITIONS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CLAUSES" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Execute BODY translating conditions as specified by CLAUSES when
+they are signaled.
+
+CLAUSES is a list of clauses of the form
+
+  ((FROM-CONDITION TO-CONDITION
+    &key
+    var
+    cause-initarg
+    signal-via
+    muffle?)
+   INITARG1 VALUE1
+   INITARG2 VALUE2
+   ...)
+
+FROM-CONDITION specifies a condition type (as e.g. in
+`cl:handler-bind') instances of which should be translated to
+instances of the condition class designated by TO-CONDITION.
+
+The instance of TO-CONDITIONS is signaled via the value
+of :SIGNAL-VIA (default is `cl:error') and receives the initargs
+INITARG1 VALUE1, INITARG2 VALUE2, ... and the value of :CAUSE-INITARG
+(default is :CAUSE) with the original condition instance as its
+value. When the value of :CAUSE-INITARG is nil, the original condition
+is not passed to the constructed condition instance.
+
+If supplied, the value of :VAR names a variable in which the original
+condition instance should be received.
+
+MUFFLE? controls whether the original condition should be muffled
+after the translation has been performed. (This is useful for
+`cl:warning's and generic `cl:condition's which would not get handled
+by resignaling via e.g. `cl:warn').  ")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-CONDITION-TRANSLATING-METHOD" :PACKAGE-NAME
+      "MORE-CONDITIONS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+      ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARGS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Define a method on the generic function designated by NAME which
+translates conditions according to CLAUSES (For a description of
+CLAUSES, see `with-condition-translation').")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ERROR-BEHAVIOR-RESTART-CASE" :PACKAGE-NAME "MORE-CONDITIONS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VAR" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+       ((:NAME "ERROR-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+         NIL)
+        (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "INITARGS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+        (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "WARNING-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+        NIL)
+       ((:NAME "ALLOW-OTHER-VALUES?" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+         NIL)
+        (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION "Select error/warning signaling of ERROR-CONDITION or
+WARNING-CONDITION according to VAR and establish restarts as specified
+in CLAUSES.
+
+CLAUSES use the same syntax as the restart clauses in
+`cl:restart-case'.
+
+INITARGS are passed to the constructed conditions.
+
+ALLOW-OTHER-VALUES? controls whether the form should evaluate to the
+value of VAR if it is not a function.
+
+Example:
+
+  (flet ((try-policy (policy)
+           (error-behavior-restart-case
+              (policy
+               (simple-error
+                :format-control   \"Example error: ~A\"
+                :format-arguments (list :foo))
+               :warning-condition   simple-warning
+               :allow-other-values? t)
+             (continue (&optional condition)
+              :continue))))
+    ;; (try-policy #'error) => Error: Example error: FOO
+    ;; (try-policy 'error) => Error: Example error: FOO
+    (mapcar #'try-policy (list warn #'warn continue #'continue 1 :foo nil)))
+  |  WARNING: Example error: FOO
+  |  WARNING: Example error: FOO
+  => (nil nil :continue :continue 1 :foo nil)
+")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-TRIVIAL-PROGRESS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "OPERATION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FORMAT-CONTROL-OR-CONDITION-CLASS" :PACKAGE-NAME
+        "MORE-CONDITIONS" :EXTERNALP NIL)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FORMAT-ARGUMENTS-OR-INITARGS" :PACKAGE-NAME "MORE-CONDITIONS"
+        :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal one progress condition for OPERATION for the start and end
+of the execution of BODY respectively.
+
+As with `cl:signal', `cl:error' and `cl:warn',
+FORMAT-CONTROL-OR-CONDITION-CLASS and FORMAT-ARGUMENTS-OR-INITARGS
+either specify a condition class and initargs or a report format
+control string and format arguments.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-SEQUENCE-PROGRESS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "OPERATION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL)
+       (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal progress conditions for OPERATION on SEQUENCE during the
+execution of BODY.
+
+The function `progress' is shadowed in the lexical scope of BODY with
+the following syntax:
+
+  progress [ format-control-or-condition-class
+             format-arguments-or-initargs* ]
+
+Calling this function indicates that the processing of SEQUENCE
+advanced by one element. As with `cl:signal', `cl:error' and
+`cl:warn', FORMAT-CONTROL-OR-CONDITION-CLASS and
+FORMAT-ARGUMENTS-OR-INITARGS either specify a condition class and
+initargs or a report format control string and format arguments.
+
+After the completion of or non-local exit from BODY, a condition
+indicating the completion of OPERATION is signaled automatically."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "PROGRESS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "CONDITION-REFERENCES" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "PROGRESS-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "ERROR-BEHAVIOR-RESTART-CASE" :PACKAGE-NAME "MORE-CONDITIONS"
+     :EXTERNALP T)
+    (:NAME "INCOMPATIBLE-ARGUMENTS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+     T)
+    (:NAME "MAYBE-PRINT-CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "REFERENCE-SPEC" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "MISSING-REQUIRED-ARGUMENT" :PACKAGE-NAME "MORE-CONDITIONS"
+     :EXTERNALP T)
+    (:NAME "PROGRESS-CONDITION-OPERATION" :PACKAGE-NAME "MORE-CONDITIONS"
+     :EXTERNALP T)
+    (:NAME "INCOMPATIBLE-ARGUMENTS-PARAMETERS" :PACKAGE-NAME "MORE-CONDITIONS"
+     :EXTERNALP T)
+    (:NAME "REFERENCE-PART" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "REFERENCE-LINK" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "WITH-CONDITION-TRANSLATION" :PACKAGE-NAME "MORE-CONDITIONS"
+     :EXTERNALP T)
+    (:NAME "DEFINE-CONDITION-TRANSLATING-METHOD" :PACKAGE-NAME
+     "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "SIMPLE-PROGRESS-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS"
+     :EXTERNALP T)
+    (:NAME "PROGRESS-CONDITION-PROGRESS" :PACKAGE-NAME "MORE-CONDITIONS"
+     :EXTERNALP T)
+    (:NAME "PROGRESS-DESIGNATOR" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "*PRINT-REFERENCES*" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "INCOMPATIBLE-INITARGS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+     T)
+    (:NAME "PROGRESSING" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "WITH-TRIVIAL-PROGRESS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+     T)
+    (:NAME "PRINT-REFERENCE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "INITARG-ERROR-CLASS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "PROGRESS->REAL" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "INITARG-ERROR" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "REFERENCE-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "MISSING-REQUIRED-INITARG" :PACKAGE-NAME "MORE-CONDITIONS"
+     :EXTERNALP T)
+    (:NAME "CHAINABLE-CONDITION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "REFERENCE-DOCUMENT" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "MAYBE-PRINT-EXPLANATION" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+     T)
+    (:NAME "WITH-SEQUENCE-PROGRESS" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP
+     T)
+    (:NAME "MISSING-REQUIRED-ARGUMENT-PARAMETER" :PACKAGE-NAME
+     "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "ROOT-CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "CAUSE" :PACKAGE-NAME "MORE-CONDITIONS" :EXTERNALP T)
+    (:NAME "INCOMPATIBLE-ARGUMENTS-VALUES" :PACKAGE-NAME "MORE-CONDITIONS"
+     :EXTERNALP T)
+    (:NAME "PROGRESS-CONDITION-MESSAGE" :PACKAGE-NAME "MORE-CONDITIONS"
+     :EXTERNALP T)))))

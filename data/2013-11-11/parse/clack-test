@@ -1,0 +1,154 @@
+
+(:TYPE :SYSTEM :NAME "clack-test" :AUTHOR "Eitarow Fukamachi" :MAINTAINER NIL
+ :VERSION "12.3" :LICENCE "LLGPL" :DESCRIPTION "Testing Clack Applications."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CLACK" "CL-SYNTAX" "CL-SYNTAX-ANNOT" "CL-TEST-MORE" "FLEXI-STREAMS"
+  "DRAKMA")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CLACK.TEST" :FULL-NAME "CLACK.TEST" :DOCUMENTATION "# 
+Clack.Test - Testing Clack Applications.
+
+
+## SYNOPSIS
+
+    (defpackage clack-test.sample
+      (:use :cl
+            :clack.test
+            :cl-test-more
+            :drakma))
+    (in-package :clack-test.sample)
+    
+    (test-app
+     (lambda (env)
+       (declare (ignore env))
+       `(200 (:content-type \"text/plain\") (\"Hello, Clack!\")))
+     (lambda ()
+       (multiple-value-bind (body status headers)
+           (http-request \"http://localhost:4242\")
+         (is status 200)
+         (is body \"Hello, Clack!\")
+         (is (assoc :content-type headers) \"text/plain\")))
+     \"Testing simple application\")
+
+## DESCRIPTION
+
+Clack.Test provides simple interface to test Clack Application or Middleware.
+
+Your Lisp have to support multi-thread to run this.
+
+## AUTHOR
+
+Eitarow Fukamachi (e.arrows@gmail.com)
+
+## SEE ALSO
+
+* [CL-TEST-MORE](https://github.com/fukamachi/cl-test-more)
+* Drakma
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CLACK-TEST-HANDLER*" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T)
+     :DOCUMENTATION
+     "Backend Handler to run tests on. String or Symbol are allowed."
+     :INITIAL-VALUE ":HUNCHENTOOT")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CLACK-TEST-PORT*" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T)
+     :DOCUMENTATION "HTTP port number of Handler." :INITIAL-VALUE "4242")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ENABLE-DEBUG-P*" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T)
+     :DOCUMENTATION NIL :INITIAL-VALUE "T")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEST-APP" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "APP" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP NIL)
+      (:NAME "CLIENT" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DESC" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP NIL))
+     :DOCUMENTATION "Test Clack Application.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-APP-TEST" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DESC" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP NIL)
+      (:NAME "APP" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP NIL)
+      (:NAME "CLIENT" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ENABLE-DEBUG-P" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP NIL)
+       (:NAME "*ENABLE-DEBUG-P*" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Define tests for Clack Application. This just wrap `cl-test-more:deftest', so you can run this test by calling `(cl-test-more:run-test :foo)'."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*CLACK-TEST-PORT*" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T)
+    (:NAME "DEFINE-APP-TEST" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T)
+    (:NAME "TEST-APP" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T)
+    (:NAME "*CLACK-TEST-HANDLER*" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T)
+    (:NAME "*ENABLE-DEBUG-P*" :PACKAGE-NAME "CLACK.TEST" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME "CLACK.TEST.SUITE" :FULL-NAME "CLACK.TEST.SUITE"
+   :DOCUMENTATION "# 
+Clack.Test.Suite - Test suite for Clack handlers.
+
+
+## SYNOPSIS
+
+    ;; Tests Clack.Handler.Hunchentoot.
+    (clack.test.suite:run-server-tests :hunchentoot)
+    
+    ;; Tests one test.
+    (clack.test.suite:run-server-tests :hunchentoot '|% double encoding in PATH-INFO|)
+
+## DESCRIPTION
+
+Clack.Test.Suite is a test suite to test a new Clack server implementation. It automatically loads a new handler environment and uses Drakma to send HTTP requests to the local server to make sure your handler implements the Clack specification correctly.
+
+Your Lisp have to support multi-thread to run these tests.
+
+## AUTHOR
+
+Eitarow Fukamachi (e.arrows@gmail.com)
+
+## SEE ALSO
+
+* Clack.Test
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CLACK-TEST-ACCESS-PORT*" :PACKAGE-NAME "CLACK.TEST.SUITE"
+      :EXTERNALP T)
+     :DOCUMENTATION "Port of localhost to request.
+Use if you want to set another port. The default is `*clack-test-port*`."
+     :INITIAL-VALUE "CLACK.TEST:*CLACK-TEST-PORT*")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CLACK-PATHNAME*" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(ASDF/COMPONENT:COMPONENT-PATHNAME (ASDF/SYSTEM:FIND-SYSTEM :CLACK))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RUN-SERVER-TESTS" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "HANDLER-NAME" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP NIL))
+     :DOCUMENTATION "Run tests for clack.handler.
+Handler name is a keyword and doesn't include the clack.handler prefix.
+For example, if you have a handler `clack.handler.foo',
+you would call like this: `(run-server-tests :foo)'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-HEADER" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "HEADERS" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FILE-SIZE" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FILE" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LOCALHOST" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PATH" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*CLACK-TEST-ACCESS-PORT*" :PACKAGE-NAME "CLACK.TEST.SUITE"
+     :EXTERNALP T)
+    (:NAME "RUN-SERVER-TESTS" :PACKAGE-NAME "CLACK.TEST.SUITE" :EXTERNALP T)))))

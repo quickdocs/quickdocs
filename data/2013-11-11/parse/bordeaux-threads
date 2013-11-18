@@ -1,0 +1,913 @@
+
+(:TYPE :SYSTEM :NAME "bordeaux-threads" :AUTHOR
+ "Greg Pfeil <greg@technomadic.org>" :MAINTAINER NIL :VERSION "0.8.3" :LICENCE
+ "MIT" :DESCRIPTION
+ "Bordeaux Threads makes writing portable multi-threaded apps simple"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("ALEXANDRIA") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "BORDEAUX-THREADS" :FULL-NAME "BORDEAUX-THREADS"
+   :DOCUMENTATION "BORDEAUX-THREADS is a proposed standard for a minimal
+  MP/threading interface. It is similar to the CLIM-SYS threading and
+  lock support, but for the following broad differences:
+
+  1) Some behaviours are defined in additional detail: attention has
+     been given to special variable interaction, whether and when
+     cleanup forms are run. Some behaviours are defined in less
+     detail: an implementation that does not support multiple
+     threads is not required to use a new list (nil) for a lock, for
+     example.
+
+  2) Many functions which would be difficult, dangerous or inefficient
+     to provide on some implementations have been removed. Chiefly
+     these are functions such as thread-wait which expect for
+     efficiency that the thread scheduler is written in Lisp and
+     'hookable', which can't sensibly be done if the scheduler is
+     external to the Lisp image, or the system has more than one CPU.
+
+  3) Unbalanced ACQUIRE-LOCK and RELEASE-LOCK functions have been
+     added.
+
+  4) Posix-style condition variables have been added, as it's not
+     otherwise possible to implement them correctly using the other
+     operations that are specified.
+
+  Threads may be implemented using whatever applicable techniques are
+  provided by the operating system: user-space scheduling,
+  kernel-based LWPs or anything else that does the job.
+
+  Some parts of this specification can also be implemented in a Lisp
+  that does not support multiple threads. Thread creation and some
+  thread inspection operations will not work, but the locking
+  functions are still present (though they may do nothing) so that
+  thread-safe code can be compiled on both multithread and
+  single-thread implementations without need of conditionals.
+
+  To avoid conflict with existing MP/threading interfaces in
+  implementations, these symbols live in the BORDEAUX-THREADS package.
+  Implementations and/or users may also make them visible or exported
+  in other more traditionally named packages."
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SUPPORTS-THREADS-P*" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+      T)
+     :DOCUMENTATION
+     "This should be set to T if the running instance has thread support."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MARK-SUPPORTED" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAKE-THREADING-SUPPORT-ERROR" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Creates a BORDEAUX-THREADS condition which specifies
+  whether there is no BORDEAUX-THREADS support for the implementation, no
+  threads enabled for the system, or no support for a particular
+  function.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-THREADING-SUPPORT-ERROR" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-THREADING-SUPPORT-ERROR" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-SPECIAL-BINDINGS*" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :DOCUMENTATION
+     "This variable holds an alist associating special variable symbols
+  to forms to evaluate. Special variables named in this list will
+  be locally bound in the new thread before it begins executing user code.
+
+  This variable may be rebound around calls to MAKE-THREAD to
+  add/alter default bindings. The effect of mutating this list is
+  undefined, but earlier forms take precedence over later forms for
+  the same symbol, so defaults may be overridden by consing to the
+  head of the list."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFBINDINGS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "DOCSTRING" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITFORMS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*STANDARD-IO-BINDINGS*" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :DOCUMENTATION
+     "Standard bindings of printer/reader control variables as per CL:WITH-STANDARD-IO-SYNTAX."
+     :INITIAL-VALUE "(LIST (CONS '*PACKAGE* '(FIND-PACKAGE :COMMON-LISP-USER))
+      (CONS '*PRINT-ARRAY* 'T) (CONS '*PRINT-BASE* '10)
+      (CONS '*PRINT-CASE* ':UPCASE) (CONS '*PRINT-CIRCLE* 'NIL)
+      (CONS '*PRINT-ESCAPE* 'T) (CONS '*PRINT-GENSYM* 'T)
+      (CONS '*PRINT-LENGTH* 'NIL) (CONS '*PRINT-LEVEL* 'NIL)
+      (CONS '*PRINT-LINES* 'NIL) (CONS '*PRINT-MISER-WIDTH* 'NIL)
+      (CONS '*PRINT-PPRINT-DISPATCH* '(COPY-PPRINT-DISPATCH NIL))
+      (CONS '*PRINT-PRETTY* 'NIL) (CONS '*PRINT-RADIX* 'NIL)
+      (CONS '*PRINT-READABLY* 'T) (CONS '*PRINT-RIGHT-MARGIN* 'NIL)
+      (CONS '*READ-BASE* '10)
+      (CONS '*READ-DEFAULT-FLOAT-FORMAT* ''SINGLE-FLOAT) (CONS '*READ-EVAL* 'T)
+      (CONS '*READ-SUPPRESS* 'NIL) (CONS '*READTABLE* '(COPY-READTABLE NIL)))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BINDING-DEFAULT-SPECIALS" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SPECIAL-BINDINGS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Return a closure that binds the symbols in SPECIAL-BINDINGS and calls
+FUNCTION.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SIGNAL-ERROR-IF-CURRENT-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%MAKE-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The actual implementation-dependent function that creates threads.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CURRENT-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Returns the thread object for the calling
+  thread. This is the same kind of object as would be returned by
+  MAKE-THREAD.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREADP" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns true if object is a thread, otherwise NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREAD-NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns the name of the thread, as supplied to MAKE-THREAD.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates a lock (a mutex) whose name is NAME. If the system does not
+  support multiple threads this will still return some object, but it
+  may not be used for very much.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ACQUIRE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "WAIT-P" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Acquire the lock LOCK for the calling thread.
+  WAIT-P governs what happens if the lock is not available: if WAIT-P
+  is true, the calling thread will wait until the lock is available
+  and then acquire it; if WAIT-P is NIL, ACQUIRE-LOCK will return
+  immediately. ACQUIRE-LOCK returns true if the lock was acquired and
+  NIL otherwise.
+
+  This specification does not define what happens if a thread
+  attempts to acquire a lock that it already holds. For applications
+  that require locks to be safe when acquired recursively, see instead
+  MAKE-RECURSIVE-LOCK and friends.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RELEASE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Release LOCK. It is an error to call this unless
+  the lock has previously been acquired (and not released) by the same
+  thread. If other threads are waiting for the lock, the
+  ACQUIRE-LOCK call in one of them will now be able to continue.
+
+  This function has no interesting return value.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-LOCK-HELD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PLACE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates BODY with the lock named by PLACE, the value of which
+  is a lock created by MAKE-LOCK. Before the forms in BODY are
+  evaluated, the lock is acquired as if by using ACQUIRE-LOCK. After the
+  forms in BODY have been evaluated, or if a non-local control transfer
+  is caused (e.g. by THROW or SIGNAL), the lock is released as if by
+  RELEASE-LOCK.
+
+  Note that if the debugger is entered, it is unspecified whether the
+  lock is released at debugger entry or at debugger exit when execution
+  is restarted.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-RECURSIVE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Create and return a recursive lock whose name is NAME. A recursive
+  lock differs from an ordinary lock in that a thread that already
+  holds the recursive lock can acquire it again without blocking. The
+  thread must then release the lock twice before it becomes available
+  for another thread.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-RECURSIVE-LOCK-HELD" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PLACE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates BODY with the recursive lock named by PLACE, which is a
+reference to a recursive lock created by MAKE-RECURSIVE-LOCK. See
+WITH-LOCK-HELD etc etc")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CONDITION-VARIABLE" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a new condition-variable object for use
+  with CONDITION-WAIT and CONDITION-NOTIFY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONDITION-WAIT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION-VARIABLE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+       NIL)
+      (:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Atomically release LOCK and enqueue the calling
+  thread waiting for CONDITION-VARIABLE. The thread will resume when
+  another thread has notified it using CONDITION-NOTIFY; it may also
+  resume if interrupted by some external event or in other
+  implementation-dependent circumstances: the caller must always test
+  on waking that there is threading to be done, instead of assuming
+  that it can go ahead.
+
+  However and for whatever reason the thread is resumed, the system
+  always reacquires LOCK before returning to the caller. It is an
+  error to call this unless from the thread that holds LOCK.
+
+  In an implementation that does not support multiple threads, this
+  function signals an error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONDITION-NOTIFY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION-VARIABLE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Notify at least one of the threads waiting for
+  CONDITION-VARIABLE. It is implementation-dependent whether one or
+  more than one (and possibly all) threads are woken, but if the
+  implementation is capable of waking only a single thread (not all
+  are) this is probably preferable for efficiency reasons. The order
+  of wakeup is unspecified and does not necessarily relate to the
+  order that the threads went to sleep in.
+
+  CONDITION-NOTIFY has no useful return value. In an implementation
+  that does not support multiple threads, it has no effect.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREAD-YIELD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Allows other threads to run. It may be necessary or desirable to
+  call this periodically in some implementations; others may schedule
+  threads automatically. On systems that do not support
+  multi-threading, this does nothing.")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Execute `BODY' and signal a condition of type TIMEOUT if the execution of
+BODY does not complete within `TIMEOUT' seconds. On implementations which do not
+support WITH-TIMEOUT natively and don't support threads either it has no effect.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-THREADS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Returns a sequence of all of the threads. This may not
+  be freshly-allocated, so the caller should not modify it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INTERRUPT-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+      (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Interrupt THREAD and cause it to evaluate FUNCTION
+  before continuing with the interrupted path of execution. This may
+  not be a good idea if THREAD is holding locks or doing anything
+  important. On systems that do not support multiple threads, this
+  function signals an error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DESTROY-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION "Terminates the thread THREAD, which is an object
+  as returned by MAKE-THREAD. This should be used with caution: it is
+  implementation-defined whether the thread runs cleanup forms or
+  releases its locks first.
+
+  Destroying the calling thread is an error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREAD-ALIVE-P" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION "Returns true if THREAD is alive, that is, if
+  DESTROY-THREAD has not been called on it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "JOIN-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION "Wait until THREAD terminates. If THREAD
+  has already terminated, return immediately.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFDFUN" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "ARGS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "DOC" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFDMACRO" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "ARGS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "DOC" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "START-MULTIPROCESSING" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "If the host implementation uses user-level threads, start the
+scheduler and multiprocessing, otherwise do nothing.
+It is safe to call repeatedly.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "START-MULTIPROCESSING" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "If the host implementation uses user-level threads, start the
+scheduler and multiprocessing, otherwise do nothing.
+It is safe to call repeatedly.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      ((:NAME "INITIAL-BINDINGS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+        NIL)
+       (:NAME "*DEFAULT-SPECIAL-BINDINGS*" :PACKAGE-NAME "BORDEAUX-THREADS"
+        :EXTERNALP T)))
+     :DOCUMENTATION
+     "Creates and returns a thread named NAME, which will call the
+  function FUNCTION with no arguments: when FUNCTION returns, the
+  thread terminates. NAME defaults to \"Anonymous thread\" if unsupplied.
+
+  On systems that do not support multi-threading, MAKE-THREAD will
+  signal an error.
+
+  The interaction between threads and dynamic variables is in some
+  cases complex, and depends on whether the variable has only a global
+  binding (as established by e.g. DEFVAR/DEFPARAMETER/top-level SETQ)
+  or has been bound locally (e.g. with LET or LET*) in the calling
+  thread.
+
+  - Global bindings are shared between threads: the initial value of a
+    global variable in the new thread will be the same as in the
+    parent, and an assignment to such a variable in any thread will be
+    visible to all threads in which the global binding is visible.
+
+  - Local bindings, such as the ones introduced by INITIAL-BINDINGS,
+    are local to the thread they are introduced in, except that
+
+  - Local bindings in the the caller of MAKE-THREAD may or may not be
+    shared with the new thread that it creates: this is
+    implementation-defined. Portable code should not depend on
+    particular behaviour in this case, nor should it assign to such
+    variables without first rebinding them in the new thread.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      ((:NAME "INITIAL-BINDINGS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+        NIL)
+       (:NAME "*DEFAULT-SPECIAL-BINDINGS*" :PACKAGE-NAME "BORDEAUX-THREADS"
+        :EXTERNALP T)))
+     :DOCUMENTATION
+     "Creates and returns a thread named NAME, which will call the
+  function FUNCTION with no arguments: when FUNCTION returns, the
+  thread terminates. NAME defaults to \"Anonymous thread\" if unsupplied.
+
+  On systems that do not support multi-threading, MAKE-THREAD will
+  signal an error.
+
+  The interaction between threads and dynamic variables is in some
+  cases complex, and depends on whether the variable has only a global
+  binding (as established by e.g. DEFVAR/DEFPARAMETER/top-level SETQ)
+  or has been bound locally (e.g. with LET or LET*) in the calling
+  thread.
+
+  - Global bindings are shared between threads: the initial value of a
+    global variable in the new thread will be the same as in the
+    parent, and an assignment to such a variable in any thread will be
+    visible to all threads in which the global binding is visible.
+
+  - Local bindings, such as the ones introduced by INITIAL-BINDINGS,
+    are local to the thread they are introduced in, except that
+
+  - Local bindings in the the caller of MAKE-THREAD may or may not be
+    shared with the new thread that it creates: this is
+    implementation-defined. Portable code should not depend on
+    particular behaviour in this case, nor should it assign to such
+    variables without first rebinding them in the new thread.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%MAKE-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The actual implementation-dependent function that creates threads.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%MAKE-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The actual implementation-dependent function that creates threads.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CURRENT-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Returns the thread object for the calling
+  thread. This is the same kind of object as would be returned by
+  MAKE-THREAD.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CURRENT-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Returns the thread object for the calling
+  thread. This is the same kind of object as would be returned by
+  MAKE-THREAD.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREADP" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns true if object is a thread, otherwise NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREADP" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns true if object is a thread, otherwise NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREAD-NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns the name of the thread, as supplied to MAKE-THREAD.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREAD-NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns the name of the thread, as supplied to MAKE-THREAD.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates a lock (a mutex) whose name is NAME. If the system does not
+  support multiple threads this will still return some object, but it
+  may not be used for very much.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates a lock (a mutex) whose name is NAME. If the system does not
+  support multiple threads this will still return some object, but it
+  may not be used for very much.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ACQUIRE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WAIT-P" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Acquire the lock LOCK for the calling thread.
+  WAIT-P governs what happens if the lock is not available: if WAIT-P
+  is true, the calling thread will wait until the lock is available
+  and then acquire it; if WAIT-P is NIL, ACQUIRE-LOCK will return
+  immediately. ACQUIRE-LOCK returns true if the lock was acquired and
+  NIL otherwise.
+
+  This specification does not define what happens if a thread
+  attempts to acquire a lock that it already holds. For applications
+  that require locks to be safe when acquired recursively, see instead
+  MAKE-RECURSIVE-LOCK and friends.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ACQUIRE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WAIT-P" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Acquire the lock LOCK for the calling thread.
+  WAIT-P governs what happens if the lock is not available: if WAIT-P
+  is true, the calling thread will wait until the lock is available
+  and then acquire it; if WAIT-P is NIL, ACQUIRE-LOCK will return
+  immediately. ACQUIRE-LOCK returns true if the lock was acquired and
+  NIL otherwise.
+
+  This specification does not define what happens if a thread
+  attempts to acquire a lock that it already holds. For applications
+  that require locks to be safe when acquired recursively, see instead
+  MAKE-RECURSIVE-LOCK and friends.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RELEASE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Release LOCK. It is an error to call this unless
+  the lock has previously been acquired (and not released) by the same
+  thread. If other threads are waiting for the lock, the
+  ACQUIRE-LOCK call in one of them will now be able to continue.
+
+  This function has no interesting return value.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RELEASE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Release LOCK. It is an error to call this unless
+  the lock has previously been acquired (and not released) by the same
+  thread. If other threads are waiting for the lock, the
+  ACQUIRE-LOCK call in one of them will now be able to continue.
+
+  This function has no interesting return value.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-LOCK-HELD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PLACE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates BODY with the lock named by PLACE, the value of which
+  is a lock created by MAKE-LOCK. Before the forms in BODY are
+  evaluated, the lock is acquired as if by using ACQUIRE-LOCK. After the
+  forms in BODY have been evaluated, or if a non-local control transfer
+  is caused (e.g. by THROW or SIGNAL), the lock is released as if by
+  RELEASE-LOCK.
+
+  Note that if the debugger is entered, it is unspecified whether the
+  lock is released at debugger entry or at debugger exit when execution
+  is restarted.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-LOCK-HELD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PLACE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates BODY with the lock named by PLACE, the value of which
+  is a lock created by MAKE-LOCK. Before the forms in BODY are
+  evaluated, the lock is acquired as if by using ACQUIRE-LOCK. After the
+  forms in BODY have been evaluated, or if a non-local control transfer
+  is caused (e.g. by THROW or SIGNAL), the lock is released as if by
+  RELEASE-LOCK.
+
+  Note that if the debugger is entered, it is unspecified whether the
+  lock is released at debugger entry or at debugger exit when execution
+  is restarted.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-RECURSIVE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Create and return a recursive lock whose name is NAME. A recursive
+  lock differs from an ordinary lock in that a thread that already
+  holds the recursive lock can acquire it again without blocking. The
+  thread must then release the lock twice before it becomes available
+  for another thread.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-RECURSIVE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Create and return a recursive lock whose name is NAME. A recursive
+  lock differs from an ordinary lock in that a thread that already
+  holds the recursive lock can acquire it again without blocking. The
+  thread must then release the lock twice before it becomes available
+  for another thread.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ACQUIRE-RECURSIVE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "As for ACQUIRE-LOCK, but for recursive locks.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ACQUIRE-RECURSIVE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "As for ACQUIRE-LOCK, but for recursive locks.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RELEASE-RECURSIVE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Release the recursive LOCK. The lock will only
+  become free after as many Release operations as there have been
+  Acquire operations. See RELEASE-LOCK for other information.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RELEASE-RECURSIVE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Release the recursive LOCK. The lock will only
+  become free after as many Release operations as there have been
+  Acquire operations. See RELEASE-LOCK for other information.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-RECURSIVE-LOCK-HELD" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PLACE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates BODY with the recursive lock named by PLACE, which is a
+reference to a recursive lock created by MAKE-RECURSIVE-LOCK. See
+WITH-LOCK-HELD etc etc")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-RECURSIVE-LOCK-HELD" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "PLACE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates BODY with the recursive lock named by PLACE, which is a
+reference to a recursive lock created by MAKE-RECURSIVE-LOCK. See
+WITH-LOCK-HELD etc etc")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREAD-YIELD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Allows other threads to run. It may be necessary or desirable to
+  call this periodically in some implementations; others may schedule
+  threads automatically. On systems that do not support
+  multi-threading, this does nothing.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREAD-YIELD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Allows other threads to run. It may be necessary or desirable to
+  call this periodically in some implementations; others may schedule
+  threads automatically. On systems that do not support
+  multi-threading, this does nothing.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CONDITION-VARIABLE" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a new condition-variable object for use
+  with CONDITION-WAIT and CONDITION-NOTIFY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CONDITION-VARIABLE" :PACKAGE-NAME "BORDEAUX-THREADS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a new condition-variable object for use
+  with CONDITION-WAIT and CONDITION-NOTIFY.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONDITION-WAIT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION-VARIABLE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+       NIL)
+      (:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Atomically release LOCK and enqueue the calling
+  thread waiting for CONDITION-VARIABLE. The thread will resume when
+  another thread has notified it using CONDITION-NOTIFY; it may also
+  resume if interrupted by some external event or in other
+  implementation-dependent circumstances: the caller must always test
+  on waking that there is threading to be done, instead of assuming
+  that it can go ahead.
+
+  However and for whatever reason the thread is resumed, the system
+  always reacquires LOCK before returning to the caller. It is an
+  error to call this unless from the thread that holds LOCK.
+
+  In an implementation that does not support multiple threads, this
+  function signals an error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONDITION-WAIT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION-VARIABLE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+       NIL)
+      (:NAME "LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION "Atomically release LOCK and enqueue the calling
+  thread waiting for CONDITION-VARIABLE. The thread will resume when
+  another thread has notified it using CONDITION-NOTIFY; it may also
+  resume if interrupted by some external event or in other
+  implementation-dependent circumstances: the caller must always test
+  on waking that there is threading to be done, instead of assuming
+  that it can go ahead.
+
+  However and for whatever reason the thread is resumed, the system
+  always reacquires LOCK before returning to the caller. It is an
+  error to call this unless from the thread that holds LOCK.
+
+  In an implementation that does not support multiple threads, this
+  function signals an error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONDITION-NOTIFY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION-VARIABLE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Notify at least one of the threads waiting for
+  CONDITION-VARIABLE. It is implementation-dependent whether one or
+  more than one (and possibly all) threads are woken, but if the
+  implementation is capable of waking only a single thread (not all
+  are) this is probably preferable for efficiency reasons. The order
+  of wakeup is unspecified and does not necessarily relate to the
+  order that the threads went to sleep in.
+
+  CONDITION-NOTIFY has no useful return value. In an implementation
+  that does not support multiple threads, it has no effect.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONDITION-NOTIFY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION-VARIABLE" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Notify at least one of the threads waiting for
+  CONDITION-VARIABLE. It is implementation-dependent whether one or
+  more than one (and possibly all) threads are woken, but if the
+  implementation is capable of waking only a single thread (not all
+  are) this is probably preferable for efficiency reasons. The order
+  of wakeup is unspecified and does not necessarily relate to the
+  order that the threads went to sleep in.
+
+  CONDITION-NOTIFY has no useful return value. In an implementation
+  that does not support multiple threads, it has no effect.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Execute `BODY' and signal a condition of type TIMEOUT if the execution of
+BODY does not complete within `TIMEOUT' seconds. On implementations which do not
+support WITH-TIMEOUT natively and don't support threads either it has no effect.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Execute `BODY' and signal a condition of type TIMEOUT if the execution of
+BODY does not complete within `TIMEOUT' seconds. On implementations which do not
+support WITH-TIMEOUT natively and don't support threads either it has no effect.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-THREADS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Returns a sequence of all of the threads. This may not
+  be freshly-allocated, so the caller should not modify it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-THREADS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Returns a sequence of all of the threads. This may not
+  be freshly-allocated, so the caller should not modify it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INTERRUPT-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+      (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Interrupt THREAD and cause it to evaluate FUNCTION
+  before continuing with the interrupted path of execution. This may
+  not be a good idea if THREAD is holding locks or doing anything
+  important. On systems that do not support multiple threads, this
+  function signals an error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INTERRUPT-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+      (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Interrupt THREAD and cause it to evaluate FUNCTION
+  before continuing with the interrupted path of execution. This may
+  not be a good idea if THREAD is holding locks or doing anything
+  important. On systems that do not support multiple threads, this
+  function signals an error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DESTROY-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION "Terminates the thread THREAD, which is an object
+  as returned by MAKE-THREAD. This should be used with caution: it is
+  implementation-defined whether the thread runs cleanup forms or
+  releases its locks first.
+
+  Destroying the calling thread is an error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DESTROY-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION "Terminates the thread THREAD, which is an object
+  as returned by MAKE-THREAD. This should be used with caution: it is
+  implementation-defined whether the thread runs cleanup forms or
+  releases its locks first.
+
+  Destroying the calling thread is an error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREAD-ALIVE-P" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION "Returns true if THREAD is alive, that is, if
+  DESTROY-THREAD has not been called on it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "THREAD-ALIVE-P" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION "Returns true if THREAD is alive, that is, if
+  DESTROY-THREAD has not been called on it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "JOIN-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION "Wait until THREAD terminates. If THREAD
+  has already terminated, return immediately.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "JOIN-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T))
+     :DOCUMENTATION "Wait until THREAD terminates. If THREAD
+  has already terminated, return immediately."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "CURRENT-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "RELEASE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "WITH-RECURSIVE-LOCK-HELD" :PACKAGE-NAME "BORDEAUX-THREADS"
+     :EXTERNALP T)
+    (:NAME "START-MULTIPROCESSING" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+     T)
+    (:NAME "RELEASE-RECURSIVE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+     T)
+    (:NAME "THREAD-ALIVE-P" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "DESTROY-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "*DEFAULT-SPECIAL-BINDINGS*" :PACKAGE-NAME "BORDEAUX-THREADS"
+     :EXTERNALP T)
+    (:NAME "CONDITION-NOTIFY" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "MAKE-CONDITION-VARIABLE" :PACKAGE-NAME "BORDEAUX-THREADS"
+     :EXTERNALP T)
+    (:NAME "CONDITION-WAIT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "INTERRUPT-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "MAKE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "WITH-TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "*STANDARD-IO-BINDINGS*" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+     T)
+    (:NAME "TIMEOUT" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "THREAD-YIELD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "MAKE-RECURSIVE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "*SUPPORTS-THREADS-P*" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+     T)
+    (:NAME "THREADP" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "ACQUIRE-RECURSIVE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP
+     T)
+    (:NAME "WITH-LOCK-HELD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "ACQUIRE-LOCK" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "JOIN-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "ALL-THREADS" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "MAKE-THREAD" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)
+    (:NAME "THREAD-NAME" :PACKAGE-NAME "BORDEAUX-THREADS" :EXTERNALP T)))))

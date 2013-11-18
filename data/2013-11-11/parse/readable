@@ -1,0 +1,6 @@
+
+(:TYPE :SYSTEM :NAME "readable" :AUTHOR "David A. Wheeler" :MAINTAINER
+ "David A. Wheeler" :VERSION "1.0.0" :LICENCE "MIT" :DESCRIPTION
+ "Support 'readable' extensions to Lisp s-expressions" :LONG-DESCRIPTION
+ "Common Lisp implementation of 'readable' extensions to Lisp s-expresions - curly-infix-expressions, neoteric-expressions, and sweet-expressions, per http://readable.sourceforge.net.  This can be useful if you want your Lisp code to be easier to read."
+ :DEPENDS-ON NIL :PACKAGE-LIST NIL)

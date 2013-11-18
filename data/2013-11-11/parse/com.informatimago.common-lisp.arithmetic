@@ -1,0 +1,344 @@
+
+(:TYPE :SYSTEM :NAME "com.informatimago.common-lisp.arithmetic" :AUTHOR
+ "Pascal J. Bourguignon <pjb@informatimago.com>" :MAINTAINER
+ "Pascal J. Bourguignon <pjb@informatimago.com>" :VERSION "1.2.1" :LICENCE
+ "AGPL3" :DESCRIPTION "Arithmetic tools, primes, factorization."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("com.informatimago.common-lisp.cesarum")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME ".PRIMES" :FULL-NAME
+   "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :DOCUMENTATION "
+
+Compute primes and factorize numbers.
+
+
+License:
+
+    AGPL3
+    
+    Copyright Pascal J. Bourguignon 2003 - 2012
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+    
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>
+"
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPUTE-PRIMES-TO" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL))
+     :DOCUMENTATION "
+DO:     Compute an Eratostene sieve to find all prime numbers up to N.
+RETURN: An array of prime numbers.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FACTORIZE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PRIMES" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "
+N:        an INTEGER
+PRIMES:   a VECTOR of prime factors sorted in increasing order.
+RETURN:   a SEXP of the form: (* uncomensurate-factor
+                                 [ prime | (EXPT prime exponent) ]… [ -1 ] )
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FACTORIZE-VECTOR" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL)
+      (:NAME "PRIMES" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL))
+     :DOCUMENTATION "
+N:        an INTEGER
+PRIMES:   a VECTOR of prime factors sorted in increasing order.
+RETURN:   a VECTOR of length (1+ (LENGTH PRIMES)), with the uncommensurate
+          factor in the slot 0, and the exponents of the primes in the
+          following slots. (PRIMES could have a 1 in the first slot!)
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRINT-FACTORIZATION" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "EXPONENTS" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL)
+      (:NAME "PRIMES" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL))
+     :DOCUMENTATION "
+EXPONENTS:  A sequence: ( uncommensurate-factor  exponents… )
+PRIMES:     A sequence: ( prime-factors… )
+PRE:        (= (LENGTH EXPONENTS) (1+ (LENGTH PRIMES)))
+DO:         Prints on *STANDARD-OUTPUT* an expression of the number.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STR-ENCODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL)
+      (:NAME "PRIMES" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL))
+     :DOCUMENTATION "
+RETURN:  An integer encoding the string STR factorized with the PRIMES.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STR-DECODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NUM" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL)
+      (:NAME "PRIMES" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP NIL))
+     :DOCUMENTATION "
+RETURN:  A string decoding the integer NUM factorized with the PRIMES.
+"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "COMPUTE-PRIMES-TO" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP T)
+    (:NAME "FACTORIZE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP T)
+    (:NAME "PRINT-FACTORIZATION" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP T)
+    (:NAME "STR-ENCODE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP T)
+    (:NAME "STR-DECODE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.PRIMES" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME ".P127N2" :FULL-NAME
+   "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :DOCUMENTATION "
+
+This module implements routines to compute modulo-2 polynomials 
+in P127[N/2]. (Ensemble de polynômes de degré inférieur ou égal à 127 
+dans l'ensemble quotient N/2 (ensemble des classes d'équivalences 
+modulo 2 dans ℕ)).
+
+
+License:
+
+    AGPL3
+    
+    Copyright Pascal J. Bourguignon 1994 - 2012
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+    
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.
+    If not, see <http://www.gnu.org/licenses/>
+"
+   :SYMBOL-LIST
+   ((:TYPE :TYPE :SYMBOL
+     (:NAME "POLY" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POLY-FROM-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BYTES" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP NIL))
+     :DOCUMENTATION "
+BYTES:   A vector of at least 16 octets, in big endian order.
+         Only the 16 first octets are used.
+RETURN:  The poly stored in the bytes.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POLY-TO-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "POLY" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T))
+     :DOCUMENTATION "
+POLY:    A polynom of degree 127 modulo N/2 (type POLY).
+RETURN:  A vector of 16 octets in big endian order encoding the polynom.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POLY-PRIN1-TO-STRING" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "POLY" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T))
+     :DOCUMENTATION "
+POLY:    A polynom of degree 127 modulo N/2 (type POLY).
+RETURN:  A string containing a human readable representation of the polynom POLY.
+         (it is of the form \"x^M + … + x^m\").
+")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*EVEN-PARITY*" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A vector with all legal even-parity bytes, in 7-bit order."
+     :INITIAL-VALUE
+     "(MAKE-ARRAY 128 :ELEMENT-TYPE '(UNSIGNED-BYTE 8) :INITIAL-CONTENTS
+            '(0 129 130 3 132 5 6 135 136 9 10 139 12 141 142 15 144 17 18 147
+              20 149 150 23 24 153 154 27 156 29 30 159 160 33 34 163 36 165
+              166 39 40 169 170 43 172 45 46 175 48 177 178 51 180 53 54 183
+              184 57 58 187 60 189 190 63 192 65 66 195 68 197 198 71 72 201
+              202 75 204 77 78 207 80 209 210 83 212 85 86 215 216 89 90 219 92
+              221 222 95 96 225 226 99 228 101 102 231 232 105 106 235 108 237
+              238 111 240 113 114 243 116 245 246 119 120 249 250 123 252 125
+              126 255))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ODD-PARITY*" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP NIL)
+     :DOCUMENTATION "A vector with all legal odd-parity bytes, in 7-bit order."
+     :INITIAL-VALUE
+     "(MAKE-ARRAY 128 :ELEMENT-TYPE '(UNSIGNED-BYTE 8) :INITIAL-CONTENTS
+            '(128 1 2 131 4 133 134 7 8 137 138 11 140 13 14 143 16 145 146 19
+              148 21 22 151 152 25 26 155 28 157 158 31 32 161 162 35 164 37 38
+              167 168 41 42 171 44 173 174 47 176 49 50 179 52 181 182 55 56
+              185 186 59 188 61 62 191 64 193 194 67 196 69 70 199 200 73 74
+              203 76 205 206 79 208 81 82 211 84 213 214 87 88 217 218 91 220
+              93 94 223 224 97 98 227 100 229 230 103 104 233 234 107 236 109
+              110 239 112 241 242 115 244 117 118 247 248 121 122 251 124 253
+              254 127))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVEN-PARITY" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "
+RETURN: The BYTE with the parity bit set to even parity.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ODD-PARITY" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "
+RETURN: The BYTE with the parity bit set to odd parity.
+
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-BIT7" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "POLY" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T))
+     :DOCUMENTATION "
+POLY:    A polynom of degree 127 modulo N/2 (type POLY).
+DO:      Modifies POLY, removing the 7th bit.
+RETURN:  POLY
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSERT-BIT7" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "POLY" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T))
+     :DOCUMENTATION "
+POLY:    A polynom of degree 127 modulo N/2 (type POLY).
+DO:      Inserts into the POLY a 7th bit that is the even parity of the lowest 7 bits.
+RETURN:  POLY
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD32" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "POLY" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+      (:NAME "GG" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP NIL))
+     :DOCUMENTATION "
+POLY:    A polynom of degree 127 modulo N/2 (type POLY).
+GG:      A polynom of degree 32 modulo N/2 (type (unsigned-byte 32)).
+DO:      Adds the polynom GG to POLY.
+RETURN:  The modified POLY.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MULTIPLY32" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "POLY" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+      (:NAME "GG" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP NIL))
+     :DOCUMENTATION "
+POLY:    A polynom of degree 127 modulo N/2 (type POLY).
+GG:      A polynom of degree 32 modulo N/2 (type (unsigned-byte 32)).
+DO:      Multiplies the polynom POLY by GG.
+RETURN:  The modified POLY.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%DIVISION" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "POLY" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+      (:NAME "GG" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DIVIDE32" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "POLY" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+      (:NAME "GG" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP NIL))
+     :DOCUMENTATION "
+POLY:    A polynom of degree 127 modulo N/2 (type POLY).
+GG:      A polynom of degree 32 modulo N/2 (type (unsigned-byte 32)).
+DO:      Divides the polynom POLY by GG.
+RETURN:  POLY; the remainder (unsigned-byte 32)..
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMAINDER32" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "POLY" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+      (:NAME "GG" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP NIL))
+     :DOCUMENTATION "
+POLY:    A polynom of degree 127 modulo N/2 (type POLY).
+GG:      A polynom of degree 32 modulo N/2 (type (unsigned-byte 32)).
+RETURN:  the remainder (unsigned-byte 32) of POLY divided by GG.
+NOTE:    Doesn't modify POLY.
+"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "EVEN-PARITY" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "ADD32" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "POLY-PRIN1-TO-STRING" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "POLY-FROM-BYTES" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "MULTIPLY32" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "POLY" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "REMOVE-BIT7" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "POLY-TO-BYTES" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "INSERT-BIT7" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "REMAINDER32" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "ODD-PARITY" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)
+    (:NAME "DIVIDE32" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.ARITHMETIC.P127N2" :EXTERNALP T)))))

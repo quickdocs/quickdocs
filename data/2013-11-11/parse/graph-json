@@ -1,0 +1,187 @@
+
+(:TYPE :SYSTEM :NAME "graph-json" :AUTHOR
+ ("Eric Schulte <schulte.eric@gmail.com>" "Thomas Dye") :MAINTAINER NIL
+ :VERSION "0.0.0" :LICENCE "GPL V3" :DESCRIPTION
+ "Serialize graphs to/from json with D3 format support." :LONG-DESCRIPTION NIL
+ :DEPENDS-ON
+ ("ALEXANDRIA" "METABANG-BIND" "CURRY-COMPOSE-READER-MACROS" "GRAPH" "YASON")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "GRAPH-JSON" :FULL-NAME "GRAPH-JSON" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "JSON-TO-PLIST" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "INPUT" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION "Parse string or stream INPUT into a plist.")
+    (:TYPE :METHOD :SYMBOL (:NAME "ENCODE" :PACKAGE-NAME "YASON" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "*STANDARD-OUTPUT*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TO-JSON" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NODE-FN" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL)
+      (:NAME "EDGE-FN" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION "Write a JSON encoding of GRAPH to STREAM.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TO-JSON" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "*STANDARD-OUTPUT*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "NODE-FN" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL)
+      (:NAME "EDGE-FN" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INTERN-STRING-NODES" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "PLIST" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FROM-JSON" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T))
+      (:NAME "INPUT" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION "Parse string or stream INPUT into GRAPH.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PLIST-TO-D3" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "PLIST" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION "Convert plist graph encoding PLIST to D3 format.
+Note that D3 only handles 2-node edges, so extra nodes in edges will
+be silently dropped.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "D3-TO-PLIST" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "PLIST" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION "Convert D3 format PLIST to graph encoding.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TO-D3" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "GROUP-FN" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION "Return a JSON encoding of GRAPH formatted for D3.
+Edges should have numeric values which d3 will translate into their
+width.  Optional keyword argument GROUP-FN should be a function from
+nodes to group numbers.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TO-D3" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "*STANDARD-OUTPUT*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "GROUP-FN" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "FROM-D3" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T)
+      (:NAME "INPUT" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION "Parse a D3 format string or stream INPUT into GRAPH.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FROM-D3" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T))
+      (:NAME "INPUT" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TO-HTML" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "GROUP-FN" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION "Write GRAPH to an HTML file.
+The resulting HTML file will display an interactive version of GRAPH.
+Uses `to-d3' to first encode the graph as JSON which is embedded in
+the HTML page.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "TO-HTML" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T)
+       (:NAME "GRAPH" :PACKAGE-NAME "GRAPH" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "*STANDARD-OUTPUT*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "GROUP-FN" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "D3-HTML" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE "\"<!DOCTYPE html>
+<!-- Taken from http://bl.ocks.org/4062045 -->
+<html>
+  <style>
+    .node { stroke: #fff; stroke-width: 1.5px; }
+    .link { stroke: #999; stroke-opacity: .6; }
+  </style>
+  <body>
+    <script src=\\\"http://d3js.org/d3.v3.min.js\\\"></script>
+    <script>
+
+      var width = \\\"innerWidth\\\" in window 
+               ? window.innerWidth
+               : document.documentElement.offsetWidth;
+
+      var height = \\\"innerHeight\\\" in window 
+               ? window.innerHeight
+               : document.documentElement.offsetHeight;
+
+      var color = d3.scale.category20();
+
+      var force = d3.layout.force()
+      .charge(-120)
+      .linkDistance(30)
+      .size([width, height]);
+
+      var svg = d3.select(\\\"body\\\").append(\\\"svg\\\")
+      .attr(\\\"width\\\", width)
+      .attr(\\\"height\\\", height);
+
+      var ingest = function(graph) {
+      force
+      .nodes(graph.nodes)
+      .links(graph.links)
+      .start();
+
+      var link = svg.selectAll(\\\".link\\\")
+      .data(graph.links)
+      .enter().append(\\\"line\\\")
+      .attr(\\\"class\\\", \\\"link\\\")
+      .style(\\\"stroke-width\\\", function(d) { return Math.sqrt(d.value); });
+
+      var node = svg.selectAll(\\\".node\\\")
+      .data(graph.nodes)
+      .enter().append(\\\"circle\\\")
+      .attr(\\\"class\\\", \\\"node\\\")
+      .attr(\\\"r\\\", 5)
+      .style(\\\"fill\\\", function(d) { return color(d.group); })
+      .call(force.drag);
+
+      node.append(\\\"title\\\")
+      .text(function(d) { return d.name; });
+
+      force.on(\\\"tick\\\", function() {
+      link.attr(\\\"x1\\\", function(d) { return d.source.x; })
+      .attr(\\\"y1\\\", function(d) { return d.source.y; })
+      .attr(\\\"x2\\\", function(d) { return d.target.x; })
+      .attr(\\\"y2\\\", function(d) { return d.target.y; });
+
+      node.attr(\\\"cx\\\", function(d) { return d.x; })
+      .attr(\\\"cy\\\", function(d) { return d.y; });
+      });
+      };
+
+      ingest(~a);
+
+    </script>
+  </body>
+</html>
+\""))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "FROM-D3" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T)
+    (:NAME "TO-JSON" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T)
+    (:NAME "FROM-JSON" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T)
+    (:NAME "TO-D3" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T)
+    (:NAME "TO-HTML" :PACKAGE-NAME "GRAPH-JSON" :EXTERNALP T)))))

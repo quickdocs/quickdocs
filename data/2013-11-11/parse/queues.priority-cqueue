@@ -1,0 +1,5 @@
+
+(:TYPE :SYSTEM :NAME "queues.priority-cqueue" :AUTHOR "Eric O'Connor"
+ :MAINTAINER "Eric O'Connor" :VERSION "1.0.0" :LICENCE "MIT" :DESCRIPTION
+ "A thread safe fibonacci priority queue" :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("QUEUES" "QUEUES.PRIORITY-QUEUE" "BORDEAUX-THREADS") :PACKAGE-LIST NIL)

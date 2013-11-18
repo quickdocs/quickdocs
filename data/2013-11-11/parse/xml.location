@@ -1,0 +1,2033 @@
+
+(:TYPE :SYSTEM :NAME "xml.location" :AUTHOR
+ "Jan Moringen <jmoringe@techfak.uni-bielefeld.de>" :MAINTAINER
+ "Jan Moringen <jmoringe@techfak.uni-bielefeld.de>" :VERSION "0.2.0" :LICENCE
+ "LLGPLv3; see COPYING file for details." :DESCRIPTION
+ "This system provides a convenient interface for
+ manipulating XML data. It is inspired by the xmltio library."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("ALEXANDRIA" "SPLIT-SEQUENCE" "ITERATE" "(VERSION LET-PLUS 0.2)"
+  "MORE-CONDITIONS" "CLOSER-MOP" "CXML-STP" "XPATH")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME ".COMPAT" :FULL-NAME "XML.LOCATION.COMPAT"
+   :DOCUMENTATION "Internal compatibility package." :SYMBOL-LIST
+   ((:TYPE :TYPE :SYMBOL
+     (:NAME "SUPERCLASS-SPEC-SIMPLE" :PACKAGE-NAME "XML.LOCATION.COMPAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "SUPERCLASS-SPEC-START" :PACKAGE-NAME "XML.LOCATION.COMPAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "SUPERCLASS-SPEC-END" :PACKAGE-NAME "XML.LOCATION.COMPAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "SUPERCLASS-SPEC" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-DYNAMIC-CLASS-FAMILY" :PACKAGE-NAME "XML.LOCATION.COMPAT"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOC-AND-OPTIONS" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Define a family of classes in the category NAME. Classes in the
+family are fully specified by their respective sets of
+superclasses. No further structure is added.
+
+For a family named NAME, the following things are defined:
++ *NAME-classes*         [variable]
++ make-NAME-class        [generic function]
+  + make-NAME-class list [method]
++ ensure-NAME-class      [function]
++ NAME-classes           [function]
+
+Unless the :package option is supplied, all names will be interned in
+NAME's package. Using the :package option, a different package can be
+specified. When supplied, the value of the :package option is
+evaluated.
+
+Valid options and their respective defaults are:
++ package             [(package-name (symbol-package name))]
+  The package in which defined variables and functions will be placed.
++ metaclass           ['standard-class]
+  The metaclass that should be used for classes in the family.
++ common-superclasses [nil]
+  A list of superclasses that should be added to all classes in the
+  family. List elements can either be classes or lists of the
+  form (PLACEMENT CLASS) where PLACEMENT is either :start or :end and
+  CLASS is a class. PLACEMENT controls where a superclass is inserted
+  into the list of superclasses. The default placement is :end.
++ sort-mixins?        [nil]
+  If non-nil, the list of mixin classes is sorted (according to their
+  `class-name's as strings) prior to looking for or creating a dynamic
+  class.
+
+Generated documentation is available for the symbol NAME using
+type :dynamic-class-family.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-FIND-CLASS" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "CLASS-OR-NAME" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%PARSE-DOC-AND-OPTIONS" :PACKAGE-NAME "XML.LOCATION.COMPAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DOC-AND-OPTIONS" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Parse DOC-AND-OPTIONS which is expected to be a list of the form
+([DOC] (:NAME VALUE)*).
+Return a list of the form
+(DOC :NAME1 VALUE1 ...)
+in which DOC may be nil.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%ENSURE-CLASS-NAME" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "CLASS-OR-NAME" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%MAKE-KEY/SORTED" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "MIXINS" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Return a key for the dynamic class described by MIXINS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%MAKE-KEY/UNSORTED" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "MIXINS" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Return a key for the dynamic class described by MIXINS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%PROCESS-SUPERCLASS-SPECS" :PACKAGE-NAME "XML.LOCATION.COMPAT"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SPECS" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Parse superclass specs SPECS and return two values: superclasses
+that should be inserted at the start of the list of direct
+superclasses and superclasses that should inserted at the end of the
+list of direct superclasses."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "DEFINE-DYNAMIC-CLASS-FAMILY" :PACKAGE-NAME "XML.LOCATION.COMPAT"
+     :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME "XML.LOCATION" :FULL-NAME "XML.LOCATION" :DOCUMENTATION
+   "This package contains the public interface of the cmxl-location
+system. The main entry point is the generic function `loc', which
+creates `location' instances from XML documents and XPaths. The
+resulting objects can be queried and modified using the location-*
+accessors and the generic functions `name', `val' and `@'."
+   :SYMBOL-LIST
+   ((:TYPE :TYPE :SYMBOL
+     (:NAME "IF-NO-MATCH-POLICY-DESIGNATOR" :PACKAGE-NAME "XML.LOCATION"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "IF-MULTIPLE-MATCHES-POLICY-DESIGNATOR" :PACKAGE-NAME
+      "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "ASSIGN-MODE-DESIGNATOR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "XML->-CONVERSION-ERROR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-CONTROL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal an `xml->-conversion-error' with data VALUE and TYPE and
+optional FORMAT-CONTROL and FORMAT-ARGUMENTS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "->XML-CONVERSION-ERROR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DESTINATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-CONTROL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal an `->xml-conversion-error' with data VALUE, TYPE and
+DESTINATION and optional FORMAT-CONTROL and FORMAT-ARGUMENTS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%LOCATION-ERROR-DOCUMENT-STRING" :PACKAGE-NAME "XML.LOCATION"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Return a serialization of the XML document associated with
+CONDITION.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%ADD-AVAILABLE-CONVERSION-METHODS" :PACKAGE-NAME "XML.LOCATION"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONDITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Print a list of methods of the generic function associated to
+CONDITION onto STREAM.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%ADD-AVAILABLE-CONVERSION-METHODS-FOR-FUNCTION" :PACKAGE-NAME
+      "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Format the list of methods of the generic function designated by
+NAME onto STREAM. ")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CL-NAMESPACES*" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :DOCUMENTATION
+     "Namespace list with a made-up Common Lisp namespace. This namespace
+should be used when Common Lisp-specific data has to be stored in XML
+documents in order to represent objects without loss of information."
+     :INITIAL-VALUE
+     "'(XML.LOCATION:&DEFAULT (\"cl\" . \"http://common-lisp.net\"))")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "LOCATION-DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION "Return the document (an stp:node instance) associated to
+LOCATION.")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION-DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION
+     "Set NEW-VALUE as LOCATION's associated document. NEW-VALUE has to
+be an stp:node instance.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "LOCATION-PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION "Return the XPath of LOCATION.")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION-PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION
+     "Set NEW-VALUE as LOCATION's associated XPath. NEW-VALUE has to be
+a string.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "LOCATION-RESULT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION
+     "Return the node or node set that has been produced by evaluating
+LOCATION's associated XPath on LOCATION's associated document.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "LOCATION-ATTRIBUTE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Return the attribute(s) designated by NAME in LOCATION.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "COMPILE!" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION "Compile XPath associated to LOCATION.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "EVALUATE!" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION
+     "Evaluate XPath associated to LOCATION on the document associated
+to LOCATION.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAYBE-DECODE-QNAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION
+     "If NAME is qualified, decode it into local-name prefix and uri
+using the configured namespaces of LOCATION. Return the components as
+multiple value. If NAME is not qualified, the secondary and tertiary
+values are both nil.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREFIX?" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION "Return the name of the node represented by LOCATION.
+If PREFIX? is non-nil, the concatenation of the prefix and the local
+name is returned.")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION "Set NEW-VALUE as the local name of the node represented by
+LOCATION. If NEW-VALUE is a qualified name of the form
+PREFIX:LOCAL-NAME, LOCATION has to have an entry for PREFIX in its
+namespace table.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Return the value of the node represented by LOCATION. If TYPE is
+supplied, a type conversion may be performed. When LOCATION represents
+an element node, TYPE has to be supplied. For attribute and text
+nodes, the text value is returned in that case.")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Set NEW-VALUE as the value of the node represented by LOCATION. If
+TYPE is supplied, a type conversion may be performed prior to
+assigning the value. When LOCATION represents an element node, TYPE
+has to be supplied. For attribute and text nodes, NEW-VALUE has to be
+a string in that case.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Return the value of the attribute named NAME of the node
+represented by LOCATION. If TYPE is supplied, a type conversion may be
+performed. LOCATION has to represent an element node. If NAME is a
+qualified name of the form PREFIX:LOCAL-NAME, LOCATION has to contain
+an entry for PREFIX in its namespace table.")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Set NEW-VALUE as the value of the attribute named NAME of the node
+represented by LOCATION. If TYPE is supplied, a type conversion may be
+performed prior to assigning the value. LOCATION has to represent an
+element node. If NAME is a qualified name of the form
+PREFIX:LOCAL-NAME, LOCATION has to contain an entry for PREFIX in its
+namespace table.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LOCATION-CLASSES*" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :DOCUMENTATION "Association of lists of mixins to previously created
+classes."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :TEST 'EQUAL)")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAKE-LOCATION-CLASS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "MIXINS" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Dynamically make a class composed of MIXINS.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-LOCATION-CLASS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "MIXINS" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAKE-LOCATION-CLASS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "MIXINS" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-LOCATION-CLASS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "MIXINS" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP NIL))
+     :DOCUMENTATION "Find or make the dynamic class composed of MIXINS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLEAR-LOCATION-CLASSES!" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Clear all previously defined dynamic classes.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LOCATION-CLASSES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Return list of all classes in the family.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DOCUMENTATION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THING" :PACKAGE-NAME "XML.LOCATION.COMPAT" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DYNAMIC-CLASS-FAMILY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "LOC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAMESPACES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "IF-NO-MATCH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "IF-MULTIPLE-MATCHES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "ASSIGN-MODE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Construct and return a new location object that represents the
+nodes resulting from applying the XPath PATH to the XML document
+DOCUMENT. ARGS are passed to the `make-instance' call that creates a
+`location' instance.
+
+NAMESPACES can be an alist of the form
+
+  ((PREFIX . NAMESPACE)*)
+
+that specifies XML namespaces that should be made available in PATH.
+
+IF-NO-MATCH specifies the policy for dealing with the situation that
+the node set produced by evaluating PATH on DOCUMENT is empty. Valid
+values:
+
+:error (the default)
+
+  Signal an `empty-result-set' error.
+
+:create
+
+  Try to create a location which matches PATH in DOCUMENT, then return
+  the created location.
+
+:do-nothing.
+
+  Return a location object that does not have an associated location
+  in document.
+
+IF-MULTIPLE-MATCHES specifies the policy for dealing with the
+situation that the node set produced by evaluating PATH on DOCUMENT
+consists of multiple nodes. Valid values are:
+
+:error (the default)
+
+  Signal a `too-many-matches-in-result-set' error.
+
+:first
+
+  Return a location object corresponding to the first location in
+  DOCUMENT which matches PATH.
+
+:any
+
+  Return a location object corresponding to an arbitrary location in
+  DOCUMENT which matches PATH.
+
+:last.
+
+  Return a location object corresponding to the last location in
+  DOCUMENT which matches PATH.
+
+:all
+
+  Return a location object corresponding to the set of matching
+  locations. Operations on the location object affect all locations
+  simultaneously.
+
+ASSIGN-MODE specifies the semantics of assigning values to `val'
+places of the location:
+
+:set
+
+  An assigned value replaces the previous value.
+
+:append
+
+  Subsequently assigned values are stored in newly appended sibling
+  locations.
+
+The type of the returned `location' instance can depend on the
+arguments but is a sub-type of `location'.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INNER-TYPES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION "Convert VALUE to the type designated by TYPE and, possibly
+INNER-TYPES. The result of the conversion is returned.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INNER-TYPES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Convert VALUE to a suitable type and store the result of the
+conversion in the XML node DEST. Should return VALUE.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INNER-TYPES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INNER-TYPES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-XPATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION "Ensure that the nodes referenced in PATH actually exist in
+DOCUMENT, creating them if necessary.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-XPATH-SIBLING" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION "Create a \"sibling\" path of PATH by duplicating the node
+designated by PATH and appending the result to the children of the
+parent of the node designated by PATH.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+      (:NAME "PREDICATE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Create the XPath element designated by TYPE, NAME and PREDICATE in
+LOCATION.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Parse XPath and process parsed representation.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Walk along XPath PATH in DOCUMENT, creating missing nodes as they
+are encountered. ")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-SIBLING" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Parse XPath and process parsed representation.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-SIBLING" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Potentially create XPath PATH in DOCUMENT except for the final
+element. Then unconditionally create a node matching the final element
+of PATH.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NO-APPLICABLE-METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FUCTION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "FDEFINITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+          (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+           NIL)))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION "Signal an error if no `create-xpath-element' method is
+applicable.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHILD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NODE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "PREDICATE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHILD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      ((:NAME "PREDICATE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHILD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TEXT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "PREDICATE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHILD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PREDICATE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHILD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PREDICATE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "INTEGER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHILD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PREDICATE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHILD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PREDICATE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHILD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PREDICATE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION "Create a child node satisfying PREDICATE.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CREATE-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "ATTRIBUTE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PREDICATE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION "Create an attribute node at LOCATION.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%EXPAND-XPATH-ELEMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "When necessary, pad the list SPEC with nil elements such that its
+length becomes 3.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "A location consists of an XML document and an XPath that refers to
+nodes in the document. Technically the location uses the node set
+resulting from evaluating the XPath on the document as a concrete
+representation of this relation. Operation on the location are carried
+out on the node or nodes of the node set."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "LOCATION-DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The XML document to which the location refers.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAMESPACES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "LOCATION-NAMESPACES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+         T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "An alist of namespaces that should be available in
+the XPath of the location.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "LOCATION-PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "An XPath that selects nodes in the document of the
+location.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COMPILED-PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "LOCATION-COMPILED-PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Compiled version of the XPath of the location.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "RESULT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "LOCATION-RESULT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION
+       "The node-set produced by evaluating the XPath of
+the location to the document of the location.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAMESPACES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION-DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Reset computed result of LOCATION when the document is changed.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION-NAMESPACES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Reset computed result of LOCATION when namespaces are changed.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION-PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Reset computed result of LOCATION when the path is changed.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION-COMPILED-PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+       NIL))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION "Reset computed result of LOCATION when the compiled path is
+changed.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCATION-ATTRIBUTE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Handle qualified attribute names.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPILE!" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION "Check whether the XPath source is available.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COMPILE!" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION "Compile the XPath and store the result.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EVALUATE!" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Evaluate the XPath on the document and store the resulting node
+set.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAYBE-DECODE-QNAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "If NAME is qualified, decode it into local-name prefix and uri
+using the configured namespaces of LOCATION. Return the components as
+multiple value. If NAME is not qualified, the secondary and tertiary
+values are both nil.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Determine whether NEW-VALUE is qualified and call and appropriate
+next method.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%MAYBE-ADD-DEFAULT-NAMESPACES" :PACKAGE-NAME "XML.LOCATION"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAMESPACES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Add default namespaces as defined by `xpath::*dynamic-namespaces*'
+to NAMESPACES.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION
+     "This location class consists of an XML document along with an
+XPath that produces exactly one match in the document."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "IF-NO-MATCH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Policy for the situation that the XPath
+evaluates to an empty node set.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "IF-MULTIPLE-MATCHES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+        NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "LOCATION-IF-MULTIPLE-MATCHES" :PACKAGE-NAME "XML.LOCATION"
+         :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION "Policy for the situation that the XPath
+evaluates to a node set that consists of more than one nodes.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EVALUATE!" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREFIX?" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ANY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCATION-ATTRIBUTE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCATION-ATTRIBUTE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "URI" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL) ""))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :DOCUMENTATION
+     "Instances of this class represent and operate on a set of XPath
+matches in a single document simultaneously."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREFIX?" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ANY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ANY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCATION-ATTRIBUTE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "URI" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "IGNORE-EMPTY-RESULT-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "This mixin class adds the behavior of turning the methods `name',
+`val' and `@' (and their `setf' variants) into no-ops if the result
+set is empty."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "IGNORE-EMPTY-RESULT-MIXIN" :PACKAGE-NAME "XML.LOCATION"
+        :EXTERNALP NIL))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "IGNORE-EMPTY-RESULT-MIXIN" :PACKAGE-NAME "XML.LOCATION"
+        :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "IGNORE-EMPTY-RESULT-MIXIN" :PACKAGE-NAME "XML.LOCATION"
+        :EXTERNALP NIL))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "IGNORE-EMPTY-RESULT-MIXIN" :PACKAGE-NAME "XML.LOCATION"
+        :EXTERNALP NIL))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "IGNORE-EMPTY-RESULT-MIXIN" :PACKAGE-NAME "XML.LOCATION"
+        :EXTERNALP NIL))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "IGNORE-EMPTY-RESULT-MIXIN" :PACKAGE-NAME "XML.LOCATION"
+        :EXTERNALP NIL))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "CREATE-MISSING-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "This class adds the automatic creation of XML nodes that are
+references in the path but missing in the document to location
+classes."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "INSTANCE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "CREATE-MISSING-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION"
+        :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCATION-ATTRIBUTE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "CREATE-MISSING-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION"
+        :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "URI" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "APPEND-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "This mixin changes the default replacing assignment behavior to an
+appending assignment behavior. That is, assignments to the `val' place
+of locations create siblings of the node designated by the final XPath
+component and assign values to these new nodes."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "APPEND-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ANY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "APPEND-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ANY" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "APPEND-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Sibling creation invalidates our previous XPath evaluation result,
+so we have to re-evaluate.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+     :LAMBDA-LIST
+     (((:NAME "NEW-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "APPEND-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCATION-ATTRIBUTE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "APPEND-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "URI" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NO-APPLICABLE-METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "FDEFINITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+          (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal a conversion error if no applicable conversion method is
+found.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NO-PRIMARY-METHOD" :PACKAGE-NAME "SB-PCL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "FDEFINITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+          (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal a conversion error if no applicable conversion method is
+found.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Intended mainly to catch the case in which TYPE is nil.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Split composite type specification TYPE into head and tail.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Extract text from text node VALUE for further conversion.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Fast-path method for text nodes if TYPE is string.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Extract attribute value from VALUE for further conversion.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Fast-path method for attribute nodes if TYPE is string.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Catch-all method for STP nodes that have no obvious string
+interpretation.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Convert intermediate string VALUE to requested type TYPE.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Fast-path method for string VALUE.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "INNER-TYPES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+       (:NAME "INNER-TYPES-SUPPLIED?" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION
+     "Convert intermediate string VALUE to requested list type TYPE.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Convert string VALUE to a Common Lisp type.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Interpret TYPE as a class name. Try to create an instance and load
+the contents of VALUE into that instance.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Interpret TYPE as a class name. Try to create an instance and load
+the contents of VALUE into that instance.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NO-APPLICABLE-METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "FDEFINITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+          (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal a conversion error if no applicable conversion method is
+found.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NO-PRIMARY-METHOD" :PACKAGE-NAME "SB-PCL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "FDEFINITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+          (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signal a conversion error if no applicable conversion method is
+found.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Intended mainly to catch the case in which TYPE is nil.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Split composite type specification TYPE into head and tail.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Convert VALUE to string and store in DEST.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INNER-TYPES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Convert VALUE to string and store in DEST.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Fast-path method for storing string VALUE into text node DEST.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Convert VALUE to string and store in DEST.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Fast-path method for storing string VALUE into text node DEST.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Catch-all for STP nodes that do not have an obvious string
+interpretation.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Convert VALUE to requested type string by `prin1'ing it.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Fast-path method for string VALUE.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INNER-TYPES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Convert sequence VALUE to string by `format'ting.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "DEST" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Convert VALUE to string by `prin1'ing it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%PARSE-LIST-OF-ATOMS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%SPLIT-AT-WHITESPACE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IF-MULTIPLE-MATCHES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+        NIL)
+       (:NAME "ERROR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "IF-NO-MATCH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "ERROR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "ASSIGN-MODE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "REPLACE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Create a location for DOCUMENT and PATH. The class of the location
+instance is determined based on the values of IF-MULTIPLE-MATCHES and
+IF-NO-MATCH.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Parse DOCUMENT as XML document before constructing the location.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Interpret PATH as compiled XPath, skipping the compilation step.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%COMPUTE-LOCATION-CLASS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IF-MULTIPLE-MATCHES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+        NIL)
+       (:NAME "ERROR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "IF-NO-MATCH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "ERROR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "ASSIGN-MODE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "REPLACE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Compute a location class based on the values of IF-MULTIPLE-MATCHES
+and IF-NO-MATCH. This is a separate function to make it usable in
+compiler macros.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-LOCATIONS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "BINDINGS-AND-OPTIONS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+        NIL))
+      (:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Execute body with certain variables, specified by BINDINGS bound to
+locations in DOCUMENT. DOCUMENT has to be of type
+`stp:document'.
+
+BINDINGS-AND-OPTIONS specifies let-like (generalized) variable
+bindings according to the following syntax:
+BINDINGS  ::= (BINDING* OPTION*)
+BINDING   ::= (VAR-SPEC XPATH [ARG*])
+VAR-SPEC  ::= NAME-SPEC | VAL-SPEC | @-SPEC | LOC-SPEC
+NAME-SPEC ::= (:name SYMBOL [:prefix? BOOL])
+VAL-SPEC  ::= SYMBOL | (:val SYMBOL [:type TYPE])
+@-SPEC    ::= (:@ @-NAME [:type TYPE])
+@-NAME    ::= SYMBOL | (SYMBOL \"STRING\")
+LOC-SPEC  ::= (:loc SYMBOL)
+OPTION    ::= KEY VALUE
+
+In all cases, SYMBOL is the name of the generalized variable that is
+created by the binding. If the (SYMBOL \"STRING\") form of @-NAME is
+used, STRING specifies the name of the attribute independently of the
+variable name, otherwise the name of attribute is computed as (string
+SYMBOL).
+
+Instead of the keywords :name, :val and :@ symbols of the same name in
+the xml.location package can be used.
+
+Example:
+XLOC> (xloc:with-locations-r/o
+          (((:@ (description-brief \"brief\")) \"package/description\")
+           (description-long                \"package/description/text()\")
+           (author                           \"package/author/text()\")
+           (dependencies                     \"package/depend/@package\"
+                                       :if-multiple-matches :all)
+           (build-dependencies               \"package/rosbuild2/depend/@package\"
+                                       :if-multiple-matches :all)
+           ((:val messages :type 'list)      \"package/rosbuild2/msgs/text()\")
+           ((:val services :type 'list)      \"package/rosbuild2/srvs/text()\")) doc
+        (values author messages))
+=> \"Joe User\" '(\"msg/bla.msg\")")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-LOCATIONS-R/O" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "BINDINGS-AND-OPTIONS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+        NIL))
+      (:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like `with-locations', but binding places are not `setf'-able.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%MAKE-LOCATION-AND-PLACE-FORMS" :PACKAGE-NAME "XML.LOCATION"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "BINDINGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "GLOBAL-ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "WRITABLE?" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Generate location and place forms for DOCUMENT and BINDINGS.
+When WRITABLE? is non-nil, locations are created in the document if
+necessary. Return two values:
++ A list of location forms
++ A list of place forms")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%MAKE-LOCATION-FORM" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Make a form that creates the `location' instance for DOCUMENT, PATH
+and ARGS. Return two values:
++ a symbol for the variable that will hold the location instance
++ a form that should be evaluated to compute the location instance or
+  nil, if a location variable emitted earlier can be reused.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INNER-SPECS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INNER-SPECS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       (:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "LOC" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION-VAR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "INNER-SPECS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NAME" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION-VAR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "INNER-SPECS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "VAL" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION-VAR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "INNER-SPECS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "@" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION-VAR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "INNER-SPECS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%PARSE-ACCESS-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T))))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%PARSE-BINDINGS-AND-OPTIONS" :PACKAGE-NAME "XML.LOCATION"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BINDINGS-AND-OPTIONS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Separate BINDINGS-AND-OPTIONS into binding forms and
+options. Return two values: the collected binding forms and a plist
+containing the collected options.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%SIGNAL-NO-SUCH-ACCESSOR-FORM" :PACKAGE-NAME "XML.LOCATION"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL)
+      (:NAME "ARGS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "CONVERSION-ERROR-FUNCTION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "INVALID-BINDING-FORM-SPEC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "WITH-LOCATIONS-R/O" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "->XML" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "LOCATION-ERROR-PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "NO-->XML-CONVERSION-METHOD" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "&DEFAULT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "EMPTY-RESULT-SET" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "CONVERSION-ERROR-VALUE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "RESULT-CONDITION-RESULT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "INVALID-BINDING-FORM" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "VAL" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "SINGLETON-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "CONVERSION-ERROR-DESTINATION" :PACKAGE-NAME "XML.LOCATION"
+     :EXTERNALP T)
+    (:NAME "INVALID-RESULT-TYPE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "MULTI-LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "LOC" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "LOCATION-CLASSES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "LOCATION-ERROR-DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "LOCATION-PATH" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "XPATH-CREATION-ERROR-PREDICATE" :PACKAGE-NAME "XML.LOCATION"
+     :EXTERNALP T)
+    (:NAME "XPATH-CREATION-ERROR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "MAKE-LOCATION-CLASS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "APPEND-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "LOCATION-RESULT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "CREATE-MISSING-NODES-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "LOCATION-NAMESPACES" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "XPATH-CREATION-ERROR-NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "LOCATION-DOCUMENT" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "NO-XML->-CONVERSION-METHOD" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "XML->" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "LOCATION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "TOO-MANY-MATCHES-IN-RESULT-SET" :PACKAGE-NAME "XML.LOCATION"
+     :EXTERNALP T)
+    (:NAME "INVALID-BINDING-FORM-NAME" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "CONVERSION-ERROR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "@" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "ENSURE-LOCATION-CLASS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "IGNORE-EMPTY-RESULTS-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "*CL-NAMESPACES*" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "XPATH-CREATION-ERROR-TYPE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "XPATH-CREATION-ERROR-LOCATION" :PACKAGE-NAME "XML.LOCATION"
+     :EXTERNALP T)
+    (:NAME "CONVERSION-ERROR-TYPE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "WITH-LOCATIONS" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "NO-CONVERSION-METHOD-MIXIN" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "INVALID-BINDING-FORM-FORM" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)
+    (:NAME "NO-SUCH-ACCESSOR-FORM" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "LOCATION-ERROR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "RESULT-CONDITION" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "MISSING-XPATH-SOURCE" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "->XML-CONVERSION-ERROR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP T)
+    (:NAME "XML->-CONVERSION-ERROR" :PACKAGE-NAME "XML.LOCATION" :EXTERNALP
+     T)))))

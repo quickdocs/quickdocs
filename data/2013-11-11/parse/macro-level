@@ -1,0 +1,16 @@
+
+(:TYPE :SYSTEM :NAME "macro-level" :AUTHOR
+ "Jean-Philippe Paradis <hexstream@gmail.com>" :MAINTAINER NIL :VERSION "1.0.1"
+ :LICENCE "Public Domain" :DESCRIPTION
+ "MACRO-LEVEL is an embarassingly trivial convenience macro that saves on indentation while being more concise and direct. (macro-level ...) == (macrolet ((m () ...)) (m))"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "MACRO-LEVEL" :FULL-NAME "MACRO-LEVEL" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :MACRO :SYMBOL
+     (:NAME "MACRO-LEVEL" :PACKAGE-NAME "MACRO-LEVEL" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "MACRO-LEVEL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "MACRO-LEVEL" :PACKAGE-NAME "MACRO-LEVEL" :EXTERNALP T)))))

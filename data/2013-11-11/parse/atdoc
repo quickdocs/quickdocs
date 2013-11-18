@@ -1,0 +1,390 @@
+
+(:TYPE :SYSTEM :NAME "atdoc" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL :LICENCE
+ NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CXML" "SPLIT-SEQUENCE" "SWANK" "XURIELLA" "CLOSER-MOP" "CL-PPCRE")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "ATDOC" :FULL-NAME "ATDOC" :DOCUMENTATION
+   "@a[http://www.lichteblau.com/atdoc/]{Atdoc}
+    generates documentation for Common Lisp packages.
+
+    It extracts documention strings
+    written using a custom markup language and generates HTML pages or
+    TeX documents.
+
+    @begin[Generating formatted documentation]{section}
+    Separate functions are offered for each output format:
+    HTML pages, LaTeX/PDF output, and .info files.  There is also an
+    older function called generate-documentation, which in now an
+    alias for generate-html-documentation.
+
+    @aboutfun{generate-html-documentation}
+    @aboutfun{generate-latex-documentation}
+    @aboutfun{generate-info-documentation}
+    @aboutfun{generate-documentation}
+    @end{section}
+
+    @begin[Generating unformatted XML]{section}
+    Power users might want to extract docstrings into XML and then
+    send that XML through their own XSLT stylesheets.  The following
+    function can be used for that purpose.
+
+    @aboutfun{extract-documentation}
+    @end{section}"
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "FUNCTION-ARGLIST" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "FUN" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAGIC-NAMESTRING" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "FILE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RUN-SHELL-COMMAND" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DIRECTORY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OUTPUT" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "COMMAND" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*STYLESHEETS*" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FLUSH-CACHE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GROVEL-STYLESHEET-DEPENDENCIES" :PACKAGE-NAME "ATDOC" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAMESTRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-STYLESHEET" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAMESTRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "APPLY-STYLESHEET-CHAIN" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "INPUT" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "STYLESHEETS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "OUTPUT" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-FILE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "A" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "B" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IF-EXISTS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+       (:NAME "ERROR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*INCLUDE-SLOT-DEFINITIONS-P*" :PACKAGE-NAME "ATDOC" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-DOCUMENTATION" :PACKAGE-NAME "ATDOC" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PACKAGES" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "DIRECTORY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INCLUDE-SLOT-DEFINITIONS-P" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[packages]{List of package designators.
+     Documentation will be generated for these packages.}
+   @arg[directory]{A pathname specifying a directory.
+     The output file will be written to this directory, which must already
+     exist.}
+   @arg[include-slot-definitions-p]{A boolean.}
+   @arg[keys]{Extra parameters for stylesheets.}
+   Extracts docstrings from @code{packages} and writes them in XML syntax
+   to .atdoc.xml in the specified directory.
+
+   With @code{include-slot-definitions-p}, class documentation will include
+   a list of direct slots.
+
+   Extra parameters will be inserted as attributes on the root element.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GENERATE-DOCUMENTATION" :PACKAGE-NAME "ATDOC" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "A deprecated alias for @fun{generate-html-documentation}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GENERATE-HTML-DOCUMENTATION" :PACKAGE-NAME "ATDOC" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PACKAGES" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "DIRECTORY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "INDEX-TITLE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) "No Title")
+      ((:NAME "HEADING" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) "No Heading")
+      ((:NAME "CSS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) "default.css")
+      ((:NAME "LOGO" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "SINGLE-PAGE-P" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "INCLUDE-SLOT-DEFINITIONS-P" :PACKAGE-NAME "ATDOC" :EXTERNALP
+        NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "INCLUDE-INTERNAL-SYMBOLS-P" :PACKAGE-NAME "ATDOC" :EXTERNALP
+        NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "@arg[packages]{List of package designators.
+     Documentation will be generated for these packages.}
+   @arg[directory]{A pathname specifying a directory.
+     All output files and temporary data will be written
+     to this directory, which must already exist.}
+   @arg[index-title]{This string will be
+     used as the title of the main page, index.html.
+     (Other pages will be named according to the object they are
+     documenting.)}
+   @arg[heading]{This string will be used as a visible title on top of
+     every page.}
+   @arg[logo]{Deprecated.}
+   @arg[css]{A pathname or string pointing to a cascading stylesheet (CSS)
+     file. This file will be copied to the target directory under the name
+     index.css. If this argument is a string and does not start with a dot, it
+     will be taken as namestring relative to the atdoc/css  directory.}
+   @arg[single-page-p]{A boolean.}
+   @arg[include-slot-definitions-p]{A boolean.}
+   @arg[include-internal-symbols-p]{A boolean.}
+   @return{The pathname of the generated file index.xml.}
+   Generates HTML documentation for @code{packages}.
+
+   With @code{single-page-p}, all documentation is assembled as a single
+   page called index.html.  Otherwise, index.html will include only
+   a symbol index and a summary of each package, with links to other pages.
+
+   With include-slot-definitions-p, pages for symbols that are not exported
+   will be included, so that documentation for exported symbols can safely
+   refer to internal pages (but internal symbols will not be included in
+   the symbol index automatically).  This option has no effect if
+   single-page-p is enabled.
+
+   With @code{include-slot-definition}, class documentation will include
+   a list of direct slots.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GENERATE-LATEX-DOCUMENTATION" :PACKAGE-NAME "ATDOC" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PACKAGES" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "DIRECTORY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TITLE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) "No Title")
+      ((:NAME "RUN-TEX-P" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) "pdflatex")
+      ((:NAME "INCLUDE-SLOT-DEFINITIONS-P" :PACKAGE-NAME "ATDOC" :EXTERNALP
+        NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "@arg[packages]{List of package designators.
+     Documentation will be generated for these packages.}
+   @arg[directory]{A pathname specifying a directory.
+     All output files and temporary data will be written
+     to this directory, which must already exist.}
+   @arg[title]{This string will be used as the document's title.}
+   @arg[include-slot-definitions-p]{A boolean.}
+   @arg[run-tex-p]{A boolean.}
+   @return{The pathname of the generated file documentation.pdf, or nil.}
+   Generates TeX documentation for @code{packages}.
+
+   With @code{run-tex-p} (the default), pdflatex is run automatically to
+   generate a PDF file.
+
+   With @code{include-slot-definition}, class documentation will include
+   a list of direct slots.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "XFD-ESCAPE-LATEX-STRING" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "THUNKS-425" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "XFD-BASE-URI" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "THUNKS-448" :PACKAGE-NAME NIL :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MUNGE-NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "KIND" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "KIND" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNEXPORTED-NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SYMBOL-STATUS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GOOD-SYMBOL-P" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OTHER-PACKAGES" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RANDOM-NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "OTHER-PACKAGES" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "KIND" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMIT-PACKAGE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "PACKAGE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OTHER-PACKAGES" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMIT-VARIABLE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMIT-TYPE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMIT-FUNCTION" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMIT-MACRO" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMIT-SLOT" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SLOT-DEF" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMIT-CLASS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CLASS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OTHER-PACKAGES" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMIT-DOCSTRING" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "PACKAGE-DESIGNATOR" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "STR" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-DOCSTRING" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "HANDLER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHARACTERS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "HANDLER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "STR" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-DOCSTRING-1" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HANDLER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "CLOSE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-DELIMITED-STRING" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BAG" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EAT-LIMIT" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-DOCSTRING-ELEMENT" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HANDLER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOCSTRING-PARSER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST ((:NAME "SAX-PROXY" :PACKAGE-NAME "CXML" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DOCSTRING-PACKAGE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "DOCSTRING-PACKAGE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CURRENT-NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CURRENT-NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CURRENT-KIND" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CURRENT-KIND" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CURRENT-ATTRIBUTES" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "CURRENT-ATTRIBUTES" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CURRENT-TEXT" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CURRENT-TEXT" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-ELEMENT" :PACKAGE-NAME "SAX" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+       (:NAME "DOCSTRING-PARSER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+      (:NAME "URI" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "LNAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "QNAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "ATTRS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHARACTERS" :PACKAGE-NAME "SAX" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+       (:NAME "DOCSTRING-PARSER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+      (:NAME "DATA" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "END-ELEMENT" :PACKAGE-NAME "SAX" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+       (:NAME "DOCSTRING-PARSER" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+      (:NAME "URI" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "LNAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "QNAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GENERATE-INFO-DOCUMENTATION" :PACKAGE-NAME "ATDOC" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PACKAGES" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      (:NAME "DIRECTORY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL)
+      ((:NAME "TITLE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) "No Title")
+      ((:NAME "INCLUDE-SLOT-DEFINITIONS-P" :PACKAGE-NAME "ATDOC" :EXTERNALP
+        NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "@arg[packages]{List of package designators.
+     Documentation will be generated for these packages.}
+   @arg[directory]{A pathname specifying a directory.
+     All output files and temporary data will be written
+     to this directory, which must already exist.}
+   @arg[title]{This string will be used as the document's title.}
+   @arg[include-slot-definitions-p]{A boolean.}
+   @return{The pathname of the generated file documentation.pdf, or nil.}
+   Generates TeX documentation for @code{packages}.
+
+   With @code{run-tex-p} (the default), pdflatex is run automatically to
+   generate a PDF file.
+
+   With @code{include-slot-definition}, class documentation will include
+   a list of direct slots.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "XFD-STARS" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "THUNKS-32" :PACKAGE-NAME NIL :EXTERNALP NIL)) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "XFD-DATE" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "THUNKS-64" :PACKAGE-NAME NIL :EXTERNALP NIL)) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "XFD-INDENT" :PACKAGE-NAME "ATDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "THUNKS-108" :PACKAGE-NAME NIL :EXTERNALP NIL)) :DOCUMENTATION
+     NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "GENERATE-INFO-DOCUMENTATION" :PACKAGE-NAME "ATDOC" :EXTERNALP T)
+    (:NAME "GENERATE-HTML-DOCUMENTATION" :PACKAGE-NAME "ATDOC" :EXTERNALP T)
+    (:NAME "GENERATE-DOCUMENTATION" :PACKAGE-NAME "ATDOC" :EXTERNALP T)
+    (:NAME "EXTRACT-DOCUMENTATION" :PACKAGE-NAME "ATDOC" :EXTERNALP T)
+    (:NAME "GENERATE-LATEX-DOCUMENTATION" :PACKAGE-NAME "ATDOC" :EXTERNALP
+     T)))))

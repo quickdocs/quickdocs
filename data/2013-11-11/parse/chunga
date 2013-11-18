@@ -1,0 +1,701 @@
+
+(:TYPE :SYSTEM :NAME "chunga" :AUTHOR NIL :MAINTAINER NIL :VERSION "1.1.5"
+ :LICENCE NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("TRIVIAL-GRAY-STREAMS") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CHUNGA" :FULL-NAME "CHUNGA" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-CONSTANT" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOC" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "A version of DEFCONSTANT for, cough, /strict/ CL implementations.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+OUTPUT-BUFFER-SIZE+" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :DOCUMENTATION "Size of the initial output buffer for chunked output."
+     :INITIAL-VALUE "8192")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+CRLF+" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :DOCUMENTATION
+     "A 2-element array consisting of the character codes for a CRLF
+sequence."
+     :INITIAL-VALUE "(IF (BOUNDP 'CHUNGA::+CRLF+)
+    (SYMBOL-VALUE 'CHUNGA::+CRLF+)
+    (MAKE-ARRAY 2 :ELEMENT-TYPE '(UNSIGNED-BYTE 8) :INITIAL-CONTENTS
+                (MAPCAR 'CHAR-CODE '(#\\Return #\\Newline))))")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+HEX-DIGITS+" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :DOCUMENTATION "The hexadecimal digits." :INITIAL-VALUE
+     "(IF (BOUNDP 'CHUNGA::+HEX-DIGITS+)
+    (SYMBOL-VALUE 'CHUNGA::+HEX-DIGITS+)
+    '(#\\0 #\\1 #\\2 #\\3 #\\4 #\\5 #\\6 #\\7 #\\8 #\\9 #\\A #\\B #\\C #\\D #\\E #\\F))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CURRENT-ERROR-MESSAGE*" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :DOCUMENTATION "Used by the parsing functions in `read.lisp' as an
+introduction to a standardized error message about unexpected
+characters unless it is NIL."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CURRENT-ERROR-FUNCTION*" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Used by the functions in `read.lisp' as a function to signal
+errors about unexpected characters when *CURRENT-ERROR-MESSAGE*
+is NIL."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ACCEPT-BOGUS-EOLS*" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :DOCUMENTATION
+     "Some web servers do not respond with a correct CRLF line ending for
+HTTP headers but with a lone linefeed or carriage return instead.  If
+this variable is bound to a true value, READ-LINE* will treat a lone
+LF or CR character as an acceptable end of line.  The initial value is
+NIL."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TREAT-SEMICOLON-AS-CONTINUATION*" :PACKAGE-NAME "CHUNGA"
+      :EXTERNALP T)
+     :DOCUMENTATION
+     "According to John Foderaro, Netscape v3 web servers bogusly split
+Set-Cookie headers over multiple lines which means that we'd have to
+treat Set-Cookie headers ending with a semicolon as incomplete and
+combine them with the next header.  This will only be done if this
+variable has a true value, though."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CHAR-BUFFER*" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :DOCUMENTATION "A `buffer' for one character.  Used by PEEK-CHAR* and
+UNREAD-CHAR*."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HYPERDOC-BASE-URI*" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"http://weitz.de/chunga/\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HYPERDOC-LOOKUP" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WHEN-LET" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "VAR" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       (:NAME "EXPR" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates EXPR, binds it to VAR, and executes BODY if VAR has
+a true value.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENDS-WITH-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SEQ" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      (:NAME "SUFFIX" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CHAR-EQUAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION "Returns true if the sequence SEQ ends with the sequence
+SUFFIX.  Individual elements are compared with TEST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-KEYWORD" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DESTRUCTIVEP" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Converts the string STRING to a keyword where all characters are
+uppercase or lowercase, taking into account the current readtable
+case.  Destructively modifies STRING if DESTRUCTIVEP is true.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-CHAR*" :PACKAGE-NAME "CHUNGA" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "EOF-ERROR-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "EOF-VALUE" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The streams we're dealing with are all binary with element type
+(UNSIGNED-BYTE 8) and we're only interested in ISO-8859-1, so we use
+this to `simulate' READ-CHAR.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNREAD-CHAR*" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Were simulating UNREAD-CHAR by putting the character into
+*CHAR-BUFFER*.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PEEK-CHAR*" :PACKAGE-NAME "CHUNGA" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EOF-ERROR-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      (:NAME "EOF-VALUE" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "We're simulating PEEK-CHAR by reading a character and putting it
+into *CHAR-BUFFER*.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-CHARACTER-STREAM-SEMANTICS" :PACKAGE-NAME "CHUNGA" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Binds *CHAR-BUFFER* around BODY so that within BODY we can use
+READ-CHAR* and friends (see above) to simulate a character stream
+although we're reading from a binary stream.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KNOWN-WORDS+" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A list of words (headers, methods, protocols, character sets)
+that are typically seen in HTTP communication.  Mostly from RFC 2616,
+but includes WebDAV stuff and other things as well."
+     :INITIAL-VALUE "(IF (BOUNDP 'CHUNGA::+KNOWN-WORDS+)
+    (SYMBOL-VALUE 'CHUNGA::+KNOWN-WORDS+)
+    '(\"Accept\" \"Accept-Charset\" \"Accept-Encoding\" \"Accept-Language\"
+      \"Accept-Ranges\" \"Age\" \"Allow\" \"Authorization\" \"Cache-Control\"
+      \"Connection\" \"Content-Encoding\" \"Content-Language\" \"Content-Length\"
+      \"Content-Location\" \"Content-MD5\" \"Content-Range\" \"Content-Type\" \"DAV\"
+      \"Date\" \"Depth\" \"Destination\" \"ETag\" \"Expect\" \"Expires\" \"From\" \"Host\" \"If\"
+      \"If-Match\" \"If-Modified-Since\" \"If-None-Match\" \"If-Range\"
+      \"If-Unmodified-Since\" \"Last-Modified\" \"Location\" \"Lock-Token\"
+      \"Max-Forwards\" \"Overwrite\" \"Pragma\" \"Proxy-Authenticate\"
+      \"Proxy-Authorization\" \"Range\" \"Referer\" \"Retry-After\" \"Server\" \"TE\"
+      \"TimeOut\" \"Trailer\" \"Transfer-Encoding\" \"Upgrade\" \"User-Agent\" \"Vary\"
+      \"Via\" \"WWW-Authenticate\" \"Warning\" \"CONNECT\" \"COPY\" \"DELETE\" \"GET\" \"HEAD\"
+      \"LOCK\" \"MKCOL\" \"MOVE\" \"OPTIONS\" \"POST\" \"PROPFIND\" \"PROPPATCH\" \"PUT\"
+      \"TRACE\" \"UNLOCK\" \"HTTP/1.1\" \"HTTP/1.0\" \"US-ASCII\" \"ISO-8859-1\" \"UTF-8\"
+      \"UTF-16\" \"UTF-32BE\" \"UTF-32LE\"))")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+STRING-TO-KEYWORD-HASH+" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :DOCUMENTATION "A hash table which case-insensitively maps the strings from
++KNOWN-WORDS+ to keywords."
+     :INITIAL-VALUE "(IF (BOUNDP 'CHUNGA::+STRING-TO-KEYWORD-HASH+)
+    (SYMBOL-VALUE 'CHUNGA::+STRING-TO-KEYWORD-HASH+)
+    (LET ((CHUNGA::HASH
+           (MAKE-HASH-TABLE :TEST 'EQUAL :SIZE (LENGTH CHUNGA::+KNOWN-WORDS+))))
+      (LOOP CHUNGA::FOR CHUNGA::WORD CHUNGA::IN CHUNGA::+KNOWN-WORDS+
+            DO (SETF (GETHASH CHUNGA::WORD CHUNGA::HASH)
+                       (CHUNGA::MAKE-KEYWORD CHUNGA::WORD NIL)))
+      CHUNGA::HASH))")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+KEYWORD-TO-STRING-HASH+" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash table which maps keywords derived from +KNOWN-WORDS+ to
+capitalized strings."
+     :INITIAL-VALUE "(IF (BOUNDP 'CHUNGA::+KEYWORD-TO-STRING-HASH+)
+    (SYMBOL-VALUE 'CHUNGA::+KEYWORD-TO-STRING-HASH+)
+    (LET ((CHUNGA::HASH
+           (MAKE-HASH-TABLE :TEST 'EQ :SIZE (LENGTH CHUNGA::+KNOWN-WORDS+))))
+      (LOOP CHUNGA::FOR CHUNGA::WORD CHUNGA::IN CHUNGA::+KNOWN-WORDS+
+            DO (SETF (GETHASH (CHUNGA::MAKE-KEYWORD CHUNGA::WORD NIL)
+                              CHUNGA::HASH)
+                       (STRING-CAPITALIZE CHUNGA::WORD)))
+      CHUNGA::HASH))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AS-KEYWORD" :PACKAGE-NAME "CHUNGA" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DESTRUCTIVEP" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Converts the string STRING to a keyword where all characters are
+uppercase or lowercase, taking into account the current readtable
+case.  Might destructively modify STRING if DESTRUCTIVEP is true which
+is the default.  \"Knows\" several HTTP header names and methods and
+is optimized to not call INTERN for these.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AS-CAPITALIZED-STRING" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "KEYWORD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Kind of the inverse of AS-KEYWORD.  Has essentially the same effect
+as STRING-CAPITALIZE but is optimized for \"known\" keywords like
+:CONTENT-LENGTH or :GET.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SIGNAL-UNEXPECTED-CHARS" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LAST-CHAR" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      (:NAME "EXPECTED-CHARS" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION "Signals an error that LAST-CHAR was read although one of
+EXPECTED-CHARS was expected.  (Note that EXPECTED-CHARS, despite its
+name, can also be a single character instead of a list).  Calls
+*CURRENT-ERROR-FUNCTION* if it's not NIL, or uses
+*CURRENT-ERROR-MESSAGE* otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHARP" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns true if the Lisp character CHAR is a CHAR according to RFC 2616.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONTROLP" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns true if the Lisp character CHAR is a CTL according to RFC 2616.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEPARATORP" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns true if the Lisp character CHAR is a separator
+according to RFC 2616.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WHITESPACEP" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns true if the Lisp character CHAR is whitespace
+according to RFC 2616.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TOKEN-CHAR-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Returns true if the Lisp character CHAR is a token constituent
+according to RFC 2616.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ASSERT-CHAR" :PACKAGE-NAME "CHUNGA" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPECTED-CHAR" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads the next character from STREAM and checks if it is the
+character EXPECTED-CHAR.  Signals an error otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ASSERT-CRLF" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Reads the next two characters from STREAM and checks if these
+are a carriage return and a linefeed.  Signals an error
+otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-LINE*" :PACKAGE-NAME "CHUNGA" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOG-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads and assembles characters from the binary stream STREAM until
+a carriage return is read.  Makes sure that the following character is
+a linefeed.  If *ACCEPT-BOGUS-EOLS* is not NIL, then the function will
+also accept a lone carriage return or linefeed as an acceptable line
+break.  Returns the string of characters read excluding the line
+break.  Returns NIL if input ends before one character was read.
+Additionally logs this string to LOG-STREAM if it is not NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRIM-WHITESPACE" :PACKAGE-NAME "CHUNGA" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns a version of the string STRING (between START and END)
+where spaces and tab characters are trimmed from the start and the
+end.  Might return STRING.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-HTTP-HEADERS" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOG-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION "Reads HTTP header lines from STREAM (except for the initial
+status line which is supposed to be read already) and returns a
+corresponding alist of names and values where the names are
+keywords and the values are strings.  Multiple lines with the
+same name are combined into one value, the individual values
+separated by commas.  Header lines which are spread across
+multiple lines are recognized and treated correctly.  Additonally
+logs the header lines to LOG-STREAM if it is not NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-WHITESPACE" :PACKAGE-NAME "CHUNGA" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Consume characters from STREAM until an END-OF-FILE is
+encountered or a non-whitespace (according to RFC 2616)
+characters is seen.  This character is returned (or NIL in case
+of END-OF-FILE).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-TOKEN" :PACKAGE-NAME "CHUNGA" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Read characters from STREAM while they are token constituents
+(according to RFC 2616).  It is assumed that there's a token
+character at the current position.  The token read is returned as
+a string.  Doesn't signal an error (but simply stops reading) if
+END-OF-FILE is encountered after the first character.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-QUOTED-STRING" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Reads a quoted string (according to RFC 2616).  It is assumed
+that the character at the current position is the opening quote
+character.  Returns the string read without quotes and escape
+characters.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-COOKIE-VALUE" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SEPARATORS" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) ";"))
+     :DOCUMENTATION
+     "Reads a cookie parameter value from STREAM which is returned as a
+string.  Simply reads until a semicolon is seen (or an element of
+SEPARATORS).  Also reads quoted strings if the first non-whitespace
+character is a quotation mark (as in RFC 2109).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-NAME-VALUE-PAIR" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "VALUE-REQUIRED-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "COOKIE-SYNTAX" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION "Reads a typical (in RFC 2616) name/value or attribute/value
+combination from STREAM - a token followed by a #\\= character and
+another token or a quoted string.  Returns a cons of name and value,
+both as strings.  If VALUE-REQUIRED-P is NIL, the #\\= sign and the
+value are optional.  If COOKIE-SYNTAX is true, uses READ-COOKIE-VALUE
+internally.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-NAME-VALUE-PAIRS" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "VALUE-REQUIRED-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "COOKIE-SYNTAX" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+     :DOCUMENTATION "Uses READ-NAME-VALUE-PAIR to read and return an alist of
+name/value pairs from STREAM.  It is assumed that the pairs are
+separated by semicolons and that the first char read (except for
+whitespace) will be a semicolon.  The parameters are used as in
+READ-NAME-VALUE-PAIR.  Stops reading in case of END-OF-FILE
+(instead of signaling an error).")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "CHUNKED-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "TRIVIAL-GRAY-STREAM-MIXIN" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+       :EXTERNALP T))
+     :DOCUMENTATION "Every chunked stream returned by
+MAKE-CHUNKED-STREAM is of this type which is a subtype of
+STREAM."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "REAL-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "CHUNKED-STREAM-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION "The actual stream that's used for
+input and/or output.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "CHUNKED-INPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "CHUNKED-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+      (:NAME "FUNDAMENTAL-BINARY-INPUT-STREAM" :PACKAGE-NAME
+       "TRIVIAL-GRAY-STREAMS" :EXTERNALP T))
+     :DOCUMENTATION "A chunked stream is of this type if its
+underlying stream is an input stream. This is a subtype of
+CHUNKED-STREAM."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "INPUT-CHUNKING-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "CHUNKED-STREAM-INPUT-CHUNKING-P" :PACKAGE-NAME "CHUNGA"
+         :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION
+       "Whether input chunking is currently enabled.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "INPUT-BUFFER" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A vector containing the binary
+data from the most recent chunk that was read.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "INPUT-INDEX" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CHUNKED-STREAM-INPUT-INDEX" :PACKAGE-NAME "CHUNGA" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The current position within INPUT-BUFFER.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "INPUT-LIMIT" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "CHUNKED-STREAM-INPUT-LIMIT" :PACKAGE-NAME "CHUNGA" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "Only the content in INPUT-BUFFER
+up to INPUT-LIMIT belongs to the current chunk.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CHUNK-EXTENSIONS" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "CHUNKED-INPUT-STREAM-EXTENSIONS" :PACKAGE-NAME "CHUNGA"
+         :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION "An alist of attribute/value
+pairs corresponding to the optional `chunk extensions' which
+might be encountered when reading from a chunked stream.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CHUNK-TRAILERS" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "CHUNKED-INPUT-STREAM-TRAILERS" :PACKAGE-NAME "CHUNGA"
+         :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION "An alist of attribute/value
+pairs corresponding to the optional `trailer' HTTP headers which
+might be encountered at the end of a chunked stream.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "EXPECTING-CRLF-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "EXPECTING-CRLF-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION "Whether we expect to see
+CRLF before we can read the next chunk-size header part from the
+stream.  (This will actually be the CRLF from the end of the
+last chunk-data part.)")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "CHUNKED-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+      (:NAME "FUNDAMENTAL-BINARY-OUTPUT-STREAM" :PACKAGE-NAME
+       "TRIVIAL-GRAY-STREAMS" :EXTERNALP T))
+     :DOCUMENTATION "A chunked stream is of this type if its
+underlying stream is an output stream. This is a subtype of
+CHUNKED-STREAM."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "OUTPUT-CHUNKING-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "CHUNKED-STREAM-OUTPUT-CHUNKING-P" :PACKAGE-NAME "CHUNGA"
+         :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION "Whether output chunking is
+currently enabled.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "OUTPUT-BUFFER" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "OUTPUT-BUFFER" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION "A vector used to temporarily
+store data which will output in one chunk.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "OUTPUT-INDEX" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "OUTPUT-INDEX" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION "The current end of OUTPUT-BUFFER.")))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "CHUNKED-IO-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "CHUNKED-INPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+      (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T))
+     :DOCUMENTATION "A chunked stream is of this type if it is both
+a CHUNKED-INPUT-STREAM as well as a CHUNKED-OUTPUT-STREAM."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-ELEMENT-TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION "Chunked streams are always binary streams.  Wrap them with
+flexi streams if you need a character stream.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "OPEN-STREAM-P" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION
+     "A chunked stream is open if its underlying stream is open.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CLOSE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ABORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "If a chunked stream is closed, we close the underlying stream as well.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CHUNKED-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Creates and returns a chunked stream (a stream of type
+CHUNKED-STREAM) which wraps STREAM.  STREAM must be an open
+binary stream.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHUNKED-INPUT-STREAM-EXTENSIONS" :PACKAGE-NAME "CHUNGA" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "The default method which always returns the empty list.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHUNKED-INPUT-STREAM-TRAILERS" :PACKAGE-NAME "CHUNGA" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "The default method which always returns the empty list.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHUNKED-STREAM-INPUT-CHUNKING-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "The default method for all objects which are not of type
+CHUNKED-INPUT-STREAM.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CHUNKED-STREAM-INPUT-CHUNKING-P" :PACKAGE-NAME "CHUNGA"
+       :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-INPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION "Switches input chunking for STREAM on or off.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-CLEAR-INPUT" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-INPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Implements CLEAR-INPUT by resetting the internal chunk buffer.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHUNKED-INPUT-AVAILABLE-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-INPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Whether there's unread input waiting in the chunk buffer.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-LISTEN" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-INPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION "We first check if input chunking is enabled and if there's
+something in the buffer.  Otherwise we poll the underlying stream.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FILL-BUFFER" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-INPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Re-fills the chunk buffer.  Returns NIL if chunking has ended.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-READ-BYTE" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-INPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Reads one byte from STREAM.  Checks the chunk buffer first, if
+input chunking is enabled.  Re-fills buffer is necessary.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-READ-SEQUENCE" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-INPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T))
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Fills SEQUENCE by adding data from the chunk buffer and re-filling
+it until enough data was read.  Works directly on the underlying
+stream if input chunking is off.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHUNKED-STREAM-OUTPUT-CHUNKING-P" :PACKAGE-NAME "CHUNGA"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "The default method for all objects which are not of type
+CHUNKED-OUTPUT-STREAM.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "WRITE-CHUNK" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T))
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) 0)
+      ((:NAME "END" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION "Writes the contents of SEQUENCE from START to END to the
+underlying stream of STREAM as one chunk.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "FLUSH-BUFFER" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION "Uses WRITE-CHUNK to empty the output buffer unless it is
+already empty.")
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CHUNKED-STREAM-OUTPUT-CHUNKING-P" :PACKAGE-NAME "CHUNGA"
+       :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEW-VALUE" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION "Switches output chunking for STREAM on or off.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-CLEAR-OUTPUT" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION "We clear output by resetting the output buffer and clearing
+the underlying stream.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-FINISH-OUTPUT" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Flush the output buffer if output chunking is on, then operate
+on the underlying stream.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-FORCE-OUTPUT" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Flush the output buffer if output chunking is on, then operate
+on the underlying stream.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-WRITE-BYTE" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T))
+      (:NAME "BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Writes one byte by simply adding it to the end of the output
+buffer (if output chunking is enabled).  The buffer is flushed
+if necessary.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-WRITE-SEQUENCE" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T))
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CHUNGA" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Outputs SEQUENCE by appending it to the output buffer if it's
+small enough.  Large sequences are written directly using
+WRITE-CHUNK.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CLOSE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ABORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "When a stream is closed and ABORT isn't true we have to make
+sure to send the last chunk."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "CHUNKED-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "CHUNGA-WARNING" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "AS-CAPITALIZED-STRING" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "WITH-CHARACTER-STREAM-SEMANTICS" :PACKAGE-NAME "CHUNGA" :EXTERNALP
+     T)
+    (:NAME "INPUT-CHUNKING-BODY-CORRUPTED" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "CHUNGA-ERROR" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "READ-NAME-VALUE-PAIRS" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "CHUNKED-STREAM-OUTPUT-CHUNKING-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP
+     T)
+    (:NAME "CHUNKED-STREAM-INPUT-CHUNKING-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP
+     T)
+    (:NAME "CHUNKED-STREAM-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "READ-LINE*" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "CHUNKED-OUTPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "CHUNKED-INPUT-STREAM-TRAILERS" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "CHUNKED-INPUT-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "READ-NAME-VALUE-PAIR" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "CHUNKED-IO-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "TRIM-WHITESPACE" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "READ-TOKEN" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "*CURRENT-ERROR-MESSAGE*" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "READ-CHAR*" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "INPUT-CHUNKING-UNEXPECTED-END-OF-FILE" :PACKAGE-NAME "CHUNGA"
+     :EXTERNALP T)
+    (:NAME "ASSERT-CHAR" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "SYNTAX-ERROR" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "CHUNKED-INPUT-STREAM-EXTENSIONS" :PACKAGE-NAME "CHUNGA" :EXTERNALP
+     T)
+    (:NAME "PEEK-CHAR*" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "TOKEN-CHAR-P" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "MAKE-CHUNKED-STREAM" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "*ACCEPT-BOGUS-EOLS*" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "SKIP-WHITESPACE" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "AS-KEYWORD" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)
+    (:NAME "*TREAT-SEMICOLON-AS-CONTINUATION*" :PACKAGE-NAME "CHUNGA"
+     :EXTERNALP T)
+    (:NAME "READ-HTTP-HEADERS" :PACKAGE-NAME "CHUNGA" :EXTERNALP T)))))

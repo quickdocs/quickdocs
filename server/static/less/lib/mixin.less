@@ -1,0 +1,59 @@
+.vertical-gradient(@color: #F5F5F5, @start: #EEE, @stop: #FFF) {
+  background: @color;
+  background: -webkit-gradient(linear,
+                               left top,
+                               left bottom,
+                               color-stop(0, @start),
+                               color-stop(1, @stop));
+  background: -ms-linear-gradient(top,
+                                  @start,
+                                  @stop);
+  background: -moz-linear-gradient(center top,
+                                   @start 0%,
+                                   @stop 100%);
+  background: -o-linear-gradient(@start,
+                                 @stop);
+  filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@start,@stop));
+}
+
+.horizontal-gradient(@color: #F5F5F5, @start: #EEE, @stop: #FFF) {
+  background: @color;
+  background: -webkit-gradient(linear,
+                               left top,
+                               right top,
+                               color-stop(0, @start),
+                               color-stop(1, @stop));
+  background: -ms-linear-gradient(left,
+                                  @start,
+                                  @stop);
+  background: -moz-linear-gradient(left,
+                                   @start 0%,
+                                   @stop 100%);
+  background: -o-linear-gradient(@stop,
+                                 @start);
+  filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",@stop,@start));
+}
+
+.horizontal-linear-gradient(@stop1:0, @color1:#ccc, @stop2:50%, @color2:#ddd, @stop3:100%, @color3:#ccc) {
+  background-color: @color2;
+  background: -webkit-gradient(linear, left top, right top, color-stop(@stop1, @color1), color-stop(@stop2, @color2), color-stop(@stop3, @color3));
+  background: -moz-linear-gradient(center top, @color1 @stop1, @color2 @stop2, @color3 @stop3);
+   background: -ms-linear-gradient(center top, @color1 @stop1, @color2 @stop2, @color3 @stop3);
+  background: -o-linear-gradient(center top, @color1 @stop1, @color2 @stop2, @color3 @stop3);
+  background: linear-gradient(center top, @color1 @stop1, @color2 @stop2, @color3 @stop3);
+  -pie-background: linear-gradient(@color1, @color2, @color3);
+  filter: e(%("progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=%d,endColorstr=%d)", @color1, @color3));
+}
+
+.transition-duration(@duration:0.3s) {
+  transition-duration: @duration;
+  -moz-transition-duration: @duration;
+  -webkit-transition-duration: @duration;
+  -o-transition-duration: @duration;
+}
+
+.box-sizing(@value) {
+  box-sizing: @value;
+  -webkit-box-sizing: @value;
+  -moz-box-sizing: @value;
+}

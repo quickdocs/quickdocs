@@ -1,0 +1,5 @@
+
+(:TYPE :SYSTEM :NAME "queues.priority-queue" :AUTHOR "Eric O'Connor"
+ :MAINTAINER "Eric O'Connor" :VERSION "1.0.0" :LICENCE "MIT" :DESCRIPTION
+ "A priority queue (fibonacci) implementation" :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("QUEUES") :PACKAGE-LIST NIL)

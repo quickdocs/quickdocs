@@ -1,0 +1,138 @@
+
+(:TYPE :SYSTEM :NAME "fare-memoization" :AUTHOR NIL :MAINTAINER NIL :VERSION
+ NIL :LICENCE "MIT" :DESCRIPTION
+ "memoizing functions the correct, portable way" :LONG-DESCRIPTION
+ "define memoized functions and memoize previously defined functions"
+ :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "FARE-MEMOIZATION" :FULL-NAME "FARE-MEMOIZATION"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "MEMOIZATION-INFO" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "information about a function that was memoized" :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS
+       NIL :READERS
+       ((:NAME "MEMOIZED-FUNCTION" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP
+         NIL))
+       :WRITERS NIL :DOCUMENTATION "The original, unmemoized, function")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TABLE" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "MEMOIZED-TABLE" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP
+         NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "a hash-table containing the memoized computations so far")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NORMALIZATION" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "MEMOIZED-NORMALIZATION" :PACKAGE-NAME "FARE-MEMOIZATION"
+         :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "either NIL or a function to normalize arguments before memoization")))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPUTE-MEMOIZED-FUNCTION" :PACKAGE-NAME "FARE-MEMOIZATION"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "INFO" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL)
+      (:NAME "ARGUMENTS" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "the basic helper for computing with a memoized function FUNCTION,
+with a hash-table TABLE, being called with arguments ARGUMENTS")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNMEMOIZE-1" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGUMENTS" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Forget the memoized result of calling SYMBOL with arguments ARGUMENTS.
+Do not forget memoized results of calling the function with other arguments.
+Returns T if a stored result was found and removed, NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNMEMOIZE" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "undoing the memoizing function, return the memoization-info record for the function")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MEMOIZE" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TABLE" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL)
+       ((:NAME "MAKE-HASH-TABLE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TEST" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "EQUAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "NORMALIZATION" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL))
+     :DOCUMENTATION "Memoize the function associated to given SYMBOL.
+
+Beware that function was declared NOTINLINE, callers are not guaranteed
+to see the memoized function rather than have inlined the original one.
+Moreover, if the function is self-recursive,
+this declaration must have happened before it was defined.
+
+Keyword argument TABLE (default: a fresh EQUAL hash-table) lets you
+specify an existing hash-table for the memoized computations;
+it may have been created with appropriate options regarding equality predicate
+and weak pointers, initial contents, etc., and you may clear it when needed.
+Keyword argument NORMALIZATION (default: NIL) lets you specify a function
+taking a continuation and the function arguments,
+e.g. with lambda-list (CONTINUATION &REST ARGUMENTS)
+which may transform the argument list before to call the continuation
+with a normalized argument list that will be used to query the computation cache
+and invoke the actual computation function; NIL means no such transformation,
+which has the same effect as specifying #'APPLY as a transformation.
+
+If the function was already being memoized, any previous memoization information,
+i.e. TABLE and NORMALIZATION, is replaced with the newly specified values.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-MEMO-FUNCTION" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL)
+      (:NAME "FORMALS" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL))
+     :DOCUMENTATION "Like defun, but creates a memoized function.
+Also, if the name is a CONS, then the first element is the name, and the rest
+is a list of keyword arguments, TABLE and NORMALIZATION as per MEMOIZE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MEMOIZING" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TABLE" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL)
+      (:NAME "NORMALIZATION" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Given a function, return a memoizing version of same function.
+Keyword arguments TABLE and NORMALIZATION are as per MEMOIZE.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MEMOIZED*" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(MAKE-HASH-TABLE :TEST 'EQUAL)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MEMOIZED-FUNCALL" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGUMENTS" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MEMOIZED-APPLY" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGUMENTS" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "UNMEMOIZE" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+    (:NAME "MEMOIZE" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+    (:NAME "MEMOIZING" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+    (:NAME "*MEMOIZED*" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+    (:NAME "UNMEMOIZE-1" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+    (:NAME "DEFINE-MEMO-FUNCTION" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP
+     T)
+    (:NAME "MEMOIZED-APPLY" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)
+    (:NAME "MEMOIZED-FUNCALL" :PACKAGE-NAME "FARE-MEMOIZATION" :EXTERNALP T)))))

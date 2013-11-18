@@ -1,0 +1,1340 @@
+
+(:TYPE :SYSTEM :NAME "clouchdb" :AUTHOR NIL :MAINTAINER NIL :VERSION "0.0.12"
+ :LICENCE NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CLOSER-MOP" "DRAKMA" "PARENSCRIPT" "S-BASE64" "FLEXI-STREAMS") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CLOUCHDB" :FULL-NAME "CLOUCHDB" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-HOST*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION "CouchDb server host name" :INITIAL-VALUE "\"localhost\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-PORT*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION "The IANA assigned CouchDb port" :INITIAL-VALUE "\"5984\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-DB-NAME*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION "Default database name" :INITIAL-VALUE "\"default\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-PROTOCOL*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION "http or https" :INITIAL-VALUE "\"http\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEFAULT-CONTENT-TYPE*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"application/octet-stream\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*VIEW-FUNCTION-NAMES*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'(MAP REDUCE CLOUCHDB::VALIDATE-DOC-UPDATE)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEBUG-REQUESTS*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TEMP-DB-COUNTER*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION "" :INITIAL-VALUE "0")
+    (:TYPE :STRUCT :SYMBOL (:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HOST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PORT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PROTOCOL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "USER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PASSWORD" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DOCUMENT-FETCH-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DOCUMENT-UPDATE-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEW-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "HOST" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM0" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "PORT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM1" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "NAME" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM2" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "PROTOCOL" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM3" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "USER" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM4" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "PASSWORD" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM5" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "DOCUMENT-FETCH-FN" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM6" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "DOCUMENT-UPDATE-FN" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM7" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-DEFAULT-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :DOCUMENTATION
+     "A db struct object" :INITIAL-VALUE "(CLOUCHDB::MAKE-DEFAULT-DB)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TEXT-TYPES*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Defined to instruct Drakma to treat json responses as text"
+     :INITIAL-VALUE "'((\"text\") (NIL . \"json\") (NIL . \"xml\"))")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-CONSTANT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "A version of DEFCONSTANT for /strict/ CL implementations.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+UTF-8+" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :DOCUMENTATION
+     "Default external format for document content." :INITIAL-VALUE
+     "(IF (BOUNDP 'CLOUCHDB::+UTF-8+)
+    (SYMBOL-VALUE 'CLOUCHDB::+UTF-8+)
+    (FLEXI-STREAMS:MAKE-EXTERNAL-FORMAT :UTF-8 :EOL-STYLE :LF))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-UPDATE-NOTIFY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Optionally invoke specified function with supplied document, used
+  to invoke user-specified hook functions.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRUE-IF-TRUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Return \"true\" if value is non-nil, otherwise nil")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FALSE-IF-FALSE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Return \"false\" if value is nil, otherwise nil")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CHANGES-OPTIONS*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION "Parameters for the changes function." :INITIAL-VALUE
+     "'((:FEED (:NAME . \"feed\") (:FN . CLOUCHDB::KEYWORD-TO-HTTP-PARAM))
+  (:SINCE (:NAME . \"since\") (:FN . CLOUCHDB::VALUE-AS-STRING))
+  (:STYLE (:NAME . \"style\") (:FN . CLOUCHDB::KEYWORD-TO-HTTP-PARAM))
+  (:HEARTBEAT (:NAME . \"heartbeat\") (:FN . CLOUCHDB::VALUE-AS-STRING))
+  (:TIMEOUT (:NAME . \"timeout\") (:FN . CLOUCHDB::VALUE-AS-STRING))
+  (:INCLUDE-DOCS (:NAME . \"include_docs\") (:FN . CLOUCHDB::TRUE-IF-TRUE))
+  (:FILTER (:NAME . \"filter\") (:FN . IDENTITY)))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*VIEW-OPTIONS*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Definitions for how invoke-view keyword parameters are translated
+  into CouchDb parameters"
+     :INITIAL-VALUE
+     "'((:KEY (:NAME . \"key\") (:FN . CLOUCHDB:DOCUMENT-TO-JSON))
+  (:START-KEY (:NAME . \"startkey\") (:FN . CLOUCHDB:DOCUMENT-TO-JSON))
+  (:START-KEY-DOCID (:NAME . \"startkey_docid\")
+   (:FN . CLOUCHDB:DOCUMENT-TO-JSON))
+  (:END-KEY (:NAME . \"endkey\") (:FN . CLOUCHDB:DOCUMENT-TO-JSON))
+  (:END-KEY-DOCID (:NAME . \"endkey_docsid\") (:FN . CLOUCHDB:DOCUMENT-TO-JSON))
+  (:LIMIT (:NAME . \"limit\") (:FN . CLOUCHDB::VALUE-AS-STRING))
+  (:STALE (:NAME . \"stale\") (:FN . CLOUCHDB::VALUE-AS-STRING))
+  (:DESCENDING (:NAME . \"descending\") (:FN . CLOUCHDB::TRUE-IF-TRUE))
+  (:SKIP (:NAME . \"skip\") (:FN . CLOUCHDB:DOCUMENT-TO-JSON))
+  (:GROUP (:NAME . \"group\") (:FN . CLOUCHDB::TRUE-IF-TRUE))
+  (:GROUP-LEVEL (:NAME . \"group_level\") (:FN . CLOUCHDB:DOCUMENT-TO-JSON))
+  (:REDUCE (:NAME . \"reduce\") (:FN . CLOUCHDB::FALSE-IF-FALSE))
+  (:INCLUDE-DOCS (:NAME . \"include_docs\") (:FN . CLOUCHDB::TRUE-IF-TRUE))
+  (:UPDATE (:NAME . \"update\") (:FN . CLOUCHDB::FALSE-IF-FALSE)))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRANSFORM-PARAM" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARAM" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "TABLE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Use a keyword transformation table to traslate between function
+  keyword parameter names and values, and URL parameter names and
+  values.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRANSFORM-PARAMS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEYWORD-PARAMS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "OPTIONS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Transform each keyword parameter using the specified set of
+options, use only those transformations that return a non-nil result.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VALUE-AS-STRING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VALUE-AS-INTEGER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-JOIN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DELIM" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) ",")
+      ((:NAME "IGNORE-NIL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Join list of strings into a single result. Strings are delimited by
+specified delimiter. If ignore-nil is true, then nil strings in the
+list are skipped, and no delimiter is output.")
+    (:TYPE :MACRO :SYMBOL (:NAME "CAT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Shorthand for (concatenate 'string)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOUBLEQUOTE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)) :DOCUMENTATION
+     "Wrap specified value in double quotes.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONVERT-ENCODING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENCODING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Convert string to specified encoding. This may be totally wrong and
+probably way too inefficient, but it seems to work.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "URL-ENCODE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "URL-encode a string. Use drakma's url-encode since it's exported now")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COUCHDB-HOST-URL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COUCHDB-DATABASE-URL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-DB-IDENTIFIER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "INPUT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Make a database identifier from either a string or db structure.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-URI" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Return a URI containing protocol://host:port/ and the concatenation
+of the remaining parameters.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "JSON-STREAM-OR-STRING-TO-DOCUMENT" :PACKAGE-NAME "CLOUCHDB"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM-OR-STRING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Read a json document from eiter a stream or a string. If the source
+is a stream close the stream before returning. Return a document.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ENSURE-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Wrap request in code to check for errors due to non-existant data
+bases. This is necessary because in a document operation, CouchDb does
+not distinguish between an error due to a missing document and a
+missing database.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-AS-HASH" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Convert a document to a hashtable if it isn't one already. Document
+  should be in the form of an associative list.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOC-AS-ALIST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Convert a document in the form of a hash table into an associative
+  list")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AS-KEYWORD-SYMBOL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return value in a form that would be used to identify the car of a
+value in a document. For example, a value")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AS-FIELD-NAME-STRING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Convert a case-encoded symbol to a potentially mixed case string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KEYWORD-TO-HTTP-PARAM" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEYWORD-SYMBOL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Convert a keword symbol that may contain hyphen characters to a
+lower case string with any hyphens replaced by underscores:
+':all-the-best' -> 'all_the_best'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-PROPERTY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Get the value associated with the document property or nil if there
+is no associated value. Note that name may be either a keyword symbol,
+a regular symbol or a string. The <b>name</b> parameter may be either
+a single keyword identifier (document property identifier) or it may
+be a list of identifiers.")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOCUMENT-PROPERTY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Allows setting of existing document properties in
+place (destructively). The name paramter may be either a single
+keyword identifier (document property identifier) or it may be a list
+of identifiers. If the specified document property does not already
+exist it is created.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-DOCUMENT-PROPERTY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set a property of a document. If the named property does not exist,
+add it to the document, otherwise change the existing value.  Does not
+destructively modify input document, so be sure to use return value.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)) :DOCUMENTATION
+     "Shortcut for getting the ID from the specified document. First
+  checks for :|_id| property, then :|id|")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-REVISION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "DOC-OR-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the revision number for the document, identified by either
+the document ID, the actual document, or the result of an add or
+update that returns the revision as :|rev|")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUERY-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "QUERY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return a list of all values in the document matching the query. For
+example, given the document:
+
+  ((:values (((:a . 1) (:b . 2)) ((:a . 3) (:b . 4)))))
+
+the query string '(:values :a) will return (3 1), i.e. the value of
+both :a associations. 
+
+One special query input value is :* which is a 'wildcard'. With the
+document described above the query '(:values :*) will return (4 3 2
+1), or the values of all associations directly below :values. The
+query '(:* :*) on this document will also return (4 3 2 1).
+
+Another special query input value is :**, which recursively matches
+the next query input. For example, with the following document:
+
+  ((:level1 . ((:level2 . (((:level3 . 1)))))))
+
+The query '(:** :level3) will return (1), the value
+of :level3. Finally, functions can specified in the query. Functions
+are called with the portion of the document matched to the previous
+query element and can either return the document, return a different
+document or null.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DB-REQUEST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "URI" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Used by most Clouchdb APIs to make the actual REST request.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HOST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "PORT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "PROTOCOL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      ((:NAME "USER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "USER-SUPPLIED-P" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+      ((:NAME "PASSWORD" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "PASSWORD-SUPPLIED-P" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+      (:NAME "DOCUMENT-FETCH-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DOCUMENT-UPDATE-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Create, populate and return a database structure from the current
+special variables and any supplied keyword parameters, the latter take
+precedence over the special variables.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-CONNECTION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HOST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "PORT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "PROTOCOL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "PASSWORD" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DOCUMENT-FETCH-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DOCUMENT-UPDATE-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Set top-level connection information. The port may be specified as
+a string or number. As of CouchDb version 7.2 the default port is
+5984, prior to that it was 8888.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-CONNECTION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARGS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+        (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T))
+       (:NAME "NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "PORT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "PROTOCOL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "HOST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "USER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "PASSWORD" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "DOCUMENT-UPDATE-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "DOCUMENT-FETCH-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Execute body in the context of the specified database connection
+information..")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-PROPERTIES" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the document properties, filtering out any couchdb reserved
+properties (properties that start with an underscore).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COUCHDB-DOCUMENT-PROPERTIES" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return only CouchDb specific document properties (opposite of
+document-properties).")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DB-OR-DB-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-DB-AUTH" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return user name password values or nil if no user name specified
+for db")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIST-DBS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Return a list of all databases managed by the current CouchDb
+host.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-STATS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION "Get database statistics overview.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-ACTIVE-TASKS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION "Get active tasks for database or nil.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T))
+      ((:NAME "IF-EXISTS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "FAIL" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Create database. The db parameter may be either a string which is
+the name of the database to create or an instance of a db
+structure. If db is unspecified, uses *couchdb*. If database already
+exists an error condition is raised. This condition can be avoided by
+specifying :ingore for if-exists. In this case no error condition is
+generated. Specify :recreate to potentially delete and create a new
+database.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T))
+      (:NAME "IF-MISSING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Delete database. If db and db-name are unspecified, deletes
+database named in *couchdb*. Normally deletion of non-existent databases
+generates an error condition, but this can be avoided by
+specifying :ignore in the if-missing parameter.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPACT-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Start compaction on current database, or specified database if
+supplied. The db parameter, if supplied, is either a local database
+name string or a db struct.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-COUCHDB-INFO" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION "Get information from the couchdb server.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-DB-INFO" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION "Get information for named database, return ((:|error|
+  . \"not_found\") (:|reason| . \"no_db_file\")) if database does not
+  exist. The db parameter, if supplied, is either a local database
+  name string or a db struct.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-TEMP-DB-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Return a database name that's probably unique.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-TEMP-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB-NAME-CREATOR" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "CREATE-TEMP-DB-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T))))
+     :DOCUMENTATION "Create a temporary database.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-TEMP-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Execute body in context of newly created, temporary
+database. Delete database before return.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHANGES" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OPTIONS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T))
+      (:NAME "FEED" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "SINCE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STYLE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "HEARTBEAT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "TIMEOUT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "FILTER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "NOTIFY-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "INCLUDE-DOCS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Get document change activity from current database or database
+specified in db parameter. The :feed keyword parameter value indicates
+how to poll for changes. Valid values for this parameter
+include :longpoll to block waiting for a single change
+response, :continuous to poll for changes indefinately, or :normal to
+not poll (the default) and instead return a document containing
+changes. If specified, the :style keyword parameter may be either
+:main-only (the default) or :all-docs for more revision information.
+
+If specified, the notify-fn will be called as each change notification
+is recieved from the server. The notify-fn should return nil to signal
+that it no longer wishes to receive change notificaitons. At that
+point the stream will be closed and the changes function will return.
+
+If :longpoll or :continuous is specified as the feed parameter but no
+notify-fn is provided, this function will return the feed stream. It
+is the caller's responsibility to close the stream.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REPLICATE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "TARGET" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SOURCE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T))
+      ((:NAME "CREATE-TARGET" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Replicate current database to target, or source to target if source
+is specified. Source and target database values must either be strings
+or database structures. Use strings to specify simple local database
+names, use database structures to specify either local or remote
+databases. If true, create-target will cause the replication target to
+be created automatically, as of CouchDb version 0.11.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-ADMIN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "PASSWORD" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION "Add an admin user.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-SESSION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION "Get cookie based login user information.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-SESSION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION "Do cookie based login.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LOGOUT-SESSION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION "Logout cookie based session.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-CONFIG" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T))
+      (:NAME "SECTION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      ((:NAME "OPTION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "OPTION-PROVIDED-P" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)))
+     :DOCUMENTATION "Get database configuration.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-UUIDS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 1)
+      ((:NAME "DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))
+     :DOCUMENTATION "Returns one or more new UUID from the current database.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-ALL-DOCUMENTS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OPTIONS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "KEYS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "START-KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "START-KEY-DOCID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "END-KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "END-KEY-DOCID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "LIMIT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STALE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DESCENDING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "SKIP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "GROUP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "GROUP-LEVEL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "REDUCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INCLUDE-DOCS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Get a listing of all documents in a database. This method
+implements the same keyword parameters as the view API.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REVISION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "REVISIONS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "CONFLICTS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "REVISION-INFO" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      ((:NAME "IF-MISSING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "IF-MISSING-P" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Get a document by ID. Returns nil if the document does not exist.
+The revision property specifies an optional revision number, if
+unspecified, the most recent revision is returned. The revisions and
+revision-info parameters, if non-nil, request revision information
+about the document instead of the actual document contents. The
+revision-info option contains more revision information than
+revisions. All revision* options are mutually exclusive, specify only
+one.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-FILE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "FILE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)) :DOCUMENTATION
+     "Encode a file in the format suitable for CouchDb attachments")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-ATTACHMENTS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ATTACHMENTS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Encode the list of attachements, return them in an _attachments
+document fragment.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PUT-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "ATTACHMENTS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Create a new document or update and existing one. If the document
+is new an ID must be specified (but see post-document). If the
+document has been fetched from the server (and still has its :_id
+property) then no ID need be specified. If an ID is specified and it
+differs from the existing :_id value, then a new document is created
+with the new ID and the non-special properties of the specified
+document, since the latter would generate a CouchDb error.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POST-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)) :DOCUMENTATION
+     "Post the document to the server, creating a new document. An
+existing _id in the document will be ignored, the server will create a
+new document and assign a new ID. Therefore this is an easy method for
+copying documents. The return value includes the document ID in
+the :ID property.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "ATTACHMENTS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Create a new document, optionally specifying the new document
+ID.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "SOURCE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DESTINATION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REVISION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Copy source document to destination. The source parameter may be
+  either a document ID or a document from which the ID will be
+  obtained. The destination parameter may also be a document ID or
+  document. If the destination document does not already exist it will
+  be created. 
+
+  If the destination document does exist and the intention is to
+  overwrite that document, then the destination document revision must
+  be specified. If the destination parameter is a document then the
+  revision information will be taken from that document unless
+  the :revision parameter is specified. The revision parameter must be
+  the current revision of the destination document. Alternatively the
+  revision parameter may be the keyword
+  :current which will cause this function to fetch the current
+  revision number from the database.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALL-DOCS-BY-SEQ" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OPTIONS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "KEYS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "START-KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "START-KEY-DOCID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "END-KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "END-KEY-DOCID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "LIMIT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STALE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DESCENDING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "SKIP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "GROUP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "GROUP-LEVEL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "REDUCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INCLUDE-DOCS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Fetch a list of all documents that were updated and deleted, in the
+order these actions are done.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AS-DELETED-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return specified document in a format used by bulk-document-update
+to indicate that the document should be deleted in the bulk
+operation.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BULK-DOCUMENT-UPDATE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOCS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ALL-OR-NOTHING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Update multiple documents in a single request. The <b>docs</b>
+  parameter is a list of documents. Any document in the list that does
+  not contain an :|_id| value is created with a CouchDb assigned
+  ID. Documents that contain a '(:|_deleted| . t) top-level property
+  will be deleted. Documents that contain an :|_id| property will be
+  updated. If all-or-nothing is true then all operations must succeed
+  for any to succeed, default is false.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOC-OR-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REVISION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      ((:NAME "IF-MISSING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "ERROR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Delete a document. The doc-or-id parameter may be either the
+ document ID or the document itself. If the doc-or-id value is the
+ document ID and no revision parameter is specified, then the document
+ is fetched from the server to get the current revision, since the
+ revision is necessary to complete the operation. If the doc-or-id
+ value is a document then the revision value in the document is used
+ unless a different revision is specified. At most one revision of the
+ document will be deleted.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ATTACHMENT-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return the name of an attachment, possibly converting from the
+keyword symbol of the clouchdb document to a string e.g. :|text.txt|
+to 'text.txt', or the car of a single document attachment list element
+e.g, '(:|text.txt| (:|stub| . T) (..)) to 'text.txt'.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ATTACHMENT-LIST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOC-OR-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FETCH" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "List attachments associated with document. If the document id is
+specified in the first parameter then this function will fetch the
+corresponding document from the server in order to get the attachment
+list, otherwise it will simply return the list of attachments in the
+specified document unless keyword parameter fetch is true.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOC-OR-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "CONTENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "REVISION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      ((:NAME "CONTENT-TYPE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "*DEFAULT-CONTENT-TYPE*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION
+     "Attach content to a document identified by either the id or doc
+parameter. If the document does not already exist it will be created.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOC-OR-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REVISION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Delete (detach) an attachment. The attachment parameter is either
+the name of the file to remove from the document, which can be either
+a string or a keyword symbol (as obtained from the :|_attachments|
+value of a document) or it's one element of the list of attachments in
+a document.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-ATTACHMENT-STREAM" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOC-OR-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "FORCE-BINARY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Get specified attachment as a stream. The caller is responsible for
+closing the stream. Return stream and HTTP status")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SAVE-ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOC-OR-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "PATH" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IF-DOES-NOT-EXIST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "CREATE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "IF-EXISTS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "SUPERSEDE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Save specified attachement from specified document to path on file
+system. The doc-or-id parameter must either be a document ID string or
+the actual document. The attachment parameter is either the string
+value of the attachment name, e.g. \"file.jpg\", a keyword symbol as
+returned in the car of the list of attachments, .e.g. :|file.jsp|, or
+one of the elements of a document's attachment list,
+e.g: (:|file.jsp| (:|stub| . T) (:|content_type|
+. \"image/jpeg\") (:|length| . 3543434)).
+
+If the path identifies a directory then the target file will be
+created in that directory with the same name as the attachment in the
+document. If the path ends with a file name the attachment will be
+created with that name.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "DOC-OR-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       (:NAME "ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Passed doc-or-id and attachment parameters to get-attachment-stream
+to open the input stream and ensures that the stream is automatically
+closed after execution of the statements in the body.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-DESIGN-DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return specified design document, creating it if it does not already exist.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AD-HOC-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OPTIONS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "START-KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "START-KEY-DOCID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "END-KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "END-KEY-DOCID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "LIMIT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STALE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DESCENDING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "SKIP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "GROUP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "GROUP-LEVEL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "REDUCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INCLUDE-DOCS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      ((:NAME "LANGUAGE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       "javascript"))
+     :DOCUMENTATION "Execute query using an ad-hoc view.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "LANGUAGE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       "javascript"))
+     :DOCUMENTATION
+     "Create one or more views in the specified view document ID.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-PS-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VIEW-DEFS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Create one or more views in the specified view document ID.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VALIDATE-PS-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DEFUN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FN-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "FN-PARAM" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "FN-BODY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Validation for ps-view definition")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "PS-FUNCTION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Create a view using parenscript")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "PS-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "VIEW-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Create a view using parenscript")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFPSFUN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Define a parenscript function in the object format used by
+CouchDb. Specifically, a property name associated with a
+lambda. E.g.:  {'foo' : function () {...}}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REVISION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "IF-MISSING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Delete identified view document")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INVOKE-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OPTIONS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "START-KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "START-KEY-DOCID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "END-KEY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "END-KEY-DOCID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "LIMIT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STALE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "DESCENDING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "SKIP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "GROUP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "GROUP-LEVEL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "REDUCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INCLUDE-DOCS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Invoke a view by specifiying the document ID that contains the view
+and the name of the contained view. The key parameter specifies an
+optional value to match against the view's mapped field. The start-key
+and end-key values specify the optional begin and end range of the
+mapped field(s) of each document to return. If descending is t,
+returns results in reverse order. If update is t, does not refresh
+view for query, use for higher performance but possible data
+inconsistency.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VIEW-UTIL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CMD" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)) :DOCUMENTATION
+     "General function called by view functions")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VIEW-CLEANUP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Clean up old view data")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPACT-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "VIEW-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Compact named view")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-FUNCTIONS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DESIGN-DOC-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LIST-DEFS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "Add lists in list-defs to design document identified by
+design-doc-id. If the document does not exist, create it. If any list
+function definitions already exist in the document, update them.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-LISTS-FNS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DEFS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Add CouchDb lists in list-defs to document identified by id. If the
+document does not exist, create it. If any list function definitions
+already exist in the document, update them.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INVOKE-LIST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "DOC-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "LIST-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION "")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-SHOWS-FNS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DEFS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Add CouchDb lists in list-defs to document identified by id. If the
+document does not exist, create it. If any list function definitions
+already exist in the document, update them.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JSON-SYMBOLS-PACKAGE*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "The package where json-symbols are interned. Default keyword, nil = current package"
+     :INITIAL-VALUE "(FIND-PACKAGE 'KEYWORD)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "JSON-INTERN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JSON-RULES*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JSON-OBJECT-FACTORY*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "#'(LAMBDA () NIL)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JSON-OBJECT-FACTORY-ADD-KEY-VALUE*" :PACKAGE-NAME "CLOUCHDB"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "#'(LAMBDA (CLOUCHDB::OBJ CLOUCHDB::KEY CLOUCHDB::VALUE)
+    (PUSH (CONS (CLOUCHDB::JSON-INTERN CLOUCHDB::KEY) CLOUCHDB::VALUE)
+          CLOUCHDB::OBJ))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JSON-OBJECT-FACTORY-RETURN*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "#'(LAMBDA (CLOUCHDB::OBJ) (NREVERSE CLOUCHDB::OBJ))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JSON-MAKE-BIG-NUMBER*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "#'(LAMBDA (CLOUCHDB::NUMBER-STRING)
+    (FORMAT NIL \"BIGNUMBER:~a\" CLOUCHDB::NUMBER-STRING))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JSON-LISP-ESCAPED-CHARS*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "`((#\\\" . #\\\") (#\\\\ . #\\\\) (#\\/ . #\\/) (#\\b . #\\Backspace)
+  (,#\\f ,@(CODE-CHAR 12)) (#\\n . #\\Newline) (#\\r . #\\Return) (#\\t . #\\Tab))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*USE-STRICT-JSON-RULES*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "T")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "JSON-ESCAPED-CHAR-TO-LISP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "JSON-ESCAPED-CHAR" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LISP-SPECIAL-CHAR-TO-JSON" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "LISP-CHAR" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "JSON-TO-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "JSON-STRING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-JSON" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "*STANDARD-INPUT*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Reads a json element from stream")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-JSON-STRICT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "*STANDARD-INPUT*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Only objects or arrays on top level, no junk afterwards.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-JSON-DISPATCH-RULE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CHARACTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-CONSTANT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPECTED-STRING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "RET-VALUE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-JSON-STRING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-JSON-OBJECT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-JSON-ARRAY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DIGITS*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE "'(#\\0 #\\1 #\\2 #\\3 #\\4 #\\5 #\\6 #\\7 #\\8 #\\9)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JSON-NUMBER-VALID-CHARS*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'LIST CLOUCHDB::*DIGITS* '(#\\e #\\E #\\. #\\+ #\\-))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-JSON-NUMBER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-CHARS-UNTIL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TERMINATOR-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      ((:NAME "CHAR-CONVERTER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "LAMBDA" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         ((:NAME "CH" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+          (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+         ((:NAME "DECLARE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+          ((:NAME "IGNORE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+           (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+         (:NAME "CH" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)))))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-N-CHARS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "N" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-JSON-CHARS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TERMINATORS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JSON-LISP-ESCAPED-CHARS*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "`((#\\\" . #\\\") (#\\\\ . #\\\\) (#\\/ . #\\/) (#\\b . #\\Backspace)
+  (,#\\f ,@(CODE-CHAR 12)) (#\\n . #\\Newline) (#\\r . #\\Return) (#\\t . #\\Tab))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LISP-SPECIAL-CHAR-TO-JSON" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "LISP-CHAR" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-JSON-CHARS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "S" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-JSON-STRING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "S" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-JSON-NUMBER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NR" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-JSON-SYMBOL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KEYWORD-ASSOCP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "E" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Return true if element is a list that begins with a keyword. This
+  is used to help determine associative list-ness.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ASSOCLP" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "E" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)) :DOCUMENTATION
+     "Return true if expression is, or really looks like, an associative
+list. Dead giveaways include cons elements in the list that begin with
+a keyword. Returns the element that produced a positive result, or
+nil.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-ALIST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "D" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-LIST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "D" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "D" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-TO-JSON-STREAM" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Encode document to stream with special support for detecting and
+handling associative lists.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-TO-JSON" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "DOC" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Encode document to string with special support for detecting and
+handling associative lists."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "ADD-ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-DOCUMENT-FETCH-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "ID-OR-REVISION-CONFLICT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DATABASE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "SAVE-ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "LIST-DBS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "GET-ATTACHMENT-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DOCUMENT-PROPERTIES" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "INVOKE-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "ILLEGAL-DATABASE-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "GET-ACTIVE-TASKS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "QUERY-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "COPY-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "CREATE-TEMP-DB-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DOCUMENT-PROPERTY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-PASSWORD" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-USER" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "MAKE-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "POST-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DELETE-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "GET-COUCHDB-INFO" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "ID-MISSING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "ATTACHMENT-NAME" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "GET-UUIDS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DOCUMENT-TO-JSON" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DOC-ERROR" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "CREATE-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "CREATE-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DOCUMENT-MISSING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "PUT-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "CREATE-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "WITH-CONNECTION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "ENCODE-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-EXISTENTIAL-ERROR" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "BULK-DOCUMENT-UPDATE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DELETE-ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "CREATE-PS-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-HOST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "JSON-TO-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "GET-ALL-DOCUMENTS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DOCUMENT-REVISION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DOCUMENT-ID" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "GET-ATTACHMENT-STREAM" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-DOES-NOT-EXIST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "GET-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "AS-DELETED-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "GET-DB-INFO" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-ALREADY-EXISTS" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "CREATE-TEMP-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "WITH-TEMP-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-PROTOCOL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "COMPACT-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "COUCHDB-DOCUMENT-PROPERTIES" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "AS-FIELD-NAME-STRING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DELETE-DB" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "AS-KEYWORD-SYMBOL" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "SET-DOCUMENT-PROPERTY" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "INVALID-INPUT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "ALL-DOCS-BY-SEQ" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DELETE-DOCUMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "AD-HOC-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "PS-VIEW" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-PORT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DOCUMENT-AS-HASH" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "REPLICATE" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "SET-CONNECTION" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "GET-CONFIG" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "ATTACHMENT-MISSING" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "WITH-ATTACHMENT" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "JSON-STRING-OR-STREAM-TO-DOCUMENT" :PACKAGE-NAME "CLOUCHDB"
+     :EXTERNALP T)
+    (:NAME "*COUCHDB*" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "ATTACHMENT-LIST" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "CHANGES" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)
+    (:NAME "DB-DOCUMENT-UPDATE-FN" :PACKAGE-NAME "CLOUCHDB" :EXTERNALP T)))))

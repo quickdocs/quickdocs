@@ -1,0 +1,6 @@
+
+(:TYPE :SYSTEM :NAME "cffi-libffi" :AUTHOR
+ "Liam Healy <lhealy@common-lisp.net>" :MAINTAINER
+ "Liam Healy <lhealy@common-lisp.net>" :VERSION NIL :LICENCE NIL :DESCRIPTION
+ "Foreign structures by value" :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CFFI" "CFFI-GROVEL" "TRIVIAL-FEATURES") :PACKAGE-LIST NIL)

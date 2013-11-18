@@ -1,0 +1,75 @@
+
+(:TYPE :SYSTEM :NAME "clack-middleware-dbi" :AUTHOR "Eitarow Fukamachi"
+ :MAINTAINER NIL :VERSION "12.3" :LICENCE "LLGPL" :DESCRIPTION
+ "Middleware for CL-DBI connection management." :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("CLACK" "CL-SYNTAX" "CL-SYNTAX-ANNOT" "DBI") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CLACK.MIDDLEWARE.DBI" :FULL-NAME
+   "CLACK.MIDDLEWARE.DBI" :DOCUMENTATION "# 
+Clack.Middleware.Dbi - Middleware for CL-DBI connection management.
+
+
+## SYNOPSIS
+
+    (builder
+     (<clack-middleware-dbi>
+      :driver-name :mysql
+      :connect-args '(:database-name \"dbname\"
+                      :username \"fukamachi\"
+                      :password \"password\"))
+     app)
+
+## DESCRIPTION
+
+This is a Clack Middleware component for managing CL-DBI's connections.
+
+## Slots
+
+* driver-name (Required, Keyword)
+* connect-args (Required, List)
+
+`connect-args` parameters (`:username`, `:password` and so on) will be passed to `dbi:connect` as keyword parameters.
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## SEE ALSO
+
+* [CL-DBI](https://github.com/fukamachi/cl-dbi)
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DB*" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI" :EXTERNALP T)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "<CLACK-MIDDLEWARE-DBI>" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "<MIDDLEWARE>" :PACKAGE-NAME "CLACK.MIDDLEWARE" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DRIVER-NAME" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "DRIVER-NAME" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONNECT-ARGS" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "CONNECT-ARGS" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CALL" :PACKAGE-NAME "CLACK.COMPONENT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI" :EXTERNALP NIL)
+       (:NAME "<CLACK-MIDDLEWARE-DBI>" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI"
+        :EXTERNALP T))
+      (:NAME "ENV" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*DB*" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI" :EXTERNALP T)
+    (:NAME "<CLACK-MIDDLEWARE-DBI>" :PACKAGE-NAME "CLACK.MIDDLEWARE.DBI"
+     :EXTERNALP T)))))

@@ -1,0 +1,28 @@
+
+(:TYPE :SYSTEM :NAME "com.informatimago.common-lisp" :AUTHOR
+ "Pascal J. Bourguignon <pjb@informatimago.com>" :MAINTAINER
+ "Pascal J. Bourguignon <pjb@informatimago.com>" :VERSION "1.2.1" :LICENCE
+ "AGPL3" :DESCRIPTION
+ "This system gathers most of the Informatimago Common Lisp systems."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("com.informatimago.common-lisp.lisp-sexp"
+  "com.informatimago.common-lisp.lisp-reader"
+  "com.informatimago.common-lisp.lisp-text"
+  "com.informatimago.common-lisp.cesarum"
+  "com.informatimago.common-lisp.picture"
+  "com.informatimago.common-lisp.arithmetic"
+  "com.informatimago.common-lisp.data-encoding"
+  "com.informatimago.common-lisp.heap"
+  "com.informatimago.common-lisp.html-base"
+  "com.informatimago.common-lisp.html-generator"
+  "com.informatimago.common-lisp.html-parser"
+  "com.informatimago.common-lisp.http" "com.informatimago.common-lisp.bank"
+  "com.informatimago.common-lisp.csv" "com.informatimago.common-lisp.diagram"
+  "com.informatimago.common-lisp.regexp" "com.informatimago.common-lisp.ed"
+  "com.informatimago.common-lisp.graphviz"
+  "com.informatimago.common-lisp.invoice"
+  "com.informatimago.common-lisp.interactive"
+  "com.informatimago.common-lisp.parser"
+  "com.informatimago.common-lisp.rfc2822"
+  "com.informatimago.common-lisp.rfc3548" "com.informatimago.common-lisp.unix")
+ :PACKAGE-LIST NIL)

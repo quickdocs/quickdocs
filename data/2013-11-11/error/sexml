@@ -1,0 +1,28 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "sexml"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+; 
+; caught ERROR:
+;   READ error during COMPILE-FILE:
+;   
+;     Symbol "ARGLIST-DISPATCH" not found in the SWANK package.
+;   
+;       Line: 245, Column: 39, File-Position: 10275
+;   
+;       Stream: #<SB-SYS:FD-STREAM
+;                 for "file /home/quickdocs_dev/quicklisp/dists/quicklisp/software/sexml-20121013-git/sexml.lisp"
+;                 {E6805B9}>
+; 
+; compilation unit aborted
+;   caught 3 fatal ERROR conditions
+;   caught 1 ERROR condition
+Error: COMPILE-FILE-ERROR while compiling #<CL-SOURCE-FILE "sexml" "sexml">

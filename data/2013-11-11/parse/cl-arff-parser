@@ -1,0 +1,163 @@
+
+(:TYPE :SYSTEM :NAME "cl-arff-parser" :AUTHOR "Pieter Wellens" :MAINTAINER NIL
+ :VERSION "0.8" :LICENCE "see LICENSE.txt" :DESCRIPTION
+ "A parser for Weka arff (Attribute-Relation File
+  Format) Machine learning datasets."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-ARFF-PARSER" :FULL-NAME "CL-ARFF-PARSER"
+   :DOCUMENTATION "A parser and some manipulation for Weka
+  Machine (ARFF) Learning datasets."
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "An arff object contains all the data found in a
+  parsed arff file."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ARFF-PATH" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "ARFF-PATH" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "A string to the path of the arff
+              file. e.g. /home/user/myData/foo.arff")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ARFF-RELATION" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "ARFF-RELATION" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The string after @relation. This is
+             essentially the name of the arff.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ARFF-ATTRIBUTES" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "ARFF-ATTRIBUTES" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "The attributes as specified in the
+               header. Each attribute is a list that looks as
+               follows: (\"attribute-name\" (\"type\")). In case of a
+               nominal attribute it looks like
+               this: (\"attribute-name\" (\"nominal\" . values)). ")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ARFF-DATA" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "ARFF-DATA" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION
+       "All the data. The bulk of the file.")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+       (:NAME "ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL (:NAME "PPRINT-POP" :PACKAGE-NAME NIL :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "PPRINT-EXIT-IF-LIST-EXHAUSTED" :PACKAGE-NAME NIL :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRIM-COMMENTS-AND-SPACES" :PACKAGE-NAME "CL-ARFF-PARSER"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "COMMENT-MARKER" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL)
+       "%"))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CSV->LIST" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "SEPARATOR" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL) ","))
+     :DOCUMENTATION
+     "Given a string like '1,2,3, 6, foo' will return list ('1' '2' '3'
+'6' 'foo')")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-REPLACE" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR1" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL)
+      (:NAME "SUB1" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL)
+      (:NAME "SUB2" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Nondestructively replaces all occurences of sub1 in str1 by sub2")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEARCH-SPACE-OR-TAB" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "LINE" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-ATTRIBUTE-NAME" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "LINE" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Assumes the beginning of this line is the attribute-name. If spaces
+are to be included in the name then the entire name must be quoted. As
+second return value it also returns the rest of the line which should
+be the datatype.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-DATATYPE" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LINE" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION "Assumes that the line starts with the datatype.Look at
+http://www.cs.waikato.ac.nz/~ml/weka/arff.html for information about
+the datatype. There is no support for the date datatype.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-@ATTRIBUTE" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LINE" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@attribute <attribute-name> <datatype>. Returns a list containing
+the attribute-name and then a list containing datatype information as
+parsed by parse-datatype.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-DATA" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "LINE" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ARFF-PATH" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T))
+     :DOCUMENTATION
+     "The arff-path should be a string pointing to an arff-file.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "REMOVE-ATTRIBUTE-BY-NAME" :PACKAGE-NAME "CL-ARFF-PARSER"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION "Removes the feature with the given name from the
+  arff object (not from the actual file). It will remove it both from
+  that @attributes and the @data.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-ATTRIBUTE-BY-NAME" :PACKAGE-NAME "CL-ARFF-PARSER"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+       (:NAME "ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T))
+      ((:NAME "NAME" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REMOVE-ATTRIBUTE-BY-NAME" :PACKAGE-NAME "CL-ARFF-PARSER"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+       (:NAME "ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T))
+      (:NAME "NAME" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "ARFF-PATH" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+    (:NAME "ARFF-ATTRIBUTES" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+    (:NAME "ARFF-DATA" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+    (:NAME "ARFF-RELATION" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+    (:NAME "ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+    (:NAME "PARSE-ARFF" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP T)
+    (:NAME "REMOVE-ATTRIBUTE-BY-NAME" :PACKAGE-NAME "CL-ARFF-PARSER" :EXTERNALP
+     T)))))

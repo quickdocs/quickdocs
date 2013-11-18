@@ -1,0 +1,225 @@
+
+(:TYPE :SYSTEM :NAME "cl-pop" :AUTHOR NIL :MAINTAINER NIL :VERSION "0.2.0"
+ :LICENCE NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("USOCKET" "CL-PPCRE") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-POP" :FULL-NAME "CL-POP" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*POP-DEBUG?" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE "NIL")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "PRINT-DEBUG" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :DOCUMENTATION
+     "Debuging tool")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "POP-CONNECTION" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "HOST" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "HOST" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PORT" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "PORT" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "USERNAME" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "USERNAME" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PASSWORD" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS ((:NAME "PASSWORD" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SOCKET" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "SOCKET" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SOCKET-STREAM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "SOCKET-STREAM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :READERS
+       NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STATE" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "STATE" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION
+       "Current state of the connection options are :disconnected, :connected")))
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TERMINATION-STRING*" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(FORMAT NIL \".~C\" #\\Return)")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-POP-CONNECTION" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VAR" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARGS" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OPEN-POP-CONNECTION" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HOST" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      ((:NAME "PORT" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL) 110)
+      (:NAME "USERNAME" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "PASSWORD" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "AUTHORIZE-POP-CONNECTION" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLOSE-POP-CONNECTION" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MESSAGE-COUNT" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :DOCUMENTATION
+     "Number of message currently in the mailbox")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SAVE-MESSAGE" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "MESSAGE-NUM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "PATHNAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Saves message's entire contents including headers into a file with the given pathname")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MESSAGE-HEADERS" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "MESSAGE-NUM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns an assoc list of the email headers, if duplicate or multiline headers are present, they will be appended togther to form one associated pair")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-RAW-MESSAGE-HEADERS" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "HEADERS" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RETRIEVE-POP-MESSAGE" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "MESSAGE-NUM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "MAX-SIZE" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns a plist of the message with :header containing the parsed header fields and body containing a list where each element in the list is a string representing 1 line of the message. If a max-size is providing in bytes the message size is checked first if it is greater then the max nil is returned")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-POP-MESSAGE" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "MESSAGE-NUM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION "Mark the given message number for deletion")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-POP-STAT" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :DOCUMENTATION
+     "conn - pop-connection instance 
+   Executes the pop stat command, returns a list if successful, with the number of messages in the mailbox and their combined size")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-POP-LIST" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "MESSAGE-NUM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "Conn -- pop-connection instance,
+   Message-num -- integer, number of desired message optional
+   Returns list of lists where the first atom is the message number and the second is the message size. If a message number is provided only the list for that particular message will be return.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-POP-DELE" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "MESSAGE-NUM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION "conn - pop connection class
+   message-num - pop message number to mark for deletion
+   Mark the given message number for deletion. Deletion occurs when the Quit Command is given")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-POP-RSET" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :DOCUMENTATION
+     "conn - pop connection class
+   Reset all messages that have been marked for deletion")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-POP-UIDL" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "MESSAGE-NUM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "conn - pop-connection instance
+   message-num (optional) if given only return list for this message
+   Returns a list of lists, where the first element is the message num and the second is the unique id number for that message. If a message num is given only that individual messages information is returned")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-POP-NOOP" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :DOCUMENTATION
+     "conn - pop-conneciton instance 
+   Sends a no operation command")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-POP-TOP" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "MESSAGE-NUM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "LINE-COUNT" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Retrieves the messages header for the given message num and the first # of lines of the body of the message as determined by the line-count input")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-POP-RETR" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "MESSAGE-NUM" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Retrieves the entire message and returns a list where each atom in the list is one line in the file. It is recommended that one uses the retrieve-pop-message function instead which offers a check for large mail messages.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-POP-QUIT" :PACKAGE-NAME "CL-POP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)) :DOCUMENTATION
+     "Ends the connection on the server")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEND-POP-COMMAND" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "COMMAND" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "READ-SINGLE-POP-RESPONSE" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads a 1 line pop response, and returns two values, the first is whether the response came back as positive, the second is the information / message of the response.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "READ-MULTI-LINE-POP-RESPONSE" :PACKAGE-NAME "CL-POP" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONN" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "MASK-DOT?" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLEAN-POP-MESSAGE" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "MASK-DOT?" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Removes status key and end of line characters from string")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BREAK-POP-RESPONSE" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "INTEGERS" :PACKAGE-NAME "CL-POP" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Separate answers into their individual components. would be faster to use regular expressions, but this keeps to pop package lighter. The integers key can be set to t if the answer is known to be a list of integers"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "SEND-POP-RSET" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "CLOSE-POP-CONNECTION" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "OPEN-POP-CONNECTION" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "SEND-POP-STAT" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "SEND-POP-LIST" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "WITH-POP-CONNECTION" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "SEND-POP-UIDL" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "MESSAGE-HEADERS" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "SEND-POP-TOP" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "SEND-POP-DELE" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "DELETE-POP-MESSAGE" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "SEND-POP-RETR" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "MESSAGE-COUNT" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "RETRIEVE-POP-MESSAGE" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "SEND-POP-QUIT" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "SEND-POP-NOOP" :PACKAGE-NAME "CL-POP" :EXTERNALP T)
+    (:NAME "SAVE-MESSAGE" :PACKAGE-NAME "CL-POP" :EXTERNALP T)))))

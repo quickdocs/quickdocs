@@ -1,0 +1,390 @@
+
+(:TYPE :SYSTEM :NAME "general-accumulator" :AUTHOR
+ "Teemu Likonen <tlikonen@iki.fi>" :MAINTAINER NIL :VERSION NIL :LICENCE
+ "Public domain" :DESCRIPTION "A general-purpose, extensible value accumulator"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "GENERAL-ACCUMULATOR" :FULL-NAME "GENERAL-ACCUMULATOR"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :GENERIC :SYMBOL
+     (:NAME "VALUE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL))
+     :DOCUMENTATION "Return the accumulated value of _accumulator_
+object.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VALUE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+       :ACCESSORS NIL :READERS
+       ((:NAME "VALUE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "VECTOR-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "SPECIAL-VECTOR-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR"
+      :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "VECTOR-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR"
+       :EXTERNALP NIL))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "LIST-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LAST-CONS" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "REDUCE-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP
+      NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "INITIALIZE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Return an accumulator object which is used to keep the information
+of an accumulation process.
+
+The _object_ argument can anything and its primary purpose is a method
+dispatching: different classes of the _object_ establish different kind
+of accumulators. Methods can use the _object_ value too, as well as any
+keyword arguments passed to the generic function.
+
+Methods should return an object, usually an instance of some class. That
+object can later be used with generic functions `accumulate` and
+`value`.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "VECTOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "STRING" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "BIT-VECTOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "LIST" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ACCUMULATE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+      (:NAME "OBJECT" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Accumulate _object_ to _accumulator_ instance. Methods of this
+generic function should specialize at least on the first
+argument (_accumulator_) and they should accumulate the second
+argument (_object_) to the accumulator object.")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ACCUMULATE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACC" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP
+        NIL))
+      (:NAME "ITEM" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ACCUMULATE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACC" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "VECTOR-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR"
+        :EXTERNALP NIL))
+      (:NAME "ITEM" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ACCUMULATE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACC" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "SPECIAL-VECTOR-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR"
+        :EXTERNALP NIL))
+      ((:NAME "ITEM" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ACCUMULATE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACC" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "SPECIAL-VECTOR-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR"
+        :EXTERNALP NIL))
+      ((:NAME "ITEM" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "CONS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ACCUMULATE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACC" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "LIST-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP
+        NIL))
+      (:NAME "ITEM" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ACCUMULATE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "ACC" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "REDUCE-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR"
+        :EXTERNALP NIL))
+      (:NAME "ITEM" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "NAME" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "OBJECT" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "KEYWORD-ARGUMENTS" :PACKAGE-NAME "GENERAL-ACCUMULATOR"
+        :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Create a local function `name` for handling an accumulation of type
+_object_. Execute _body_ forms and return the value of the last form.
+
+This macro uses generic functions to handle the accumulation. There are
+some built-in methods defined for common use-cases (see below) but user
+can add more methods and therefore any kind of accumulation is possible.
+
+First a new accumulator object is created with the generic function
+`initialize`. The _object_ argument (evaluated) and optional
+_keyword-arguments_ (evaluated) are passed to `initialize` and it should
+return an accumulator object that stores the state of the accumulation.
+
+Then a local function `name` is created for simple accumulation. The
+function can optionally take one argument which is an object to be
+accumulated. The generic function `accumulate` is used to handle the
+accumulation. The return value of the local function comes from the
+generic function `accumulate`. The built-in accumulators return the
+input argument.
+
+If the local function is called without arguments then the generic
+function `value` is called. It should return the currently accumulated
+value.
+
+
+#### Built-in accumulators
+
+The _object_ argument is used to define the type of accumulation
+process. There are several built-in types:
+
+  * `:list`
+
+    Creates a list collector. Each accumulated object is collected to a
+    list. Example:
+
+        GENACC> (with-accumulator (collect :list)
+                  (collect 1) (collect 2) (collect 3)
+                  (collect))
+        (1 2 3)
+
+    The collecting is done destructively. The applicable `accumulate`
+    method maintains a pointer to the last cons cell of the list and
+    each time modifies its cdr value to point to a new cons cell.
+
+  * [a list]
+
+    If _object_ is of type `list` then new elements are collected at the
+    end. Example:
+
+        GENACC> (with-accumulator (collect (list 1 2 3))
+                  (collect 4) (collect 5)
+                  (collect))
+        (1 2 3 4 5)
+
+    This is a destructive operation. The cdr value of the last cons cell
+    of the original list is modified and linked to a new cons cell.
+
+  * `:vector`
+
+    Creates a general vector collector. It creates an adjustable vector
+    with a fill pointer 0 and element type T. New elements are pushed to
+    that vector with `cl:vector-push-extend` function. Example:
+
+        GENACC> (with-accumulator (collect :vector)
+                  (collect \"first\") (collect \"second\")
+                  (collect))
+        #(\"first\" \"second\")
+
+  * `:string`
+
+    This is similar to `:vector` but the element type is `character`.
+    The underlying `accumulate` methods can take a single character or a
+    sequence of characters as the argument. Example:
+
+        GENACC> (with-accumulator (collect :string)
+                  (collect #\\a)
+                  (collect \"bcd\")
+                  (collect #(#\\e #\\f))
+                  (collect '(#\\g #\\h #\\i))
+                  (collect))
+        \"abcdefghi\"
+
+  * `:bit-vector`
+
+    This is similar to `:string` but the element type is `bit`. The
+    argument for the accumulator function can a bit or a sequence of
+    bits.
+
+  * [a vector]
+
+    If _object_ is of type `vector` which satisfies the test
+    `cl:array-has-fill-pointer-p` then that vector is appended starting
+    from its current fill pointer.
+
+        GENACC> (with-accumulator
+                    (collect (make-array 2 :fill-pointer 2 :adjustable t
+                                         :initial-contents (vector 1 2)))
+                  (collect 3)
+                  (collect 4)
+                  (collect))
+        #(1 2 3 4)
+
+    Note that if the vector is not adjustable then the accumulator may
+    reach vector's limits and `cl:vector-push-extend` signals an error.
+
+  * [a function]
+
+    If _object_ is of type `function` then the accumulator behaves like
+    the `cl:reduce` function: all accumulated objects are combined into
+    one by calling the given reducer function. Examples:
+
+        GENACC> (with-accumulator (summing #'+)
+                  (summing 5) (summing 7) (summing 11)
+                  (summing))
+        23
+
+        GENACC> (with-accumulator (nc #'nconc)
+                  (nc (list 1 2 3))
+                  (nc (list 4 5 6))
+                  (nc (list 7 8 9))
+                  (nc))
+        (1 2 3 4 5 6 7 8 9)
+
+        GENACC> (with-accumulator (early-char (lambda (a b)
+                                                (if (char< a b) a b)))
+                  (early-char #\\o)
+                  (early-char #\\b)
+                  (early-char #\\s)
+                  (early-char))
+        #\\b
+
+
+#### Adding a custom accumulator
+
+The whole accumulation process is handled by three generic functions:
+`initialize`, `accumulate` and `value`. Writing new methods for those
+functions allow adding any kind of accumulators. The following example
+adds an accumulator which calculates the arithmetic mean of accumulated
+numbers.
+
+First we define a class whose instances will keep the state of the
+accumulator. In this case we need to store the sum and the count of
+accumulated numbers so we create slots for them.
+
+    (defclass mean-accumulator ()
+      ((sum :initform 0)
+       (count :initform 0)))
+
+Then we add a method for initializing an instance of the class. The
+generic function `initialize` is used for that. It is called with the
+_object_ argument of `with-accumulator` macro and with optional
+_keyword-arguments_. In this example we use an _eql_ specializer for
+symbol `:mean`. We don't use any keyword arguments so there's just empty
+_&key_ at the end of the lambda list.
+
+    (defmethod genacc:initialize ((type (eql :mean)) &key)
+      (make-instance 'mean-accumulator))
+
+Now we create a method for generic function `accumulate`. The function
+is called with two arguments: (1) the accumulator object created by
+`initialize` and (2) the object that is meant to be accumulated. This
+method specializes on our `mean-accumulator` class as well as on number
+class. The number is added to the previous value and the count is
+increased by one.
+
+    (defmethod genacc:accumulate ((object mean-accumulator)
+                                  (number number))
+      (with-slots (sum count) object
+        (incf sum number)
+        (incf count 1)))
+
+For returning the accumulated mean value we create a method for the
+generic function `value`. This method, too, must specialize on the
+`mean-accumulator` class. We get the current accumulated mean value by
+dividing the value of _sum_ slot with the value of _count_ slot.
+
+    (defmethod genacc:value ((object mean-accumulator))
+      (with-slots (sum count) object
+        (/ sum count)))
+
+Now the custom accumulator is ready and it can be used with the
+`with-accumulator` macro. Example:
+
+    GENACC> (with-accumulator (mean :mean)
+              (loop repeat 10 do (mean (random 1000)))
+              (format t \"The mean so far: ~A~%\" (mean))
+              (loop repeat 10 do (mean (random 1000)))
+              (format t \"The final mean:  ~A~%\" (mean)))
+    The mean so far: 2512/5
+    The final mean:  2704/5
+    NIL"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "VALUE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+    (:NAME "WITH-ACCUMULATOR" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+    (:NAME "INITIALIZE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)
+    (:NAME "ACCUMULATE" :PACKAGE-NAME "GENERAL-ACCUMULATOR" :EXTERNALP T)))))

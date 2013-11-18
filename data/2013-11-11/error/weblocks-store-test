@@ -1,0 +1,31 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "weblocks-store-test"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+Heap exhausted during allocation: 0 bytes available, 35920 requested.
+ Gen StaPg UbSta LaSta LUbSt Boxed Unboxed LB   LUB  !move  Alloc  Waste   Trig    WP  GCs Mem-age
+   0: 84075     0 131071     0 17523   809 34124    15    23 192868360 22052856 24025141    0   1  0.0000
+   1: 81484 81491     0     0 15048  6994   105    25    32 70295560 20520952 38781245 9892   1  0.4753
+   2:     0     0     0     0 19686  2795   267    60    54 89601544 3820024 94970253 19584   1  0.0000
+   3: 72660 72546 13472     0 18228  4297  1033   461   125 93174128 5207696 47650045 18356   1  0.4538
+   4:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
+   5:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
+   6:     0     0     0     0  7648  1915     0     0     0 39170048     0  2000000 6620   0  0.0000
+   Total bytes allocated    = 485109640
+   Dynamic-space-size bytes = 536870912
+GC control variables:
+   *GC-INHIBIT* = true
+   *GC-PENDING* = true
+   *STOP-FOR-GC-PENDING* = false
+fatal error encountered in SBCL pid 32056(tid 3084744384):
+Heap exhausted, game over.
+

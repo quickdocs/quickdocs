@@ -1,0 +1,5 @@
+
+(:TYPE :SYSTEM :NAME "cl-xmpp-tls" :AUTHOR "Erik Enge" :MAINTAINER NIL :VERSION
+ NIL :LICENCE "MIT" :DESCRIPTION
+ "Common Lisp XMPP client implementation with TLS+SASL support"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("CL-XMPP-SASL" "CL+SSL") :PACKAGE-LIST NIL)

@@ -1,0 +1,145 @@
+
+(:TYPE :SYSTEM :NAME "osc" :AUTHOR "nik gaffney <nik@fo.am>" :MAINTAINER NIL
+ :VERSION "0.5" :LICENCE "LLGPL" :DESCRIPTION
+ "The Open Sound Control protocol, aka OSC" :LONG-DESCRIPTION NIL :DEPENDS-ON
+ NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "OSC" :FULL-NAME "OSC" :DOCUMENTATION
+   "OSC aka the 'open sound control' protocol" :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-BUNDLE" :PACKAGE-NAME "OSC" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DATA" :PACKAGE-NAME "OSC" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TIMETAG" :PACKAGE-NAME "OSC" :EXTERNALP NIL))
+     :DOCUMENTATION "will encode an osc message, or list of messages as a bundle
+   with an optional timetag (symbol or 64bit int).
+   doesnt handle nested bundles")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-BUNDLE-ELT" :PACKAGE-NAME "OSC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "DATA" :PACKAGE-NAME "OSC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-MESSAGE" :PACKAGE-NAME "OSC" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ADDRESS" :PACKAGE-NAME "OSC" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DATA" :PACKAGE-NAME "OSC" :EXTERNALP NIL))
+     :DOCUMENTATION "encodes an osc message with the given address and data.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-ADDRESS" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "ADDRESS" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-TYPETAGS" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "DATA" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "creates a typetag string suitable for the given data.
+  valid typetags according to the osc spec are ,i ,f ,s and ,b
+  non-std extensions include ,{h|t|d|S|c|r|m|T|F|N|I|[|]}
+                             see the spec for more details. ..
+
+  NOTE: currently handles the following tags 
+   i => #(105) => int32
+   f => #(102) => float
+   s => #(115) => string 
+   b => #(98)  => blob
+  and considers non int/float/string data to be a blob.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-DATA" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "DATA" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "encodes data in a format suitable for an OSC message")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-BUNDLE" :PACKAGE-NAME "OSC" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DATA" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "decodes an osc bundle into a list of decoded-messages, which has
+   an osc-timetagas its first element")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-MESSAGE" :PACKAGE-NAME "OSC" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "MESSAGE" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "reduces an osc message to an (address . data) pair. ..")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-ADDRESS" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "ADDRESS" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-TAGED-DATA" :PACKAGE-NAME "OSC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "DATA" :PACKAGE-NAME "OSC" :EXTERNALP NIL))
+     :DOCUMENTATION "decodes data encoded with typetags...
+  NOTE: currently handles the following tags 
+   i => #(105) => int32
+   f => #(102) => float
+   s => #(115) => string
+   b => #(98)  => blob")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+UNIX-EPOCH+" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE "(ENCODE-UNIVERSAL-TIME 0 0 0 1 1 1970 0)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-TIMETAG" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "UTIME" :PACKAGE-NAME "OSC" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SUBSECONDS" :PACKAGE-NAME "OSC" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "encodes an osc timetag from a universal-time and 32bit 'sub-second' part.
+   for an 'instantaneous' timetag use (encode-timetag :now) 
+   for a timetag with the current time use (encode-timetag :time)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-TIMETAG" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "TIMETAG" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "decomposes a timetag into unix-time and a subsecond,. . .")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-FLOAT32" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "F" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "encode an ieee754 float as a 4 byte vector. currently sbcl/cmucl specifc")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-FLOAT32" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "S" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "ieee754 float from a vector of 4 bytes in network byte order")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-INT32" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "S" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "4 byte -> 32 bit int -> two's compliment (in network byte order)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-UINT32" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "S" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "4 byte -> 32 bit unsigned int")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-INT32" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "I" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "convert an integer into a sequence of 4 bytes in network byte order.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-STRING" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "DATA" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "converts a binary vector to a string and removes trailing #nul characters")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-STRING" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "encodes a string as a vector of character-codes, padded to 4 byte boundary")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE-BLOB" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BLOB" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "decode a blob as a vector of unsigned bytes.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE-BLOB" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BLOB" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "encodes a blob from a given vector")
+    (:TYPE :FUNCTION :SYMBOL (:NAME "CAT" :PACKAGE-NAME "OSC" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CATATAC" :PACKAGE-NAME "OSC" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PADDING-LENGTH" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "S" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "returns the length of padding required for a given length of string")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PADDED-LENGTH" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "S" :PACKAGE-NAME "OSC" :EXTERNALP NIL)) :DOCUMENTATION
+     "returns the length of an osc-string made from a given length of string")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-PADDING" :PACKAGE-NAME "OSC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "returns the padding required for a given osc string")
+    (:TYPE :FUNCTION :SYMBOL (:NAME "PAD" :PACKAGE-NAME "OSC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "OSC" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "make a sequence of the required number of #Nul characters"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "DECODE-BUNDLE" :PACKAGE-NAME "OSC" :EXTERNALP T)
+    (:NAME "ENCODE-MESSAGE" :PACKAGE-NAME "OSC" :EXTERNALP T)
+    (:NAME "ENCODE-BUNDLE" :PACKAGE-NAME "OSC" :EXTERNALP T)
+    (:NAME "DECODE-MESSAGE" :PACKAGE-NAME "OSC" :EXTERNALP T)))))

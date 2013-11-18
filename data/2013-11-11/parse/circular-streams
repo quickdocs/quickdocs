@@ -1,0 +1,205 @@
+
+(:TYPE :SYSTEM :NAME "circular-streams" :AUTHOR "Tomohiro Matsuyama"
+ :MAINTAINER NIL :VERSION "0.1" :LICENCE "LLGPL" :DESCRIPTION
+ "Circularly readable streams for Common Lisp" :LONG-DESCRIPTION
+ "# Circular-Streams - Circularly readable streams for Common Lisp
+
+## Usage
+
+    (defparameter *stream*
+                  (flex:make-in-memory-input-stream
+                   #(72 101 108 108 111)))
+    
+    (defparameter *circular-stream*
+                  (make-circular-input-stream *stream*))
+    
+    (read-char *circular-stream*)          ;=> #\\H
+    (read-char *circular-stream*)          ;=> #\\e
+    (read-char *circular-stream*)          ;=> #\\l
+    (read-char *circular-stream*)          ;=> #\\l
+    (read-char *circular-stream*)          ;=> #\\o
+    (read-char *circular-stream* nil :eof) ;=> :eof
+    
+    (let ((buf (make-array 5 :adjustable t :fill-pointer 5)))
+      (read-sequence buf *circular-stream*)
+      (flex:octets-to-string buf))
+    ;=> \"Hello\"
+
+## Description
+
+Circular-Streams allows you to read streams circularly by wrapping real streams. Once you reach end-of-file of a stream, it's file position will be reset to 0 and you're able to read it again.
+
+Note this library can treat only octet streams which has a method `read-byte`. This might be expanded in the future.
+
+This library was originally written by Tomohiro Matsuyama as a part of [Clack](http://clacklisp.org), Eitarow Fukamachi ported it with some improvements.
+
+## API Reference
+
+### [Class] circular-input-stream
+
+Class for circular input streams. `make-circular-input-stream` is available to create an instance.
+
+### [Function] make-circular-input-stream
+
+Creates `circular-input-stream` and returns it. If `:buffer` is specified, the instance uses it as an internal buffer. You need this to reuse `circular-input-stream` without saving itself.
+
+### [Function] make-circular-stream-buffer
+
+Creates a buffer array for `circular-input-stream`.
+
+## Author
+
+* Tomohiro Matsuyama (tomo@cx4a.org)
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## Copyright
+
+Copyright (c) 2011-2012 Tomohiro Matsuyama (tomo@cx4a.org)  
+Copyright (c) 2012 Eitarow Fukamachi (e.arrows@gmail.com)
+
+# License
+
+Licensed under the LLGPL License.
+
+# See Also
+
+* [Gray streams](http://www.cliki.net/Gray%20streams)
+* [trivial-gray-streams](http://www.cliki.net/trivial-gray-streams)
+"
+ :DEPENDS-ON ("CL-ANNOT" "CL-SYNTAX-ANNOT" "TRIVIAL-GRAY-STREAMS")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CIRCULAR-STREAMS" :FULL-NAME "CIRCULAR-STREAMS"
+   :DOCUMENTATION NIL :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CIRCULAR-STREAM-BUFFER" :PACKAGE-NAME "CIRCULAR-STREAMS"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Creates a buffer array for `circular-input-stream'.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP
+      T)
+     :SUPER-CLASS-LIST
+     ((:NAME "TRIVIAL-GRAY-STREAM-MIXIN" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+       :EXTERNALP T)
+      (:NAME "FUNDAMENTAL-BINARY-INPUT-STREAM" :PACKAGE-NAME
+       "TRIVIAL-GRAY-STREAMS" :EXTERNALP T))
+     :DOCUMENTATION
+     "Class for circular input streams. `make-circular-input-stream' is available to create an instance."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS
+       ((:NAME "CIRCULAR-STREAM-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+         :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "BUFFER" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "CIRCULAR-STREAM-BUFFER" :PACKAGE-NAME "CIRCULAR-STREAMS"
+         :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "CIRCULAR-STREAM-POSITION" :PACKAGE-NAME "CIRCULAR-STREAMS"
+         :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "BUFFER" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       ((:NAME "MAKE-CIRCULAR-STREAM-BUFFER" :PACKAGE-NAME "CIRCULAR-STREAMS"
+         :EXTERNALP T))))
+     :DOCUMENTATION
+     "Creates `circular-input-stream' and returns it. If `:buffer' is specified, the instance uses it as an internal buffer. You need this to reuse `circular-input-stream' without saving itself.")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "OCTET" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-ELEMENT-TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CIRCULAR-STREAM-FETCH" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-READ-BYTE" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-READ-CHAR" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-READ-LINE" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-LISTEN" :PACKAGE-NAME "SB-GRAY" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-READ-SEQUENCE" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+        :EXTERNALP T))
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STREAM-FILE-POSITION" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STREAM-FILE-POSITION" :PACKAGE-NAME "TRIVIAL-GRAY-STREAMS"
+       :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "POSITION-SPEC" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+      ((:NAME "THIS" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP NIL)
+       (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+        :EXTERNALP T)))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "CIRCULAR-STREAM-BUFFER" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP
+     T)
+    (:NAME "MAKE-CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS"
+     :EXTERNALP T)
+    (:NAME "CIRCULAR-STREAM-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP
+     T)
+    (:NAME "MAKE-CIRCULAR-STREAM-BUFFER" :PACKAGE-NAME "CIRCULAR-STREAMS"
+     :EXTERNALP T)
+    (:NAME "CIRCULAR-INPUT-STREAM" :PACKAGE-NAME "CIRCULAR-STREAMS" :EXTERNALP
+     T)
+    (:NAME "CIRCULAR-STREAM-POSITION" :PACKAGE-NAME "CIRCULAR-STREAMS"
+     :EXTERNALP T)))))

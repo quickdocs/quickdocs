@@ -1,0 +1,1532 @@
+
+(:TYPE :SYSTEM :NAME "cl-lastfm" :AUTHOR
+ "Nicolas Lamirault <nicolas.lamirault@gmail.com>" :MAINTAINER
+ "Nicolas Lamirault <nicolas.lamirault@gmail.com>" :VERSION "0.1" :LICENCE
+ "MIT License" :DESCRIPTION "Common Lisp wrapper for the Last.fm web service."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("DRAKMA" "CXML-STP" "URL-REWRITE" "TRIVIAL-UTF-8") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-LASTFM" :FULL-NAME "CL-LASTFM" :DOCUMENTATION
+   "Common Lisp wrapper to Last.fm web service.
+See more explanation from the @a[http://www.lastfm.fr/api]{website}.
+It has been tested under @a[http://www.sbcl.org]{SBCL}
+ 
+@begin[Albums]{section}
+@aboutfun{album-get-info}
+@aboutfun{album-search}
+@end{section}
+
+@begin[Artists]{section}
+@aboutfun{artist-get-events}
+@aboutfun{artist-get-info}
+@aboutfun{artist-get-similar}
+@aboutfun{artist-get-top-albums}
+@aboutfun{artist-get-top-fans}
+@aboutfun{artist-get-top-tags}
+@aboutfun{artist-get-top-tracks}
+@aboutfun{artist-search}
+@end{section}
+
+@begin[Geo]{section}
+@aboutfun{geo-get-events}
+@aboutfun{geo-top-artists}
+@aboutfun{geo-top-tracks}
+@end{section}
+
+@begin[User]{section}
+@aboutfun{user-get-events}
+@aboutfun{user-get-friends}
+@aboutfun{user-get-loved-tracks}
+@aboutfun{user-get-neighbours}
+@aboutfun{user-get-top-albums}
+@aboutfun{user-get-top-artists}
+@aboutfun{user-get-top-tags}
+@aboutfun{user-get-top-tracks}
+@aboutfun{user-get-recent-tracks}
+@aboutfun{user-get-shouts}
+@aboutfun{user-get-weekly-album-chart}
+@aboutfun{user-get-weekly-artist-chart}
+@aboutfun{user-get-weekly-chart-list}
+@aboutfun{user-get-weekly-track-chart}
+@end{section}
+
+@begin[Group]{section}
+@aboutfun{group-get-members}
+@aboutfun{group-get-weekly-album-chart}
+@aboutfun{group-get-weekly-artist-chart}
+@aboutfun{group-get-weekly-chart-list}
+@aboutfun{group-get-weekly-track-chart}
+@end{section}
+
+@begin[Library]{section}
+@aboutfun{library-get-albums}
+@aboutfun{library-get-artists}
+@aboutfun{library-get-tracks}
+@end{section}
+
+@begin[Tag]{section}
+@aboutfun{tag-get-similar}
+@aboutfun{tag-get-similar}
+@aboutfun{tag-get-top-albums}
+@aboutfun{tag-get-top-artists}
+@aboutfun{tag-get-top-tracks}
+@aboutfun{tag-get-top-tags}
+@aboutfun{tag-get-weekly-artist-chart}
+@aboutfun{tag-get-weekly-chart-list}
+@aboutfun{tag-search}
+@end{section}
+
+@begin[Track]{section}
+@aboutfun{track-get-info}
+@aboutfun{track-get-similar}
+@aboutfun{track-get-top-fans}
+@aboutfun{track-get-top-tags}
+@aboutfun{track-search}
+@end{section}
+
+@begin[Events]{section}
+@aboutfun{event-get-info}
+@aboutfun{event-get-shouts}
+@end{section}
+
+@begin[TasteOMeter]{section}
+@aboutfun{tasteometer-compare}
+@end{section}
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :CONSTANT :SYMBOL
+     (:NAME "+LAST-FM-WS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION "The LastFM web service." :INITIAL-VALUE
+     "\"http://ws.audioscrobbler.com/2.0/\"")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+LAST-FM-WS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION "The LastFM web service." :INITIAL-VALUE
+     "\"http://ws.audioscrobbler.com/2.0/\"")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEF-LASTFM-URI" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "URI" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*API-KEY*" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*API-SECRET-KEY*" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-EVENTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.getevents&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-EVENTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.getevents&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-INFO+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.getinfo&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-INFO+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.getinfo&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-SIMILAR+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.getsimilar&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-SIMILAR+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.getsimilar&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-TOP-ALBUMS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.gettopalbums&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-TOP-ALBUMS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.gettopalbums&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-TOP-FANS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.gettopfans&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-TOP-FANS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.gettopfans&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-TOP-TAGS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.gettoptags&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-TOP-TAGS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.gettoptags&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-TOP-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.gettoptracks&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-GET-TOP-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=artist.gettoptracks&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-SEARCH+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+ \"?method=artist.search&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ARTIST-SEARCH+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+ \"?method=artist.search&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ALBUM-GET-INFO+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+ \"?method=album.getinfo&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ALBUM-GET-INFO+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+ \"?method=album.getinfo&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ALBUM-SEARCH+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+ \"?method=album.search&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+ALBUM-SEARCH+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+ \"?method=album.search&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GEO-GET-EVENTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+ \"?method=geo.getevents&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GEO-GET-EVENTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+ \"?method=geo.getevents&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GEO-TOP-ARTISTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=geo.gettopartists&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GEO-TOP-ARTISTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=geo.gettopartists&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GEO-TOP-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=geo.gettoptracks&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GEO-TOP-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=geo.gettoptracks&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-EVENTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getevents&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-EVENTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getevents&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-FRIENDS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getfriends&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-FRIENDS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getfriends&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-LOVED-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getlovedtracks&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-LOVED-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getlovedtracks&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-NEIGHBOURS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getneighbours&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-NEIGHBOURS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getneighbours&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-TOP-ALBUMS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.gettopalbums&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-TOP-ALBUMS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.gettopalbums&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-TOP-ARTISTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.gettopartists&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-TOP-ARTISTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.gettopartists&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-TOP-TAGS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.gettoptags&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-TOP-TAGS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.gettoptags&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-TOP-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.gettoptracks&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-TOP-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.gettoptracks&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-RECENT-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getrecenttracks&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-RECENT-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getrecenttracks&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-SHOUTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getshouts&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-SHOUTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getshouts&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-WEEKLY-ALBUM-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getweeklyalbumchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-WEEKLY-ALBUM-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getweeklyalbumchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-WEEKLY-ARTIST-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getweeklyartistchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-WEEKLY-ARTIST-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getweeklyartistchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-WEEKLY-CHART-LIST+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getweeklychartlist&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-WEEKLY-CHART-LIST+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getweeklychartlist&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-WEEKLY-TRACK-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getweeklytrackchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+USER-GET-WEEKLY-TRACK-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=user.getweeklytrackchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GROUP-GET-MEMBERS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=group.getmembers&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GROUP-GET-MEMBERS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=group.getmembers&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GROUP-GET-WEEKLY-ALBUM-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=group.getweeklyalbumchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GROUP-GET-WEEKLY-ALBUM-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=group.getweeklyalbumchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GROUP-GET-WEEKLY-ARTIST-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=group.getweeklyartistchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GROUP-GET-WEEKLY-ARTIST-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=group.getweeklyartistchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GROUP-GET-WEEKLY-CHART-LIST+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=group.getweeklychartlist&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GROUP-GET-WEEKLY-CHART-LIST+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=group.getweeklychartlist&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GROUP-GET-WEEKLY-TRACK-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=group.getweeklytrackchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+GROUP-GET-WEEKLY-TRACK-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=group.getweeklytrackchart&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TASTEOMETER-COMPARE+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tasteometer.compare&api_key=~A&type1=~A&type2=~A&value1=~A&value2=~A&limit=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TASTEOMETER-COMPARE+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tasteometer.compare&api_key=~A&type1=~A&type2=~A&value1=~A&value2=~A&limit=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+EVENT-GET-INFO+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=event.getinfo&api_key=~A&event=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+EVENT-GET-INFO+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=event.getinfo&api_key=~A&event=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+EVENT-GET-SHOUTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=event.getshouts&api_key=~A&event=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+EVENT-GET-SHOUTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=event.getshouts&api_key=~A&event=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+LIBRARY-GET-ALBUMS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=library.getalbums&api_key=~A&user=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+LIBRARY-GET-ALBUMS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=library.getalbums&api_key=~A&user=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+LIBRARY-GET-ARTISTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=library.getartists&api_key=~A&user=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+LIBRARY-GET-ARTISTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=library.getartists&api_key=~A&user=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+LIBRARY-GET-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=library.gettracks&api_key=~A&user=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+LIBRARY-GET-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=library.gettracks&api_key=~A&user=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-SIMILAR+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.getsimilar&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-SIMILAR+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.getsimilar&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-TOP-ALBUMS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.gettopalbums&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-TOP-ALBUMS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.gettopalbums&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-TOP-ARTISTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.gettopartists&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-TOP-ARTISTS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.gettopartists&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-TOP-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.gettoptracks&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-TOP-TRACKS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.gettoptracks&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-TOP-TAGS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.gettoptags&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-TOP-TAGS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.gettoptags&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-WEEKLY-ARTIST-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.getweeklyartistchart&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-WEEKLY-ARTIST-CHART+" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.getweeklyartistchart&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-WEEKLY-CHART-LIST+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.getweeklychartlist&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-GET-WEEKLY-CHART-LIST+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.getweeklychartlist&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-SEARCH+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.search&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TAG-SEARCH+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=tag.search&api_key=~A&tag=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TRACK-GET-INFO+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+ \"?method=track.getinfo&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TRACK-GET-INFO+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+ \"?method=track.getinfo&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TRACK-GET-SIMILAR+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=track.getsimilar&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TRACK-GET-SIMILAR+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=track.getsimilar&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TRACK-GET-TOP-FANS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=track.gettopfans&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TRACK-GET-TOP-FANS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=track.gettopfans&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TRACK-GET-TOP-TAGS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=track.gettoptags&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TRACK-GET-TOP-TAGS+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=track.gettoptags&api_key=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TRACK-SEARCH+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=track.search&api_key=~A&track=~A\")")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+TRACK-SEARCH+" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "(CONCATENATE 'STRING CL-LASTFM::+LAST-FM-WS+
+             \"?method=track.search&api_key=~A&track=~A\")")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*DEBUG*" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T) :DOCUMENTATION
+     "If T activate some logs." :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-DATE-FORMATED" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CONTROL-STRING" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "Get current date in CONTROL-STRING format.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-CURRENT-DATE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Get current date in YYYY-MM-DD hh:mm:ss format.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-TIMESTAMP" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Get current date in YYYYMMDDHHMMSS format.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNIX-TIMESTAMP" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Get the Unix timestamp : seconds since Jan 01 1970.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "URL-ENCODE-UTF8" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "URL encode in UTF-8 the sequence.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-LASTFM-XML-ERROR" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "XML" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "Extract a LastFM error from a `XML' message.
+Returns an error code and an error message.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PERFORM-LASTFM-QUERY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "QUERY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PARAMETERS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      ((:NAME "METHOD" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "GET" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+     :DOCUMENTATION "Retreive informations from LastFM Web Service.
+ `QUERY' is the HTTP request.
+`PARAMETERS' is a list of assoc list which specify HTTP parameters.
+`METHOD' is the HTTP method used to perform the HTTP call.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-LASTFM-STREAM" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Macro which creates an HTTP url, add parameters executing body,
+and performs the HTTP request defined by uri.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALBUM-GET-INFO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARTIST-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "ALBUM-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "MBID" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "LANG" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the metadata for an album on Last.fm using the album name or a
+musicbrainz id. See @fun{playlist-fetch} on how to get the album playlist.
+This service does not require authentication.}
+@arg[api-key]{A Last.fm API key}
+@arg[artist-name]{The artist name in question}
+@arg[album-name]{The album name in question}
+@arg[mbid]{The musicbrainz id for the album}
+@arg[lang]{The language to return the biography in, expressed as an
+ISO 639 alpha-2 code}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALBUM-SEARCH" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "ALBUM-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 30)
+      ((:NAME "PAGE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 1))
+     :DOCUMENTATION
+     "@short{Search for an album by name. Returns album matches sorted by relevance.
+This service does not require authentication.}
+@arg[api-key]{A Last.fm API key}
+@arg[album-name]{The album name in question}
+@arg[limit]{Limit the number of albums returned at one time. Default (maximum) 
+is 30}
+@arg[page]{Scan into the results by specifying a page number. Defaults to 
+first page}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ARTIST-GET-EVENTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "ARTIST-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get a list of upcoming events for this artist. Easily integratable
+into calendars, using the ical standard. 
+This service does not require authentication.}
+@arg[api-key]{A Last.fm API key}
+@arg[artist-name]{The artist name in question}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ARTIST-GET-INFO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARTIST-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "MBID" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "LANG" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the metadata for an artist on Last.fm. Includes biography. . 
+This service does not require authentication.}
+@arg[api-key]{A Last.fm API key}
+@arg[artist-name]{The artist name in question}
+@arg[mbid]{The musicbrainz id for the artist}
+@arg[lang]{The language to return the biography in, expressed as an ISO 639
+alpha-2 code}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ARTIST-GET-SIMILAR" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "ARTIST-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "@short{Get all the artists similar to this artist. 
+This service does not require authentication.}
+@arg[api-key]{A Last.fm API key}
+@arg[artist-name]{The artist name in question}
+@arg[limit]{Limit the number of similar artists returned}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ARTIST-GET-TOP-ALBUMS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "ARTIST-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top albums for an artist on Last.fm, ordered by popularity. 
+This service does not require authentication.}
+@arg[api-key]{A Last.fm API key}
+@arg[artist-name]{The artist name in question}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ARTIST-GET-TOP-FANS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "ARTIST-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top fans for an artist on Last.fm, based on listening data. 
+This service does not require authentication.}
+@arg[api-key]{A Last.fm API key}
+@arg[artist-name]{The artist name in question}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ARTIST-GET-TOP-TAGS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "ARTIST-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top tags for an artist on Last.fm, ordered by popularity. 
+This service does not require authentication.}
+@arg[api-key]{A Last.fm API key}
+@arg[artist-name]{The artist name in question}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ARTIST-GET-TOP-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "ARTIST-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top tracks by an artist on Last.fm, ordered by popularity
+This service does not require authentication.}
+@arg[api-key]{A Last.fm API key}
+@arg[artist-name]{The artist name in question}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ARTIST-SEARCH" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "ARTIST-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 30)
+      ((:NAME "PAGE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 1))
+     :DOCUMENTATION
+     "@short{Search for an artist by name. Returns artist matches sorted by
+relevance. 
+This service does not require authentication.}
+@arg[api-key]{A Last.fm API key}
+@arg[artist-name]{The artist name in question}
+@arg[limit]{Limit the number of artists returned at one time. Default 
+(maximum) is 30}
+@arg[page]{Scan into the results by specifying a page number. Defaults to 
+first page}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GEO-GET-EVENTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "LAT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "LONG" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "PAGE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "DISTANCE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get all events in a specific location by country or city name.
+This service does not require authentication}
+@arg[api_key]{A Last.fm API key}
+@arg[location]{Specifies a location to retrieve events for (service returns 
+nearby events by default}
+@arg[lat]{Specifies a latitude value to retrieve events for (service returns 
+nearby events by default}
+@arg[long]{Specifies a longitude value to retrieve events for (service returns 
+nearby events by default)}
+@arg[page]{Display more results by pagination}
+@arg[distance]{Find events within a specified distance}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GEO-TOP-ARTISTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "COUNTRY-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "@short{Get the most popular artists on Last.fm by country.
+This service does not require authentication}
+@arg[api_key]{A Last.fm API key}
+@arg[country-name]{A country name, as defined by the ISO 3166-1 country names 
+standard}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GEO-TOP-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "COUNTRY-NAME" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCATION" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "@short{Get the most popular tracks on Last.fm by country .
+This service does not require authentication}
+@arg[api_key]{A Last.fm API key}
+@arg[country-name]{A country name, as defined by the ISO 3166-1 country names 
+standard}
+@arg[location]{A metro name, to fetch the charts for (must be within the country 
+specified)}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-EVENTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get a list of upcoming events that this user is attending. 
+Easily integratable into calendars, using the ical standard.
+This service does not require authentication}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user to fetch the events for}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-FRIENDS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "RECENTTRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "@short{Get a list of the user's friends on Last.fm
+This service does not require authentication}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The last.fm username to fetch the friends of}
+@arg[limit]{An integer used to limit the number of friends returned}
+@arg[recenttracks]{Whether or not to include information about friends' recent 
+listening in the response}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-LOVED-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "@short{Get the last 50 tracks loved by a user. 
+This service does not require authentication}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user name to fetch the loved tracks for}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-NEIGHBOURS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "@short{Get a list of a user's neighbours on Last.fm
+This service does not require authentication}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The last.fm username to fetch the neighbours of}
+@arg[limit]{An integer used to limit the number of neighbours returned}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-TOP-ALBUMS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PERIOD" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top albums listened to by a user. You can stipulate a time 
+period. Sends the overall chart by default}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user name to fetch top albums for}
+@arg[period]{overall | 3month | 6month | 12month - The time period over which 
+to retrieve top albums for.}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-TOP-ARTISTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PERIOD" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top artists listened to by a user. You can stipulate a time 
+period. Sends the overall chart by default.}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user name to fetch top artists for}
+@arg[period]{overall | 3month | 6month | 12month - The time period over which 
+to retrieve top albums for.}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-TOP-TAGS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "@short{Get the top tags used by this user}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user name}
+@arg[limit]{The number of tags returned}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-TOP-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PERIOD" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top tracks listened to by a user. You can stipulate a time 
+period. Sends the overall chart by default. }
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user name to fetch top tracks for}
+@arg[period]{overall | 3month | 6month | 12month - The time period over which 
+to retrieve top tracks for.}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-RECENT-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get a list of the recent tracks listened to by this user. Indicates 
+now playing track if the user is currently listening}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user name to fetch the recent tracks of}
+@arg[limit]{An integer used to limit the number of tracks returned}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-SHOUTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "@short{Get shouts for this user}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user name to fetch shouts for}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-WEEKLY-ALBUM-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get an album chart for a user profile, for a given date range. 
+If no date range is supplied, it will return the most recent album chart for 
+this user.}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The last.fm username to fetch the charts of}
+@arg[from]{The date at which the chart should start from}
+@arg[to]{The date at which the chart should end on}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-WEEKLY-ARTIST-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get an artist chart for a user profile, for a given date range. 
+If no date range is supplied, it will return the most recent artist chart for 
+this user.}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The last.fm username to fetch the charts of}
+@arg[from]{The date at which the chart should start from}
+@arg[to]{The date at which the chart should end on}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-WEEKLY-CHART-LIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get a list of available charts for this user, expressed as date 
+ranges which can be sent to the chart services}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The last.fm username to fetch the charts list for}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "USER-GET-WEEKLY-TRACK-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get a track chart for a user profile, for a given date range. 
+If no date range is supplied, it will return the most recent track chart 
+for this user}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The last.fm username to fetch the charts of}
+@arg[from]{The date at which the chart should start from}
+@arg[to]{The date at which the chart should end on}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GROUP-GET-MEMBERS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "GROUP" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "@short{Get a list of members for this group.
+This service does not require authentication}
+@arg[api_key]{A Last.fm API key}
+@arg[group]{The group name to fetch the members of}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GROUP-GET-WEEKLY-ALBUM-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "GROUP" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get an album chart for a group, for a given date range. If no date range 
+is supplied, it will return the most recent album chart for this group.}
+@arg[api_key]{A Last.fm API key}
+@arg[group]{The last.fm group name to fetch the charts of}
+@arg[from]{The date at which the chart should start from}
+@arg[to]{The date at which the chart should end on}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GROUP-GET-WEEKLY-ARTIST-CHART" :PACKAGE-NAME "CL-LASTFM"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "GROUP" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get an artist chart for a group, for a given date range. If no date 
+range is supplied, it will return the most recent album chart for this group}
+@arg[api_key]{A Last.fm API key}
+@arg[group]{The last.fm group name to fetch the charts of}
+@arg[from]{The date at which the chart should start from}
+@arg[to]{The date at which the chart should end on}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GROUP-GET-WEEKLY-CHART-LIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "GROUP" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get a list of available charts for this group, expressed as date 
+ranges which can be sent to the chart services}
+@arg[api_key]{A Last.fm API key}
+@arg[group]{The last.fm group name to fetch the charts list for}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GROUP-GET-WEEKLY-TRACK-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "GROUP" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get a track chart for a group, for a given date range. If no date 
+range is supplied, it will return the most recent album chart for this group}
+@arg[api_key]{A Last.fm API key}
+@arg[group]{The last.fm group name to fetch the charts of}
+@arg[from]{The date at which the chart should start from}
+@arg[to]{The date at which the chart should end on}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TASTEOMETER-COMPARE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "FIRST-TYPE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "SECOND-TYPE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "FIRST-VALUE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "SECOND-VALUE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 5))
+     :DOCUMENTATION
+     "@short{Get a Tasteometer score from two inputs, along with a list of 
+shared artists. If the input is a User or a Myspace URL, some additional 
+information is returned.}
+@arg[api_key]{A Last.fm API key}
+@arg[fisrt-type]{Must be user, artists or myspace}
+@arg[second-type]{Must be user, artists or myspace}
+@arg[first-value]{Must be : Last.fm username or comma-separated artist names 
+or a MySpace profile URL}
+@arg[second-value]{Must be : Last.fm username or comma-separated artist names 
+or a MySpace profile URL}
+@arg[limit]{How many shared artists to display}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVENT-GET-INFO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "EVENTID" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the metadata for an event on Last.fm. Includes attendance 
+and lineup information}
+@arg[api_key]{A Last.fm API key}
+@arg[eventid]{The numeric Last.fm event id}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EVENT-GET-SHOUTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "EVENTID" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION "@short{Get shouts for this event}
+@arg[api_key]{A Last.fm API key}
+@arg[eventid]{The numeric Last.fm event id}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIBRARY-GET-ALBUMS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PAGE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      ((:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 49))
+     :DOCUMENTATION
+     "@short{A paginated list of all the albums in a user's library, with play 
+counts and tag counts}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user whose library you want to fetch}
+@arg[limit]{Limit the amount of albums returned}
+@arg[page]{The page number you wish to scan to}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIBRARY-GET-ARTISTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PAGE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      ((:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 49))
+     :DOCUMENTATION
+     "@short{A paginated list of all the artists in a user's library, with play 
+counts and tag counts}
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user whose library you want to fetch}
+@arg[limit]{Limit the amount of artists returned}
+@arg[page]{The page number you wish to scan to}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIBRARY-GET-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "USER" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PAGE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      ((:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 49))
+     :DOCUMENTATION
+     "@short{A paginated list of all the tracks in a user's library, with play 
+counts and tag counts. }
+@arg[api_key]{A Last.fm API key}
+@arg[user]{The user whose library you want to fetch}
+@arg[limit]{Limit the amount of tracks returned}
+@arg[page]{The page number you wish to scan to}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TAG-GET-SIMILAR" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TAG" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Search for tags similar to this one. Returns tags ranked by 
+similarity, based on listening data}
+@arg[api_key]{A Last.fm API key}
+@arg[tag]{The tag name in question}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TAG-GET-TOP-ALBUMS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TAG" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top albums tagged by this tag, ordered by tag count}
+@arg[api_key]{A Last.fm API key}
+@arg[tag]{The tag name in question}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TAG-GET-TOP-ARTISTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TAG" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top artists tagged by this tag, ordered by tag count}
+@arg[api_key]{A Last.fm API key}
+@arg[tag]{The tag name in question}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TAG-GET-TOP-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TAG" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top tracks tagged by this tag, ordered by tag count}
+@arg[api_key]{A Last.fm API key}
+@arg[tag]{The tag name in question}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TAG-GET-TOP-TAGS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Fetches the top global tags on Last.fm, sorted by popularity 
+(number of times used).}
+@arg[api_key]{A Last.fm API key}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TAG-GET-WEEKLY-ARTIST-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TAG" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get an artist chart for a tag, for a given date range. 
+If no date range is supplied, it will return the most recent artist chart 
+for this tag}
+@arg[api_key]{A Last.fm API key}
+@arg[tag]{The tag name in question}
+@arg[from]{The date at which the chart should start from}
+@arg[to]{The date at which the chart should end on}
+@arg[limit]{The number of chart items to return}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TAG-GET-WEEKLY-CHART-LIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TAG" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get a list of available charts for this tag, expressed as date 
+ranges which can be sent to the chart services}
+@arg[api_key]{A Last.fm API key}
+@arg[tag]{The tag name in question}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TAG-SEARCH" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TAG" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PAGE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 1)
+      ((:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 29))
+     :DOCUMENTATION
+     "@short{Search for a tag by name. Returns matches sorted by relevance}
+@arg[api_key]{A Last.fm API key}
+@arg[tag]{The tag name in question}
+@arg[limit]{Limit the number of tags returned at one time}
+@arg[page]{Scan into the results by specifying a page number}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRACK-GET-INFO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARTIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TRACK" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "MBID" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the metadata for a track on Last.fm using the artist/track name 
+or a musicbrainz id}
+@arg[api-key]{A Last.fm API key}
+@arg[artist]{The artist name in question}
+@arg[track]{The track name in question}
+@arg[mbid]{The musicbrainz id for the track}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRACK-GET-SIMILAR" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARTIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TRACK" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "MBID" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the similar tracks for this track on Last.fm, based on 
+listening data}
+@arg[api-key]{A Last.fm API key}
+@arg[artist]{The artist name in question}
+@arg[track]{The track name in question}
+@arg[mbid]{The musicbrainz id for the track}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRACK-GET-TOP-FANS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARTIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TRACK" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "MBID" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top fans for this track on Last.fm, based on listening data. 
+Supply either track & artist name or musicbrainz id}
+@arg[api-key]{A Last.fm API key}
+@arg[artist]{The artist name in question}
+@arg[track]{The track name in question}
+@arg[mbid]{The musicbrainz id for the track}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRACK-GET-TOP-TAGS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARTIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TRACK" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "MBID" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Get the top tags for this track on Last.fm, ordered by tag count. 
+Supply either track & artist name or mbid}
+@arg[api-key]{A Last.fm API key}
+@arg[artist]{The artist name in question}
+@arg[track]{The track name in question}
+@arg[mbid]{The musicbrainz id for the track}
+@see-condition{lastfm-request-error}
+@return{An XML stream}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TRACK-SEARCH" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "API-KEY" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "TRACK" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARTIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL)
+      ((:NAME "PAGE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 1)
+      ((:NAME "LIMIT" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP NIL) 29))
+     :DOCUMENTATION
+     "@short{Search for a track by track name. Returns track matches sorted by 
+relevance}
+@arg[api-key]{A Last.fm API key}
+@arg[track]{The track name in question}
+@arg[limit]{The number of tracks returned at one time}
+@arg[page]{Scan into the results by specifying a page number}
+@see-condition{lastfm-request-error}
+@return{An XML stream}"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "GROUP-GET-WEEKLY-TRACK-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+     T)
+    (:NAME "EVENT-GET-INFO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "GROUP-GET-WEEKLY-ARTIST-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+     T)
+    (:NAME "ARTIST-GET-TOP-TAGS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "ALBUM-SEARCH" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "ARTIST-GET-TOP-FANS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TRACK-GET-INFO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "GROUP-GET-WEEKLY-ALBUM-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+     T)
+    (:NAME "LASTFM-REQUEST-ERROR" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-TOP-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-WEEKLY-ALBUM-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+     T)
+    (:NAME "LIBRARY-GET-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TRACK-GET-TOP-TAGS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "ALBUM-GET-INFO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TRACK-GET-SIMILAR" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-LOVED-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TRACK-GET-TOP-FANS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TRACK-SEARCH" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "ERROR-MESSAGE-OF" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-EVENTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TAG-GET-WEEKLY-CHART-LIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "LASTFM-PROTOCOL-ERROR" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "EVENT-GET-SHOUTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "ARTIST-GET-INFO" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TAG-GET-TOP-TAGS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "LIBRARY-GET-ARTISTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-TOP-ALBUMS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TAG-GET-TOP-ALBUMS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TAG-GET-WEEKLY-ARTIST-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+     T)
+    (:NAME "LASTFM-ERROR" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "ARTIST-GET-TOP-ALBUMS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TAG-SEARCH" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-RECENT-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "GEO-TOP-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-NEIGHBOURS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-FRIENDS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "ARTIST-SEARCH" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TAG-GET-TOP-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TAG-GET-TOP-ARTISTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-WEEKLY-TRACK-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+     T)
+    (:NAME "GEO-GET-EVENTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "ARTIST-GET-TOP-TRACKS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "LIBRARY-GET-ALBUMS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-WEEKLY-ARTIST-CHART" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+     T)
+    (:NAME "USER-GET-WEEKLY-CHART-LIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-TOP-TAGS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-SHOUTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "REQUEST-ERROR-CODE-OF" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "ARTIST-GET-EVENTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "USER-GET-TOP-ARTISTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TAG-GET-SIMILAR" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "GEO-TOP-ARTISTS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "*DEBUG*" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "GROUP-GET-WEEKLY-CHART-LIST" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP
+     T)
+    (:NAME "ARTIST-GET-SIMILAR" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "GROUP-GET-MEMBERS" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)
+    (:NAME "TASTEOMETER-COMPARE" :PACKAGE-NAME "CL-LASTFM" :EXTERNALP T)))))

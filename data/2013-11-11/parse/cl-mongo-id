@@ -1,0 +1,110 @@
+
+(:TYPE :SYSTEM :NAME "cl-mongo-id" :AUTHOR
+ "Andrew Lyon <orthecreedence@gmail.com>" :MAINTAINER NIL :VERSION "0.1.0"
+ :LICENCE "MIT" :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("BORDEAUX-THREADS" "MD5" "LOCAL-TIME") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-MONGO-ID" :FULL-NAME "CL-MONGO-ID" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ID-INC*" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "0")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*ID-INC-LOCK*" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(BORDEAUX-THREADS:MAKE-LOCK)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL))
+     :DOCUMENTATION "Generate a mongo id, in byte vector format.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OID-STR" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "OID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)) :DOCUMENTATION
+     "Given a vector ID, convert it to a string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-TIMESTAMP" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BYTES" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Grab the timestamp out of a vector oid. Passing :bytes t will return an array
+  of bytes corresponding to the timestamp part of the ID instead of parsing it
+  as an integer.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-HOSTNAME" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BYTES" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Grab the hostname int out of a vector oid. Passing :bytes t will return an
+  array of bytes corresponding to the hostname part of the ID instead of parsing
+  it as an integer.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-PID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "OID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BYTES" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Grab the pid out of a vector oid. Passing :bytes t will return an array of
+  bytes corresponding to the PID part of the ID instead of parsing it as an 
+  integer.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-INC" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "OID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BYTES" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Grab the inc value out of a vector oid. Passing :bytes t will return an array
+  of bytes corresponding to the inc value of the ID instead of parsing it as an
+  integer.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONVERT-HEX-VECTOR" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "HEX-STRING" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Takes a hex string, IE 4f2b8096 and converts it into a byte array:
+      4f2b8096 -> #(79 43 128 150)
+  Hex string *must* have even number of bytes.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONVERT-VECTOR-INT" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Convert a byte array to an integer:
+      #(79 150 243 81) -> 1335292753")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-NEW-ID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Create a brand-spankin-new ObjectId using the current timestamp/inc values,
+  along with hostname and process pid.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-CURRENT-HOSTNAME" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Get hostname of machine.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-CURRENT-TIMESTAMP" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Get current unix timestamp.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-INC-VAL" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Thread-safe method to get current ObjectId inc value. Takes an optional
+  timestamp value to calculate inc for.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-CURRENT-PID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IF-NOT-EXISTS-RETURN" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Get the current process' PID. This function does it's best to be cross-
+  implementation. If it isn't able to grab the PID from the system, it defaults
+  to returning whatever value is passed into the :if-not-exists-return key."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "OID-STR" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+    (:NAME "OID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+    (:NAME "GET-TIMESTAMP" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+    (:NAME "GET-INC" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+    (:NAME "GET-HOSTNAME" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)
+    (:NAME "GET-PID" :PACKAGE-NAME "CL-MONGO-ID" :EXTERNALP T)))))

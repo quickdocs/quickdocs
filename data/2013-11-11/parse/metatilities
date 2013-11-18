@@ -1,0 +1,11 @@
+
+(:TYPE :SYSTEM :NAME "metatilities" :AUTHOR
+ "Gary Warren King <gwking@metabang.com>" :MAINTAINER
+ "Gary Warren King <gwking@metabang.com>" :VERSION "0.6.18" :LICENCE
+ "MIT Style license" :DESCRIPTION
+ "These are the rest of metabang.com's Common Lisp utilities" :LONG-DESCRIPTION
+ "These are the rest of metabang.com's Common Lisp utilities and what not."
+ :DEPENDS-ON
+ ("(VERSION METATILITIES-BASE 0.6.0)" "MOPTILITIES" "CL-CONTAINERS"
+  "METABANG-BIND" "ASDF-SYSTEM-CONNECTIONS")
+ :PACKAGE-LIST NIL)

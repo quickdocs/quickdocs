@@ -1,0 +1,113 @@
+; in: QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5
+;     (LET ((#:RETRY-RECOMPILE983 5)
+;           (#:RETRY-CONTINUE984 5)
+;           (#:RETRY-LOAD-SYSTEM985 5))
+;       (HANDLER-BIND ((ERROR (LAMBDA # #)) (ERROR (LAMBDA # #)))
+;         (QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+;          (ASDF/SYSTEM:FIND-SYSTEM "inner-conditional-test"))))
+; 
+; caught STYLE-WARNING:
+;   The variable #:RETRY-LOAD-SYSTEM985 is defined but never used.
+; 
+; compilation unit finished
+;   caught 1 STYLE-WARNING condition
+Heap exhausted during allocation: 100671488 bytes available, 108000016 requested.
+ Gen StaPg UbSta LaSta LUbSt Boxed Unboxed LB   LUB  !move  Alloc  Waste   Trig    WP  GCs Mem-age
+   0:     0     0     0     0     1     0     0     0     0        0  4096  5368709    0   0  0.0000
+   1:     0     0     0     0   651   160    10 63242 55082 262171216 230832 267539925  622   1  0.0000
+   2: 19497 19494 17300     0  3545  1580   223   282    48 21011960 2048520  2000000 3556   0  0.0000
+   3:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
+   4:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
+   5:     0     0     0     0     0     0     0     0     0        0     0  2000000    0   0  0.0000
+   6:     0     0     0     0  7648  1915     0     0     0 39170048     0  2000000 6908   0  0.0000
+   Total bytes allocated    = 322353224
+   Dynamic-space-size bytes = 536870912
+GC control variables:
+   *GC-INHIBIT* = false
+   *GC-PENDING* = true
+   *STOP-FOR-GC-PENDING* = false
+Unhandled SB-KERNEL::HEAP-EXHAUSTED-ERROR in thread #<SB-THREAD:THREAD
+                                                      "main thread" RUNNING
+                                                       {B562921}>:
+  Heap exhausted (no more space for allocation).
+There are still 100671488 bytes available; the request was for 108000016 bytes.
+
+PROCEED WITH CAUTION.
+
+Backtrace for: #<SB-THREAD:THREAD "main thread" RUNNING {B562921}>
+0: ((LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX))
+1: (SB-IMPL::CALL-WITH-SANE-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {B73864D}>)
+2: (SB-IMPL::%WITH-STANDARD-IO-SYNTAX #<CLOSURE (LAMBDA NIL :IN SB-DEBUG::FUNCALL-WITH-DEBUG-IO-SYNTAX) {B738635}>)
+3: (SB-DEBUG:PRINT-BACKTRACE :STREAM #<SYNONYM-STREAM :SYMBOL SB-SYS:*STDERR* {90C5EC1}> :START 0 :FROM :INTERRUPTED-FRAME :COUNT NIL :PRINT-THREAD T :PRINT-FRAME-SOURCE NIL :METHOD-FRAME-STYLE NIL)
+4: (SB-DEBUG::DEBUGGER-DISABLED-HOOK #<SB-KERNEL::HEAP-EXHAUSTED-ERROR {B5BACD9}> #<unavailable argument>)
+5: (SB-DEBUG::RUN-HOOK SB-EXT:*INVOKE-DEBUGGER-HOOK* #<SB-KERNEL::HEAP-EXHAUSTED-ERROR {B5BACD9}>)
+6: (INVOKE-DEBUGGER #<SB-KERNEL::HEAP-EXHAUSTED-ERROR {B5BACD9}>)
+7: (ERROR #<SB-KERNEL::HEAP-EXHAUSTED-ERROR {B5BACD9}>)
+8: (SB-KERNEL::HEAP-EXHAUSTED-ERROR 100671488 108000016)
+9: ("foreign function: call_into_lisp")
+10: ("foreign function: funcall2")
+11: ("foreign function: gc_heap_exhausted_error_or_lose")
+12: ("foreign function: gc_find_freeish_pages")
+13: ("foreign function: gc_alloc_large")
+14: ("foreign function: alloc")
+15: ("foreign function: alloc_overflow_edx")
+16: (TEST0-0)
+17: (SB-EXT:CALL-WITH-TIMING #<FUNCTION SB-IMPL::PRINT-TIME> #<FUNCTION (LAMBDA NIL :IN "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/inner-conditional-20130615-git/t/extension-sample2.lisp") {BAB725D}>)
+18: (SB-FASL::FOP-FUNCALL)
+19: (SB-FASL::LOAD-FASL-GROUP #<SB-SYS:FD-STREAM for "file /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/inner-conditional-20130615-git/t/extension-sample2.fasl" {BAA44E9}>)
+20: (SB-FASL::LOAD-AS-FASL #<SB-SYS:FD-STREAM for "file /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/inner-conditional-20130615-git/t/extension-sample2.fasl" {BAA44E9}> NIL #<unavailable argument>)
+21: ((FLET SB-FASL::LOAD-STREAM :IN LOAD) #<SB-SYS:FD-STREAM for "file /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/inner-conditional-20130615-git/t/extension-sample2.fasl" {BAA44E9}> T)
+22: (LOAD #P"/home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/inner-conditional-20130615-git/t/extension-sample2.fasl" :VERBOSE NIL :PRINT NIL :IF-DOES-NOT-EXIST T :EXTERNAL-FORMAT :DEFAULT)
+23: (UIOP/UTILITY:CALL-WITH-MUFFLED-CONDITIONS #<CLOSURE (LAMBDA NIL :IN ASDF/LISP-ACTION:PERFORM-LISP-LOAD-FASL) {BAA1AC5}> ("Overwriting already existing readtable ~S." #(#:FINALIZERS-OFF-WARNING :ASDF-FINALIZERS)))
+24: ((SB-PCL::EMF ASDF/ACTION:PERFORM) #<unavailable argument> #<unavailable argument> #<ASDF/LISP-ACTION:LOAD-OP :VERBOSE NIL> #<ASDF/LISP-ACTION:CL-SOURCE-FILE "inner-conditional-test" "t" "extension-sample2">)
+25: ((:METHOD ASDF/ACTION:PERFORM-WITH-RESTARTS (ASDF/LISP-ACTION:LOAD-OP ASDF/LISP-ACTION:CL-SOURCE-FILE)) #<ASDF/LISP-ACTION:LOAD-OP :VERBOSE NIL> #<ASDF/LISP-ACTION:CL-SOURCE-FILE "inner-conditional-test" "t" "extension-sample2">) [fast-method]
+26: ((:METHOD ASDF/ACTION:PERFORM-WITH-RESTARTS :AROUND (T T)) #<ASDF/LISP-ACTION:LOAD-OP :VERBOSE NIL> #<ASDF/LISP-ACTION:CL-SOURCE-FILE "inner-conditional-test" "t" "extension-sample2">) [fast-method]
+27: ((:METHOD ASDF/PLAN:PERFORM-PLAN (LIST)) ((#1=#<ASDF/LISP-ACTION:PREPARE-OP > . #2=#<ASDF/SYSTEM:SYSTEM #3="iterate">) (#1# . #4=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #3# "package">) (#5=#<ASDF/LISP-ACTION:LOAD-OP > . #4#) (#1# . #6=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #3# "iterate">) (#5# . #6#) (#7=#<ASDF/LISP-ACTION:COMPILE-OP > . #2#) (#5# . #2#) (#1# . #8=#<ASDF/SYSTEM:SYSTEM #9="inner-conditional">) (#1# . #10=#<ASDF/COMPONENT:MODULE #9# #11="lib">) (#1# . #12=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #11# "macroexpand-dammit">) (#7# . #12#) (#5# . #12#) (#7# . #10#) (#5# . #10#) (#1# . #13=#<ASDF/COMPONENT:MODULE #9# #14="src">) (#1# . #15=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "package">) (#7# . #15#) (#5# . #15#) (#1# . #16=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "helper">) (#7# . #16#) (#5# . #16#) (#1# . #17=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "conditions">) (#7# . #17#) (#5# . #17#) (#1# . #18=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "hooks">) (#7# . #18#) (#5# . #18#) (#1# . #19=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "inner-conditional">) (#7# . #19#) (#5# . #19#) (#1# . #20=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "clauses">) (#7# . #20#) (#5# . #20#) (#1# . #21=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "define-condition-expander">) (#7# . #21#) (#5# . #21#) (#7# . #13#) (#5# . #13#) (#7# . #8#) (#5# . #8#) (#1# . #22=#<ASDF/SYSTEM:SYSTEM #23="cl-test-more">) (#1# . #24=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #23# "cl-test-more">) (#5# . #24#) (#7# . #22#) (#5# . #22#) (#25=#<ASDF/LISP-ACTION:PREPARE-OP > . #26=#<ASDF/SYSTEM:SYSTEM #27="inner-conditional-test">) (#25# . #28=#<ASDF/COMPONENT:MODULE #27# #29="t">) (#25# . #30=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #27# #29# "inner-conditional">) (#31=#<ASDF/LISP-ACTION:COMPILE-OP > . #30#) (#32=#<ASDF/LISP-ACTION:LOAD-OP :VERBOSE NIL> . #30#) (#25# . #33=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #27# #29# "extension-sample">) (#31# . #33#) (#32# . #33#) (#25# . #34=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #27# #29# "extension-sample2">) (#31# . #34#) (#32# . #34#) (#31# . #28#) (#32# . #28#) (#31# . #26#) (#32# . #26#)) :FORCE NIL) [fast-method]
+28: ((FLET SB-C::WITH-IT :IN SB-C::%WITH-COMPILATION-UNIT))
+29: ((:METHOD ASDF/PLAN:PERFORM-PLAN :AROUND (T)) ((#1=#<ASDF/LISP-ACTION:PREPARE-OP > . #2=#<ASDF/SYSTEM:SYSTEM #3="iterate">) (#1# . #4=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #3# "package">) (#5=#<ASDF/LISP-ACTION:LOAD-OP > . #4#) (#1# . #6=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #3# "iterate">) (#5# . #6#) (#7=#<ASDF/LISP-ACTION:COMPILE-OP > . #2#) (#5# . #2#) (#1# . #8=#<ASDF/SYSTEM:SYSTEM #9="inner-conditional">) (#1# . #10=#<ASDF/COMPONENT:MODULE #9# #11="lib">) (#1# . #12=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #11# "macroexpand-dammit">) (#7# . #12#) (#5# . #12#) (#7# . #10#) (#5# . #10#) (#1# . #13=#<ASDF/COMPONENT:MODULE #9# #14="src">) (#1# . #15=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "package">) (#7# . #15#) (#5# . #15#) (#1# . #16=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "helper">) (#7# . #16#) (#5# . #16#) (#1# . #17=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "conditions">) (#7# . #17#) (#5# . #17#) (#1# . #18=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "hooks">) (#7# . #18#) (#5# . #18#) (#1# . #19=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "inner-conditional">) (#7# . #19#) (#5# . #19#) (#1# . #20=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "clauses">) (#7# . #20#) (#5# . #20#) (#1# . #21=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #9# #14# "define-condition-expander">) (#7# . #21#) (#5# . #21#) (#7# . #13#) (#5# . #13#) (#7# . #8#) (#5# . #8#) (#1# . #22=#<ASDF/SYSTEM:SYSTEM #23="cl-test-more">) (#1# . #24=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #23# "cl-test-more">) (#5# . #24#) (#7# . #22#) (#5# . #22#) (#25=#<ASDF/LISP-ACTION:PREPARE-OP > . #26=#<ASDF/SYSTEM:SYSTEM #27="inner-conditional-test">) (#25# . #28=#<ASDF/COMPONENT:MODULE #27# #29="t">) (#25# . #30=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #27# #29# "inner-conditional">) (#31=#<ASDF/LISP-ACTION:COMPILE-OP > . #30#) (#32=#<ASDF/LISP-ACTION:LOAD-OP :VERBOSE NIL> . #30#) (#25# . #33=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #27# #29# "extension-sample">) (#31# . #33#) (#32# . #33#) (#25# . #34=#<ASDF/LISP-ACTION:CL-SOURCE-FILE #27# #29# "extension-sample2">) (#31# . #34#) (#32# . #34#) (#31# . #28#) (#32# . #28#) (#31# . #26#) (#32# . #26#)) :VERBOSE NIL) [fast-method]
+30: ((FLET SB-C::WITH-IT :IN SB-C::%WITH-COMPILATION-UNIT))
+31: ((:METHOD ASDF/PLAN:PERFORM-PLAN :AROUND (T)) #<ASDF/PLAN:SEQUENTIAL-PLAN {DF42789}> :VERBOSE NIL) [fast-method]
+32: ((:METHOD ASDF/OPERATE:OPERATE (ASDF/OPERATION:OPERATION ASDF/COMPONENT:COMPONENT)) #<ASDF/LISP-ACTION:LOAD-OP :VERBOSE NIL> #<ASDF/SYSTEM:SYSTEM "inner-conditional-test"> :VERBOSE NIL) [fast-method]
+33: ((SB-PCL::EMF ASDF/OPERATE:OPERATE) #<unused argument> #<unused argument> #<ASDF/LISP-ACTION:LOAD-OP :VERBOSE NIL> #<ASDF/SYSTEM:SYSTEM "inner-conditional-test"> :VERBOSE NIL)
+34: ((LAMBDA NIL :IN ASDF/OPERATE:OPERATE))
+35: ((:METHOD ASDF/OPERATE:OPERATE :AROUND (T T)) #<ASDF/LISP-ACTION:LOAD-OP :VERBOSE NIL> #<ASDF/SYSTEM:SYSTEM "inner-conditional-test"> :VERBOSE NIL) [fast-method]
+36: ((SB-PCL::EMF ASDF/OPERATE:OPERATE) #<unused argument> #<unused argument> ASDF/LISP-ACTION:LOAD-OP "inner-conditional-test" :VERBOSE NIL)
+37: ((LAMBDA NIL :IN ASDF/OPERATE:OPERATE))
+38: (ASDF/CACHE:CALL-WITH-ASDF-CACHE #<CLOSURE (LAMBDA NIL :IN ASDF/OPERATE:OPERATE) {DF34ABD}> :OVERRIDE NIL)
+39: (ASDF/FIND-SYSTEM::CALL-WITH-SYSTEM-DEFINITIONS #<CLOSURE (LAMBDA NIL :IN ASDF/OPERATE:OPERATE) {DF34ABD}>)
+40: ((:METHOD ASDF/OPERATE:OPERATE :AROUND (T T)) ASDF/LISP-ACTION:LOAD-OP "inner-conditional-test" :VERBOSE NIL) [fast-method]
+41: ((:METHOD ASDF/OPERATE:OPERATE :AROUND (T T)) ASDF/LISP-ACTION:LOAD-OP "inner-conditional-test" :VERBOSE NIL) [fast-method]
+42: (QUICKLISP-CLIENT::CALL-WITH-MACROEXPAND-PROGRESS #<CLOSURE (LAMBDA NIL :IN QUICKLISP-CLIENT::APPLY-LOAD-STRATEGY) {DEF58F5}>)
+43: (QUICKLISP-CLIENT::AUTOLOAD-SYSTEM-AND-DEPENDENCIES "inner-conditional-test" :PROMPT NIL)
+44: ((:METHOD QL-IMPL-UTIL::%CALL-WITH-QUIET-COMPILATION (T T)) #<unavailable argument> #<CLOSURE (FLET QUICKLISP-CLIENT::QL :IN QUICKLISP-CLIENT:QUICKLOAD) {DEDF69D}>) [fast-method]
+45: ((:METHOD QL-IMPL-UTIL::%CALL-WITH-QUIET-COMPILATION :AROUND (QL-IMPL:SBCL T)) #<QL-IMPL:SBCL {9437E19}> #<CLOSURE (FLET QUICKLISP-CLIENT::QL :IN QUICKLISP-CLIENT:QUICKLOAD) {DEDF69D}>) [fast-method]
+46: ((:METHOD QUICKLISP-CLIENT:QUICKLOAD (T)) #<unavailable argument> :PROMPT NIL :VERBOSE NIL) [fast-method]
+47: (QL-DIST::CALL-WITH-CONSISTENT-DISTS #<CLOSURE (LAMBDA NIL :IN QUICKLISP-CLIENT:QUICKLOAD) {DED7A3D}>)
+48: (QUICKDOCS.PARSER.ASDF::ASDF-SYSTEM-RELOAD #<ASDF/SYSTEM:SYSTEM "inner-conditional-test">)
+49: ((FLET #:WITHOUT-INTERRUPTS-BODY-537 :IN SB-THREAD::CALL-WITH-MUTEX))
+50: (SB-THREAD::CALL-WITH-MUTEX #<CLOSURE (FLET SB-THREAD::WITH-MUTEX-THUNK :IN QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED) {B788F9DD}> #<SB-THREAD:MUTEX "system-load-lock" owner: #<SB-THREAD:THREAD "main thread" RUNNING {B562921}>> NIL T NIL)
+51: (QUICKDOCS.PARSER.ASDF:ENSURE-SYSTEM-LOADED #<ASDF/SYSTEM:SYSTEM "inner-conditional-test"> :FORCE NIL)
+52: ((:METHOD QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:SYSTEM)) #<ASDF/SYSTEM:SYSTEM "inner-conditional-test">) [fast-method]
+53: ((LAMBDA ()))
+54: (SB-INT:SIMPLE-EVAL-IN-LEXENV (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "inner-conditional-test"))) #<NULL-LEXENV>)
+55: (EVAL (QUICKDOCS.PARSER.UTIL:WITH-RETRYING 5 (QUICKDOCS.PARSER:PARSE-DOCUMENTATION (ASDF/SYSTEM:FIND-SYSTEM "inner-conditional-test"))))
+56: (SHELLY.CORE:INTERPRET ("QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"inner-conditional-test\"))") :VERBOSE NIL)
+57: (SB-INT:SIMPLE-EVAL-IN-LEXENV (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"inner-conditional-test\"))") :VERBOSE NIL) #<NULL-LEXENV>)
+58: (EVAL (SHELLY.CORE:INTERPRET (LIST "QUICKDOCS.PARSER.UTIL:WITH-RETRYING" "5" "(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \"inner-conditional-test\"))") :VERBOSE NIL))
+59: (SB-IMPL::PROCESS-EVAL/LOAD-OPTIONS ((:EVAL . "(shelly.util::check-version \"0.5.8\")") (:EVAL . "(shelly.util::load-global-shlyfile)") (:EVAL . "(shelly.util::load-local-shlyfile #P\"/home/quickdocs_dev/quickdocs2/shlyfile.lisp\")") (:EVAL . "(shelly.core::interpret (list \"QUICKDOCS.PARSER.UTIL:WITH-RETRYING\" \"5\" \"(QUICKDOCS.PARSER:PARSE-DOCUMENTATION
+                                                                                                             (ASDF/SYSTEM:FIND-SYSTEM
+                                                                                                              \\\"inner-conditional-test\\\"))\") :verbose nil)") (:EVAL . "(swank-backend:quit-lisp)")))
+60: (SB-IMPL::TOPLEVEL-INIT)
+61: ((FLET #:WITHOUT-INTERRUPTS-BODY-42 :IN SB-EXT:SAVE-LISP-AND-DIE))
+62: ((LABELS SB-IMPL::RESTART-LISP :IN SB-EXT:SAVE-LISP-AND-DIE))
+
+unhandled condition in --disable-debugger mode, quitting
+; 
+; compilation unit aborted
+;   caught 2 fatal ERROR conditions

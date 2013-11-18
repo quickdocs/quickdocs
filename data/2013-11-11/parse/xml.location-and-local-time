@@ -1,0 +1,7 @@
+
+(:TYPE :SYSTEM :NAME "xml.location-and-local-time" :AUTHOR
+ "Jan Moringen <jmoringe@techfak.uni-bielefeld.de>" :MAINTAINER
+ "Jan Moringen <jmoringe@techfak.uni-bielefeld.de>" :VERSION "0.2.0" :LICENCE
+ "LLGPLv3; see COPYING file for details." :DESCRIPTION
+ "To and from XML conversion for local-time timestamps." :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("(VERSION XML.LOCATION 0.2.0)" "LOCAL-TIME") :PACKAGE-LIST NIL)

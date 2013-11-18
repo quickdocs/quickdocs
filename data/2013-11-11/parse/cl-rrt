@@ -1,0 +1,410 @@
+
+(:TYPE :SYSTEM :NAME "cl-rrt" :AUTHOR "Masataro Asai" :MAINTAINER NIL :VERSION
+ "0.1" :LICENCE "LLGPL" :DESCRIPTION
+ "Common Lisp implementation of RRT (Rapidily exploring Random Tree), a fast probabilistic multidimentional path-plannning algorithm."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("ITERATE" "ALEXANDRIA" "CL-SYNTAX-ANNOT" "ANAPHORA") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-RRT" :FULL-NAME "CL-RRT" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "RRT-TREE-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION "Node class of Random Tree."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PARENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "PARENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CHILDREN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "CHILDREN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONTENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "CONTENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RRT-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONTENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)) :DOCUMENTATION "
+Identical to =(make-instance 'rrt-tree-node :content content)=")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONNECT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+      (:NAME "CHILD" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "connect two nodes as a parent and a child.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DISCONNECT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+      (:NAME "CHILD" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "disconnect a parent and its child.
+signals CHILD-NOT-FOUND < SIMPLE-CONDITION.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-RRT-TREE-NODE-RECURSIVELY" :PACKAGE-NAME "CL-RRT" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "Map over the RRT-TREE-NODEs of the tree and
+ return the results in a nested cons tree 
+with the same structure as that of the original random-tree.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAPC-RRT-TREE-NODE-RECURSIVELY" :PACKAGE-NAME "CL-RRT" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "Mapc over the RRT-TREE-NODEs of the tree and returns nil.
+ Only for the side effect.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-RRT-TREE-CONTENT-RECURSIVELY" :PACKAGE-NAME "CL-RRT"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "Map over the contents of RRT-TREE-NODEs of the tree and
+ return each result in a nested tree 
+with the same structure as the original random-tree.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAPC-RRT-TREE-CONTENT-RECURSIVELY" :PACKAGE-NAME "CL-RRT"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Mapc over the contents of RRT-TREE-NODEs ofthe tree and returns nil.
+ Only for the side effect.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "RRT-TREE-MIXIN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "The abstract interface mixin class of rrt-tree. User do not create
+an instance of it, but rather inherit it. It has three slots and accessors with the same names:
+
++ root : the root node of the tree. of type rrt-tree-node.
++ finish : a slot which contains the last node of the computed path.
+   It is bound to nil, it means the previous search has failed to find
+   a path which satisfies the goal condition."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ROOT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "ROOT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "FINISH-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "FINISH-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION "")))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-MIXIN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ROOT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "NEAREST-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "TARGET" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "V, tree -> (node V), NUMBER, V
+
+This generic function should implement a method
+which finds the nearest node in a `tree' to the `target'.
+It returns multiple-values.
+
+1. The first return value should be the nearest node.
+2. The second value should be the distance between the target 
+and the nearest node.
+3. The third value should be the content of the node.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "INSERT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CONTENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+      (:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "V, TREE -> TREE
+This generic function is allowed provide 
+an additional procedure during the insertion of a `content' to the `tree'.
+The code in this method does something other than the linking of the
+parent and child nodes, and optimizes nearest-search. For example, 
+if you want to use B-tree for the nearest search,
+ here you can add codes for inserting a content into a B-tree.
+Always returns `tree' as a result of :around method of rrt-tree-mixin.")
+    (:TYPE :METHOD :SYMBOL (:NAME "INSERT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "V" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      ((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-MIXIN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "INSERT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "V" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      ((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-MIXIN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL (:NAME "LEAFS" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "TREE -> (list (node V))
+This generic function should provide a method
+to accumulate all leafs into a list.
+A leaf is a node with no children.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "COUNT-NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)) :DOCUMENTATION
+     "TREE -> FIXNUM
+This generic function should provide a method
+to count the number of leafs.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CONFIGURATION-SPACE-DISTANCE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "POINT1" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "POINT2" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "V, V -> NUMBER
+This generic function should provide a method
+to measure the distance between two points in C-space
+ (configuration space).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RRT-SEARCH" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "RANDOM-GENERATOR" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "NEW-V-GENERATOR" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EDGE-PROHIBITED-P" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "FINISH-P" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "START-V" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      ((:NAME "TREE-CLASS" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "RRT-TREE-TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+      ((:NAME "MAX-NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL) 15)
+      ((:NAME "MAX-ITERATION" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL) 30)
+      (:NAME "RUN-ON-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "RRT-search function.
+let V as a type variable.
+
++ V :: a vector class which represents the point in C-space.
+           (configuration-space-distance V V) should return a number.
++ (node V) :: an rrt-tree-node instance whose `content' slot is V.
+           non-holonomic parameters like velocity and acceralation
+           should be stored within (node V), not in V.
+
+`rrt-search' returns the result tree as its primary value.  The
+secondaly value is the total number of the nodes, and third value is
+the number of iteration done in the search.
+
+the arguments should be of types as listed in the following :
+
++ start-v : V
++ random-generator: (no args) -> V
++ new-v-generator: V, V -> V ; nearest, random -> actual
++ edge-prohibited-p: V, V -> bool ; nearest, new -> result
++ finish-p: V -> bool ; new -> result
++ run-on-node: V, V -> t ; nearest, new ->
+
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SPLIT-BRANCH-RRT-SEARCH" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "RANDOM-GENERATOR" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "NEW-VS-GENERATOR" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EDGE-PROHIBITED-P" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "FINISH-P" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "START-V" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      ((:NAME "TREE-CLASS" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "RRT-TREE-TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+      ((:NAME "MAX-NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL) 15)
+      ((:NAME "MAX-ITERATION" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL) 30)
+      (:NAME "RUN-ON-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "RRT-search function.
+let V as a type variable.
+
++ V :: a vector class which represents the point in C-space.
+           (configuration-space-distance V V) should return a number.
++ (node V) :: an rrt-tree-node instance whose `content' slot is V.
+           non-holonomic parameters like velocity and acceralation
+           should be stored within (node V), not in V.
+
+`rrt-search' returns the result tree as its primary value.  The
+secondaly value is the total number of the nodes, and third value is
+the number of iteration done in the search.
+
+the arguments should be of types as listed in the following :
+
++ start-v : V
++ random-generator: (no args) -> V
++ new-v-generator: V, V -> V ; nearest, random -> actual
++ edge-prohibited-p: V, V -> bool ; nearest, new -> result
++ finish-p: V -> bool ; new -> result
++ run-on-node: V, V -> t ; nearest, new ->
+
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESULT-PATH-NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "TREE -> (list V)
+Returns the nodes of the computed path in a list, from
+the root to the end. Returns nil if the path was not found. The list
+contains the root of the tree.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESULT-PATH" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)) :DOCUMENTATION
+     "TREE -> (list (node V))
+Returns a list of C-space points of the computed paths
+from the root to the end.  Returns nil if the path was not found. The
+list contains the root of the tree.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NNEXT-BRANCH" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)) :DOCUMENTATION
+     "TREE -> TREE
+Destructively modifies and return an RRT-TREE.  If the
+`tree' has a finish node, it finds a path from the root to
+the end and then replace the root with the next node in that path.
+Otherwise it choose one child of the root at random and replace the
+root with it. In both cases the new root is orphanized.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ORPHANIZE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CHILD" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)) :DOCUMENTATION
+     "HELPER FUNCTION: ensure a node doesn't have a parent")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEGLECT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)) :DOCUMENTATION
+     "HELPER FUNCTION: disconnect all children from the
+specified parent")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADOPT-CHILDREN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NEW-PARENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "OLD-PARENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION "HELPER FUINCTION: removes the children of old-parent and
+the new-parent takes all of them.")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "RRT-TREE-LIST" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "RRT-TREE-MIXIN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T))
+     :DOCUMENTATION "an rrt-tree implementation which uses
+ a simple linear search method for nearest-search."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :ACCESSORS
+       ((:NAME "NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-LIST" :PACKAGE-NAME "CL-RRT" :EXTERNALP T))
+      (:NAME "S" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REINITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-LIST" :PACKAGE-NAME "CL-RRT" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NEAREST-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "TARGET-CONTENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      ((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-LIST" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%NEAREST-NODE-LIST" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "TARGET-CONTENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      (:NAME "LST" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "INSERT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "V" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      ((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-LIST" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "LEAFS" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-LIST" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COUNT-NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-LIST" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "RRT-TREE-TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "RRT-TREE-MIXIN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T))
+     :DOCUMENTATION "an rrt-tree implementation which 
+seaches from the root in nearest-search."
+     :SLOT-LIST NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T))
+      (:NAME "S" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REINITIALIZE-INSTANCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T))
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NEAREST-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "TARGET-CONTENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+      ((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "LEAFS" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "COUNT-NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP NIL)
+       (:NAME "RRT-TREE-TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "RRT-SEARCH" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "CONTENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "PARENT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "FINISH-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "MAP-RRT-TREE-NODE-RECURSIVELY" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "CONNECT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "CHILDREN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "RESULT-PATH" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "SPLIT-BRANCH-RRT-SEARCH" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "MAPC-RRT-TREE-NODE-RECURSIVELY" :PACKAGE-NAME "CL-RRT" :EXTERNALP
+     T)
+    (:NAME "NEGLECT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "NEAREST-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "RRT-TREE-MIXIN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "CONFIGURATION-SPACE-DISTANCE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "ORPHANIZE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "DISCONNECT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "LEAFS" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "COUNT-NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "RRT-TREE-TREE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "MAP-RRT-TREE-CONTENT-RECURSIVELY" :PACKAGE-NAME "CL-RRT" :EXTERNALP
+     T)
+    (:NAME "ROOT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "CHILD-NOT-FOUND" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "NNEXT-BRANCH" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "ADOPT-CHILDREN" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "RESULT-PATH-NODES" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "MAPC-RRT-TREE-CONTENT-RECURSIVELY" :PACKAGE-NAME "CL-RRT"
+     :EXTERNALP T)
+    (:NAME "INSERT" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "RRT-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "RRT-TREE-LIST" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)
+    (:NAME "RRT-TREE-NODE" :PACKAGE-NAME "CL-RRT" :EXTERNALP T)))))

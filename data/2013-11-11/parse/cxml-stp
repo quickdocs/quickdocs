@@ -1,0 +1,3315 @@
+
+(:TYPE :SYSTEM :NAME "cxml-stp" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL
+ :LICENCE NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CXML" "ALEXANDRIA" "XPATH") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CXML-STP" :FULL-NAME "CXML-STP" :DOCUMENTATION
+   "STP is a data structure for well-formed XML documents.
+
+    @begin[Parsing and Serializing]{section}
+    To parse into STP, use an STP builder together with a function
+    generating SAX events:
+
+    @aboutfun{make-builder}
+    Serialize STP by sending SAX events for the tree to a sink:
+
+    @aboutfun{serialize}
+    @end{section}
+    @begin[Names and Namespace URIs]{section}
+    STP represents namespace-well-formed documents only.  All functions
+    accepting names take a local-name and and a namespace URI as an argument.
+    Qualified names are accepted where it makes sense, and named nodes have
+    a namespace prefix that is taken into account for well-formedness checks.
+
+    There are two kinds of named nodes: @class{element} and @class{attribute}.
+    Their slots are:
+
+    @aboutfun{local-name}
+    @aboutfun{namespace-uri}
+    @aboutfun{namespace-prefix}
+    For @code{element}, all of the above can be changed using SETF (subject
+    to well-formedness checks).
+
+    For attribute, @fun{local-name} can be changed directly, while URI and
+    prefix always have to be changed in the same step using
+    @fun{rename-attribute}.
+
+    A node's qualified name can be be queried:
+
+    @aboutfun{qualified-name}
+
+    @code{of-name} is convenient when searching for elements or attributes:
+
+    @aboutfun{of-name}
+    @end{section}
+    @begin[Subclasses of Node]{section}
+    All STP nodes have a common superclass.
+
+    @aboutclass{node}
+    Documents and elements can have children:
+
+    @aboutclass{parent-node}
+    @aboutclass{document}
+    @aboutclass{element}
+    Attributes belong to an @code{element}:
+
+    @aboutclass{attribute}
+    Other kinds of nodes:
+
+    @aboutclass{comment}
+    @aboutclass{document-type}
+    @aboutclass{processing-instruction}
+    @aboutclass{text}
+    @end{section}
+    @begin[Creating nodes]{section}
+    Nodes are created using the following functions:
+     
+    @aboutfun{make-attribute}
+    @aboutfun{make-comment}
+    @aboutfun{make-document}
+    @aboutfun{make-document-type}
+    @aboutfun{make-element}
+    @aboutfun{make-processing-instruction}
+    @aboutfun{make-text}
+    In addition, nodes can be copied including all their children:
+
+    @aboutfun{copy}
+    @end{section}
+    @begin[Listing Child Nodes]{section}
+    Nodes have an optional parent node and can have children.
+
+    @aboutfun{parent}
+    If a node has a @class{document} as its ancestor, it can be found using
+    the @fun{document} function.
+
+    @aboutfun{document}
+    Since the @code{parent} slot needs to be updated when children are added or
+    removed, the sequence of children is not exposed as a mutable Common
+    Lisp sequence.
+
+    @aboutfun{list-children}
+    @aboutfun{map-children}
+    @aboutmacro{do-children}
+    The following DOM-like functions are also offered:
+
+    @aboutfun{nth-child}
+    @aboutfun{first-child}
+    @aboutfun{last-child}
+    @aboutfun{previous-sibling}
+    @aboutfun{next-sibling}
+    A wide variety of sequence-related functions is offered that work
+    like the Common Lisp functions of the same name, but without the need
+    to call @fun{list-children} first:
+
+    @aboutfun{find-child}
+    @aboutfun{find-child-if}
+    @aboutfun{child-position}
+    @aboutfun{child-position-if}
+    @aboutfun{count-children}
+    @aboutfun{count-children-if}
+    @aboutfun{filter-children}
+    The functions listed above walk only across the direct children of the
+    parent node.  In addition, the node hierarchy can be mapped recursively
+    using these functions:
+
+    @aboutfun{map-recursively}
+    @aboutmacro{do-recursively}
+    @aboutfun{find-recursively}
+    @aboutfun{filter-recursively}
+
+    @end{section}
+    @begin[Adding and Removing Child Nodes]{section}
+    While all nodes can be asked for their children, only documents and
+    elements permit actually adding children.  (For all other nodes, the
+    sequence of children appears as empty.)
+
+    The most flexible function capable of changing the child nodes is
+    @fun{replace-children}.  Perhaps more common is @fun{insert-child},
+    a specialized version for only one new child.
+
+    @aboutfun{replace-children}
+    @aboutfun{insert-child}
+    Various convenience functions are offered in addition:
+
+    @aboutfun{prepend-child}
+    @aboutfun{append-child}
+    @aboutfun{delete-child}
+    @aboutfun{delete-child-if}
+    @aboutfun{delete-nth-child}
+    @aboutfun{insert-child-before}
+    @aboutfun{insert-child-after}
+    @aboutfun{replace-child}
+    A node can also be deleted from its parent directly using @fun{detach}.
+
+    @aboutfun{detach}
+    @fun{detach} also works for attributes.
+
+    @end{section}
+    @begin[Elements and their Attributes]{section}
+    In addition to their children, elements have attributes and \"extra
+    namespaces\".
+
+    Attributes themselves are nodes and be accessed using these functions:
+
+    @aboutfun{add-attribute}
+    @aboutfun{remove-attribute}
+    @aboutfun{find-attribute-named}
+    @aboutfun{find-attribute-if}
+    @aboutfun{list-attributes}
+    @aboutfun{map-attributes}
+    @aboutmacro{with-attributes}
+    As a shortcut, the @fun{attribute-value} and its @code{setf} function
+    allow access to attribute values by name, without having to look up the
+    attribute node first:
+   
+    @aboutfun{attribute-value}
+    There are three ways to declare a namespace: Using the name of the
+    element, using the name of one of its attributes, or using an \"extra
+    namespace\".  A prefix can be looked up from any of these local
+    declarations.  It is also possible to look up a namespace while taking
+    into account all declarations on parent elements.
+
+    @aboutfun{find-local-namespace}
+    @aboutfun{find-namespace}
+    Extra namespaces are needed only when a namespace must be declared even
+    though there is no element or attribute referencing it through its name.
+    For example, an attribute declared with type @code{QName} using
+    RelaxNG/XSD must reference a namespace in scope.
+
+    @aboutfun{add-extra-namespace}
+    @aboutfun{remove-extra-namespace}
+    @aboutfun{find-extra-namespace}
+    @aboutfun{map-extra-namespaces}
+    @end{section}"
+   :SYMBOL-LIST NIL :EXTERNAL-SYMBOLS
+   ((:NAME "MAP-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FIND-LOCAL-NAMESPACE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DELETE-CHILD-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "SERIALIZE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DELETE-NTH-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "REMOVE-EXTRA-NAMESPACE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAKE-ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "CHILD-POSITION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "STP-ERROR" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "COPY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAKE-ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FIND-EXTRA-NAMESPACE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "RENAME-ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FIND-ATTRIBUTE-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAKE-DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "LAST-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "ADD-ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "NTH-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "CHILD-POSITION-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FIND-ATTRIBUTE-NAMED" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "COUNT-CHILDREN-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "INSERT-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "REPLACE-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FIND-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAKE-TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "NUMBER-OF-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DO-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "TARGET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DELETE-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "WITH-ATTRIBUTES" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "STRING-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "LIST-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "REMOVE-ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "BASE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DTD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAP-RECURSIVELY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FIND-CHILD-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "NAMESPACE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FILTER-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "INSERT-CHILD-AFTER" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FIND-NAMESPACE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "ROOT-ELEMENT-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "INTERNAL-SUBSET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "LIST-ATTRIBUTES" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FIND-RECURSIVELY-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DETACH" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FIRST-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAKE-COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "OF-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "COUNT-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAKE-PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DO-RECURSIVELY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAKE-DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "NAMESPACE-PREFIX" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "LOCAL-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DOCUMENT-ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "ROOT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "DELETE-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "QUALIFIED-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "ADD-EXTRA-NAMESPACE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "*CHECK-URI-SYNTAX*" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAP-EXTRA-NAMESPACES" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "NEXT-SIBLING" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "PREPEND-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "ATTRIBUTE-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAKE-BUILDER" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "MAP-ATTRIBUTES" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "PREVIOUS-SIBLING" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FIND-RECURSIVELY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "FILTER-RECURSIVELY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "APPEND-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+    (:NAME "INSERT-CHILD-BEFORE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+  (:TYPE :PACKAGE :NAME "-IMPL" :FULL-NAME "CXML-STP-IMPL" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "NAMED-NODE-MIXIN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "LOCAL-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "%LOCAL-NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+       :READERS ((:NAME "LOCAL-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "%NAMESPACE-PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+         NIL))
+       :READERS
+       ((:NAME "NAMESPACE-PREFIX" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAMESPACE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "%NAMESPACE-URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+       :READERS ((:NAME "NAMESPACE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "LEAF-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NAMED-NODE-MIXIN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Instances of this class represent attributes of an @class{element},
+    excluding namespace declarations.}
+
+    The @fun{parent} of an attribute is always an @class{element} or nil,
+    but the attribute is not a child of that element.
+
+    @see-slot{local-name}
+    @see-slot{namespace-prefix}
+    @see-slot{namespace-uri}
+    @see-slot{qualified-name}
+    @see-slot{value}
+    @see{list-attributes}
+    @see-constructor{make-attribute}"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :SUPER-CLASS-LIST
+     ((:NAME "LEAF-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "Instances of this class represent XML comments.
+    @see-slot{data}
+    @see-constructor{make-comment}"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "LEAF-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Instances of this class represent the DOCTYPE declaration at the
+    beginning of a document.}
+
+    The document type is an optional child of a @class{document}.  At most
+    one document type is allowed, and it must precede the document element.
+
+    Since STP checks well-formedness only, not validity, the document type
+    only declares what DTD the document claims to be conforming to, but
+    does not guarantee that it actually does.
+
+    @see-constructor{make-document-type}
+    @see-slot{root-element-name}
+    @see-slot{system-id}
+    @see-slot{public-id}
+    @see-slot{internal-subset}"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ROOT-ELEMENT-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "ROOT-ELEMENT-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "INTERNAL-SUBSET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       :ACCESSORS
+       ((:NAME "INTERNAL-SUBSET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DTD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "DTD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :SUPER-CLASS-LIST
+     ((:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION
+     "@short{Instances of this class represent an entire XML document.}
+
+    A document may have at most one document-type, and must have exactly one
+    element as a child (in this order).
+
+    It may also have comments and processing-instructions anywhere.
+
+    @see-constructor{make-document}
+    @see-slot{document-element}
+    @see-slot{document-type}"
+     :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :SUPER-CLASS-LIST
+     ((:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "NAMED-NODE-MIXIN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@short{Instances of this class represent XML elements with their attributes
+    and namespaces.}
+
+    See @class{node} for functions to query the list of children.
+
+    See @class{parent-node} for functions to add or remove children.
+
+    @see-slot{local-name}
+    @see-slot{namespace-prefix}
+    @see-slot{namespace-uri}
+    @see-slot{qualified-name}
+    @see{add-attribute}
+    @see{remove-attribute}
+    @see{find-attribute-named}
+    @see{find-attribute-if}
+    @see{with-attributes}
+    @see{list-attributes}
+    @see{map-attributes}
+    @see{attribute-value}
+    @see{find-namespace}
+    @see{find-attribute-namespace}
+    @see{find-local-namespace}
+    @see{find-extra-namespace}
+    @see{add-extra-namespace}
+    @see{remove-extra-namespace}
+    @see{map-extra-namespaces}
+   @see-constructor{make-element}"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "ATTRIBUTES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "%ATTRIBUTES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAMESPACES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "%NAMESPACES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "LEAF-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST NIL)
+    (:TYPE :CLASS :SYMBOL (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION "@short{The superclass of all nodes.}
+
+    Although only @class{document} and @class{element} allow children,
+    read-only functions accessing the list of children are available for
+    all nodes and always return zero children for other classes.
+
+    @see-slot{parent}
+    @see-slot{base-uri}
+    @see{document}
+    @see{root}
+    @see{detach}
+    @see{copy}
+    @see{serialize}
+    @see{map-children}
+    @see{do-children}
+    @see{list-children}
+    @see{first-child}
+    @see{last-child}
+    @see{nth-child}
+    @see{previous-sibling}
+    @see{next-sibling}
+    @see{count-children}
+    @see{find-child}
+    @see{child-position}
+    @see{count-children-if}
+    @see{find-child-if}
+    @see{child-position-if}
+    @see{filter-children}
+    @see{map-recursively}
+    @see{do-recursively}
+    @see{find-recursively}
+    @see{filter-recursively}"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+       :WRITERS
+       ((:NAME "%PARENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+       :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :SUPER-CLASS-LIST ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@short{Instances of this class can have children.}
+
+    See @class{node} for functions to query the list of children without
+    changing it.
+
+    @see{prepend-child}
+    @see{append-child}
+    @see{delete-nth-child}
+    @see{delete-child}
+    @see{insert-child-before}
+    @see{insert-child-after}
+    @see{replace-child}
+    @see{insert-child}
+    @see{delete-child-if}
+    @see{replace-children}"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "%BASE-URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "%CHILDREN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "%CHILDREN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "LEAF-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "Instances of this class represent processing instructions.
+    @see-slot{target}
+    @see-slot{data}
+    @see-constructor{make-processing-instruction}"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "TARGET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "TARGET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :CLASS :SYMBOL (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "LEAF-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "Instances of this class represent text nodes.
+    @see-slot{data}
+    @see-constructor{make-text}"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS
+       ((:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :READERS NIL
+       :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CHECK-URI-SYNTAX*" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :DOCUMENTATION
+     "If true (the default), a warning is issued if a string specified
+   as a namespace URI does not have URI syntax."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHECK-NAMESPACE-URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STP-ERROR" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "FMT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@unexport{}")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "STRING-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{an instance of @class{node}}
+    @return{a string}
+    @short{Returns the string value of @code{node} as defined by XPath.}
+
+    For a document, this is the value of its root element.
+
+    For an element, the concatenation of the values of those child nodes
+    is returned that are elements or text nodes.
+    (Leaving only the PCDATA content.)
+
+    For a text, comment, and processing instruction nodes, the node's data
+    is returned.
+
+    For an attribute, the attribute value is returned.
+
+    The value for document types is not specified.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{an @class{node}}
+    @return{the parent node, or nil}
+    @short{Returns the node's parent.}")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "BASE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{an @class{node}}
+    @return{a string}
+    @short{Returns the node's base URI.}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{an instance of @class{node}}
+   @return{a @class{document} or nil}
+   @short{Returns the document node ancestor of @code{node}.}
+
+   Returns the @class{document} node that is the @fun{root} of @code{node}
+   or @code{nil} if the root node is not a document.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ROOT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{an instance of @class{node}}
+   @return{a @class{node} or nil}
+   @short{Returns the root of the tree of nodes @code{node} is part of.}
+
+   In a complete document, this is an instance of @class{document}, but
+   a detached subtree can have any node as its root.  In particular, the
+   argument itself is returned if it does not have a @fun{parent}.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DETACH" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{a @class{node}}
+    @short{This function removes a child node or attribute.}
+
+    In contrast to functions for child nodes, this function can also remove
+    an attribute from its parent.
+
+    @see{parent}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DETACH" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "COPY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{a @class{node}}
+    @short{This function copies a node recursively.}
+
+    The resulting node is of the same class as the argument, and all
+    child nodes and attributes are copied in the same way.
+
+    Shared structure includes only primitive slot values like strings.
+    (The consequences are undefined if user code mutates such values, whether
+    @code{copy} is used or not.)")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SERIALIZE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "HANDLER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[node]{a @class{node}}
+    @short{This function generates SAX events representing @code{node}.}
+
+    Use this function together with a serialization sink to generate
+    a serialized XML document.
+
+    Examples. Serializing to a stream:
+    @begin{pre}CL-USER> (stp:serialize (stp:make-document (stp:make-element \"test\"))
+			(cxml:make-character-stream-sink *standard-output*))
+<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<test/>
+#<SWANK-BACKEND::SLIME-OUTPUT-STREAM {10037EA611@}>
+@end{pre}
+    Examples. Serializing to a string:
+    @begin{pre}CL-USER> (stp:serialize (stp:make-document (stp:make-element \"test\"))
+			(cxml:make-string-sink))
+\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>
+<test/>\"
+@end{pre}
+
+   @see{make-builder}")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "MAP-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "RESULT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[result-type]{a sequence type specifier, or nil}
+    @arg[function]{a designator for a function of one argument}
+    @arg[node]{a @class{node}}
+    @return{an sequence of @code{result-type}, or nil}
+    @short{Applies @code{function} to successive child nodes.}
+
+    The @code{result-type} specifies the type of the resulting sequence.
+    @code{map-children} returns nil if @code{result-type} is nil.  Otherwise
+    it returns a sequence such that element i is the result of applying
+    @code{function} to child i of @class{node}.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "VAR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "RESULT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[var]{symbol, a variable name}
+   @arg[node]{a @class{node}}
+   @arg[result]{a form}
+   @return{the result of evaluating @code{result}}
+   Executes @code{body} with @code{var} bound to successive child
+     nodes.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIST-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{a @class{node}}
+   @return{a list of nodes}
+   Returns a freshly consed list containing the child nodes of @code{node}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NTH-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[n]{a non-negative integer}
+   @arg[parent]{a @class{node}}
+   @return{a @class{node}}
+   @short{Returns child node @code{n} of @code{parent}}, or signals an error
+   if n is negative or as large or larger that the number of child nodes.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIRST-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{a @class{node}}
+   @return{a @class{node} or nil}
+   Returns first child of @code{node}, or nil.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LAST-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{a @class{node}}
+   @return{a @class{node} or nil}
+   Returns last child of @code{node}, or nil.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PREVIOUS-SIBLING" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[node]{a @class{node}}
+   @return{a @class{node} or nil}
+   @short{Returns the child preceding @code{node} in the child list of its
+     parent.}
+
+   Signals an error if @code{node} has no parent or is the first child of its
+   parent.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEXT-SIBLING" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{a @class{node}}
+   @return{a @class{node} or nil}
+   @short{Returns the child following @code{node} in the child list of its
+     parent.}
+
+   Signals an error if @code{node} has no parent or is the last child of its
+   parent.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NUMBER-OF-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[parent]{a @class{node}}
+   @return{the number of child nodes}
+   Returns the number of @code{parent}'s child nodes.
+   @see{count-children}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COUNT-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM-END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[value]{an object}
+   @arg[parent]{a @class{node}}
+   @arg[from-end]{a generalized boolead}
+   @arg[start, end]{bounding index designators for @code{parent}'s child list}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @arg[test]{a designator for a function of two arguments, or nil}
+   @return{a non-negative integer less than or equal to the number of
+     child nodes}
+   Counts (and returns the number of) @code{parent}'s child nodes satisfying
+   the test.
+   @see{number-of-children}
+   @see{count-children-if}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COUNT-CHILDREN-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM-END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@arg[predicate]{a designator for a function of one argument that returns
+     a generalized boolean}
+   @arg[parent]{a @class{node}}
+   @arg[from-end]{a generalized boolead}
+   @arg[start, end]{bounding index designators for @code{parent}'s child list}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @return{a non-negative integer less than or equal to the number of
+     child nodes}
+   Counts (and returns the number of) @code{parent}'s child nodes satisfying
+   @code{predicate}.
+   @see{number-of-children}
+   @see{count-children}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM-END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[value]{an object}
+   @arg[parent]{a @class{node}}
+   @arg[from-end]{a generalized boolead}
+   @arg[start, end]{bounding index designators for @code{parent}'s child list}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @arg[test]{a designator for a function of two arguments, or nil}
+   @return{a @class{node} or nil}
+   Searches for a child node of @code{parent} that satisfies the @code{test}
+   and returns it.
+
+   @see{find-child-if}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-CHILD-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM-END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@arg[predicate]{a designator for a function of one argument that returns
+     a generalized boolean}
+   @arg[parent]{a @class{node}}
+   @arg[from-end]{a generalized boolead}
+   @arg[start, end]{bounding index designators for @code{parent}'s child list}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @return{a @class{node} or nil}
+   Searches for a child node of @code{parent} that satisfies @code{predicate}
+   and returns it.
+
+   @see{find-child}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHILD-POSITION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM-END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[value]{an object}
+   @arg[parent]{a @class{node}}
+   @arg[from-end]{a generalized boolead}
+   @arg[start, end]{bounding index designators for @code{parent}'s child list}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @arg[test]{a designator for a function of two arguments, or nil}
+   @return{a @class{node} or nil}
+   Searches for a child node of @code{parent} that satisfies the @code{test}
+   and returns its position.
+
+   @see{child-position-if}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHILD-POSITION-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM-END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@arg[predicate]{a designator for a function of one argument that returns
+     a generalized boolean}
+   @arg[parent]{a @class{node}}
+   @arg[from-end]{a generalized boolead}
+   @arg[start, end]{bounding index designators for @code{parent}'s child list}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @arg[test]{a designator for a function of two arguments, or nil}
+   @return{a @class{node} or nil}
+   Searches for a child node of @code{parent} that satisfies the @code{test}
+   and returns its position.
+
+   @see{child-position}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FILTER-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM-END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@arg[predicate]{a designator for a function of one argument that returns
+     a generalized boolean}
+   @arg[parent]{a @class{node}}
+   @arg[from-end]{a generalized boolead}
+   @arg[start, end]{bounding index designators for @code{parent}'s child list}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @arg[test]{a designator for a function of two arguments, or nil}
+   @arg[count]{an integer or nil}
+   @return{a sequence containing nodes}
+   @short{Return a list of child nodes of @code{parent} from which nodes that
+     do not satisfy @code{predicate} have been removed.}
+
+   This function returns the same list as @code{remove-if-not} on the result
+   of @fun{list-children}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-RECURSIVELY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[fn]{a designator for a function of one argument}
+   @arg[node]{a @class{node}}
+   @return{nil}
+   Applies @code{fn} to successive descendants of @code{node} in
+   pre-order.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-RECURSIVELY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "VAR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "RESULT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[var]{symbol, a variable name}
+   @arg[node]{a @class{node}}
+   @arg[result]{a form}
+   @return{the result of evaluating @code{result}}
+   Executes @code{bode} with @code{var} bound to successive descendants of
+   @code{node} in pre-order.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-RECURSIVELY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ITEM" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[item]{an object}
+   @arg[node]{a @class{node}}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @arg[test]{a designator for a function of two arguments, or nil}
+   @return{a @class{node} or nil}
+   Searches in pre-order for the first descendant of @code{node} that
+   satisfies the @code{test} and returns it.
+
+   @see{find-child-if}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-RECURSIVELY-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@arg[test]{a designator for a function of one argument that returns
+     a generalized boolean}
+   @arg[node]{a @class{node}}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @return{a @class{node} or nil}
+   Searches in pre-order for the first descendant of @code{node} that
+   satisfies the @code{test} and returns it.
+
+   @see{find-child-if}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FILTER-RECURSIVELY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TEST" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@arg[test]{a designator for a function of one argument that returns
+     a generalized boolean}
+   @arg[node]{a @class{node}}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @arg[test]{a designator for a function of two arguments, or nil}
+   @return{a sequence containing nodes}
+   Return a list of descendant nodes of @code{node} in pre-order, from which
+   nodes that do not satisfy @code{predicate} have been removed.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SLOTS-FOR-PRINT-OBJECT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-URI->STRING" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SLOTS-FOR-PRINT-OBJECT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PRINT-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "OBJECT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PRETTY-PRINT-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UGLY-PRINT-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "RECONSTRUCT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFREADER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARGS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BASE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[newval]{string, the new base URI}
+    @arg[node]{an @class{parent-node}}
+    @return{the new base URI}
+    @short{Sets the node's base URI.}")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "%BASE-URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%BASE-URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "%BASE-URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-FILL-IN-BASE-URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "REMOVED-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FILL-IN-BASE-URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REMOVED-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-BASE-URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BASE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[newval]{string, the new base URI}
+    @arg[node]{an @class{parent-node}}
+    @return{the new base URI}
+    @short{Sets the node's base URI.}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAP-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "RESULT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PREPEND-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[parent]{a @class{parent-node}}
+   @arg[child]{a @class{node}}
+   @short{Adds @code{child} as the first child of @code{parent}, if allowed.}
+
+   Signals an error if the child already has a parent.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "APPEND-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[child]{a @class{node}}
+   @arg[parent]{a @class{parent-node}}
+   Adds @code{child} as the last child of @code{parent}, if allowed.
+
+   Signals an error if the child already has a parent.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-NTH-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "IDX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[idx]{a non-negative integer}
+   @arg[parent]{a @class{parent-node}}
+   Removes child @code{idx} of @code{parent}, if allowed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM-END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[child]{an object}
+   @arg[parent]{a @class{node}}
+   @arg[from-end]{a generalized boolead}
+   @arg[start, end]{bounding index designators for @code{parent}'s child list}
+   @arg[key]{a designator for a function of one argument, or nil}
+   @arg[test]{a designator for a function of two arguments, or nil}
+   @return{a @class{node} or nil}
+   Searches for a child node of @code{parent} that satisfies the @code{test}
+   and removes it, if allowed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSERT-CHILD-BEFORE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "NEW-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "REF-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[parent]{a @class{parent-node}}
+   @arg[new-child]{a @class{node}}
+   @arg[ref-child]{a @class{node}}
+   @short{Adds @code{new-child} before @code{ref-child} as a child node of
+   @code{parent}, if allowed.}
+
+   Signals an error if the child already has a parent.
+
+   Also signals an error if @code{ref-child} is not a child of @code{parent}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INSERT-CHILD-AFTER" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "NEW-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "REF-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[parent]{a @class{parent-node}}
+   @arg[new-child]{a @class{node}}
+   @arg[ref-child]{a @class{node}}
+   @short{Adds @code{new-child} after @code{ref-child} as a child node of
+   @code{parent}, if allowed.}
+
+   Signals an error if the child already has a parent.
+
+   Also signals an error if @code{ref-child} is not a child of @code{parent}.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "INSERT-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[parent]{a @class{parent-node}}
+    @arg[child]{a @class{node}}
+    @arg[position]{a non-negative integer}
+    @short{Adds @code{child} as a child node of @code{parent} at position
+      @code{position} if allowed.}
+
+   Signals an error if the new child already has a parent.
+
+   Also signals an error if @code{position} is greater than the number
+   @code{parent}'s child nodes.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DELETE-CHILD-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM-END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "@arg[predicate]{a designator for a function of one argument that returns
+     a generalized boolean}
+    @arg[parent]{a @class{node}}
+    @arg[from-end]{a generalized boolead}
+    @arg[start, end]{bounding index designators for @code{parent}'s child list}
+    @arg[key]{a designator for a function of one argument, or nil}
+    @arg[test]{a designator for a function of two arguments, or nil}
+    @return{a @class{node} or nil}
+    Searches for an child node of @code{parent} that satisfies @code{predicate}
+    and removes it, if allowed.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "REPLACE-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "OLD-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NEW-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[parent]{a @class{parent-node}}
+    @arg[old-child]{a @class{node}}
+    @arg[new-child]{a @class{node}}
+    @short{Adds @code{new-child} instead of @code{old-child} as a child node of
+    @code{parent}, if allowed.}
+
+    Signals an error if the new child already has a parent.
+
+    Also signals an error if @code{old-child} is not a child of
+    @code{parent}.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CHECK-INSERTION-ALLOWED" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "CHECK-DELETION-ALLOWED" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "POSITION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INSERT-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "I" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REPLACE-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "OLD-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NEW-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%UNCHECKED-INSERT-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "I" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%NUKE-NTH-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "I" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DELETE-CHILD-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FROM-END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "END" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@unexport{}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RECONSTRUCT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "PARENT-NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "BASE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) "")
+      ((:NAME "CHILDREN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "%CHILDREN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "LEAF-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "MAP-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "RESULT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "LEAF-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DOCUMENT-ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[document-element]{an @class{element}}
+   @return{an @class{document}}
+   @short{This function creates document.}
+
+   The given element is used as the document's only initial child.")
+    (:TYPE :METHOD :SYMBOL (:NAME "COPY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ASSERT-ORPHAN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHECK-INSERTION-ALLOWED" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "I" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHECK-DELETION-ALLOWED" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      ((:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "I" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHECK-DELETION-ALLOWED" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      ((:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "I" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "REPLACE-CHILD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "OLD-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NEW-CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[document]{a @class{document}}
+   @return{a @class{document-type}, or nil}
+   This function returns the child node that is a document type, or nil.
+   @see{document-element}")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[document]{a @class{document}}
+   @return{an @class{element}}
+   This function returns the child node that is an element.
+   @see{document-type}")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOCUMENT-ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BASE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BASE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STRING-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SERIALIZE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "HANDLER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@unexport{}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RECONSTRUCT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "LOCAL-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{an @class{element} or @class{attribute}}
+    @return{string, an NCName}
+    @short{Returns the node's local name.}
+    @see{qualified-name}
+    @see{namespace-uri}
+    @see{namespace-prefix}")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "NAMESPACE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{an @class{element} or @class{attribute}}
+    @return{string, a URI}
+    @short{Returns the node's namespace URI.}
+    @see{qualified-name}
+    @see{local-name}
+    @see{namespace-prefix}")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "NAMESPACE-PREFIX" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[node]{an @class{element} or @class{attribute}}
+    @return{string, an NCName}
+    @short{Returns the node's namespace prefix.}
+    @see{qualified-name}
+    @see{local-name}
+    @see{namespace-uri}")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[newval]{a string of XML characters}
+    @arg[attribute]{an @class{attribute}}
+    @return{the value}
+    @short{Sets the attribute's value.}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) ""))
+     :DOCUMENTATION "@arg[name]{string, a QName or NCName}
+   @arg[uri]{a string, the namespace URI}
+   @return{an @class{element}}
+   @short{This function creates an element node of the given name.}")
+    (:TYPE :METHOD :SYMBOL (:NAME "COPY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-ATTRIBUTES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NEW" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "OLD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OF-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) ""))
+     :DOCUMENTATION "@arg[name]{an NCName string or @code{nil}}
+   @arg[uri]{a string, the namespace URI}
+   @return{an function of one argument}
+   @short{This function creates a test function for nodes of this name.}
+
+   The function returned will return T if the argument is an instance
+   of @class{attribute} or @class{element} and has the specified local-name
+   and namespace URI, and will return NIL otherwise.
+
+   If local-name is nil, only the namespace URI is considered for comparison.
+
+   @see{local-name}
+   @see{namespace-uri}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUALIFIED-OF-NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "QNAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[qname]{string, a QName}
+   @arg[element]{an element in which to look up @code{name}'s namespace}
+   @return{an function of one argument}
+   @short{This function creates a test function for nodes of this name.}
+
+   @code{qname}'s namespace prefix is resolved into its namespace URI
+   as declared by @code{element}.  If @code{qname} does not have a prefix,
+   the namespace URI is the empty string.  If @code{qname}'s prefix is
+   not declared on @code{element}, an error is signalled.
+
+   A function is returned that will return T if the argument is an instance
+   of @class{attribute} or @class{element} and has the local-name
+   namespace URI specified by @code{qname}, and will return NIL otherwise.
+
+   @see{qualified-name}
+   @see{local-name}
+   @see{find-namespace}
+   @see{namespace-uri}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-EXTRA-NAMESPACES" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[fn]{a designator for a function of two arguments}
+   @arg[element]{an instance of @class{element}}
+   @return{nil}
+   Call fn for each extra namespace declared on @code{element} with
+   namespace prefix and URI as arguments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-EXTRA-NAMESPACE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[prefix]{a string}
+   @arg[element]{an instance of @class{element}}
+   @return{the namespace URI (a string), or nil}
+   Find the extra namespace named @code{prefix} declared on @code{element}
+   and return its namespace URI, or return nil if no such namespace was found.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[element]{an instance of @class{element}}
+   @arg[attribute]{an instance of @class{attribute}}
+   @short{Add a new attribute to @code{element} or replace an existing
+     attribute node of the same name.}
+
+   It is an error if the attribute's namespace conflicts with existing
+   namespace declarations on this element.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%ADD-ATTRIBUTE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%REMOVE-ATTRIBUTE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[element]{an instance of @class{element}}
+   @arg[attribute]{an instance of @class{attribute}}
+   @return{the attribute}
+   @short{Remove an attribute node from @code{element}.}
+
+   It is an error if @code{attribute} is not an attribute of @code{element}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-ATTRIBUTE-NAMED" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) ""))
+     :DOCUMENTATION "@arg[element]{an instance of @class{element}}
+   @arg[name]{string, an NCName} 
+   @arg[uri]{string, a namespace URI} 
+   @return{an @class{attribute} or nil}
+   @short{Searches for an attribute node of @code{element} with the
+     specified local name and namespace URI and returns it.}
+
+   Returns nil if no such attribute was found.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-ATTRIBUTE-IF" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TEST" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[test]{a designator for a function of one argument.}
+   @arg[element]{an instance of @class{element}}
+   @return{an @class{attribute} or nil}
+   @short{Searches for an attribute node of @code{element} satisfying
+     @code{test}}
+
+   Returns nil if no such attribute was found.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SANITIZE-ATTRIBUTE-NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "URIP" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ATTRIBUTE-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) ""
+       (:NAME "URIP" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION "@arg[element]{an instance of @class{element}}
+   @arg[name]{string, an NCName} 
+   @arg[uri]{string, a namespace URI} 
+   @return{a string or nil}
+   @short{Searches for an attribute node of @code{element} with the
+     specified local name and namespace URI and returns its value.}
+
+   Returns nil if no such attribute was found.")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ATTRIBUTE-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) ""
+       (:NAME "URIP" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-ATTRIBUTES" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ENTRIES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluate body with the specified attributes bound lexically as if they
+   were variables.
+
+   Each entry in @code{entries} is a list of the form
+   @em{(variable-name attribute-name &optional uri)}, where
+   @code{variable-name}
+   is a symbol and @code{attribute-name} and @code{uri} are strings.
+
+   The macro with-attributes invokes @fun{attribute-value}
+   to access the attributes. specified by each entry.
+   Both setf and setq can be used to set the value of the attribute.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIST-ATTRIBUTES" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[element]{an @class{element}}
+   @return{a list of @class{attribute} nodes}
+   Returns a freshly consed list containing the attributes of @code{element}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-ATTRIBUTES" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "RESULT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "FN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[result-type]{a sequence type specifier, or nil}
+   @arg[fn]{a designator for a function of one argument}
+   @arg[element]{an instance of @class{element}}
+   @return{an sequence of @code{result-type}, or nil}
+   @short{Applies @code{fn} to each attribute nodes of @code{element}.}
+
+    The @code{result-type} specifies the type of the resulting sequence.
+    @code{map-children} returns nil if @code{result-type} is nil.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "QUALIFIED-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[node]{an @class{element} or @class{attribute}}
+   @return{string, a QName}
+   @short{Returns the node's qualified name.}
+   The qualified name is computed as prefix ':' local-name.
+   @see{local-name}
+   @see{namespace-uri}
+   @see{namespace-prefix}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-NAMESPACE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[prefix]{a string}
+   @arg[element]{an instance of @class{element}}
+   @return{the namespace URI (a string), or nil}
+   @short{Find the namespace @code{prefix} declared on @code{element}
+   or its parent and return its namespace URI, or return nil if no such
+   namespace was found.}
+
+   This functions returns the same result as @fun{find-local-namespace}
+   if the namespace is declared directly on @code{element}.  Otherwise
+   it takes into account namespaces declared on parent elements.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-ATTRIBUTE-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-LOCAL-NAMESPACE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[prefix]{a string}
+   @arg[element]{an instance of @class{element}}
+   @return{the namespace URI (a string), or nil}
+   @short{Find the namespace @code{prefix} declared on @code{element}
+   and return its namespace URI, or return nil if no such namespace was found.}
+
+   The namespaces considered by this function are: The namespace of the element
+   itself.  The namespaces of element's attributes.  Extra namespaces declared
+   by the element.  The \"xmlns\" namespace, which is always fixed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NAMEP" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NC-NAME-P" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHECK-NC-NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCAL-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCAL-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHECK-URI-LIKE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAMESPACE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAMESPACE-PREFIX" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-CHILDREN" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[parent]{an @class{element}}
+   @return{nil}
+   Deletes all children of @code{element}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHILDP" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "A" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "B" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHECK-INSERTION-ALLOWED" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "I" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHECK-DELETION-ALLOWED" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "CHILD" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "I" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ADD-EXTRA-NAMESPACE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[prefix]{string, an NCName}
+   @arg[uri]{string, a namespace URI}
+   @arg[element]{an instance of @class{element}}
+   @return{@code{uri}}
+   @short{Add an extra namespace to @code{element} that maps @code{prefix} to
+   @code{uri}.}
+
+   It is an error if the new namespace conflicts with existing namespace
+   declarations on this element.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-EXTRA-NAMESPACE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[prefix]{string, an NCName}
+   @arg[element]{an instance of @class{element}}
+   @return{@code{uri}}
+   Removed the extra namespace declared on @code{element} for @code{prefix}.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COLLECT-LOCAL-NAMESPACES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SERIALIZE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "HANDLER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BASE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ESCAPE-URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BASE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STRING-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-EMPTY-STRING" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "X" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SLOTS-FOR-PRINT-OBJECT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NAMED-NODE-MIXIN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ATTRIBUTES-FOR-PRINT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "ELT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SLOTS-FOR-PRINT-OBJECT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NAMESPACES-FOR-PRINT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NAMED-NODE-MIXIN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@unexport{}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RECONSTRUCT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NAMED-NODE-MIXIN" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "LOCAL-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "slot ~A missing in printed representation"
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "LOCAL-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))))
+      ((:NAME "NAMESPACE-PREFIX" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) "")
+      ((:NAME "NAMESPACE-URI" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) "")
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@unexport{}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RECONSTRUCT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ATTRIBUTES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "EXTRA-NAMESPACES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[attribute]{an @class{attribute}}
+    @return{a string of XML characters}
+    @short{Returns the attribute's value.}")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[newval]{a string of XML characters}
+    @arg[attribute]{an @class{attribute}}
+    @return{the value}
+    @short{Sets the attribute's value.}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) ""))
+     :DOCUMENTATION "@arg[value]{a string containing XML characters only}
+   @arg[name]{a string, either a QName or an NCName}
+   @arg[uri]{a string, the namespace URI}
+   @return{an @class{attribute}}
+   @short{This function creates an attribute node of the given value and name.}
+
+   @see{element}")
+    (:TYPE :METHOD :SYMBOL (:NAME "COPY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "DETACH" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STRING-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "XML-CHARACTERS-P" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LOCAL-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "XOR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "A" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "B" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RENAME-ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[attribute]{the @class{attribute} to be renamed}
+   @arg[prefix]{string, an NCName}
+   @arg[uri]{a string, the namespace URI}
+   @return{the attribute}
+   @short{This function changed namespace prefix and URI of an attribute.}
+
+   Since there is no default namespace for attributes, prefix and uri must
+   be changed in the same step to rename an attribute with no namespace to
+   an attribute with both namespace prefix and URI.
+
+   @see{local-name}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SERIALIZE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "HANDLER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SLOTS-FOR-PRINT-OBJECT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@unexport{}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RECONSTRUCT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "slot ~A missing in printed representation"
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "ROOT-ELEMENT-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[document-type]{@class{document-type}}
+    @return{string, a Name}
+    @short{Returns the document-type's root-element-name.}")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ROOT-ELEMENT-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[newval]{string, a Name}
+    @arg[document-type]{@class{document-type}}
+    @return{the root-element-name}
+    @short{Sets the document-type's root-element-name.}")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[document-type]{@class{document-type}}
+    @return{string suitable as a system ID}
+    @short{Returns the document-type's system-id.}")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[newval]{string, suitable as a system ID}
+    @arg[document-type]{@class{document-type}}
+    @return{the system-id}
+    @short{Sets the document-type's system-id.}")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[document-type]{@class{document-type}}
+    @return{string suitable as a system ID}
+    @short{Returns the document-type's public-id.}")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[newval]{string, suitable as a system ID}
+    @arg[document-type]{@class{document-type}}
+    @return{the public-id}
+    @short{Sets the document-type's public-id.}")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "INTERNAL-SUBSET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[document-type]{@class{document-type}}
+    @return{string, a well-formed internal subset}
+    @short{Returns the document-type's internal subset as a string.}")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INTERNAL-SUBSET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@arg[newval]{string, a well-formed internal subset}
+    @arg[document-type]{@class{document-type}}
+    @return{the internal-subset}
+    @short{Sets the document-type's internal subset.}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ROOT-ELEMENT-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "INTERNAL-SUBSET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[root-element-name]{string, a Name}
+   @arg[system-id]{a string allowed as a system ID}
+   @arg[public-id]{a string allowed as a public ID}
+   @arg[internal-subset]{a well-formed internal subset as a string}
+   @return{an @class{documen-type}}
+   @short{This function creates a document-type node.}
+
+   @see{document}")
+    (:TYPE :METHOD :SYMBOL (:NAME "COPY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NAMEP" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHECK-XML-NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "STR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ROOT-ELEMENT-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INTERNAL-SUBSET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DTD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STRING-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SERIALIZE-CANONICAL-NOTATIONS-ONLY-P*" :PACKAGE-NAME
+      "CXML-STP-IMPL" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "NIL")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "NOTATION-COLLECTOR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "COLLECTED-NOTATIONS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "COLLECTED-NOTATIONS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NOTATION-DECLARATION" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NOTATION-COLLECTOR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+        NIL))
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PUBLIC" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "SYSTEM" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "END-DOCUMENT" :PACKAGE-NAME "SAX" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "HANDLER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "NOTATION-COLLECTOR" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+        NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SERIALIZE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "HANDLER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SLOTS-FOR-PRINT-OBJECT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@unexport{}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RECONSTRUCT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "DOCUMENT-TYPE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ROOT-ELEMENT-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "slot ~A missing in printed representation"
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "ROOT-ELEMENT-NAME" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))))
+      ((:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "slot ~A missing in printed representation"
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))))
+      ((:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "slot ~A missing in printed representation"
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))))
+      ((:NAME "INTERNAL-SUBSET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "slot ~A missing in printed representation"
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "INTERNAL-SUBSET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[node]{a @class{comment}, @class{processing-instruction},
+      or @class{text}}
+    @return{a string of XML characters}
+    @short{Returns the node's data.}")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[newval]{a string of XML characters}
+    @arg[node]{a @class{comment}, @class{processing-instruction},
+      or @class{text}}
+    @return{the data}
+    @short{Sets the node's data.}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[data]{a string containing XML characters only}
+   @return{an @class{comment}}
+   @short{This function creates a comment node.}
+
+   @code{data} must not contain two consecutive dashes, or a dash
+   at the end.")
+    (:TYPE :METHOD :SYMBOL (:NAME "COPY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STRING-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SERIALIZE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "HANDLER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SLOTS-FOR-PRINT-OBJECT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@unexport{}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RECONSTRUCT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "slot ~A missing in printed representation"
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TARGET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION
+     "@arg[processing-instruction]{@class{processing-instruction}}
+    @return{string, a Name}
+    @short{Returns the processing-instruction's target.}")
+    (:TYPE :GENERIC :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TARGET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[newval]{string, a Name}
+    @arg[processing-instruction]{@class{processing-instruction}}
+    @return{the target}
+    @short{Sets the processing-instruction's target.}")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "TARGET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION "@arg[target]{string, an NCName}
+   @arg[data]{string containing XML characters only}
+   @return{an @class{processing-instruction}}
+   @short{This function creates a processing instruction.}
+
+   @code{target} must not equal \"xml\".
+
+   @code{data} must not contain the substring \"?>\".")
+    (:TYPE :METHOD :SYMBOL (:NAME "COPY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STRING-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TARGET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SERIALIZE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "HANDLER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SLOTS-FOR-PRINT-OBJECT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@unexport{}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RECONSTRUCT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "slot ~A missing in printed representation"
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))))
+      ((:NAME "TARGET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "slot ~A missing in printed representation"
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "TARGET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)) :DOCUMENTATION
+     "@arg[data]{a string containing XML characters only}
+   @return{an @class{text}}
+   @short{This function creates a text node.}")
+    (:TYPE :METHOD :SYMBOL (:NAME "COPY" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "STRING-VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "NEWVAL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SERIALIZE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "HANDLER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "SLOTS-FOR-PRINT-OBJECT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     (((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION "@unexport{}")
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "RECONSTRUCT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       ((:NAME "ERROR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        "slot ~A missing in printed representation"
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-BUILDER" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "@return{STP builder, a SAX handler}
+   @short{This function creates SAX handler that constructs an STP document.}
+
+   The builder processes SAX events and can be used with any
+   function generating such events, in particular with cxml:parse-file.
+
+   Examples. Parsing a file:
+   @begin{pre}(cxml:parse #p\"example.xml\" (stp:make-builder))@end{pre}
+   Parsing a string:
+   @begin{pre}(cxml:parse \"<example/>\" (stp:make-builder))@end{pre}
+
+   @see{serialize}")
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "CONTENT-HANDLER" :PACKAGE-NAME "SAX" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NODES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) :ACCESSORS
+       ((:NAME "BUILDER-NODES" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DOCTYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "BUILDER-DOCTYPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NAMESPACE-DECLARATIONS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "NAMESPACE-DECLARATIONS" :PACKAGE-NAME "CXML-STP-IMPL"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "INTERNAL-SUBSET-SINK" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "BUILDER-INTERNAL-SUBSET-SINK" :PACKAGE-NAME "CXML-STP-IMPL"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-DOCUMENT" :PACKAGE-NAME "SAX" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BUILDER-APPEND" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "X" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "START-DTD" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PUBLICID" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "SYSTEMID" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-INTERNAL-SUBSET" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNPARSED-ENTITY-DECLARATION" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "NOTATION-NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "EXTERNAL-ENTITY-DECLARATION" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "KIND" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "INTERNAL-ENTITY-DECLARATION" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "KIND" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NOTATION-DECLARATION" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "PUBLIC-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "SYSTEM-ID" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ELEMENT-DECLARATION" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "MODEL" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ATTRIBUTE-DECLARATION" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "ELEMENT-NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ATTRIBUTE-NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DEFAULT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "END-INTERNAL-SUBSET" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "DTD" :PACKAGE-NAME "SAX" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "DTD" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-PREFIX-MAPPING" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "START-ELEMENT" :PACKAGE-NAME "SAX" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "LNAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "QNAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "ATTRS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "END-ELEMENT" :PACKAGE-NAME "SAX" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "LNAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "QNAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHARACTERS" :PACKAGE-NAME "SAX" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "TARGET" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "COMMENT" :PACKAGE-NAME "SAX" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "DATA" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "END-DOCUMENT" :PACKAGE-NAME "SAX" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "BUILDER" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VECTOR->PIPE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) 0))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCAL-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-PREFIX-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PARENT-NODE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-URI-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QUALIFIED-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BASE-URI-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BASE-URI-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BASE-URI-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHILD-PIPE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHILD-PIPE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHILD-PIPE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ATTRIBUTE-PIPE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ATTRIBUTE-PIPE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-PIPE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PARENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+      (:NAME "PREFIX" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+      (:NAME "URI" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-EQUAL-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "A" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      ((:NAME "B" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "HASH-KEY-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "BASE-URI-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CHILD-PIPE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "ATTRIBUTE-PIPE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-PIPE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PARENT-NODE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCAL-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QUALIFIED-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-URI-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-PIPE-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "ORIGINAL-NODE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TEXT-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TEXT-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TYPE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TYPE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TYPE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DOCUMENT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TYPE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "COMMENT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TYPE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "KEYWORD" :EXTERNALP
+         T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TYPE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TEXT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TYPE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ATTRIBUTE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "ATTRIBUTE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TYPE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "ELEMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "ELEMENT" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NODE-TYPE-P-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "STP-NAMESPACE" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+      ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NAMESPACE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NORMALIZE-TEXT-NODES!" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "GET-ELEMENT-BY-ID-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "ID" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "UNPARSED-ENTITY-URI-USING-NAVIGATOR" :PACKAGE-NAME
+      "XPATH-PROTOCOL" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T))
+      (:NAME "NAME" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCAL-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-PREFIX-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-URI-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QUALIFIED-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "TEXT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCAL-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-PREFIX-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-URI-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QUALIFIED-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "COMMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-PREFIX-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCAL-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QUALIFIED-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-URI-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-URI-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "NAMESPACE-PREFIX-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "QUALIFIED-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "LOCAL-NAME-USING-NAVIGATOR" :PACKAGE-NAME "XPATH-PROTOCOL"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "DOCUMENT" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROCESSING-INSTRUCTION-TARGET-USING-NAVIGATOR" :PACKAGE-NAME
+      "XPATH-PROTOCOL" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "PROCESSING-INSTRUCTION-TARGET-USING-NAVIGATOR" :PACKAGE-NAME
+      "XPATH-PROTOCOL" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NAVIGATOR" :PACKAGE-NAME "XPATH" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DEFAULT-NAVIGATOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)))
+      ((:NAME "NODE" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)
+       (:NAME "PROCESSING-INSTRUCTION" :PACKAGE-NAME "CXML-STP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RUN-XPATH-TESTS" :PACKAGE-NAME "CXML-STP-IMPL" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS NIL)))

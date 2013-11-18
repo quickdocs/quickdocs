@@ -1,0 +1,94 @@
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/checkl-20120909-git/package.lisp" (written 12 NOV 2013 06:01:24 PM):
+; compiling (DEFPACKAGE :CHECKL ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/checkl-20120909-git/package-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.002
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/checkl-20120909-git/checkl.lisp" (written 12 NOV 2013 06:01:24 PM):
+; compiling (IN-PACKAGE :CHECKL)
+; compiling (DEFSTRUCT PACKAGE-TESTS ...)
+; compiling (DEFVAR *ALL-TESTS* ...)
+; compiling (DEFVAR *DEFINITIONS-ONLY* ...)
+; compiling (DEFINE-CONDITION RESULT-ERROR ...)
+; compiling (DEFGENERIC RESULT-EQUALP ...)
+; compiling (DEFMETHOD RESULT-EQUALP ...)
+; compiling (DEFGENERIC RESULT-TRANSLATE ...)
+; compiling (DEFMETHOD RESULT-TRANSLATE ...)
+; compiling (DEFMETHOD RESULT-TRANSLATE ...)
+; compiling (DEFMETHOD RESULT-TRANSLATE ...)
+; compiling (DEFMETHOD RESULT-TRANSLATE ...)
+; compiling (DEFUN CURRENT-TESTS ...)
+; compiling (DEFUN ENSURE-TEST ...)
+; compiling (DEFUN VERIFY-RESULT ...)
+; compiling (DEFMACRO CHECK ...)
+; compiling (DEFUN RUN ...)
+; compiling (DEFUN RUN-ALL ...)
+; compiling (DEFUN CHECKL-STORE ...)
+; compiling (DEFUN CHECKL-LOAD ...)
+; compiling (DEFMACRO DO-CATEGORIES ...)
+; compiling (DEFUN CLEAR ...)
+; compiling (DEFUN CLEAR-ANONYMOUS ...)
+; compiling (DEFMACRO CHECK-OUTPUT ...)
+; compiling (DEFMACRO RESULTS ...)
+; compiling (DEFCLASS TEST-VALUES ...)
+; compiling (DEFCLASS TESTS ...)
+; compiling (DEFMETHOD ASDF/ACTION:PERFORM ...)
+; compiling (DEFMETHOD ASDF/ACTION:PERFORM ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/checkl-20120909-git/checkl-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.192
+; compiling file "/home/quickdocs_dev/quicklisp/dists/quicklisp/software/checkl-20120909-git/formalize.lisp" (written 12 NOV 2013 06:01:24 PM):
+; compiling (IN-PACKAGE :CHECKL)
+; compiling (DEFMACRO CHECK-FORMAL ...)
+; compiling (DEFMACRO DEFINE-TEST-OP ...)
+
+; /home/quickdocs_dev/.cache/common-lisp/sbcl-1.1.13-linux-x86/home/quickdocs_dev/quicklisp/dists/quicklisp/software/checkl-20120909-git/formalize-ASDF-TMP.fasl written
+; compilation finished in 0:00:00.025
+
+(:TYPE :SYSTEM :NAME "fast-io-test" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL
+ :LICENCE NIL :DESCRIPTION "Tests for fast-io" :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("FAST-IO" "CHECKL") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "FAST-IO.TEST" :FULL-NAME "FAST-IO.TEST" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "NOW" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "BENCH" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL) :LAMBDA-LIST
+     (((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "TIMES" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL) 1))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WO" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WI" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SEQ" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WRITE-ALL" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "BITS" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "READ-ALL" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "BITS" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WOS" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SEQ" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WIS" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SEQ" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL)
+      (:NAME "VEC-LEN" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "FAST-IO.TEST" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS NIL)))

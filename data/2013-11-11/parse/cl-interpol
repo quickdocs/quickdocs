@@ -1,0 +1,272 @@
+
+(:TYPE :SYSTEM :NAME "cl-interpol" :AUTHOR NIL :MAINTAINER NIL :VERSION "0.2.1"
+ :LICENCE NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON ("CL-UNICODE")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-INTERPOL" :FULL-NAME "CL-INTERPOL" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*LIST-DELIMITER*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+     :DOCUMENTATION "What is inserted between the elements of a list which is
+interpolated by #@."
+     :INITIAL-VALUE "#\\ ")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*INNER-DELIMITERS*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+     :DOCUMENTATION "Legal delimiters for interpolation with #$ and #@."
+     :INITIAL-VALUE
+     "'((#\\( . #\\)) (#\\{ . #\\}) (#\\< . #\\>) (#\\[ . #\\]))")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*OUTER-DELIMITERS*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+     :DOCUMENTATION "Legal outer delimiters for CL-INTERPOL strings."
+     :INITIAL-VALUE
+     "'((#\\( . #\\)) (#\\{ . #\\}) (#\\< . #\\>) (#\\[ . #\\]) #\\/ #\\| #\\\" #\\' #\\#)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*REGEX-DELIMITERS*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION "Outer delimiters which automatically enable regex mode."
+     :INITIAL-VALUE "'(#\\/)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*UNICODE-ALIASES*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A hash table which maps Unicode aliases to their real names."
+     :INITIAL-VALUE "(MAKE-HASH-TABLE :TEST #'EQUALP)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*OPTIONAL-DELIMITERS-P*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+     :DOCUMENTATION
+     "Whether text following $ or @ should interpolate even without a
+following delimiter.  Lexical variables are handled correctly,
+but the rules are somewhat complex -- see the docs for details."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFVAR-UNBOUND" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "VARIABLE-NAME" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+      (:NAME "DOCUMENTATION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Like DEFVAR, but the variable will be unbound rather than getting
+an initial value.  This is useful for variables which should have no
+global value but might have a dynamically bound value.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*SAW-BACKSLASH*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Whether we have to re-process an L or U because it closes several
+scopes.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PAIR-LEVEL*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION "")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*STREAM*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Bound to the stream which is read from while parsing a string.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*START-CHAR*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Bound to the opening outer delimiter while parsing a string.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*TERM-CHAR*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "Bound to the closing outer delimiter while parsing a string.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PREVIOUS-READTABLES*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A stack which holds the previous readtables that have been pushed
+here by ENABLE-INTERPOL-SYNTAX."
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*READTABLE-COPY*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION "Bound to the current readtable if it has to be temporarily
+modified.")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*HYPERDOC-BASE-URI*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"http://weitz.de/cl-interpol/\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HYPERDOC-LOOKUP" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SYMBOL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "SIGNAL-READER-ERROR" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "FORMAT-CONTROL" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMAT-ARGUMENTS" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL))
+     :DOCUMENTATION "Like ERROR but signals a SIMPLE-READER-ERROR for the stream
+*STREAM*.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STRING-LIST-TO-STRING" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "STRING-LIST" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL))
+     :DOCUMENTATION "Concatenates a list of strings to one string.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-END-DELIMITER" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "START-DELIMITER" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+      (:NAME "DELIMITERS" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ERRORP" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Find the closing delimiter corresponding to the opening delimiter
+START-DELIMITER in a list DELIMITERS which is formatted like
+*OUTER-DELIMITERS*. If ERRORP is true, signal an error if none was
+found, otherwise return NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-COLLECTOR" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Create an empty string which can be extended by
+VECTOR-PUSH-EXTEND.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CHAR-FROM-CODE" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "NUMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Create character from char-code NUMBER. NUMBER can be NIL which is
+interpreted as 0.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LOWER-CASE-P*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Whether CHAR is a character which has case and is lowercase.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "READ-CHAR*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Convenience macro because we always read from the same string with
+the same arguments.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "PEEK-CHAR*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Convenience macro because we always peek at the same string with
+the same arguments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-READTABLE*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Returns a copy of the readtable which was current when
+INTERPOL-READER was invoked. Memoizes its result.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NSUBVEC" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "START" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "END" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+       ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Return a subvector by pointing to location in original vector.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-WHILE" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MAX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Reads characters from *STREAM* while PREDICATE returns a true value
+for each character. Returns at most MAX characters if MAX is true.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-NUMBER" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "RADIX" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL) 10)
+      (:NAME "MAX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Reads and consumes the number *STREAM* is currently looking at and
+returns it. Returns NIL if no number could be identified.  RADIX is
+used as in PARSE-INTEGER. If MAX is not NIL we'll read at most the
+next MAX characters.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESOLVE-UNICODE-NAME" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "NAME" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Tries to return a character which was encoded as \\N<NAME>.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GET-CHAR-FROM-UNICODE-NAME" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Parses and returns a named character after \"\\N\" has already been
+read.  This function reads from *STREAM*.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNESCAPE-CHAR" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX-MODE" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Convert the characters(s) on *STREAM* following a backslash into a
+character which is returned. This function is to be called when the
+backslash has already been consumed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NORMAL-NAME-CHAR-P" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEVER-NAME-CHAR-P" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "C" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "QUELL-WARNINGS-FORM" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "A declaration form to quiet warnings about unbound variables
+  within a lexical environment."
+     :INITIAL-VALUE "'(DECLARE (OPTIMIZE (INHIBIT-WARNINGS 3)))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-LONGEST-NAME" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-OPTIONAL-DELIMITED" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Read the stuff following an optional delimiter, returning a form
+that tries to deal correctly with lexical variables.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-FORM" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Reads and returns one or more Lisp forms from *STREAM* if the
+character we're looking at is a valid inner delimiter. Otherwise
+returns NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INTERPOL-READER" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "*STREAM*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARG" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL))
+     :DOCUMENTATION "The actual reader function for the 'sub-character' #?.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "INNER-READER" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "REGEX-MODE" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+      (:NAME "EXTENDED-MODE" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+      (:NAME "QUOTE-MODE" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL)
+      (:NAME "CASE-MODE" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Helper function for INTERPOL-READER which does all the work. May
+call itself recursively.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%ENABLE-INTERPOL-SYNTAX" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "Internal function used to enable reader syntax and store current
+readtable on stack.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%DISABLE-INTERPOL-SYNTAX" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Internal function used to restore previous readtable.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ENABLE-INTERPOL-SYNTAX" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Enable CL-INTERPOL reader syntax.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DISABLE-INTERPOL-SYNTAX" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Restore readtable which was active before last call to
+ENABLE-INTERPOL-SYNTAX. If there was no such call, the standard
+readtable is used."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "*OPTIONAL-DELIMITERS-P*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+    (:NAME "DISABLE-INTERPOL-SYNTAX" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+    (:NAME "*OUTER-DELIMITERS*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+    (:NAME "*INNER-DELIMITERS*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+    (:NAME "*LIST-DELIMITER*" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP T)
+    (:NAME "ENABLE-INTERPOL-SYNTAX" :PACKAGE-NAME "CL-INTERPOL" :EXTERNALP
+     T)))))

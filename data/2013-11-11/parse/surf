@@ -1,0 +1,7 @@
+
+(:TYPE :SYSTEM :NAME "surf" :AUTHOR "John McCarthy" :MAINTAINER NIL :VERSION
+ "20130723" :LICENCE "Affero Gnu Public License (http://www.gnu.org/licenses/)"
+ :DESCRIPTION "The Gendl™ NURBS Surface and Solids Geometry Primitives"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("GEOM-BASE") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "SMLIB" :FULL-NAME "SMLIB" :DOCUMENTATION NIL
+   :SYMBOL-LIST NIL :EXTERNAL-SYMBOLS NIL)))

@@ -1,0 +1,5 @@
+
+(:TYPE :SYSTEM :NAME "test.vas-string-metrics" :AUTHOR
+ "Vladimir Sedach <vsedach@gmail.com>" :MAINTAINER NIL :VERSION NIL :LICENCE
+ "Public Domain" :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("VAS-STRING-METRICS") :PACKAGE-LIST NIL)

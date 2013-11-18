@@ -1,0 +1,4 @@
+
+(:TYPE :SYSTEM :NAME "blas-real" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL
+ :LICENCE NIL :DESCRIPTION "BLAS routines for real double-float matrices"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("blas-hompack") :PACKAGE-LIST NIL)

@@ -1,0 +1,6 @@
+;;; Checking for wide character support... WARNING: Lisp implementation doesn't use UTF-16, but accepts surrogate code points.
+ yes, using code points.
+
+(:TYPE :SYSTEM :NAME "cxml" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL :LICENCE
+ NIL :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CXML-DOM" "CXML-KLACKS" "CXML-TEST") :PACKAGE-LIST NIL)

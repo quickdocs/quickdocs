@@ -1,0 +1,2483 @@
+
+(:TYPE :SYSTEM :NAME "alexandria" :AUTHOR NIL :MAINTAINER NIL :VERSION "0.0.0"
+ :LICENCE "Public Domain / 0-clause MIT" :DESCRIPTION
+ "Alexandria is a collection of portable public domain utilities."
+ :LONG-DESCRIPTION "Alexandria is a project and a library.
+
+As a project Alexandria's goal is to reduce duplication of effort and improve
+portability of Common Lisp code according to its own idiosyncratic and rather
+conservative aesthetic. What this actually means is open to debate, but each
+project member has a veto on all project activities, so a degree of
+conservativism is inevitable.
+
+As a library Alexandria is one of the means by which the project strives for
+its goals.
+
+Alexandria is a collection of portable public domain utilities that meet
+the following constraints:
+
+ * Utilities, not extensions: Alexandria will not contain conceptual
+   extensions to Common Lisp, instead limiting itself to tools and utilities
+   that fit well within the framework of standard ANSI Common Lisp.
+   Test-frameworks, system definitions, logging facilities, serialization
+   layers, etc. are all outside the scope of Alexandria as a library, though
+   well within the scope of Alexandria as a project.
+
+ * Conservative: Alexandria limits itself to what project members consider
+   conservative utilities. Alexandria does not and will not include anaphoric
+   constructs, loop-like binding macros, etc.
+
+ * Portable: Alexandria limits itself to portable parts of Common Lisp. Even
+   apparently conservative and useful functions remain outside the scope of
+   Alexandria if they cannot be implemented portably. Portability is here
+   defined as portable within a conforming implementation: implementation bugs
+   are not considered portability issues.
+
+ * Team player: Alexandria will not (initially, at least) subsume or provide
+   functionality for which good-quality special-purpose packages exist, like
+   split-sequence. Instead, third party packages such as that may be
+   \"blessed\"."
+ :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME ".0.DEV" :FULL-NAME "ALEXANDRIA.0.DEV" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "%REEVALUATE-CONSTANT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DEFINE-CONSTANT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "INITIAL-VALUE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "DOCUMENTATION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Ensures that the global variable named by NAME is a constant with a value
+that is equal under TEST to the result of evaluating INITIAL-VALUE. TEST is a
+/function designator/ that defaults to EQL. If DOCUMENTATION is given, it
+becomes the documentation string of the constant.
+
+Signals an error if NAME is already a bound non-constant variable.
+
+Signals an error if NAME is already a constant variable whose value is not
+equal under TEST to result of evaluating INITIAL-VALUE.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "IF-LET" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BINDINGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "THEN-FORM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ELSE-FORM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Creates new variable bindings, and conditionally executes either
+THEN-FORM or ELSE-FORM. ELSE-FORM defaults to NIL.
+
+BINDINGS must be either single binding of the form:
+
+ (variable initial-form)
+
+or a list of bindings of the form:
+
+ ((variable-1 initial-form-1)
+  (variable-2 initial-form-2)
+  ...
+  (variable-n initial-form-n))
+
+All initial-forms are executed sequentially in the specified order. Then all
+the variables are bound to the corresponding values.
+
+If all variables were bound to true values, the THEN-FORM is executed with the
+bindings in effect, otherwise the ELSE-FORM is executed with the bindings in
+effect.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WHEN-LET" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BINDINGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates new variable bindings, and conditionally executes FORMS.
+
+BINDINGS must be either single binding of the form:
+
+ (variable initial-form)
+
+or a list of bindings of the form:
+
+ ((variable-1 initial-form-1)
+  (variable-2 initial-form-2)
+  ...
+  (variable-n initial-form-n))
+
+All initial-forms are executed sequentially in the specified order. Then all
+the variables are bound to the corresponding values.
+
+If all variables were bound to true values, then FORMS are executed as an
+implicit PROGN.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WHEN-LET*" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BINDINGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Creates new variable bindings, and conditionally executes FORMS.
+
+BINDINGS must be either single binding of the form:
+
+ (variable initial-form)
+
+or a list of bindings of the form:
+
+ ((variable-1 initial-form-1)
+  (variable-2 initial-form-2)
+  ...
+  (variable-n initial-form-n))
+
+Each initial-form is executed in turn, and the variable bound to the
+corresponding value. Initial-form expressions can refer to variables
+previously bound by the WHEN-LET*.
+
+Execution of WHEN-LET* stops immediately if any initial-form evaluates to NIL.
+If all initial-forms evaluate to true, then FORMS are executed as an implicit
+PROGN.")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "STRING-DESIGNATOR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REQUIRED-ARGUMENT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Signals an error for a missing argument of NAME. Intended for
+use as an initialization form for structure and class-slots, and
+a default value for required keyword arguments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SIMPLE-STYLE-WARNING" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "MESSAGE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SIMPLE-READER-ERROR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MESSAGE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SIMPLE-PARSE-ERROR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "MESSAGE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SIMPLE-PROGRAM-ERROR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "MESSAGE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "IGNORE-SOME-CONDITIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "CONDITIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Similar to CL:IGNORE-ERRORS but the (unevaluated) CONDITIONS
+list determines which specific conditions are to be ignored.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "UNWIND-PROTECT-CASE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ABORT-FLAG" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+      (:NAME "PROTECTED-FORM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like CL:UNWIND-PROTECT, but you can specify the circumstances that
+the cleanup CLAUSES are run.
+
+  clauses ::= (:NORMAL form*)* | (:ABORT form*)* | (:ALWAYS form*)*
+
+Clauses can be given in any order, and more than one clause can be
+given for each circumstance. The clauses whose denoted circumstance
+occured, are executed in the order the clauses appear.
+
+ABORT-FLAG is the name of a variable that will be bound to T in
+CLAUSES if the PROTECTED-FORM aborted preemptively, and to NIL
+otherwise.
+
+Examples:
+
+  (unwind-protect-case ()
+       (protected-form)
+     (:normal (format t \"This is only evaluated if PROTECTED-FORM executed normally.~%\"))
+     (:abort  (format t \"This is only evaluated if PROTECTED-FORM aborted preemptively.~%\"))
+     (:always (format t \"This is evaluated in either case.~%\")))
+
+  (unwind-protect-case (aborted-p)
+       (protected-form)
+     (:always (perform-cleanup-if aborted-p)))
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-HASH-TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "SIZE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "REHASH-SIZE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "REHASH-THRESHOLD" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns a copy of hash table TABLE, with the same keys and values
+as the TABLE. The copy has the same properties as the original, unless
+overridden by the keyword arguments.
+
+Before each of the original values is set into the new hash-table, KEY
+is invoked on the value. As KEY defaults to CL:IDENTITY, a shallow
+copy is returned by default.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAPHASH-KEYS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like MAPHASH, but calls FUNCTION with each key in the hash table TABLE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAPHASH-VALUES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like MAPHASH, but calls FUNCTION with each value in the hash table TABLE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HASH-TABLE-KEYS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a list containing the keys of hash table TABLE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HASH-TABLE-VALUES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list containing the values of hash table TABLE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HASH-TABLE-ALIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns an association list containing the keys and values of hash table
+TABLE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "HASH-TABLE-PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a property list containing the keys and values of hash table
+TABLE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALIST-HASH-TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ALIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HASH-TABLE-INITARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns a hash table containing the keys and values of the association list
+ALIST. Hash table is initialized using the HASH-TABLE-INITARGS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PLIST-HASH-TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "HASH-TABLE-INITARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns a hash table containing the keys and values of the property list
+PLIST. Hash table is initialized using the HASH-TABLE-INITARGS.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ENSURE-GETHASH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "HASH-TABLE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DEFAULT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like GETHASH, but if KEY is not found in the HASH-TABLE saves the DEFAULT
+under key before returning it. Secondary return value is true if key was
+already in the table.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-OPEN-FILE*" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "FILESPEC" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "DIRECTION" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "ELEMENT-TYPE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "IF-EXISTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "IF-DOES-NOT-EXIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+        NIL)
+       (:NAME "EXTERNAL-FORMAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+        NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Just like WITH-OPEN-FILE, but NIL values in the keyword arguments mean to use
+the default value specified for OPEN.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-INPUT-FROM-FILE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM-NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "FILE-NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "DIRECTION" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+        (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DIRECTION-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+       (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluate BODY with STREAM-NAME to an input stream on the file
+FILE-NAME. ARGS is sent as is to the call to OPEN except EXTERNAL-FORMAT,
+which is only sent to WITH-OPEN-FILE when it's not NIL.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-OUTPUT-TO-FILE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     (((:NAME "STREAM-NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "FILE-NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "DIRECTION" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+        (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "DIRECTION-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+       (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluate BODY with STREAM-NAME to an output stream on the file
+FILE-NAME. ARGS is sent as is to the call to OPEN except EXTERNAL-FORMAT,
+which is only sent to WITH-OPEN-FILE when it's not NIL.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-FILE-INTO-STRING" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "PATHNAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "BUFFER-SIZE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       4096)
+      (:NAME "EXTERNAL-FORMAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Return the contents of the file denoted by PATHNAME as a fresh string.
+
+The EXTERNAL-FORMAT parameter will be passed directly to WITH-OPEN-FILE
+unless it's NIL, which means the system default.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-STRING-INTO-FILE" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PATHNAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IF-EXISTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "ERROR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      (:NAME "IF-DOES-NOT-EXIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL)
+      (:NAME "EXTERNAL-FORMAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Write STRING to PATHNAME.
+
+The EXTERNAL-FORMAT parameter will be passed directly to WITH-OPEN-FILE
+unless it's NIL, which means the system default.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-FILE-INTO-BYTE-VECTOR" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "PATHNAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Read PATHNAME into a freshly allocated (unsigned-byte 8) vector.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-BYTE-VECTOR-INTO-FILE" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BYTES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "PATHNAME" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IF-EXISTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "ERROR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      (:NAME "IF-DOES-NOT-EXIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Write BYTES to PATHNAME.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-FILE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FROM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "TO" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IF-TO-EXISTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "SUPERSEDE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "ELEMENT-TYPE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "UNSIGNED-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 8)))
+      (:NAME "FINISH-OUTPUT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-STREAM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "INPUT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "OUTPUT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ELEMENT-TYPE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "STREAM-ELEMENT-TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "INPUT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)))
+      ((:NAME "BUFFER-SIZE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       4096)
+      ((:NAME "BUFFER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "MAKE-ARRAY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "BUFFER-SIZE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+        (:NAME "ELEMENT-TYPE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "ELEMENT-TYPE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+         NIL)))
+      ((:NAME "START" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "FINISH-OUTPUT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Reads data from INPUT and writes it to OUTPUT. Both INPUT and OUTPUT must
+be streams, they will be passed to READ-SEQUENCE and WRITE-SEQUENCE and must have
+compatible element-types.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-GENSYMS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAMES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Binds each variable named by a symbol in NAMES to a unique symbol around
+FORMS. Each of NAMES must either be either a symbol, or of the form:
+
+ (symbol string-designator)
+
+Bare symbols appearing in NAMES are equivalent to:
+
+ (symbol symbol)
+
+The string-designator is used as the argument to GENSYM when constructing the
+unique symbol the named variable will be bound to.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-UNIQUE-NAMES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAMES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Alias for WITH-GENSYMS.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ONCE-ONLY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SPECS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates FORMS with symbols specified in SPECS rebound to temporary
+variables, ensuring that each initform is evaluated only once.
+
+Each of SPECS must either be a symbol naming the variable to be rebound, or of
+the form:
+
+  (symbol initform)
+
+Bare symbols in SPECS are equivalent to
+
+  (symbol symbol)
+
+Example:
+
+  (defmacro cons1 (x) (once-only (x) `(cons ,x ,x)))
+  (let ((y 0)) (cons1 (incf y))) => (1 . 1)
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-BODY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BODY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DOCUMENTATION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WHOLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Parses BODY into (values remaining-forms declarations doc-string).
+Documentation strings are recognized only if DOCUMENTATION is true.
+Syntax errors in body are signalled and WHOLE is used in the signal
+arguments when given.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-ORDINARY-LAMBDA-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LAMBDA-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "NORMALIZE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "ALLOW-SPECIALIZERS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL)
+      ((:NAME "NORMALIZE-OPTIONAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+        NIL)
+       (:NAME "NORMALIZE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+      ((:NAME "NORMALIZE-KEYWORD" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+        NIL)
+       (:NAME "NORMALIZE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+      ((:NAME "NORMALIZE-AUXILARY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+        NIL)
+       (:NAME "NORMALIZE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Parses an ordinary lambda-list, returning as multiple values:
+
+1. Required parameters.
+
+2. Optional parameter specifications, normalized into form:
+
+   (name init suppliedp)
+
+3. Name of the rest parameter, or NIL.
+
+4. Keyword parameter specifications, normalized into form:
+
+   ((keyword-name name) init suppliedp)
+
+5. Boolean indicating &ALLOW-OTHER-KEYS presence.
+
+6. &AUX parameter specifications, normalized into form
+
+   (name init).
+
+7. Existence of &KEY in the lambda-list.
+
+Signals a PROGRAM-ERROR is the lambda-list is malformed.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXPAND-DESTRUCTURING-CASE" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "CLAUSES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "CASE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DESTRUCTURING-CASE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "KEYFORM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "DESTRUCTURING-CASE, -CCASE, and -ECASE are a combination of CASE and DESTRUCTURING-BIND.
+KEYFORM must evaluate to a CONS.
+
+Clauses are of the form:
+
+  ((CASE-KEYS . DESTRUCTURING-LAMBDA-LIST) FORM*)
+
+The clause whose CASE-KEYS matches CAR of KEY, as if by CASE, CCASE, or ECASE,
+is selected, and FORMs are then executed with CDR of KEY is destructured and
+bound by the DESTRUCTURING-LAMBDA-LIST.
+
+Example:
+
+ (defun dcase (x)
+   (destructuring-case x
+     ((:foo a b)
+      (format nil \"foo: ~S, ~S\" a b))
+     ((:bar &key a b)
+      (format nil \"bar, ~S, ~S\" a b))
+     (((:alt1 :alt2) a)
+      (format nil \"alt: ~S\" a))
+     ((t &rest rest)
+      (format nil \"unknown: ~S\" rest))))
+
+  (dcase (list :foo 1 2))        ; => \"foo: 1, 2\"
+  (dcase (list :bar :a 1 :b 2))  ; => \"bar: 1, 2\"
+  (dcase (list :alt1 1))         ; => \"alt: 1\"
+  (dcase (list :alt2 2))         ; => \"alt: 2\"
+  (dcase (list :quux 1 2 3))     ; => \"unknown: 1, 2, 3\"
+
+ (defun decase (x)
+   (destructuring-case x
+     ((:foo a b)
+      (format nil \"foo: ~S, ~S\" a b))
+     ((:bar &key a b)
+      (format nil \"bar, ~S, ~S\" a b))
+     (((:alt1 :alt2) a)
+      (format nil \"alt: ~S\" a))))
+
+  (decase (list :foo 1 2))        ; => \"foo: 1, 2\"
+  (decase (list :bar :a 1 :b 2))  ; => \"bar: 1, 2\"
+  (decase (list :alt1 1))         ; => \"alt: 1\"
+  (decase (list :alt2 2))         ; => \"alt: 2\"
+  (decase (list :quux 1 2 3))     ; =| error
+")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DESTRUCTURING-CCASE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "KEYFORM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "DESTRUCTURING-CASE, -CCASE, and -ECASE are a combination of CASE and DESTRUCTURING-BIND.
+KEYFORM must evaluate to a CONS.
+
+Clauses are of the form:
+
+  ((CASE-KEYS . DESTRUCTURING-LAMBDA-LIST) FORM*)
+
+The clause whose CASE-KEYS matches CAR of KEY, as if by CASE, CCASE, or ECASE,
+is selected, and FORMs are then executed with CDR of KEY is destructured and
+bound by the DESTRUCTURING-LAMBDA-LIST.
+
+Example:
+
+ (defun dcase (x)
+   (destructuring-case x
+     ((:foo a b)
+      (format nil \"foo: ~S, ~S\" a b))
+     ((:bar &key a b)
+      (format nil \"bar, ~S, ~S\" a b))
+     (((:alt1 :alt2) a)
+      (format nil \"alt: ~S\" a))
+     ((t &rest rest)
+      (format nil \"unknown: ~S\" rest))))
+
+  (dcase (list :foo 1 2))        ; => \"foo: 1, 2\"
+  (dcase (list :bar :a 1 :b 2))  ; => \"bar: 1, 2\"
+  (dcase (list :alt1 1))         ; => \"alt: 1\"
+  (dcase (list :alt2 2))         ; => \"alt: 2\"
+  (dcase (list :quux 1 2 3))     ; => \"unknown: 1, 2, 3\"
+
+ (defun decase (x)
+   (destructuring-case x
+     ((:foo a b)
+      (format nil \"foo: ~S, ~S\" a b))
+     ((:bar &key a b)
+      (format nil \"bar, ~S, ~S\" a b))
+     (((:alt1 :alt2) a)
+      (format nil \"alt: ~S\" a))))
+
+  (decase (list :foo 1 2))        ; => \"foo: 1, 2\"
+  (decase (list :bar :a 1 :b 2))  ; => \"bar: 1, 2\"
+  (decase (list :alt1 1))         ; => \"alt: 1\"
+  (decase (list :alt2 2))         ; => \"alt: 2\"
+  (decase (list :quux 1 2 3))     ; =| error
+")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DESTRUCTURING-ECASE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "KEYFORM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "DESTRUCTURING-CASE, -CCASE, and -ECASE are a combination of CASE and DESTRUCTURING-BIND.
+KEYFORM must evaluate to a CONS.
+
+Clauses are of the form:
+
+  ((CASE-KEYS . DESTRUCTURING-LAMBDA-LIST) FORM*)
+
+The clause whose CASE-KEYS matches CAR of KEY, as if by CASE, CCASE, or ECASE,
+is selected, and FORMs are then executed with CDR of KEY is destructured and
+bound by the DESTRUCTURING-LAMBDA-LIST.
+
+Example:
+
+ (defun dcase (x)
+   (destructuring-case x
+     ((:foo a b)
+      (format nil \"foo: ~S, ~S\" a b))
+     ((:bar &key a b)
+      (format nil \"bar, ~S, ~S\" a b))
+     (((:alt1 :alt2) a)
+      (format nil \"alt: ~S\" a))
+     ((t &rest rest)
+      (format nil \"unknown: ~S\" rest))))
+
+  (dcase (list :foo 1 2))        ; => \"foo: 1, 2\"
+  (dcase (list :bar :a 1 :b 2))  ; => \"bar: 1, 2\"
+  (dcase (list :alt1 1))         ; => \"alt: 1\"
+  (dcase (list :alt2 2))         ; => \"alt: 2\"
+  (dcase (list :quux 1 2 3))     ; => \"unknown: 1, 2, 3\"
+
+ (defun decase (x)
+   (destructuring-case x
+     ((:foo a b)
+      (format nil \"foo: ~S, ~S\" a b))
+     ((:bar &key a b)
+      (format nil \"bar, ~S, ~S\" a b))
+     (((:alt1 :alt2) a)
+      (format nil \"alt: ~S\" a))))
+
+  (decase (list :foo 1 2))        ; => \"foo: 1, 2\"
+  (decase (list :bar :a 1 :b 2))  ; => \"bar: 1, 2\"
+  (decase (list :alt1 1))         ; => \"alt: 1\"
+  (decase (list :alt2 2))         ; => \"alt: 2\"
+  (decase (list :quux 1 2 3))     ; =| error
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTRACT-FUNCTION-NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "SPEC" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Useful for macros that want to mimic the functional interface for functions
+like #'eq and 'eq.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GENERATE-SWITCH-BODY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "WHOLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "CLAUSES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DEFAULT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "SWITCH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&WHOLE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WHOLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+       ((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates first matching clause, returning its values, or evaluates and
+returns the values of DEFAULT if no keys match.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ESWITCH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&WHOLE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WHOLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+       ((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Like SWITCH, but signals an error if no key matches.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "CSWITCH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&WHOLE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WHOLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+       ((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+        ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CLAUSES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Like SWITCH, but signals a continuable error if no key matches.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WHICHEVER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "POSSIBILITIES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates exactly one of POSSIBILITIES, chosen at random.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "XOR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "DATUMS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates its arguments one at a time, from left to right. If more then one
+argument evaluates to a true value no further DATUMS are evaluated, and NIL is
+returned as both primary and secondary value. If exactly one argument
+evaluates to true, its value is returned as the primary value after all the
+arguments have been evaluated, and T is returned as the secondary value. If no
+arguments evaluate to true NIL is retuned as primary, and T as secondary
+value.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "NTH-VALUE-OR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NTH-VALUE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates FORM arguments one at a time, until the NTH-VALUE returned by one
+of the forms is true. It then returns all the values returned by evaluating
+that form. If none of the forms return a true nth value, this form returns
+NIL.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "MULTIPLE-VALUE-PROG2" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "FIRST-FORM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "SECOND-FORM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FORMS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Evaluates FIRST-FORM, then SECOND-FORM, and then FORMS. Yields as its value
+all the value returned by SECOND-FORM.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-SYMBOL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PACKAGE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "*PACKAGE*" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Returns a symbol with name designated by NAME, accessible in package
+designated by PACKAGE. If symbol is not already accessible in PACKAGE, it is
+interned there. Returns a secondary value reflecting the status of the symbol
+in the package, which matches the secondary return value of INTERN.
+
+Example:
+
+  (ensure-symbol :cons :cl) => cl:cons, :external
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAYBE-INTERN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "PACKAGE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FORMAT-SYMBOL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PACKAGE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CONTROL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGUMENTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Constructs a string by applying ARGUMENTS to string designator CONTROL as
+if by FORMAT within WITH-STANDARD-IO-SYNTAX, and then creates a symbol named
+by that string.
+
+If PACKAGE is NIL, returns an uninterned symbol, if package is T, returns a
+symbol interned in the current package, and otherwise returns a symbol
+interned in the package designated by PACKAGE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-KEYWORD" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Interns the string designated by NAME in the KEYWORD package.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-GENSYM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "If NAME is a non-negative integer, calls GENSYM using it. Otherwise NAME
+must be a string designator, in which case calls GENSYM using the designated
+string as the argument.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-GENSYM-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "X" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) "G"))
+     :DOCUMENTATION
+     "Returns a list of LENGTH gensyms, each generated as if with a call to MAKE-GENSYM,
+using the second (optional, defaulting to \"G\") argument.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SYMBOLICATE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "THINGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Concatenate together the names of some strings and symbols,
+producing a symbol in the current package.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-FUNCTION" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION-DESIGNATOR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION "Returns the function designated by FUNCTION-DESIGNATOR:
+if FUNCTION-DESIGNATOR is a function, it is returned, otherwise
+it must be a function name and its FDEFINITION is returned.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ENSURE-FUNCTIONF/1" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ENSURE-FUNCTIONF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PLACES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Multiple-place modify macro for ENSURE-FUNCTION: ensures that each of
+PLACES contains a function.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DISJOIN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MORE-PREDICATES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns a function that applies each of PREDICATE and MORE-PREDICATE
+functions in turn to its arguments, returning the primary value of the first
+predicate that returns true, without calling the remaining predicates.
+If none of the predicates returns true, NIL is returned.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CONJOIN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREDICATE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MORE-PREDICATES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns a function that applies each of PREDICATE and MORE-PREDICATE
+functions in turn to its arguments, returning NIL if any of the predicates
+returns false, without calling the remaining predicates. If none of the
+predicates returns false, returns the primary value of the last predicate.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COMPOSE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MORE-FUNCTIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a function composed of FUNCTION and MORE-FUNCTIONS that applies its
+arguments to to each in turn, starting from the rightmost of MORE-FUNCTIONS,
+and then calling the next one with the primary value of the last.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MULTIPLE-VALUE-COMPOSE" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MORE-FUNCTIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a function composed of FUNCTION and MORE-FUNCTIONS that applies
+its arguments to each in turn, starting from the rightmost of
+MORE-FUNCTIONS, and then calling the next one with all the return values of
+the last.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CURRY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGUMENTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a function that applies ARGUMENTS and the arguments
+it is called with to FUNCTION.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RCURRY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGUMENTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns a function that applies the arguments it is called
+with and ARGUMENTS to FUNCTION.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "NAMED-LAMBDA" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "NAME" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "LAMBDA-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Expands into a lambda-expression within whose BODY NAME denotes the
+corresponding function.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SAFE-ENDP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "X" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ALIST-PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ALIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a property list containing the same keys and values as the
+association list ALIST in the same order.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PLIST-ALIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns an association list containing the same keys and values as the
+property list PLIST in the same order.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RACONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "RALIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ASSOC-VALUE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ALIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "ASSOC-VALUE is an alist accessor very much like ASSOC, but it can
+be used with SETF.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RASSOC-VALUE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ALIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "QUOTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "RASSOC-VALUE is an alist accessor very much like RASSOC, but it can
+be used with SETF.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MALFORMED-PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DOPLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "VAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "VALUES" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Iterates over elements of PLIST. BODY can be preceded by
+declarations, and is like a TAGBODY. RETURN may be used to terminate
+the iteration early. If RETURN is not used, returns VALUES.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "APPENDF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LISTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for APPEND. Appends LISTS to the place designated by the first
+argument.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "NCONCF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LISTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for NCONC. Concatenates LISTS to place designated by the first
+argument.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "UNIONF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for UNION. Saves the union of LIST and the contents of the
+place designated by the first argument to the designated place.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "NUNIONF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for NUNION. Saves the union of LIST and the contents of the
+place designated by the first argument to the designated place. May modify
+either argument.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "REVERSEF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for REVERSE. Copies and reverses the list stored in the given
+place and saves back the result into the place.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "NREVERSEF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for NREVERSE. Reverses the list stored in the given place by
+destructively modifying it and saves back the result into the place.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CIRCULAR-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ELEMENTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates a circular list of ELEMENTS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CIRCULAR-LIST-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns true if OBJECT is a circular list, NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CIRCULAR-TREE-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns true if OBJECT is a circular tree, NIL otherwise.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROPER-LIST-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns true if OBJECT is a proper list.")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "PROPER-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CIRCULAR-LIST-ERROR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROPER-LIST-LENGTH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns length of LIST, signalling an error if it is not a proper list.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LASTCAR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns the last element of LIST. Signals a type-error if LIST is not a
+proper list.")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LASTCAR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Sets the last element of LIST. Signals a type-error if LIST is not a proper
+list.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-CIRCULAR-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "INITIAL-ELEMENT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Creates a circular list of LENGTH with the given INITIAL-ELEMENT.")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "CIRCULAR-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION "Creates a circular list of ELEMENTS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-CAR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "THING" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "If THING is a CONS, its CAR is returned. Otherwise THING is returned.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-CONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "CONS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "If CONS is a cons, it is returned. Otherwise returns a fresh cons with CONS
+  in the car, and NIL in the cdr.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENSURE-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "If LIST is a list, it is returned. Otherwise returns the list designated by LIST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE-FROM-PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a propery-list with same keys and values as PLIST, except that keys
+in the list designated by KEYS and values corresponding to them are removed.
+The returned property-list may share structure with the PLIST, but PLIST is
+not destructively modified. Keys are compared using EQ.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE-FROM-PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Just like REMOVE-FROM-PLIST, but this version may destructively modify the
+provided plist.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "REMOVE-FROM-PLISTF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION "Modify macro for REMOVE-FROM-PLIST.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DELETE-FROM-PLISTF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION "Modify macro for DELETE-FROM-PLIST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SANS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Alias of REMOVE-FROM-PLIST for backward compatibility.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAPPEND" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LISTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Applies FUNCTION to respective element(s) of each LIST, appending all the
+all the result list to a single list. FUNCTION must return a list.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SETP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns true if OBJECT is a list that denotes a set, NIL otherwise. A list
+denotes a set if each element of the list is unique under KEY and TEST.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SET-EQUAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "LIST1" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "LIST2" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "KEYP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Returns true if every element of LIST1 matches some element of LIST2 and
+every element of LIST2 matches some element of LIST1. Otherwise returns false.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-PRODUCT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MORE-LISTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a list containing the results of calling FUNCTION with one argument
+from LIST, and one from each of MORE-LISTS for each combination of arguments.
+In other words, returns the product of LIST and MORE-LISTS using FUNCTION.
+
+Example:
+
+ (map-product 'list '(1 2) '(3 4) '(5 6))
+  => ((1 3 5) (1 3 6) (1 4 5) (1 4 6)
+      (2 3 5) (2 3 6) (2 4 5) (2 4 6))
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FLATTEN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Traverses the tree in order, collecting non-null leaves into a list.")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "ARRAY-INDEX" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARRAY-DIMENSION-LIMIT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "ARRAY-LENGTH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "ARRAY-DIMENSION-LIMIT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP
+        T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NEGATIVE-FIXNUM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-POSITIVE-FIXNUM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-NEGATIVE-FIXNUM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "POSITIVE-FIXNUM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEGATIVE-FIXNUM-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-POSITIVE-FIXNUM-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-NEGATIVE-FIXNUM-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POSITIVE-FIXNUM-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NEGATIVE-INTEGER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-POSITIVE-INTEGER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-NEGATIVE-INTEGER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "POSITIVE-INTEGER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEGATIVE-INTEGER-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-POSITIVE-INTEGER-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-NEGATIVE-INTEGER-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POSITIVE-INTEGER-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NEGATIVE-RATIONAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-POSITIVE-RATIONAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-NEGATIVE-RATIONAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "POSITIVE-RATIONAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEGATIVE-RATIONAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-POSITIVE-RATIONAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-NEGATIVE-RATIONAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POSITIVE-RATIONAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NEGATIVE-REAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-POSITIVE-REAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-NEGATIVE-REAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "POSITIVE-REAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEGATIVE-REAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-POSITIVE-REAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-NEGATIVE-REAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POSITIVE-REAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NEGATIVE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-POSITIVE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-NEGATIVE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "POSITIVE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEGATIVE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-POSITIVE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-NEGATIVE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POSITIVE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NEGATIVE-SHORT-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-POSITIVE-SHORT-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-NEGATIVE-SHORT-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "POSITIVE-SHORT-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEGATIVE-SHORT-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-POSITIVE-SHORT-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-NEGATIVE-SHORT-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POSITIVE-SHORT-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NEGATIVE-SINGLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-POSITIVE-SINGLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-NEGATIVE-SINGLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "POSITIVE-SINGLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEGATIVE-SINGLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-POSITIVE-SINGLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-NEGATIVE-SINGLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POSITIVE-SINGLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NEGATIVE-DOUBLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-POSITIVE-DOUBLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-NEGATIVE-DOUBLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "POSITIVE-DOUBLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEGATIVE-DOUBLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-POSITIVE-DOUBLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-NEGATIVE-DOUBLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POSITIVE-DOUBLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NEGATIVE-LONG-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-POSITIVE-LONG-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "NON-NEGATIVE-LONG-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "POSITIVE-LONG-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEGATIVE-LONG-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-POSITIVE-LONG-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NON-NEGATIVE-LONG-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "POSITIVE-LONG-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OF-TYPE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns a function of one argument, which returns true when its argument is
+of TYPE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TYPE=" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "TYPE1" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "TYPE2" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a primary value of T is TYPE1 and TYPE2 are the same type,
+and a secondary value that is true is the type equality could be reliably
+determined: primary value of NIL and secondary value of T indicates that the
+types are not equivalent.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "COERCEF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "TYPE-SPEC" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION "Modify-macro for COERCE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-ARRAY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ARRAY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "ELEMENT-TYPE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "ARRAY-ELEMENT-TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "ARRAY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "FILL-POINTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       ((:NAME "AND" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        ((:NAME "ARRAY-HAS-FILL-POINTER-P" :PACKAGE-NAME "COMMON-LISP"
+          :EXTERNALP T)
+         (:NAME "ARRAY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+        ((:NAME "FILL-POINTER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+         (:NAME "ARRAY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+      ((:NAME "ADJUSTABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "ADJUSTABLE-ARRAY-P" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "ARRAY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns an undisplaced copy of ARRAY, with same fill-pointer and
+adjustability (if any) as the original, unless overridden by the keyword
+arguments.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SEQUENCE-OF-LENGTH-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Return true if SEQUENCE is a sequence of length LENGTH. Signals an error if
+SEQUENCE is not a sequence. Returns FALSE for circular lists.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ROTATE-TAIL-TO-HEAD" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ROTATE-HEAD-TO-TAIL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ROTATE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) 1))
+     :DOCUMENTATION
+     "Returns a sequence of the same type as SEQUENCE, with the elements of
+SEQUENCE rotated by N: N elements are moved from the end of the sequence to
+the front if N is positive, and -N elements moved from the front to the end if
+N is negative. SEQUENCE must be a proper sequence. N must be an integer,
+defaulting to 1.
+
+If absolute value of N is greater then the length of the sequence, the results
+are identical to calling ROTATE with
+
+  (* (signum n) (mod n (length sequence))).
+
+Note: the original sequence may be destructively altered, and result sequence may
+share structure with it.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SHUFFLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a random permutation of SEQUENCE bounded by START and END.
+Original sequece may be destructively modified, and share storage with
+the original one. Signals an error if SEQUENCE is not a proper
+sequence.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RANDOM-ELT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a random element from SEQUENCE bounded by START and END. Signals an
+error if the SEQUENCE is not a proper non-empty sequence, or if END and START
+are not proper bounding index designators for SEQUENCE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REMOVE/SWAPPED-ARGUMENTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ITEM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYWORD-ARGUMENTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "REMOVEF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "ITEM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REMOVE-KEYWORDS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for REMOVE. Sets place designated by the first argument to
+the result of calling REMOVE with ITEM, place, and the REMOVE-KEYWORDS.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DELETE/SWAPPED-ARGUMENTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+      :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ITEM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYWORD-ARGUMENTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DELETEF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "ITEM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "REMOVE-KEYWORDS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for DELETE. Sets place designated by the first argument to
+the result of calling DELETE with ITEM, place, and the REMOVE-KEYWORDS.")
+    (:TYPE :TYPE :SYMBOL
+     (:NAME "PROPER-SEQUENCE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMPTYP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns true if SEQUENCE is an empty sequence. Signals an error if SEQUENCE
+is not a sequence.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LENGTH=" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SEQUENCES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Takes any number of sequences or integers in any order. Returns true iff
+the length of all the sequences and the integers are equal. Hint: there's a
+compiler macro that expands into more efficient code if the first argument
+is a literal integer.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COPY-SEQUENCE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "TYPE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns a fresh sequence of TYPE, which has the same elements as
+SEQUENCE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIRST-ELT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns the first element of SEQUENCE. Signals a type-error if SEQUENCE is
+not a sequence, or is an empty sequence.")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "FIRST-ELT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Sets the first element of SEQUENCE. Signals a type-error if SEQUENCE is
+not a sequence, is an empty sequence, or if OBJECT cannot be stored in SEQUENCE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LAST-ELT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns the last element of SEQUENCE. Signals a type-error if SEQUENCE is
+not a proper sequence, or is an empty sequence.")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LAST-ELT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Sets the last element of SEQUENCE. Signals a type-error if SEQUENCE is not a proper
+sequence, is an empty sequence, or if OBJECT cannot be stored in SEQUENCE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STARTS-WITH-SUBSEQ" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "PREFIX" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARGS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "RETURN-SUFFIX" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (:NAME "&ALLOW-OTHER-KEYS" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Test whether the first elements of SEQUENCE are the same (as per TEST) as the elements of PREFIX.
+
+If RETURN-SUFFIX is T the functions returns, as a second value, a
+displaced array pointing to the sequence after PREFIX.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENDS-WITH-SUBSEQ" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SUFFIX" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Test whether SEQUENCE ends with SUFFIX. In other words: return true if
+the last (length SUFFIX) elements of SEQUENCE are equal to SUFFIX.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STARTS-WITH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns true if SEQUENCE is a sequence whose first element is EQL to OBJECT.
+Returns NIL if the SEQUENCE is not a sequence or is an empty sequence.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENDS-WITH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "TEST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+      ((:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "IDENTITY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION
+     "Returns true if SEQUENCE is a sequence whose last element is EQL to OBJECT.
+Returns NIL if the SEQUENCE is not a sequence or is an empty sequence. Signals
+an error if SEQUENCE is an improper list.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-COMBINATIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "COPY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Calls FUNCTION with each combination of LENGTH constructable from the
+elements of the subsequence of SEQUENCE delimited by START and END. START
+defaults to 0, END to length of SEQUENCE, and LENGTH to the length of the
+delimited subsequence. (So unless LENGTH is specified there is only a single
+combination, which has the same elements as the delimited subsequence.) If
+COPY is true (the default) each combination is freshly allocated. If COPY is
+false all combinations are EQ to each other, in which case consequences are
+specified if a combination is modified by FUNCTION.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-PERMUTATIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "COPY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Calls function with each permutation of LENGTH constructable
+from the subsequence of SEQUENCE delimited by START and END. START
+defaults to 0, END to length of the sequence, and LENGTH to the
+length of the delimited subsequence.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-DERANGEMENTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      ((:NAME "COPY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Calls FUNCTION with each derangement of the subsequence of SEQUENCE denoted
+by the bounding index designators START and END. Derangement is a permutation
+of the sequence where no element remains in place. SEQUENCE is not modified,
+but individual derangements are EQ to each other. Consequences are unspecified
+if calling FUNCTION modifies either the derangement or SEQUENCE.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EXTREMUM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SEQUENCE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "PREDICATE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      ((:NAME "START" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) 0)
+      (:NAME "END" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the element of SEQUENCE that would appear first if the subsequence
+bounded by START and END was sorted using PREDICATE and KEY.
+
+EXTREMUM determines the relationship between two elements of SEQUENCE by using
+the PREDICATE function. PREDICATE should return true if and only if the first
+argument is strictly less than the second one (in some appropriate sense). Two
+arguments X and Y are considered to be equal if (FUNCALL PREDICATE X Y)
+and (FUNCALL PREDICATE Y X) are both false.
+
+The arguments to the PREDICATE function are computed from elements of SEQUENCE
+using the KEY function, if supplied. If KEY is not supplied or is NIL, the
+sequence element itself is used.
+
+If SEQUENCE is empty, NIL is returned.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CLAMP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "NUMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MIN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MAX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Clamps the NUMBER into [min, max] range. Returns MIN if NUMBER is lesser then
+MIN and MAX if NUMBER is greater then MAX, otherwise returns NUMBER.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "GAUSSIAN-RANDOM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MIN" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "MAX" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Returns two gaussian random double floats as the primary and secondary value,
+optionally constrained by MIN and MAX. Gaussian random numbers form a standard
+normal distribution around 0.0d0.
+
+Sufficiently positive MIN or negative MAX will cause the algorithm used to
+take a very long time. If MIN is positive it should be close to zero, and
+similarly if MAX is negative it should be close to zero.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IOTA" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) 0)
+      ((:NAME "STEP" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 1))
+     :DOCUMENTATION
+     "Return a list of n numbers, starting from START (with numeric contagion
+from STEP applied), each consequtive number being the sum of the previous one
+and STEP. START defaults to 0 and STEP to 1.
+
+Examples:
+
+  (iota 4)                      => (0 1 2 3)
+  (iota 3 :start 1 :step 1.0)   => (1.0 2.0 3.0)
+  (iota 3 :start -1 :step -1/2) => (-1 -3/2 -2)
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAP-IOTA" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FUNCTION" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "START" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL) 0)
+      ((:NAME "STEP" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) 1))
+     :DOCUMENTATION
+     "Calls FUNCTION with N numbers, starting from START (with numeric contagion
+from STEP applied), each consequtive number being the sum of the previous one
+and STEP. START defaults to 0 and STEP to 1. Returns N.
+
+Examples:
+
+  (map-iota #'print 3 :start 1 :step 1.0) => 3
+    ;;; 1.0
+    ;;; 2.0
+    ;;; 3.0
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LERP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "V" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "A" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "B" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the result of linear interpolation between A and B, using the
+interpolation coefficient V.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MEAN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "SAMPLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the mean of SAMPLE. SAMPLE must be a sequence of numbers.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MEDIAN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SAMPLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns median of SAMPLE. SAMPLE must be a sequence of real numbers.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VARIANCE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SAMPLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "BIASED" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Variance of SAMPLE. Returns the biased variance if BIASED is true (the default),
+and the unbiased estimator of variance if BIASED is false. SAMPLE must be a
+sequence of numbers.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "STANDARD-DEVIATION" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "SAMPLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "BIASED" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION
+     "Standard deviation of SAMPLE. Returns the biased standard deviation if
+BIASED is true (the default), and the square root of the unbiased estimator
+for variance if BIASED is false (which is not the same as the unbiased
+estimator for standard deviation). SAMPLE must be a sequence of numbers.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "MAXF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NUMBERS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for MAX. Sets place designated by the first argument to the
+maximum of its original value and NUMBERS.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "MINF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "PLACE" :PACKAGE-NAME NIL :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "NUMBERS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&ENVIRONMENT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ENV" :PACKAGE-NAME NIL :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Modify-macro for MIN. Sets place designated by the first argument to the
+minimum of its original value and NUMBERS.")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+FACTORIAL-BISECTION-RANGE-LIMIT+" :PACKAGE-NAME
+      "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "8")
+    (:TYPE :CONSTANT :SYMBOL
+     (:NAME "+FACTORIAL-DIRECT-MULTIPLICATION-LIMIT+" :PACKAGE-NAME
+      "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "13")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%MULTIPLY-RANGE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "I" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "J" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "%FACTORIAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FACTORIAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Factorial of non-negative integer N.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BINOMIAL-COEFFICIENT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+      T)
+     :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "K" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Binomial coefficient of N and K, also expressed as N choose K. This is the
+number of K element combinations given N choises. N must be equal to or
+greater then K.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SUBFACTORIAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL))
+     :DOCUMENTATION "Subfactorial of the non-negative integer N.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "COUNT-PERMUTATIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+      (:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "K" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)
+       (:NAME "N" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP NIL)))
+     :DOCUMENTATION
+     "Number of K element permutations for a sequence of N objects.
+K defaults to N")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FEATUREP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "FEATURE-EXPRESSION" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+       NIL))
+     :DOCUMENTATION
+     "Returns T if the argument matches the state of the *FEATURES*
+list and NIL if it does not. FEATURE-EXPRESSION can be any atom
+or list acceptable to the reader macros #+ and #-."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "WRITE-BYTE-VECTOR-INTO-FILE" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "SWITCH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-RATIONAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "POSITIVE-LONG-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "REVERSEF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-DOUBLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "ENDS-WITH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "STRING-DESIGNATOR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MAKE-CIRCULAR-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "CIRCULAR-TREE-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "HASH-TABLE-VALUES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-LONG-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "SYMBOLICATE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-LONG-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "REMOVE-FROM-PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "COPY-SEQUENCE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-REAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "ARRAY-INDEX" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-REAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "IOTA" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "WITH-OUTPUT-TO-FILE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MULTIPLE-VALUE-COMPOSE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "WHEN-LET*" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-REAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NTH-VALUE-OR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-SHORT-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "LERP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-FIXNUM-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "CURRY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MAP-COMBINATIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "DELETEF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "VARIANCE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "CLAMP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "READ-FILE-INTO-BYTE-VECTOR" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "NON-POSITIVE-REAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "STARTS-WITH-SUBSEQ" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "WITH-GENSYMS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "APPENDF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "DOPLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "COPY-HASH-TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "ENSURE-SYMBOL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MAPHASH-KEYS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-SHORT-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "REMOVE-FROM-PLISTF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-FIXNUM-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-DOUBLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "NEGATIVE-SINGLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "IGNORE-SOME-CONDITIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "PROPER-SEQUENCE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-REAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-RATIONAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MAXF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "FIRST-ELT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "ESWITCH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "SET-EQUAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "DEFINE-CONSTANT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "COUNT-PERMUTATIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-DOUBLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "NON-POSITIVE-SHORT-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "REMOVEF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "OF-TYPE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-INTEGER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "NON-NEGATIVE-FIXNUM-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "NEGATIVE-DOUBLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "WRITE-STRING-INTO-FILE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "PLIST-ALIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "ENSURE-FUNCTION" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "SEQUENCE-OF-LENGTH-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "ALIST-HASH-TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "PROPER-LIST-LENGTH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-INTEGER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "DELETE-FROM-PLISTF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "SIMPLE-READER-ERROR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "READ-FILE-INTO-STRING" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "MAP-IOTA" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "ORDINARY-LAMBDA-LIST-KEYWORDS" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "POSITIVE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "PROPER-LIST-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "SUBFACTORIAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "ENSURE-GETHASH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "CSWITCH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "CIRCULAR-LIST-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "ALIST-PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-DOUBLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "POSITIVE-INTEGER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-RATIONAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "PROPER-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MAP-PERMUTATIONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MAP-PRODUCT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-SINGLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "BINOMIAL-COEFFICIENT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "UNWIND-PROTECT-CASE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "EMPTYP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "STARTS-WITH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "ASSOC-VALUE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "SIMPLE-STYLE-WARNING" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "NUNIONF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "WHICHEVER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "DESTRUCTURING-CASE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-FIXNUM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-LONG-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "NON-POSITIVE-LONG-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "FACTORIAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-SINGLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "ENSURE-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-LONG-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "PLIST-HASH-TABLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "REQUIRED-ARGUMENT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-RATIONAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "NON-POSITIVE-DOUBLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "FEATUREP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "ENSURE-FUNCTIONF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "RCURRY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-SINGLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "XOR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "COPY-ARRAY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-INTEGER-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "NEGATIVE-FIXNUM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-INTEGER" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "ARRAY-LENGTH" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MEDIAN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-REAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "POSITIVE-FIXNUM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "SETP" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-SINGLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "LASTCAR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "LAST-ELT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "FORMAT-SYMBOL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "FLATTEN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-FIXNUM-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-LONG-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-REAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-FIXNUM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "SIMPLE-PARSE-ERROR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "COPY-FILE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "IF-LET" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-SINGLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "POSITIVE-INTEGER-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "COMPOSE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-POSITIVE-RATIONAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "HASH-TABLE-KEYS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "SIMPLE-PROGRAM-ERROR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "POSITIVE-DOUBLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "MAKE-KEYWORD" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-SHORT-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "NREVERSEF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-RATIONAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MULTIPLE-VALUE-PROG2" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "NON-POSITIVE-INTEGER-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "TYPE=" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "ROTATE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NAMED-LAMBDA" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MINF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "DISJOIN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-SINGLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "ONCE-ONLY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "SHUFFLE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "GAUSSIAN-RANDOM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NON-NEGATIVE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MEAN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MAKE-GENSYM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-SHORT-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "NON-NEGATIVE-SHORT-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "POSITIVE-SHORT-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "ENDS-WITH-SUBSEQ" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "RASSOC-VALUE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "WITH-INPUT-FROM-FILE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "RANDOM-ELT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "DELETE-FROM-PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "WITH-UNIQUE-NAMES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MAP-DERANGEMENTS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-LONG-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "CIRCULAR-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NCONCF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "PARSE-ORDINARY-LAMBDA-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "MAPHASH-VALUES" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-RATIONAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-INTEGER-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "LENGTH=" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "PARSE-BODY" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "COPY-STREAM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "DESTRUCTURING-ECASE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "STANDARD-DEVIATION" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "WHEN-LET" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "DESTRUCTURING-CCASE" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "HASH-TABLE-PLIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "CONJOIN" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "ENSURE-CAR" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MAKE-GENSYM-LIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "COERCEF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "EXTREMUM" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-DOUBLE-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "NON-NEGATIVE-RATIONAL" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)
+    (:NAME "ENSURE-CONS" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "HASH-TABLE-ALIST" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "UNIONF" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "MAPPEND" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "NEGATIVE-REAL-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP T)
+    (:NAME "POSITIVE-SINGLE-FLOAT-P" :PACKAGE-NAME "ALEXANDRIA.0.DEV"
+     :EXTERNALP T)
+    (:NAME "NEGATIVE-SHORT-FLOAT" :PACKAGE-NAME "ALEXANDRIA.0.DEV" :EXTERNALP
+     T)))))

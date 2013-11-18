@@ -1,0 +1,81 @@
+
+(:TYPE :SYSTEM :NAME "cl-recaptcha" :AUTHOR
+ "Aad Versteden <madnificent@gmail.com>" :MAINTAINER
+ "Aad Versteden <madnificent@gmail.com>" :VERSION "1" :LICENCE "MIT"
+ :DESCRIPTION "Trivial support for the recaptcha service" :LONG-DESCRIPTION NIL
+ :DEPENDS-ON ("DRAKMA" "SPLIT-SEQUENCE" "CL-PPCRE") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-RECAPTCHA" :FULL-NAME "CL-RECAPTCHA" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PRIVATE-CAPTCHA-KEY*" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+     :DOCUMENTATION
+     "Private key for the recaptcha service, register at http://recaptcha.net/api/getkey"
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PUBLIC-CAPTCHA-KEY*" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+     :DOCUMENTATION
+     "Private key for the recaptcha service, register at http://recaptcha.net/api/getkey"
+     :INITIAL-VALUE "NIL")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*JS-SOURCE*" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "The source of the javascript file, the standard value comes from recaptcha itself and should be available in any case"
+     :INITIAL-VALUE "\"http://api.recaptcha.net/js/recaptcha_ajax.js\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CAPTCHA-VERIFY-URL*" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "This is the URL that will be used to verify the result of the captcha.  This is the one recaptcha provides"
+     :INITIAL-VALUE "\"http://api-verify.recaptcha.net/verify\"")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHALLENGE-JS" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PUBLIC-KEY" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP NIL)
+       (:NAME "*PUBLIC-CAPTCHA-KEY*" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP
+        T)))
+     :DOCUMENTATION
+     "This is the javascript-enabled version of the challenge, recaptcha advises you to use this one *and* (challenge-ns) for the normal handling of captchas")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHALLENGE-NS" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PUBLIC-KEY" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP NIL)
+       (:NAME "*PUBLIC-CAPTCHA-KEY*" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP
+        T)))
+     :DOCUMENTATION
+     "This is the javascript-disabled version of the challenge, recaptcha advises you to use this one *and* (challenge-js) for the normal handling of captchas")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHALLENGE-AJAX-SRC" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION
+     "This is for the ajaxified version of recaptcha.  Please look at the api for more information on how to use this.  http://recaptcha.net/apidocs/captcha/client.html")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHALLENGE" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&OPTIONAL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PUBLIC-KEY" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP NIL)
+       (:NAME "*PUBLIC-CAPTCHA-KEY*" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP
+        T)))
+     :DOCUMENTATION
+     "This is the simplest way.  It combines the script and the noscript version.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "VERIFY-CAPTCHA" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "RECAPTCHA-CHALLENGE-FIELD" :PACKAGE-NAME "CL-RECAPTCHA"
+       :EXTERNALP NIL)
+      (:NAME "RECAPTCHA-RESPONSE-FIELD" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP
+       NIL)
+      (:NAME "REMOTE-IP" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "PRIVATE-KEY" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP NIL)
+       (:NAME "*PRIVATE-CAPTCHA-KEY*" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP
+        T)))
+     :DOCUMENTATION
+     "Verifies the result the user gave.  There are two values returned.  The first indicates the success or failure, the second indicates the error code the captcha-server gave."))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "CHALLENGE-NS" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+    (:NAME "VERIFY-CAPTCHA" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+    (:NAME "*PRIVATE-CAPTCHA-KEY*" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+    (:NAME "CHALLENGE-AJAX-SRC" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+    (:NAME "*PUBLIC-CAPTCHA-KEY*" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+    (:NAME "CHALLENGE" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)
+    (:NAME "CHALLENGE-JS" :PACKAGE-NAME "CL-RECAPTCHA" :EXTERNALP T)))))

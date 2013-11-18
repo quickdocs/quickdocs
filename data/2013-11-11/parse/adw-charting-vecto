@@ -1,0 +1,6 @@
+
+(:TYPE :SYSTEM :NAME "adw-charting-vecto" :AUTHOR
+ "Ryan Davis <ryan@acceleration.net>" :MAINTAINER NIL :VERSION "0.2" :LICENCE
+ "LGPL (or talk to me)" :DESCRIPTION
+ "Charting package to make pretty graphs and charts using Vecto"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("VECTO" "ADW-CHARTING") :PACKAGE-LIST NIL)

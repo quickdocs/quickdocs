@@ -1,0 +1,56 @@
+
+(:TYPE :SYSTEM :NAME "cl-irc-test" :AUTHOR "Erik Enge" :MAINTAINER NIL :VERSION
+ "0.1.0" :LICENCE "MIT" :DESCRIPTION "Tests for the cl-irc system"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("SPLIT-SEQUENCE" "RT" "CL-IRC")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-IRC-TEST" :FULL-NAME "CL-IRC-TEST" :DOCUMENTATION
+   NIL :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MSG1*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE
+     "(FORMAT NIL \":kire!~~eenge@216.248.178.227 PRIVMSG cl-irc :heyhey!~A\" #\\Return)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MSG2*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE
+     "(FORMAT NIL \":tolkien.freenode.net 372 cl-irc :-~A\" #\\Return)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MSG3*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE
+     "(FORMAT NIL \"NOTICE AUTH :*** Your forward and reverse DNS don't match~A\"
+        #\\Return)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MSG4*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE "(FORMAT NIL
+        \":kire_!~~eenge@adsl-156-35-240.asm.bellsouth.net MODE #lisppaste +k key~A\"
+        #\\Return)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MSG5*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE "(FORMAT NIL
+        \":kire_!~~eenge@adsl-156-35-240.asm.bellsouth.net MODE #lisppaste +bbb *!*@somewhere.com *!*@somewhereles.com *!*@youdontwannaknow.org~A\"
+        #\\Return)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MSG6*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE
+     "(FORMAT NIL \":kire!~~eenge@216.248.178.227 PRIVMSG cl-irc heyhey!~A\" #\\Return)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*MSG7*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL) :DOCUMENTATION
+     NIL :INITIAL-VALUE
+     "(FORMAT NIL \":ChanServ!ChanServ@services. MODE #lisppaste +o eh \")")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*NICK1*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"kire\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*NICK2*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"k|[]re\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*NICK3*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"k^{]re\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*CHAN1*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "\"#liSP\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "*PROTOCOL-MODE*" :PACKAGE-NAME "CL-IRC-TEST" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "\":Chanserv!chanserve@services. MODE #svn +o eh\""))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "DO-TESTS" :PACKAGE-NAME "REGRESSION-TEST" :EXTERNALP T)))))

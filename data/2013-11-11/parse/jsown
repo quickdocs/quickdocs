@@ -1,0 +1,539 @@
+
+(:TYPE :SYSTEM :NAME "jsown" :AUTHOR "Aad Versteden <madnificent@gmail.com>"
+ :MAINTAINER "Aad Versteden <madnificent@gmail.com>" :VERSION "1.0.0" :LICENCE
+ "MIT" :DESCRIPTION
+ "Fast JSON parsing library.  Mainly geared torwards fetching only a few keys of many objects, but efficient for other types of content too"
+ :LONG-DESCRIPTION NIL :DEPENDS-ON NIL :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "JSOWN" :FULL-NAME "JSOWN" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :CONSTANT :SYMBOL
+     (:NAME "+COMPILE-UNESCAPE-JSON-STRINGS+" :PACKAGE-NAME "JSOWN" :EXTERNALP
+      NIL)
+     :DOCUMENTATION "Compiles support for unescaping json strings.
+ If you set this to nil upon compilation time strings and keywords aren't escaped.  This makes the library incompliant with json, but it does make it a few % faster.
+ Could be handy when used in a mapreduce situation where you don't mind debugging and speed is of utmost importance."
+     :INITIAL-VALUE "T")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BUILD-CHARACTER-TREE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "STRINGS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "Builds a character tree from a set of strings")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FIND-FIRST-ELTS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LISTS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BUILD-TREE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LISTS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Builds a tree from a range of lists and a function to compare its elements by")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ITERATE-TREE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "TREE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Iterates a character-tree with the given character
+ Returns two values, being the new tree and whether or not this is an end-point.")
+    (:TYPE :STRUCT :SYMBOL
+     (:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "A string-buffer which is used to operate on the strings
+ The use of a string-buffer allows us to read the data in bulk, and to operate on it, by using simple index manipulations.
+ Reading the string up front removes the hassle of having a fixed-size maximal input"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "INDEX" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MARK" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "STRING" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM101" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       "")
+      (((:NAME "INDEX" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM102" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       0)
+      (((:NAME "MARK" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM103" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       0))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BUILD-BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     "Makes a new buffer and ensures the string is of the correct type")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEXT-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Sets the pointer to the next char in the buffer")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEXT-CHAR/" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Sets the pointer to the next char in the buffer, ignores escaped characters (they start with a \\) through")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEXT-CHAR/I" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Does what next-char/ does, but returns nil if no char was skipped or t if a char was skipped.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECR-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Sets the pointer to the previous char in the buffer")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CURRENT-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the current character the buffer is pointing to")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PEEK-BEHIND-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FETCH-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Reads a character from the buffer and increases the index")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SUBSEQ-BUFFER-MARK" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the content between index and mark for the current buffer
+ result: (subseq buffer-string mark index))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MARK-BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Sets the mark of the buffer to the current character")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MARK-LENGTH" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns the current amount of characters in the marked piece of the buffer")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-TO" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "LAST-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Skips characters until <char> has been found.  <char> is the last char which is skipped
+ see: skip-until")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-TO/" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "LAST-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "What skip-to does, but with the ignoring of \\")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-UNTIL" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "LAST-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Skips characters until <char> has been found.  <char> is NOT skipped
+ See: skip-to")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-UNTIL/" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "LAST-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "What skip-until does, but with \\ escaping")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CHAR-IN-ARR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CHAR-ARR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns t if <char> is found in <char-arr>, returns nil otherwise")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-UNTIL*" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "CHAR-ARR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Skips characters until one of the characters in <char-arr> has been found.  The character which was found is not read from the buffer.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SUBSEQ-UNTIL" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "CHAR-ARR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a subsequence of stream, reading everything before a character belonging to char-arr is found.  The character which was found is not read from the buffer")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SUBSEQ-UNTIL/" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "LAST-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "Does what subseq-until does, but does escaping too")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "UNESCAPE-STRING/COUNT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "COUNT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "Unescapes the given string based on JSOWN's spec")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SUBSEQ-UNTIL/UNESCAPE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "LAST-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Does what subseq-until/ does, but unescapes the returned string")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SUBSEQ-TREE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "END-CHAR" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns a sequence of the buffer, reading everything that matches with the given tree before end-char is found.  end-char is not read from the buffer
+ Returns nil if no sequence matching the tree could be found.  It then stops iterating at the failed position
+ Skips #\\")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "reads an object, starting with { and ending with } into a in internal jsown object")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-PARTIAL-OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads an object from the buffer, but only when the key matches a key in the tree")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Skips an object from the buffer
+  PRE: Assumes the buffer's index is at the starting { of the object
+  POST: The buffer's index is right after the ending } of the object")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-PARTIAL-KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "TREE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "reads a key from the buffer. 
+  PRE: Assumes the buffer's index is at the starting \" of the key
+  POST: Returns (values key t) if the key was found as a valid key in the tree, or (values nil nil) if it was not
+  POST: The buffer's index is right after the ending \" of the key")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Reads a key from the key-value list.
+  PRE: Assumes the buffer's index is at the starting \" of the key
+  POST: The buffer's index is right after the ending \" of the key")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Skips a key from the key-value list.
+  PRE: Assumes the buffer's index is at the starting \" of the key
+  POST: The buffer's index is right after the ending \" of the key")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-VALUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Reads a value from the stream.
+ This searches for the first meaningful character, and delegates to the right function for that character")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-VALUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Skips a value from the stream.
+ This searches for the first meaningful character, and delegates to the right function for skipping that")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-STRING" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Skips the contents of an input string from the buffer.
+  PRE: assumes the buffer's index is at the starting \"
+  POST: the buffer's index is right after the ending \" ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-STRING" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Reads a JSON string from the stream 
+  PRE: assumes the buffer's index is at the starting \"
+  POST: returns the matching string without converting escaped characters to their internal representation
+  POST: the buffer's index is right after the ending \" ")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-ARRAY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Skips the contents of an array from the buffer
+  PRE: assumes the buffer's index is at the starting [
+  POST: the buffer's index is right after the ending ]")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-ARRAY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Reads a JSON array from the stream
+  PRE: assumes the buffer's index is at the starting [
+  POST: returns a list containing all read objects
+  POST: the buffer's index is right after the ending ]")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CREATE-PARSE-NUMBER-CODE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "EXPONENT-P" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "FLOAT-P" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "Creates the code to parse a number.
+  It is assumed that the whole number is placed in an accessible variable whole-number, available at runtime. 
+  If exponent-p is non-nil it is assumed that the exponent is placed in the variable exp, available at runtime.
+  If float-p is non-nil it is assumed that the float is placed in the variable float, available at runtime.
+  If float-p is non-nil it is assumed that the amount of numbers in the float is placed in the variable float-digits, available at runtime.")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "SET-READ-NUMBER-PART" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CURRENTLY-READING" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "READ-NUMBER*" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "CURRENTLY-READING" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       (:NAME "WHOLE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))
+      ((:NAME "EXPONENT-P" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "FLOAT-P" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      ((:NAME "FLOAT-DELIMITERS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) ".")
+      ((:NAME "EXP-DELIMITERS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) "eE")
+      ((:NAME "NUMBER-DELIMITERS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       ",]} "))
+     :DOCUMENTATION
+     "This macro should be compared to inlined functions with respect to speed.  The macro creates a tree of spaghetti code that can read jsown numbers to lisp numbers.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-NUMBER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Reads a number from the buffer.
+  PRE: assumes the index is pointing to the first character representing the number
+  POST: the value of the character is returned
+  POST: the buffer's index is at the position right after the last character representing the number")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "SKIP-NUMBER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Skips a number from the buffer
+  PRE: assumes the index is pointing to the first character representing the number.
+  POST: the buffer's index is at the position right after the last character representing the number, possibly skipping spaces after that position")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BUILD-KEY-CONTAINER" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYWORDS-TO-READ" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Builds an internal structure to speed up the keywords which you can read.  This should be used when the keywords needed are not known at compiletime, but you still want to parse those keywords of a lot of documents.
+ If the keywords you are interested in are known at compiletime, the use of #'parse will automatically expand the kewords at compiletime.
+ parse-with-container takes the result of this function and will return the keywords which have been inserted here.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PARSE-WITH-CONTAINER" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "JSON-STRING" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "CONTAINER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Parses the keywords which have been specified in the container from the  json string json-string.
+ For most cases you can just use the parse function without a special key container.  This is only here to support some cases where the building of the key container takes too much time.  
+ See #'parse for the normal variant.
+ See #'build-key-container for a way to build new keyword containers.")
+    (:TYPE :FUNCTION :SYMBOL (:NAME "PARSE" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "KEYWORDS-TO-READ" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Reads a json object from the given string, with the given keywords being the keywords which are fetched from the object.
+ All parse functions assume <string> is not an empty json object.  (string/= string \"{}\")")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEST-READER-SPEED" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "ITERATIONS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-JSOWN-FILTER" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "FIRST-SPEC" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "OTHER-SPECS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Fancy filtering for jsown-parsed objects, functional implementation.  look at jsown-filter for a working version.")
+    (:TYPE :MACRO :SYMBOL (:NAME "FILTER" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "&REST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SPECS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "Fancy filtering for jsown-parsed objects.
+spec can be one of the following:
+[object] key to find.  will transform into (jsown:val value key)
+[cl:map] use this modifier with an [object] modifier after it, to filter all elements in the list.")
+    (:TYPE :GENERIC :SYMBOL
+     (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Writes the given object to json in a generic way.")
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "STRING" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "NUMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "NUMBER" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "RATIO" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "RATIO" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TRUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TRUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "T" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "TRUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "TRUE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FALSE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "FALSE" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FALSE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "F" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FALSE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "NULL" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :METHOD :SYMBOL (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     (((:NAME "FALSE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       ((:NAME "EQL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+        (:NAME "N" :PACKAGE-NAME "KEYWORD" :EXTERNALP T))))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OBJECT-TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIST-TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)) :DOCUMENTATION
+     NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LIST-IS-OBJECT-P" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LIST" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TO-JSON*" :PACKAGE-NAME "JSOWN" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Converts an object in internal jsown representation to a string containing the json representation")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-NUMBER*" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "OUTPUT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-STRING*" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "OUTPUT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "WRITE-OBJECT-TO-STREAM" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "OUTPUT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KEYWORDS" :PACKAGE-NAME "JSOWN" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)) :DOCUMENTATION
+     "Returns a list of all the keywords contained in the object")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "KEY-VAL" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Returns the list which represents the key-val pair in the json object")
+    (:TYPE :FUNCTION :SYMBOL (:NAME "VAL" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "Returns the value of the given key in object")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PUSH-KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "Adds the given key to the object at front")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "APPEND-KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "Appends the given key to the object")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "OVERWRITE-VAL" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Overwrites the given key's value with value.  Errors out if the key didn't exist")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "VAL" :PACKAGE-NAME "JSOWN" :EXTERNALP T))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Sets the value of the keyword key of the object object to value.  If the key didn't have any value yet, the keyword is added to the object")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DO-JSON-KEYS" :PACKAGE-NAME "JSOWN" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "KEY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+       (:NAME "VAL" :PACKAGE-NAME "JSOWN" :EXTERNALP T))
+      (:NAME "OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION "Iterates over the json key-value pairs")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "EMPTY-OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP T) :LAMBDA-LIST
+     (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :DOCUMENTATION
+     "Returns an empty object which can be used to build new objects upon")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "EXTEND-JS" :PACKAGE-NAME "JSOWN" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "OBJ" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL)
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SPECS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "fills in a bunch of jsown values for obj.  each spec should contain a list with the first element being the string which represents the key and the second being the form which evaluates to the value to which the key should be set.
+
+it is heavily related to jsown-object, which fills in an empty object.
+
+eg: (jsown-values (empty-object)
+      (\"kind\" \"onyx.Groupbox\")
+      (\"components\" (list (jsown-object
+                               (\"content\" \"Hello World\")
+                               (\"tag\" \"h1\"))
+                            (jsown-object (\"tag\" \"p\") (\"content\" \"This is jsown talkin!\")))))")
+    (:TYPE :MACRO :SYMBOL (:NAME "NEW-JS" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "SPECS" :PACKAGE-NAME "JSOWN" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "creates a new empty object and fills it is per jsown-values"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "NEW-JS" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "TO-JSON" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "VAL" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "EXPORT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+    (:NAME "KEYWORDS" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "EMPTY-OBJECT" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "BUILD-KEY-CONTAINER" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "PARSE" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "DO-JSON-KEYS" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "EXTEND-JS" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "TO-JSON*" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "PARSE-WITH-CONTAINER" :PACKAGE-NAME "JSOWN" :EXTERNALP T)
+    (:NAME "FILTER" :PACKAGE-NAME "JSOWN" :EXTERNALP T)))))

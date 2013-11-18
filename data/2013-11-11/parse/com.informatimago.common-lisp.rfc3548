@@ -1,0 +1,748 @@
+
+(:TYPE :SYSTEM :NAME "com.informatimago.common-lisp.rfc3548" :AUTHOR
+ "Pascal J. Bourguignon <pjb@informatimago.com>" :MAINTAINER
+ "Pascal J. Bourguignon <pjb@informatimago.com>" :VERSION "1.2.2" :LICENCE
+ "AGPL3" :DESCRIPTION
+ "Implements the RFC3548 encodings: Base16, Base32, and Base64."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("com.informatimago.common-lisp.cesarum")
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME ".RFC3548" :FULL-NAME
+   "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :DOCUMENTATION "
+
+This packages exports functions to encode an decode text blocks
+according to the encoding described in:
+RFC3548: The Base16, Base32, and Base64 Data Encodings
+
+base64-encode     (read-byte write-char)
+base64-decode     (read-char write-byte &key (ignore-invalid-input nil))
+filebase64-encode (read-byte write-char)
+filebase64-decode (read-char write-byte &key (ignore-invalid-input nil))
+base32-encode     (read-byte write-char)
+base32-decode     (read-char write-byte &key (ignore-invalid-input nil))
+base16-encode     (read-byte write-char)
+base16-decode     (read-char write-byte &key (ignore-invalid-input nil))
+
+READ-BYTE:  A function taking no argument and returning a 
+            byte (integer 0 255) or nil for eof.  It may be
+            called several times after eof and should keep
+            returning nil.
+
+WRITE-BYTE: A function taking one byte (integer 0 255) argument
+            used to collect decoded bytes.
+ 
+READ-CHAR:  A function taking no argument and returning a
+            character or nil for eof.  It may be called
+            several times after eof and should keep returning 
+            nil.  Only characters whose code is between 0 and 
+            255 should be returned.
+
+WRITE-CHAR: A function taking one character argument, used to
+            collect encoded bytes.
+
+IGNORE-INVALID-INPUT:
+            When true, any invalid character or padding is ignored
+            and processing continues as if it did not occur.
+            When nil, such an occurence would raise an error.
+
+
+base64-encode-bytes     (bytes   &key line-width (new-line +new-line+))
+base64-decode-bytes     (encoded &key ignore-crlf ignore-invalid-input)
+filebase64-encode-bytes (bytes   &key line-width (new-line +new-line+))
+filebase64-decode-bytes (encoded &key ignore-crlf ignore-invalid-input)
+base32-encode-bytes     (bytes   &key line-width (new-line +new-line+))
+base32-decode-bytes     (encoded &key ignore-crlf ignore-invalid-input)
+base16-encode-bytes     (bytes   &key line-width (new-line +new-line+))
+base16-decode-bytes     (encoded &key ignore-crlf ignore-invalid-input)
+
+BYTES:      A vector of (unsigned-byte 8).
+ENCODED:    A string.
+LINE-WIDTH: NIL or an integer indicating the line width.
+            the string new-line will be inserted after that 
+            many characters have been written on a given line.
+NEW-LINE:   A string contaiing the new-line character or characters.
+            the default +new-line+ is (format nil \"~%\").
+IGNORE-CRLF:
+            When true, ASCII characters LF and CR are not passed to 
+            the decoding function. When NIL, they're passed, and
+            if invalid input is not ignored, an error would be raised.
+IGNORE-INVALID-INPUT:
+            Passed to the decoding function. See above.
+
+
+The encoding functions take a vector of bytes 
+and return an encoded string.
+
+The decoding functions take an encoded string 
+and return a vector of bytes.
+
+To encode a string, characters must be converted to bytes, and 
+to decode a string, bytes must be converted to characters. 
+This must be done accordingly to the characeter set encoding.
+
+
+
+License:
+
+    AGPL3
+    
+    Copyright Pascal J. Bourguignon 2004 - 2012
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+    
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.
+    If not, see <http://www.gnu.org/licenses/>
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-DECODE-TABLE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "CASE-SENSITIVE" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "T" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "
+CODE:        A string of length (1+ (expt 2 n)).
+RETURN:      An array A:[0..255] --> [-1..(expt 2 n)]
+             character-code --> encoding-value
+")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+BASE64-ENCODE+" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "An array A[0..64] --> character  giving the character used to encode
+   the values from 0 to 63, and the padding character in slot 64."
+     :INITIAL-VALUE
+     "\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+BASE64-DECODE+" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :DOCUMENTATION "An array A:[0..255] |--> [-1..63] 
+        character-code ---> encoding-value"
+     :INITIAL-VALUE
+     "(COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548::MAKE-DECODE-TABLE
+ COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548::+BASE64-ENCODE+)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+FILEBASE64-ENCODE+" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "An array A[0..64] --> character  giving the character used to encode
+   the values from 0 to 63, and the padding character in slot 64."
+     :INITIAL-VALUE
+     "\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+FILEBASE64-DECODE+" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :DOCUMENTATION "An array A:[0..255] |--> [-1..63] 
+        character-code ---> encoding-value"
+     :INITIAL-VALUE
+     "(COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548::MAKE-DECODE-TABLE
+ COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548::+FILEBASE64-ENCODE+)")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+BASE32-ENCODE+" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :DOCUMENTATION
+     "An array A[0..32] --> character  giving the character used to encode
+   the values from 0 to 31, and the padding character in slot 32."
+     :INITIAL-VALUE "\"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=\"")
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+BASE32-DECODE+" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :DOCUMENTATION "An array A:[0..255] |--> [-1..31] 
+        character-code ---> encoding-value"
+     :INITIAL-VALUE
+     "(COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548::MAKE-DECODE-TABLE
+ COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548::+BASE32-ENCODE+ :CASE-SENSITIVE
+ NIL)")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PADDING-CODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "CODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "The position of the padding character in code (the last one).")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE64" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ENCODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "READ-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "ENCODE32" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ENCODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "READ-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "WITH-IO" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     (((:NAME "IN" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "OUT" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+      ((:NAME "DECODE" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "PADCHAR" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "PADCODE" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "READ-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "WRITE-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+       (:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+      (:NAME "&BODY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "BODY" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE64" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DECODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "PADCHAR" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "PADCODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "READ-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "DECODE32" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DECODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "PADCHAR" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "PADCODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "READ-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE64-ENCODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "READ-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "
+DO:         Encode the stream read with the READ-BYTE closure
+            in BASE64 text written with WRITE-CHAR closure.
+
+READ-BYTE:  A function taking no argument and returning a 
+            byte (integer 0 255) or nil for eof.  It may be
+            called several times after eof and should keep
+            returning nil.
+
+WRITE-CHAR: A function taking one character argument, used to
+            collect encoded bytes.
+
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE64-DECODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "READ-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "
+DO:         Decode the BASE64 text stream read with the READ-CHAR
+            closure into a binary stream written with WRITE-BYTE
+            closure.
+
+READ-CHAR:  A function taking no argument and returning a
+            character or nil for eof.  It may be called
+            several times after eof and should keep returning 
+            nil.  Only characters whose code is between 0 and 
+            255 should be returned.
+
+WRITE-BYTE: A function taking one byte (integer 0 255) argument
+            used to collect decoded bytes.
+ 
+IGNORE-INVALID-INPUT:
+            When true, any invalid character or padding is ignored
+            and processing continues as if it did not occur.
+            When nil, such an occurence would raise an error.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FILEBASE64-ENCODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "READ-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "
+DO:         Encode the stream read with the READ-BYTE closure
+            in FILEBASE64 text written with WRITE-CHAR closure.
+
+NOTE:       It's the same encoding as BASE64, but the 62nd and 63rd
+            characters are - and _ instead of + and /, thus making it
+            usable for file names and URLs.
+
+READ-BYTE:  A function taking no argument and returning a 
+            byte (integer 0 255) or nil for eof.  It may be
+            called several times after eof and should keep
+            returning nil.
+
+WRITE-CHAR: A function taking one character argument, used to
+            collect encoded bytes.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FILEBASE64-DECODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "READ-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "
+DO:         Decode the FILEBASE64 text stream read with the READ-CHAR
+            closure into a binary stream written with WRITE-BYTE
+            closure.
+
+
+NOTE:       It's the same encoding as BASE64, but the 62nd and 63rd
+            characters are - and _ instead of + and /, thus making it
+            usable for file names and URLs.
+ 
+READ-CHAR:  A function taking no argument and returning a
+            character or nil for eof.  It may be called
+            several times after eof and should keep returning 
+            nil.  Only characters whose code is between 0 and 
+            255 should be returned.
+
+WRITE-BYTE: A function taking one byte (integer 0 255) argument
+            used to collect decoded bytes.
+
+IGNORE-INVALID-INPUT:
+            When true, any invalid character or padding is ignored
+            and processing continues as if it did not occur.
+            When nil, such an occurence would raise an error.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE32-ENCODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "READ-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "
+DO:         Encode the stream read with the READ-BYTE closure
+            in BASE32 text written with WRITE-CHAR closure.
+
+READ-BYTE:  A function taking no argument and returning a 
+            byte (integer 0 255) or nil for eof.  It may be
+            called several times after eof and should keep
+            returning nil.
+
+WRITE-CHAR: A function taking one character argument, used to
+            collect encoded bytes.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE32-DECODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "READ-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "
+DO:         Decode the BASE32 text stream read with the READ-CHAR
+            closure into a binary stream written with WRITE-BYTE
+            closure.
+
+READ-CHAR:  A function taking no argument and returning a
+            character or nil for eof.  It may be called
+            several times after eof and should keep returning 
+            nil.  Only characters whose code is between 0 and 
+            255 should be returned.
+
+WRITE-BYTE: A function taking one byte (integer 0 255) argument
+            used to collect decoded bytes.
+ 
+IGNORE-INVALID-INPUT:
+            When true, any invalid character or padding is ignored
+            and processing continues as if it did not occur.
+            When nil, such an occurence would raise an error.
+
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE16-ENCODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "READ-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "
+DO:         Encode the stream read with the READ-BYTE closure
+            in BASE16 text written with WRITE-CHAR closure.
+
+READ-BYTE:  A function taking no argument and returning a 
+            byte (integer 0 255) or nil for eof.  It may be
+            called several times after eof and should keep
+            returning nil.
+
+WRITE-CHAR: A function taking one character argument, used to
+            collect encoded bytes.
+
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE16-DECODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "READ-CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "WRITE-BYTE" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      ((:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)))
+     :DOCUMENTATION "
+DO:         Decode the BASE16 text stream read with the READ-CHAR
+            closure into a binary stream written with WRITE-BYTE
+            closure.
+
+READ-CHAR:  A function taking no argument and returning a
+            character or nil for eof.  It may be called
+            several times after eof and should keep returning 
+            nil.  Only characters whose code is between 0 and 
+            255 should be returned.
+
+WRITE-BYTE: A function taking one byte (integer 0 255) argument
+            used to collect decoded bytes.
+
+IGNORE-INVALID-INPUT:
+            When true, any invalid character or padding is ignored
+            and processing continues as if it did not occur.
+            When nil, such an occurence would raise an error.
+")
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "ENCODE-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ENCODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "BYTES" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "LINE-WIDTH" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "NEW-LINE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :MACRO :SYMBOL
+     (:NAME "DECODE-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "DECODE" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "ENCODED" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "IGNORE-CRLF" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :VARIABLE :SYMBOL
+     (:NAME "+NEW-LINE+" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE "(FORMAT NIL \"~%\")")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE64-ENCODE-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BYTES" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LINE-WIDTH" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      ((:NAME "NEW-LINE" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "+NEW-LINE+" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)))
+     :DOCUMENTATION "
+DO:         Encode the BYTES in BASE64 text.
+
+RETURN:     An encoded string.
+
+BYTES:      A vector of (unsigned-byte 8).
+
+LINE-WIDTH: NIL or an integer indicating the line width.
+            the string new-line will be inserted after that 
+            many characters have been written on a given line.
+
+NEW-LINE:   A string contaiing the new-line character or characters.
+            the default +new-line+ is (format nil \"~%\").
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE64-DECODE-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ENCODED" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IGNORE-CRLF" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION "
+DO:         Decode the BASE64 encoded string ENCODED.
+
+RETURN:     A decoded vector of (unsigned-byte 8).
+
+ENCODED:    A string.
+
+IGNORE-CRLF:
+            When true, ASCII characters LF and CR are not passed to 
+            the decoding function. When NIL, they're passed, and
+            if invalid input is not ignored, an error would be raised.
+
+IGNORE-INVALID-INPUT:
+            Passed to the decoding function. See above.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FILEBASE64-ENCODE-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BYTES" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LINE-WIDTH" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      ((:NAME "NEW-LINE" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "+NEW-LINE+" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)))
+     :DOCUMENTATION "
+DO:         Encode the BYTES in FILEBASE64 text.
+
+RETURN:     An encoded string.
+
+BYTES:      A vector of (unsigned-byte 8).
+
+LINE-WIDTH: NIL or an integer indicating the line width.
+            the string new-line will be inserted after that 
+            many characters have been written on a given line.
+
+NEW-LINE:   A string contaiing the new-line character or characters.
+            the default +new-line+ is (format nil \"~%\").
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "FILEBASE64-DECODE-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ENCODED" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IGNORE-CRLF" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION "
+DO:         Decode the FILEBASE64 encoded string ENCODED.
+
+RETURN:     A decoded vector of (unsigned-byte 8).
+
+ENCODED:    A string.
+
+IGNORE-CRLF:
+            When true, ASCII characters LF and CR are not passed to 
+            the decoding function. When NIL, they're passed, and
+            if invalid input is not ignored, an error would be raised.
+
+IGNORE-INVALID-INPUT:
+            Passed to the decoding function. See above.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE32-ENCODE-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BYTES" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LINE-WIDTH" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      ((:NAME "NEW-LINE" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "+NEW-LINE+" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)))
+     :DOCUMENTATION "
+DO:         Encode the BYTES in BASE32 text.
+
+RETURN:     An encoded string.
+
+BYTES:      A vector of (unsigned-byte 8).
+
+LINE-WIDTH: NIL or an integer indicating the line width.
+            the string new-line will be inserted after that 
+            many characters have been written on a given line.
+
+NEW-LINE:   A string contaiing the new-line character or characters.
+            the default +new-line+ is (format nil \"~%\").
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE32-DECODE-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ENCODED" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IGNORE-CRLF" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION "
+DO:         Decode the BASE32 encoded string ENCODED.
+
+RETURN:     A decoded vector of (unsigned-byte 8).
+
+ENCODED:    A string.
+
+IGNORE-CRLF:
+            When true, ASCII characters LF and CR are not passed to 
+            the decoding function. When NIL, they're passed, and
+            if invalid input is not ignored, an error would be raised.
+
+IGNORE-INVALID-INPUT:
+            Passed to the decoding function. See above.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE16-ENCODE-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "BYTES" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LINE-WIDTH" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      ((:NAME "NEW-LINE" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+       (:NAME "+NEW-LINE+" :PACKAGE-NAME
+        "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)))
+     :DOCUMENTATION "
+DO:         Encode the BYTES in BASE16 text.
+
+RETURN:     An encoded string.
+
+BYTES:      A vector of (unsigned-byte 8).
+
+LINE-WIDTH: NIL or an integer indicating the line width.
+            the string new-line will be inserted after that 
+            many characters have been written on a given line.
+
+NEW-LINE:   A string contaiing the new-line character or characters.
+            the default +new-line+ is (format nil \"~%\").
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "BASE16-DECODE-BYTES" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "ENCODED" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "IGNORE-CRLF" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "IGNORE-INVALID-INPUT" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION "
+DO:         Decode the BASE16 encoded string ENCODED.
+
+RETURN:     A decoded vector of (unsigned-byte 8).
+
+ENCODED:    A string.
+
+IGNORE-CRLF:
+            When true, ASCII characters LF and CR are not passed to 
+            the decoding function. When NIL, they're passed, and
+            if invalid input is not ignored, an error would be raised.
+
+IGNORE-INVALID-INPUT:
+            Passed to the decoding function. See above.
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEST-ENCODING" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "ENCODING" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "LINE-WIDTH" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+      (:NAME "IGNORE-CRLF" :PACKAGE-NAME
+       "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEST" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEST-BASE16-ENCODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "TEST-BASE16-DECODE" :PACKAGE-NAME
+      "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP NIL)
+     :LAMBDA-LIST (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "BASE16-DECODE-BYTES" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE16-ENCODE-BYTES" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE16-ENCODE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE64-DECODE-BYTES" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE32-ENCODE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE32-DECODE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "FILEBASE64-ENCODE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE64-ENCODE-BYTES" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE64-DECODE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE32-ENCODE-BYTES" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "FILEBASE64-DECODE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE32-DECODE-BYTES" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "FILEBASE64-DECODE-BYTES" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE16-DECODE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "BASE64-ENCODE" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)
+    (:NAME "FILEBASE64-ENCODE-BYTES" :PACKAGE-NAME
+     "COM.INFORMATIMAGO.COMMON-LISP.RFC3548.RFC3548" :EXTERNALP T)))))

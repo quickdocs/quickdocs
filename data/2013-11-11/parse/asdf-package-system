@@ -1,0 +1,8 @@
+
+(:TYPE :SYSTEM :NAME "asdf-package-system" :AUTHOR NIL :MAINTAINER NIL :VERSION
+ "3.0.2.13" :LICENCE "MIT" :DESCRIPTION
+ "ASDF extension for a style where each file's dependencies are deduced from its defpackage"
+ :LONG-DESCRIPTION
+ "asdf-package-system extends ASDF3 with support for quick-build style of systems
+whereby each file starts with a defpackage form, from which dependencies are deduced."
+ :DEPENDS-ON ("(VERSION ASDF 3)") :PACKAGE-LIST NIL)

@@ -1,0 +1,272 @@
+
+(:TYPE :SYSTEM :NAME "cl-moneris" :AUTHOR NIL :MAINTAINER
+ "Vladimir Sedach <vsedach@gmail.com>" :VERSION NIL :LICENCE "ISC" :DESCRIPTION
+ "An interface to the Moneris payment processing service (HTTP)."
+ :LONG-DESCRIPTION NIL :DEPENDS-ON ("S-XML" "DRAKMA") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-MONERIS" :FULL-NAME "CL-MONERIS" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :VARIABLE :SYMBOL
+     (:NAME "*RESPONSE-CODES*" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+     :DOCUMENTATION NIL :INITIAL-VALUE
+     "'((0 . \"Approved, account balances included\")
+  (1 . \"Approved, account balances not included\")
+  (2 . \"Approved, country club\") (3 . \"Approved, maybe more ID\")
+  (4 . \"Approved, pending ID (sign paper draft)\") (5 . \"Approved, blind\")
+  (6 . \"Approved, VIP\") (7 . \"Approved, administrative transaction\")
+  (8 . \"Approved, national NEG file hit OK\") (9 . \"Approved, commercial\")
+  (23 . \"Amex - credit approval\") (24 . \"Amex 77 - credit approval\")
+  (25 . \"Amex - credit approval\") (26 . \"Amex - credit approval\")
+  (27 . \"Credit card approval\") (28 . \"VIP Credit Approved\")
+  (29 . \"Credit Response Acknowledgement\") (50 . \"Decline\")
+  (51 . \"Expired Card\") (52 . \"PIN retries exceeded\") (53 . \"No sharing\")
+  (54 . \"No security module\") (55 . \"Invalid transaction\") (56 . \"No Support\")
+  (57 . \"Lost or stolen card\") (58 . \"Invalid status\") (59 . \"Restricted Card\")
+  (60 . \"No Chequing account\") (61 . \"No PBF\") (62 . \"PBF update error\")
+  (63 . \"Invalid authorization type\") (64 . \"Bad Track 2\")
+  (65 . \"Adjustment not allowed\")
+  (66 . \"Invalid credit card advance increment\")
+  (67 . \"Invalid transaction date\") (68 . \"PTLF error\")
+  (69 . \"Bad message error\") (70 . \"No IDF\")
+  (71 . \"Invalid route authorization\") (72 . \"Card on National NEG file\")
+  (73 . \"Invalid route service (destination)\") (74 . \"Unable to authorize\")
+  (75 . \"Invalid PAN length\") (76 . \"Low funds\") (77 . \"Pre-auth full\")
+  (78 . \"Duplicate transaction\") (79 . \"Maximum online refund reached\")
+  (80 . \"Maximum offline refund reached\")
+  (81 . \"Maximum credit per refund reached\")
+  (82 . \"Number of times used exceeded\") (83 . \"Maximum refund credit reached\")
+  (84
+   . \"Duplicate transaction - authorization number has already been corrected by host.\")
+  (85 . \"Inquiry not allowed\") (86 . \"Over floor limit\")
+  (87 . \"Maximum number of refund credit by retailer\") (88 . \"Place call\")
+  (89 . \"CAF status inactive or closed\") (90 . \"Referral file full\")
+  (91 . \"NEG file problem\") (92 . \"Advance less than minimum\")
+  (93 . \"Delinquent\") (94 . \"Over table limit\") (95 . \"Amount over maximum\")
+  (96 . \"PIN required\") (97 . \"Mod 10 check failure\") (98 . \"Force Post\")
+  (99 . \"Bad PBF\") (100 . \"Unable to process transaction\") (101 . \"Place call\")
+  (103 . \"NEG file problem\") (104 . \"CAF problem\") (105 . \"Card not supported\")
+  (106 . \"Amount over maximum\") (107 . \"Over daily limit\")
+  (108 . \"CAF Problem\") (109 . \"Advance less than minimum\")
+  (110 . \"Number of times used exceeded\") (111 . \"Delinquent\")
+  (112 . \"Over table limit\") (113 . \"Timeout\") (115 . \"PTLF error\")
+  (121 . \"Administration file problem\")
+  (122 . \"Unable to validate PIN: security module down\")
+  (150 . \"Merchant not on file\") (200 . \"Invalid account\")
+  (201 . \"Incorrect PIN\") (202 . \"Advance less than minimum\")
+  (203 . \"Administrative card needed\") (204 . \"Amount over maximum\")
+  (205 . \"Invalid Advance amount\") (206 . \"CAF not found\")
+  (207 . \"Invalid transaction date\") (208 . \"Invalid expiration date\")
+  (209 . \"Invalid transaction code\") (210 . \"PIN key sync error\")
+  (212 . \"Destination not available\") (251 . \"Error on cash amount\")
+  (252 . \"Debit not supported\") (426 . \"AMEX - Denial 12\")
+  (427 . \"AMEX - Invalid merchant\") (429 . \"AMEX - Account error\")
+  (430 . \"AMEX - Expired card\") (431 . \"AMEX - Call Amex\")
+  (434 . \"AMEX - Call 03\") (435 . \"AMEX - System down\")
+  (436 . \"AMEX - Call 05\") (437 . \"AMEX - Declined\") (438 . \"AMEX - Declined\")
+  (439 . \"AMEX - Service error\") (440 . \"AMEX - Call Amex\")
+  (441 . \"AMEX - Amount error\") (475 . \"CREDIT CARD - Invalid expiration date\")
+  (476 . \"CREDIT CARD - Invalid transaction, rejected\")
+  (477 . \"CREDIT CARD - Refer Call\")
+  (478 . \"CREDIT CARD - Decline, Pick up card, Call\")
+  (479 . \"CREDIT CARD - Decline, Pick up card\")
+  (480 . \"CREDIT CARD - Decline, Pick up card\") (481 . \"CREDIT CARD - Decline\")
+  (482 . \"CREDIT CARD - Expired Card\") (483 . \"CREDIT CARD - Refer\")
+  (484 . \"CREDIT CARD - Expired card - refer\")
+  (485 . \"CREDIT CARD - Not authorized\")
+  (486 . \"CREDIT CARD - CVV Cryptographic error\")
+  (487 . \"CREDIT CARD - Invalid CVV\") (489 . \"CREDIT CARD - Invalid CVV\")
+  (490 . \"CREDIT CARD - Invalid CVV\") (800 . \"Bad format\") (801 . \"Bad data\")
+  (802 . \"Invalid Clerk ID\") (809 . \"Bad close\") (810 . \"System timeout\")
+  (811 . \"System error\") (821 . \"Bad response length\")
+  (877 . \"Invalid PIN block\") (878 . \"PIN length error\")
+  (880 . \"Final packet of a multi-packet transaction\")
+  (881 . \"Intermediate packet of a multi-packet transaction\")
+  (889 . \"MAC key sync error\") (898 . \"Bad MAC value\")
+  (899 . \"Bad sequence number - resend transaction\")
+  (900 . \"Capture - PIN Tries Exceeded\") (901 . \"Capture - Expired Card\")
+  (902 . \"Capture - NEG Capture\") (903 . \"Capture - CAF Status 3\")
+  (904 . \"Capture - Advance < Minimum\") (905 . \"Capture - Num Times Used\")
+  (906 . \"Capture - Delinquent\") (907 . \"Capture - Over Limit Table\")
+  (908 . \"Capture - Amount Over Maximum\") (909 . \"Capture - Capture\")
+  (960 . \"Initialization failure - merchant number mismatch\")
+  (961 . \"Initialization failure -pinpad  mismatch\")
+  (963 . \"No match on Poll code\") (964 . \"No match on Concentrator ID\")
+  (965 . \"Invalid software version number\") (966 . \"Duplicate terminal name\"))")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "IS-ERROR-CODE?" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "CODE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RESPONSE-CODE-DESCRIPTION" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP
+      NIL)
+     :LAMBDA-LIST ((:NAME "CODE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T))
+     :DOCUMENTATION NIL)
+    (:TYPE :CLASS :SYMBOL
+     (:NAME "MERCHANT-TOKEN" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+     :SUPER-CLASS-LIST NIL :DOCUMENTATION
+     "Merchant-token objects specify your unique Moneris store information."
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "MONERIS-URI" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+       :ACCESSORS NIL :READERS
+       ((:NAME "MONERIS-URI" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL))
+       :WRITERS NIL :DOCUMENTATION
+       "Full URI of the Moneris Server e.g. https://moneris.com/mpg")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "API-TOKEN" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "API-TOKEN" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION
+       "Your api token issued during Moneris store creation.")
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "STORE-ID" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL) :ACCESSORS
+       NIL :READERS
+       ((:NAME "STORE-ID" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)) :WRITERS
+       NIL :DOCUMENTATION
+       "Your store-id issued during Moneris store creation.")))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "LISPIFY-RESPONSE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "S-XML-RESPONSE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PROCESS" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "MERCHANT-TOKEN" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+      (:NAME "TRANSACTION" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL))
+     :DOCUMENTATION
+     "Send a 'purchase', 'correction', or 'refund' transaction for processing to Moneris merchant account specified by merchant-token.
+
+If the Moneris mpg server returns an HTTP status code other than 200, raises a moneris-post-error
+
+If transaction is declined, raises a moneris-transaction-error
+
+If transaction is successfuly processed, returns (as multiple values):
+txn-id           - transaction ID
+code             - numeric response code
+code-description - response code description
+message          - message returned in response
+response-xml     - parsed XML of response
+response-string  - raw XML response string")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "PURCHASE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ORDER-ID" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+      (:NAME "CUST-ID" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+      (:NAME "AMOUNT" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+      (:NAME "PAN" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+      (:NAME "EXPDATE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+      ((:NAME "CRYPT-TYPE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL) "7"))
+     :DOCUMENTATION "Generate a purchase transaction for processing.
+
+Description of input parameters:
+
+order-id (string, 50 chars max, alphanumeric)
+  Merchant defined unique transaction identifier - must be uniquely
+  generated by caller for every Purchase.
+
+amount (string, 9 chars max, decimal)
+  Amount of the transaction. This must contain 3 digits with two
+  penny values. The minimum value passed can be 0.01 and the maximum
+  9999999.99
+
+pan (string, 20 chars max, numeric)
+  Credit Card Number - no spaces or dashes. Most credit card numbers
+  today are 16 digits in length but some 13 digits are still accepted
+  by some issuers. This field has been intentionally expanded to 20
+  digits in consideration for future expansion and/or potential
+  support of private label card ranges.
+
+expdate (string, 4 chars, numeric)
+  Expiry Date - format YYMM no spaces or slashes.  PLEASE NOTE THAT
+  THIS IS REVERSED FROM THE DATE DISPLAYED ON THE PHYSICAL CARD WHICH
+  IS MMYY
+
+cust-id (string, 50 chars max, alphanumeric)
+  This is an optional field that can be sent as part of a Purchase or
+  PreAuth request. It is searchable in the Moneris Merchant Resource
+  Centre. It is commonly used for policy number, membership number,
+  student ID or invoice number.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "CORRECTION" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ORDER-ID" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+      (:NAME "TXN-ID" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+      ((:NAME "CRYPT-TYPE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL) "7"))
+     :DOCUMENTATION
+     "Generate a transaction to void a same-day purchase. No purchase will appear on the customer's credit card.
+
+Description of input parameters:
+
+order-id (string, 50 chars max, alphanumeric)
+  Merchant defined unique transaction identifier - must reference a
+  previously processed purchase transaction order-id.
+
+txn-id (string, 255 chars max, alphanumeric)
+  This must be the value returned as the Txn_number in the
+  response to the original purchase.
+
+crypt-type (string, 1 char, alphanumeric)
+   E-Commerce Indicator:
+     1 - Mail Order/Telephone Order - Single
+     2 - Mail Order/Telephone Order - Recurring
+     3 - Mail Order Telephone Order - Instalment
+     4 - Mail Order Telephone Order - Unknown Classification
+     5 - Authenticated E-commerce Transaction (VBV)
+     6 - Non Authenticated Ecommerce Transaction (VBV)
+     7 - SSL enabled merchant
+     8 - Non Secure Transaction (Web or Email Based)
+     9 - SET Non Authenticated transaction
+")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "REFUND" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T) :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ORDER-ID" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+      (:NAME "TXN-ID" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+      (:NAME "AMOUNT" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL)
+      ((:NAME "CRYPT-TYPE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP NIL) "7"))
+     :DOCUMENTATION "Generate a transaction to refund a purchase.
+
+order-id (string, 50 chars max, alphanumeric)
+  Merchant defined unique transaction identifier. For Independent
+  Refund attempts, must be uniquely generated by caller. For refunds
+  of previous purchases, must reference a previously processed
+  purchase transaction order-id.
+
+txn-id (string, 255 chars max, alphanumeric)
+  Used when performing follow on transactions - this must be the value
+  returned as the Txn_number in the response to the original purchase.
+
+amount (string, 9 chars max, decimal)
+  Amount of the transaction. This must contain 3 digits with two
+  penny values. The minimum value passed can be 0.01 and the maximum
+  9999999.99
+
+crypt-type (string, 1 char, alphanumeric)
+   E-Commerce Indicator:
+     1 - Mail Order/Telephone Order - Single
+     2 - Mail Order/Telephone Order - Recurring
+     3 - Mail Order Telephone Order - Instalment
+     4 - Mail Order Telephone Order - Unknown Classification
+     5 - Authenticated E-commerce Transaction (VBV)
+     6 - Non Authenticated Ecommerce Transaction (VBV)
+     7 - SSL enabled merchant
+     8 - Non Secure Transaction (Web or Email Based)
+     9 - SET Non Authenticated transaction
+"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "REASON-PHRASE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "PARSED-XML" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "HTTP-CODE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "REFUND" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "CORRECTION" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "MERCHANT-TOKEN" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "CODE-DESCRIPTION" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "PROCESS" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "HTTP-HEADERS" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "MONERIS-POST-ERROR" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "HTTP-BODY" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "RAW-XML" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "MONERIS-TRANSACTION-ERROR" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "MESSAGE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "CODE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "PURCHASE" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)
+    (:NAME "MONERIS-ERROR" :PACKAGE-NAME "CL-MONERIS" :EXTERNALP T)))))

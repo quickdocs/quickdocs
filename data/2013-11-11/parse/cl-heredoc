@@ -1,0 +1,145 @@
+
+(:TYPE :SYSTEM :NAME "cl-heredoc" :AUTHOR "Alexander Kahl <e-user@fsfe.org>"
+ :MAINTAINER NIL :VERSION "0.1.0" :LICENCE "GPLv3+" :DESCRIPTION
+ "Common Lisp reader heredoc dispatcher" :LONG-DESCRIPTION NIL :DEPENDS-ON NIL
+ :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CL-HEREDOC" :FULL-NAME "CL-HEREDOC" :DOCUMENTATION NIL
+   :SYMBOL-LIST
+   ((:TYPE :STRUCT :SYMBOL
+     (:NAME "RING-BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+     :SUPER-CLASS-LIST
+     ((:NAME "STRUCTURE-OBJECT" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION
+     "Structure defining ring buffers utilizing a simple VECTOR of fixed size and
+four indices:
+START: Index of first live value
+END:   Index of last live value
+USED:  Beginning of current match
+NEW:   End of current match"
+     :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "VECTOR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "START" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "USED" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "NEW" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "END" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL) :ACCESSORS NIL
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "MAKE-RING-BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "&KEY" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (((:NAME "VECTOR" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM0" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       (:NAME "NIL" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+      (((:NAME "START" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM1" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       -1)
+      (((:NAME "USED" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM2" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       -1)
+      (((:NAME "NEW" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM3" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       -1)
+      (((:NAME "END" :PACKAGE-NAME "KEYWORD" :EXTERNALP T)
+        (:NAME "DUM4" :PACKAGE-NAME NIL :EXTERNALP NIL))
+       -1))
+     :DOCUMENTATION NIL)
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "NEW-RING-BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "LENGTH" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T))
+     :DOCUMENTATION "new-ring-buffer length => ring-buffer
+
+Create a new RING-BUFFER containing a simple character vector of fixed size
+LENGTH.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RBREF" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL) :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+      (:NAME "INDEX" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :DOCUMENTATION "rbref buffer index => character or #Nul
+
+Return character stored at INDEX in ring BUFFER.")
+    (:TYPE :FUNCTION :SYMBOL
+     ((:NAME "SETF" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "RBREF" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :LAMBDA-LIST
+     ((:NAME "VALUE" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+      (:NAME "BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+      (:NAME "INDEX" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :DOCUMENTATION "setf (rbref buffer index) value => value
+
+SETF for RBREF. If INDEX > LENGTH of BUFFER, start over at the beginning.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RING-BUFFER-INSERT" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST
+     ((:NAME "BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+      (:NAME "VALUE" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :DOCUMENTATION "ring-buffer-insert buffer value => value
+
+Increment END of BUFFER inserting VALUE at the new index.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RING-BUFFER-RESET" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :DOCUMENTATION "ring-buffer-reset buffer => end-index
+
+Reset match beginning/end indices USED and NEW in BUFFER to START and END.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RING-BUFFER-POP" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :DOCUMENTATION "ring-buffer-pop buffer => character
+
+Increment START of BUFFER returning VALUE at the new index. Additionally, reset
+the BUFFER match indices.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RING-BUFFER-NEXT" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :DOCUMENTATION "ring-buffer-next buffer => character or nil
+
+Return next match character incrementing USED in BUFFER or simply NIL if none
+are left.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RING-BUFFER-CLEAR" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :DOCUMENTATION "ring-buffer-clear buffer => -1
+
+Reset all indices of BUFFER to their initial state.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "RING-BUFFER-FLUSH" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL)
+     :LAMBDA-LIST ((:NAME "BUFFER" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :DOCUMENTATION "ring-buffer-flush buffer => string
+
+Flush all unused characters in BUFFER.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-UNTIL-MATCH" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "TERMINAL" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :DOCUMENTATION "read-until-match stream terminal => string
+
+Read characters from STREAM until a sequence equal to string TERMINAL is read.
+Return all characters read as string omitting TERMINAL itself. Signal error upon
+EOF.")
+    (:TYPE :FUNCTION :SYMBOL
+     (:NAME "READ-HEREDOC" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP T)
+     :LAMBDA-LIST
+     ((:NAME "STREAM" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "CHAR" :PACKAGE-NAME "COMMON-LISP" :EXTERNALP T)
+      (:NAME "ARG" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP NIL))
+     :DOCUMENTATION "read-heredoc stream char arg => string
+
+Return string from STREAM up to the point where the string read first until CHAR
+is encountered. All evaluation is completely turned off so no quoting is
+required at all.
+Example:
+CL-USER> (set-dispatch-macro-character ## #> #'cl-heredoc:read-heredoc)
+CL-USER> #>eof>Write whatever (you) \"want\"!eof => Write whatever (you) \"want\"!"))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "READ-UNTIL-MATCH" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP T)
+    (:NAME "READ-HEREDOC" :PACKAGE-NAME "CL-HEREDOC" :EXTERNALP T)))))

@@ -1,0 +1,81 @@
+
+(:TYPE :SYSTEM :NAME "clack-middleware-clsql" :AUTHOR "Eitarow Fukamachi"
+ :MAINTAINER NIL :VERSION "11.9" :LICENCE "LLGPL" :DESCRIPTION
+ "Middleware for CLSQL connection management" :LONG-DESCRIPTION NIL :DEPENDS-ON
+ ("CLACK" "CL-SYNTAX" "CL-SYNTAX-ANNOT" "CLSQL") :PACKAGE-LIST
+ ((:TYPE :PACKAGE :NAME "CLACK.MIDDLEWARE.CLSQL" :FULL-NAME
+   "CLACK.MIDDLEWARE.CLSQL" :DOCUMENTATION "# 
+Clack.Middleware.Clsql - Middleware for CLSQL connection management.
+
+
+## SYNOPSIS
+
+    (builder
+     (<clack-middleware-clsql>
+      :database-type :mysql
+      :connection-spec '(\"localhost\" \"db\" \"fukamachi\" \"password\"))
+     app)
+
+## DESCRIPTION
+
+This is a Clack Middleware component for managing CLSQL's connection.
+
+## Slots
+
+* database-type (Optional, Keyword)
+
+The default is `:sqlite3`.
+
+* connection-spec (Optional, List)
+
+The default is `(\"memory\")`.
+
+* connect-args (Optional, List)
+
+## AUTHOR
+
+* Eitarow Fukamachi (e.arrows@gmail.com)
+
+## SEE ALSO
+
+* [CLSQL](http://clsql.b9.com/)
+
+"
+   :SYMBOL-LIST
+   ((:TYPE :CLASS :SYMBOL
+     (:NAME "<CLACK-MIDDLEWARE-CLSQL>" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL"
+      :EXTERNALP T)
+     :SUPER-CLASS-LIST
+     ((:NAME "<MIDDLEWARE>" :PACKAGE-NAME "CLACK.MIDDLEWARE" :EXTERNALP T))
+     :DOCUMENTATION NIL :SLOT-LIST
+     ((:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "DATABASE-TYPE" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "DATABASE-TYPE" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONNECTION-SPEC" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL"
+        :EXTERNALP NIL)
+       :ACCESSORS
+       ((:NAME "CONNECTION-SPEC" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL"
+         :EXTERNALP NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)
+      (:TYPE :CLASS-SLOT :SYMBOL
+       (:NAME "CONNECT-ARGS" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL" :EXTERNALP
+        NIL)
+       :ACCESSORS
+       ((:NAME "CONNECT-ARGS" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL" :EXTERNALP
+         NIL))
+       :READERS NIL :WRITERS NIL :DOCUMENTATION NIL)))
+    (:TYPE :METHOD :SYMBOL
+     (:NAME "CALL" :PACKAGE-NAME "CLACK.COMPONENT" :EXTERNALP T) :LAMBDA-LIST
+     (((:NAME "THIS" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL" :EXTERNALP NIL)
+       (:NAME "<CLACK-MIDDLEWARE-CLSQL>" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL"
+        :EXTERNALP T))
+      (:NAME "ENV" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL" :EXTERNALP NIL))
+     :DOCUMENTATION NIL))
+   :EXTERNAL-SYMBOLS
+   ((:NAME "<CLACK-MIDDLEWARE-CLSQL>" :PACKAGE-NAME "CLACK.MIDDLEWARE.CLSQL"
+     :EXTERNALP T)))))
