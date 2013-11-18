@@ -25,6 +25,10 @@
                                 :username "nobody"
                                 :password "nobody"))))
 
+(defconfig |staging|
+  `(:error-log #P"/var/log/apps/quickdocs_stage_error.log"
+    ,@|default|))
+
 (defconfig |production|
   `(:error-log #P"/var/log/apps/quickdocs_error.log"
     ,@|default|))
