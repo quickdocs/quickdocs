@@ -266,15 +266,13 @@
     (setf (slot-value project 'readme) row)))
 
 (defmethod load-project-authors ((project <project>))
-  (unless (project-systems project)
-    (return-from load-project-authors nil))
-
-  (let ((all-authors (select-all (connect-db) (:type :author_name (:as (:count :*) :count))
-                       (from :system_author)
-                       (where (:in :system_id
-                                   (mapcar #'system-id (project-systems project))))
-                       (group-by :type :author_name)
-                       (order-by (:desc :count) :id))))
+  (let ((all-authors (and (project-systems project)
+                          (select-all (connect-db) (:type :author_name (:as (:count :*) :count))
+                            (from :system_author)
+                            (where (:in :system_id
+                                        (mapcar #'system-id (project-systems project))))
+                            (group-by :type :author_name)
+                            (order-by (:desc :count) :id)))))
     (loop for author in all-authors
           if (string= (getf author :|type|) "author")
             collect author into authors
