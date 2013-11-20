@@ -212,18 +212,19 @@
   (let ((dependencies (mapcar
                        (lambda (row)
                          (apply #'make-instance '<project> row))
-                       (select-all (connect-db) :project.*
-                         (from :system_dependencies)
-                         (if depends
-                             (left-join :system :on (:= :system.id :system_dependencies.depends_system_id))
-                             (left-join :system :on (:= :system.id :system_dependencies.system_id)))
-                         (left-join :project :on (:= :system.project_id :project.id))
-                         (if depends
-                             (where (:and (:in :system_dependencies.system_id (mapcar #'system-id (project-systems project)))
-                                          (:!= :project.name (project-name project))))
-                             (where (:and (:in :system_dependencies.depends_system_id (mapcar #'system-id (project-systems project)))
-                                          (:!= :project.name (project-name project)))))
-                         (group-by :project.id)))))
+                       (and (project-systems project)
+                            (select-all (connect-db) :project.*
+                                        (from :system_dependencies)
+                                        (if depends
+                                            (left-join :system :on (:= :system.id :system_dependencies.depends_system_id))
+                                            (left-join :system :on (:= :system.id :system_dependencies.system_id)))
+                                        (left-join :project :on (:= :system.project_id :project.id))
+                                        (if depends
+                                            (where (:and (:in :system_dependencies.system_id (mapcar #'system-id (project-systems project)))
+                                                         (:!= :project.name (project-name project))))
+                                            (where (:and (:in :system_dependencies.depends_system_id (mapcar #'system-id (project-systems project)))
+                                                         (:!= :project.name (project-name project)))))
+                                        (group-by :project.id))))))
     (loop for dependency in dependencies
           collect (list :name (project-name dependency)
                         :description (project-description dependency)))))
