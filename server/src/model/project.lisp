@@ -266,6 +266,9 @@
     (setf (slot-value project 'readme) row)))
 
 (defmethod load-project-authors ((project <project>))
+  (unless (project-systems project)
+    (return-from load-project-authors nil))
+
   (let ((all-authors (select-all (connect-db) (:type :author_name (:as (:count :*) :count))
                        (from :system_author)
                        (where (:in :system_id
