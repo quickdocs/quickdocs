@@ -193,7 +193,7 @@
              (errout (make-string-output-stream))
              code)
          (setf code
-               (run-in-process `(with-retrying 5 (parse-documentation (asdf:find-system ,(ql-dist:name system))))
+               (run-in-process `(with-retrying 5 (parse-documentation ,(ql-dist:name system)))
                                :output stdout
                                :error errout
                                :timeout (* 5 60)))

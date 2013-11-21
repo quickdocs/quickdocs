@@ -20,6 +20,13 @@
 (cl-annot:enable-annot-syntax)
 
 @export
+(defmethod parse-documentation ((system-name symbol))
+  (with-ignoring-streams (*standard-output*
+                          *debug-io*
+                          *trace-output*)
+    (parse-documentation (asdf:find-system system-name))))
+
+@export
 (defmethod parse-documentation ((system asdf:system))
   (with-ignoring-streams (*standard-output*
                           *debug-io*
