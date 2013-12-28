@@ -38,7 +38,7 @@
     (set= :ql_dist_version (ql-dist:version (slot-value release 'ql-dist:dist))
           :name (ql-dist:project-name release)
           :release_version (ql-release-version release)
-          :homepage_url (project-homepage (ql-dist:project-name release))
+          :homepage_url (project-homepage release)
           :repos_url (repos-url (ql-dist:project-name release))
           :archive_url (ql-dist::archive-url release)))
   (let* ((project-id (getf (select-one db :id

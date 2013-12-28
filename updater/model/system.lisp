@@ -35,6 +35,7 @@
           :version (slot-value system 'asdf:version)
           :description (safety-princ-to-string (asdf:system-description system))
           :long-description (safety-princ-to-string (asdf:system-long-description system))
+          :homepage (asdf:system-homepage system)
           :license (asdf:system-license system)))))))
 
 @export
@@ -44,3 +45,4 @@
                                :output s))))
     (when res
       (read-from-string res))))
+

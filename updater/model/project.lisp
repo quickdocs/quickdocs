@@ -96,22 +96,27 @@
   (memoize-function 'request-homepage-url :test #'equal))
 
 @export
-(defun project-homepage (project-name)
-  (multiple-value-bind (url domain)
-      (repos-url project-name)
-    (cond
-      ((string= domain "common-lisp.net")
-       (format nil "http://common-lisp.net/project/~A/"
-               (drakma:url-encode project-name :utf-8)))
-      ((string= domain "weitz.de")
-       (format nil "http://weitz.de/~A/"
-               (drakma:url-encode project-name :utf-8)))
-      (t (when-let (args (cond
-                           ((string= domain "github.com")
-                            (list (github-repos-api url) "homepage"))
-                           ((string= domain "butbucket.org")
-                            (list (bitbucket-repos-api url) "website"))))
-           (apply #'request-homepage-url args))))))
+(defun project-homepage (release)
+  (let* ((project-name (ql-dist:project-name release))
+         (ql-primary-system (find-primary-system-in-release release))
+         (system-homepage (and ql-primary-system
+                               (getf (system-info-in-process (slot-value ql-primary-system 'ql-dist:name))))))
+    (or system-homepage
+        (multiple-value-bind (url domain)
+            (repos-url project-name)
+          (cond
+            ((string= domain "common-lisp.net")
+             (format nil "http://common-lisp.net/project/~A/"
+                     (drakma:url-encode project-name :utf-8)))
+            ((string= domain "weitz.de")
+             (format nil "http://weitz.de/~A/"
+                     (drakma:url-encode project-name :utf-8)))
+            (t (when-let (args (cond
+                                 ((string= domain "github.com")
+                                  (list (github-repos-api url) "homepage"))
+                                 ((string= domain "butbucket.org")
+                                  (list (bitbucket-repos-api url) "website"))))
+                 (apply #'request-homepage-url args))))))))
 
 (let ((prefix-scanner (ppcre:create-scanner "^cl-")))
   @export
