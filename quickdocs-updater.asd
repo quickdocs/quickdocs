@@ -24,7 +24,7 @@
                  (:file "cliki")
                  (:module "model"
                   :components
-                  ((:file "project")
+                  ((:file "project" :depends-on ("system"))
                    (:file "system"))
                   :depends-on ("util"))
                  (:file "util")))))

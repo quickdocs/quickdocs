@@ -1,6 +1,8 @@
 (in-package :cl-user)
 (defpackage quickdocs.updater.model.project
   (:use :cl)
+  (:import-from :quickdocs.updater.model.system
+                :system-info-in-process)
   (:import-from :fad
                 :file-exists-p
                 :list-directory)
