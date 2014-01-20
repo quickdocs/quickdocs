@@ -102,7 +102,8 @@
   (let* ((project-name (ql-dist:project-name release))
          (ql-primary-system (find-primary-system-in-release release))
          (system-homepage (and ql-primary-system
-                               (getf (system-info-in-process (slot-value ql-primary-system 'ql-dist:name))))))
+                               (getf (system-info-in-process (slot-value ql-primary-system 'ql-dist:name))
+                                     :homepage))))
     (or system-homepage
         (multiple-value-bind (url domain)
             (repos-url project-name)
