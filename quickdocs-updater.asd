@@ -17,7 +17,9 @@
 
                ;; for url-encode, url-decode
                :hunchentoot
-               :html-entities)
+               :html-entities
+
+               :cl-base64)
   :components ((:module "updater"
                 :components
                 ((:file "project" :depends-on ("model"))

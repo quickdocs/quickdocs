@@ -17,6 +17,8 @@
                 :url-encode)
   (:import-from :flexi-streams
                 :octets-to-string)
+  (:import-from :cl-base64
+                :string-to-base64-string)
   (:import-from :alexandria
                 :when-let)
   (:import-from :org.tfeb.hax.memoize
@@ -31,6 +33,14 @@
 (defparameter *quicklisp-projects-directory*
               (asdf:system-relative-pathname :quickdocs-updater
                #P"modules/quicklisp-projects/"))
+
+(defparameter *github-access-token* nil)
+
+(defun github-api-headers ()
+  (if *github-access-token*
+      `(("Authorization" . ,(format nil "Basic ~A"
+                                   (string-to-base64-string (format nil "~A:x-oauth-basic" *github-access-token*)))))
+      nil))
 
 (defun project-source-file (project-name)
   (let ((filepath
@@ -82,9 +92,10 @@
             (aref match 0)
             (aref match 1))))
 
-(defun request-homepage-url (api-url key)
+(defun request-homepage-url (api-url key &optional headers)
   (multiple-value-bind (body status)
-      (drakma:http-request api-url)
+      (drakma:http-request api-url
+                           :additional-headers headers)
     (when (= status 200)
       (let ((homepage
              (gethash key
@@ -116,7 +127,8 @@
                      (drakma:url-encode project-name :utf-8)))
             (t (when-let (args (cond
                                  ((string= domain "github.com")
-                                  (list (github-repos-api url) "homepage"))
+                                  (list (github-repos-api url) "homepage"
+                                        (github-api-headers)))
                                  ((string= domain "butbucket.org")
                                   (list (bitbucket-repos-api url) "website"))))
                  (apply #'request-homepage-url args))))))))
