@@ -162,13 +162,24 @@
                                                        (:= :system.name dependency)))
                                           (limit 1))
                                         :|id|)))
-                            (if dependency-id
-                                (insert-into db :system_dependencies
-                                  (set= :system_id system-id
-                                        :depends_system_id dependency-id))
-                                (warn "~A depends on ~A, but it isn't found."
-                                      (slot-value system 'ql-dist:name)
-                                      dependency))))
+                            (cond
+                              ((and dependency-id
+                                    (not (select-one db :id
+                                           (from :system_dependencies)
+                                           (where (:and (:= :system_id system-id)
+                                                        (:= :depends_system_id dependency-id)))
+                                           (limit 1))))
+                               (insert-into db :system_dependencies
+                                 (set= :system_id system-id
+                                       :depends_system_id dependency-id)))
+                              (dependency-id
+                               (warn "~A depends on ~A, but the dependency already exists."
+                                     (slot-value system 'ql-dist:name)
+                                     dependency))
+                              (T
+                               (warn "~A depends on ~A, but it isn't found."
+                                     (slot-value system 'ql-dist:name)
+                                     dependency)))))
                  (warn "~A isn't found"
                        (slot-value system 'ql-dist:name))))))
 
