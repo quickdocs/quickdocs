@@ -48,4 +48,4 @@
   (typecase symbol
     (symbol
      (funcall (compose #'serialize #'make-ssymbol) symbol))
-    (t symbol)))
+    (t (prin1-to-string symbol))))
