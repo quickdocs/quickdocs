@@ -1,0 +1,66 @@
+<section class="search-libraries">
+  <h2>Library Documentation Hosting<br/>for Common Lisp</h2>
+  <div class="categories">
+    <h3>Search by Category</h3>
+    <ul>
+      <li><a href="/search?q=web" class="lsf-icon" title="web">Web development</a></li>
+      <li><a href="/search?q=graphics" class="lsf-icon" title="image">Graphics</a></li>
+      <li><a href="/search?q=GUI" class="lsf-icon" title="tile">GUI</a></li>
+      <li><a href="/search?q=system+programming" class="lsf-icon" title="setup">System &amp; Low-level</a></li>
+      <li><a href="/search?q=test" class="lsf-icon" title="check">Testing framework</a></li>
+      <li><a href="/search?q=database" class="lsf-icon" title="server">Database</a></li>
+      <li><a href="/search?q=utilities" class="lsf-icon" title="twinkle">Utility Collection</a></li>
+      <li><a href="/search?q=concurrency" class="lsf-icon" title="shuffle">Concurrency</a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="catch">
+  <div class="catch-copy">
+    <strong>Ready</strong> and <strong>Up-to-Date</strong><br/>
+    Documentation<br/>
+    for All Common Lisp Projects.
+  </div>
+  <img class="screen-shot" src="/images/screen-shot.png" />
+</section>
+
+<section class="teasers">
+  <div class="teaser">
+    <div class="lsf teaser-icon">network</div>
+    <h3>Same place, same appearance</h3>
+    <p>Don't waste your time looking around for documentation; all CL documentation is here, with the same appearance.</p>
+  </div>
+  <div class="teaser">
+    <div class="lsf teaser-icon">time</div>
+    <h3>Always up-to-date</h3>
+    <p>All documentation is generated automatically, moments after the monthly Quicklisp updates.</p>
+  </div>
+  <div class="teaser">
+    <div class="lsf teaser-icon">code</div>
+    <h3>Code is eloquent</h3>
+    <p>Other documentation generators destroy code structure and context. They split symbols by their types and simply arrange them in alphabetical order.</p>
+    <p>While such documentation may be easy to use as an index, it is not suitable for a quick look at or overview of a library.</p>
+    <p>Quickdocs respects the code and keeps its structure.</p>
+  </div>
+</section>
+
+<hr class="soften" />
+
+<section class="contribution">
+  <h2>Contributing to Quickdocs</h2>
+  <p>Quickdocs is an open source project that is hosted on GitHub. Feel free to send pull requests, bug reports or suggestions.</p>
+  <a href="https://github.com/fukamachi/quickdocs" class="contribute-button" title="See Quickdocs on GitHub">See <strong class="logo">Quickdocs</strong> on <img src="/images/github.png" width="55px" height="15px" alt="GitHub" /></a>
+</section>
+
+<footer id="global-footer">
+  <a href="#global-header" class="back-to-top-link lsf-icon" title="arrowup">Back to Top</a>
+<div class="dist-version">
+  Quicklisp: <% @var dist-version %><br/>
+(<% @with count %>
+<%= (format nil "~:D" (getf env :releases)) %> projects / <%= (format nil "~:D" (getf env :systems)) %> systems
+<% @endwith %>)
+</div>
+
+  <small>&copy; 2013 <a href="http://fukamachi.github.com/">Eitarow Fukamachi</a></small>
+  <div class="lisp-logo"></div>
+</footer>

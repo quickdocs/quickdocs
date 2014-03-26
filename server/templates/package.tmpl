@@ -1,0 +1,16 @@
+<h2 id="package-<% @var full-name %>"><% @var full-name %></h2>
+<% @with documentation %><% @include docstring %><% @endwith %>
+<ul>
+  <% @loop symbol-list %>
+  <li class="symbol">
+    <% (cond ((not (getf (getf env :symbol) :externalp)) %>
+    <% ) ((find (getf env :type) '(:variable :constant)) %>
+    <% @include variable.tmpl %>
+    <% )     ((find (getf env :type) '(:struct :class)) %>
+    <% @include class.tmpl %>
+    <% )     ((find (getf env :type) '(:function :method :macro :type)) %>
+    <% @include function.tmpl %>
+    <% )) %>
+  </li>
+  <% @endloop %>
+</ul>

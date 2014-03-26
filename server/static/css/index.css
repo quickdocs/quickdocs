@@ -1,0 +1,380 @@
+@charset "UTF-8";
+@charset "UTF-8";
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+body {
+  color: #333;
+  line-height: 150%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6 {
+  margin: 20px 0 10px;
+}
+a:link {
+  color: #005585;
+  text-decoration: none;
+}
+a:visited {
+  color: #485270;
+}
+a:hover {
+  color: #b83800;
+  text-decoration: underline;
+}
+pre {
+  margin: 15px 0;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+code {
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+ul {
+  margin: 15px 0;
+  padding-left: 30px;
+}
+.logo {
+  font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
+}
+@charset "UTF-8";
+#global-header {
+  width: 100%;
+  height: 39px;
+  color: white;
+  background-color: #1d304e;
+  text-shadow: 1px 1px 3px black;
+}
+#global-header .logo {
+  padding: 6px 15px;
+}
+#global-header .logo a {
+  font-size: 24px;
+  color: white;
+}
+#global-header .logo a:hover {
+  text-decoration: none;
+}
+#global-header .search-form {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+}
+#global-header .search-form input[type="text"] {
+  width: 300px;
+  height: 26px;
+  padding-left: 4px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+#global-header .search-form input[type="submit"] {
+  width: 26px;
+  height: 26px;
+  border: none;
+  color: white;
+  background-color: #6fbf42;
+  cursor: pointer;
+  font-size: 20px;
+  vertical-align: middle;
+  font-weight: normal;
+  margin-left: -6px;
+}
+@charset "UTF-8";
+/**
+ *  Footer
+ */
+#global-footer {
+  position: relative;
+  width: 800px;
+  text-align: center;
+  padding: 50px 0;
+  margin: 0 auto;
+}
+#global-footer .lisp-logo {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  width: 150px;
+  height: 50px;
+  background-image: url(/images/lisp-logo150x50.png);
+}
+body {
+  min-width: 1100px;
+}
+.catch {
+  position: relative;
+  max-width: 1180px;
+  height: 350px;
+  margin: 100px auto;
+}
+.catch .catch-copy {
+  padding: 80px 80px;
+  font-size: 200%;
+  line-height: 140%;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+.catch .catch-copy strong {
+  font-weight: bold;
+}
+.catch .screen-shot {
+  position: absolute;
+  right: 0;
+  top: -40px;
+}
+.search-libraries {
+  text-align: center;
+  background-color: #333;
+  box-shadow: 0 0 80px 10px rgba(1, 2, 4, 0.5) inset;
+  margin: 0 auto;
+  padding: 30px 80px;
+  color: white;
+}
+.search-libraries h2 {
+  font-size: 150%;
+  line-height: 130%;
+}
+.search-libraries .search-form input[type="text"] {
+  width: 350px;
+  height: 25px;
+  padding-left: 5px;
+  border-radius: 4px;
+  border: 1px solid #BCBCBC;
+}
+.search-libraries .search-form input[type="submit"] {
+  margin: 0;
+  width: 29px;
+  height: 29px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  background-color: #6fbf42;
+  cursor: pointer;
+  font-size: 20px;
+  vertical-align: bottom;
+}
+.search-libraries .categories {
+  height: 135px;
+  width: 840px;
+  margin: 0 auto;
+}
+.search-libraries .categories h3 {
+  color: #efefef;
+  text-align: left;
+  margin-bottom: 5px !important;
+}
+.search-libraries .categories ul {
+  margin-top: 0;
+  padding: 0;
+  list-style: none;
+}
+.search-libraries .categories ul li {
+  float: left;
+}
+.search-libraries .categories ul li a {
+  display: inline-block;
+  width: 180px;
+  margin: 5px;
+  height: 24px;
+  padding: 10px;
+  background-color: #395e98;
+  border-radius: 4px;
+  color: #efefef;
+}
+.search-libraries .categories ul li a:hover {
+  transition-duration: 0.1s;
+  -moz-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  background-color: #4069ab;
+  text-decoration: none;
+}
+.teasers {
+  margin: 0 auto 80px;
+  padding: 0 80px;
+}
+.teasers .teaser {
+  width: 540px;
+  margin: 0 auto;
+  position: relative;
+  padding-left: 60px;
+}
+.teasers .teaser p {
+  margin-bottom: 15px;
+}
+.teasers .teaser .teaser-icon {
+  font-size: 300%;
+  position: absolute;
+  top: 8px;
+  left: 0;
+}
+hr.soften {
+  width: 800px;
+  border: 0;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  background: -webkit-gradient(linear, left top, right top, color-stop(0, rgba(0, 0, 0, 0)), color-stop(50%, rgba(0, 0, 0, 0.1)), color-stop(100%, rgba(0, 0, 0, 0)));
+  background: -moz-linear-gradient(center top, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+  background: -ms-linear-gradient(center top, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+  background: -o-linear-gradient(center top, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(center top, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+  -pie-background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=rgba(0, 0, 0, 0),endColorstr=rgba(0, 0, 0, 0));
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #fff;
+}
+.contribution {
+  width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+.contribution h2 {
+  font-size: 160%;
+}
+.contribution p {
+  text-align: left;
+  margin: 0 20px;
+  color: #888;
+}
+.contribution .contribute-button {
+  display: inline-block;
+  padding: 10px 15px;
+  color: #fff;
+  background: #426fbf;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #7b9bd2), color-stop(1, #426fbf));
+  background: -ms-linear-gradient(top, #7b9bd2, #426fbf);
+  background: -moz-linear-gradient(center top, #7b9bd2 0%, #426fbf 100%);
+  background: -o-linear-gradient(#7b9bd2, #426fbf);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7b9bd2', endColorstr='#426fbf', GradientType=0);
+  border-radius: 4px;
+  font-size: 110%;
+  text-shadow: 0 -1px 1px #34599a, 0 1px 1px #688ccc;
+}
+.contribution .contribute-button:hover {
+  text-decoration: none;
+  background: #3b64ad;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #688ccc), color-stop(1, #3b64ad));
+  background: -ms-linear-gradient(top, #688ccc, #3b64ad);
+  background: -moz-linear-gradient(center top, #688ccc 0%, #3b64ad 100%);
+  background: -o-linear-gradient(#688ccc, #3b64ad);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#688ccc', endColorstr='#3b64ad', GradientType=0);
+}
+.contribution .contribute-button .logo {
+  font-family: Baskerville, "Baskerville Win95BT", "Times New Roman", Times, serif;
+  font-size: 110%;
+}
+.dist-version {
+  color: #888;
+  margin: 0 0 25px;
+}
+#global-footer {
+  position: relative;
+  margin-top: 30px;
+  width: 100%;
+  background: #ddebb9;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #e7f1cd), color-stop(1, #ddebb9));
+  background: -ms-linear-gradient(top, #e7f1cd, #ddebb9);
+  background: -moz-linear-gradient(center top, #e7f1cd 0%, #ddebb9 100%);
+  background: -o-linear-gradient(#e7f1cd, #ddebb9);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e7f1cd', endColorstr='#ddebb9', GradientType=0);
+}
+#global-footer .back-to-top-link {
+  text-decoration: none;
+  display: inline-block;
+  position: absolute;
+  top: -18px;
+  right: 80px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 80%;
+  color: white;
+  background-color: #f09200;
+  transition-duration: 0.1s;
+  -moz-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+}
+#global-footer .back-to-top-link:hover {
+  background-color: #ff9b00;
+}
+#global-footer .lisp-logo {
+  position: absolute;
+  top: 60px;
+  right: 50px;
+  width: 100px;
+  height: 71px;
+  background-image: url(/images/lisp-logo-transparent.png);
+}
