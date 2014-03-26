@@ -1,7 +1,0 @@
-<%=
-   (loop for super-class in (getf env :super-class-list)
-
-         collect (emb:execute-emb (quickdocs.renderer:template-path #P"symbol.tmpl") :env super-class) into super-class-list
-         finally
-           (format nil "~{~A~^, ~}" super-class-list))
-%>
