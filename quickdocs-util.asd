@@ -6,6 +6,7 @@
 (defsystem quickdocs-util
   :version "0.1"
   :author "Eitarow Fukamachi"
+  :license "BSD 2-Clause"
   :depends-on (:flexi-streams
                :alexandria)
   :components ((:module "util"

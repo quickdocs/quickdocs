@@ -6,7 +6,7 @@
 (defsystem quickdocs-parser
   :version "0.1"
   :author "Eitarow Fukamachi"
-  :license ""
+  :license "BSD 2-Clause"
   :depends-on (:cl-annot
                :cl-ppcre
                :cl-fad
