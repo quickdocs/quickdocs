@@ -5,7 +5,7 @@
 
 (defsystem quickdocs-updater
   :version "0.1"
-  :author "Eitarow Fukamachi"
+  :author "Eitaro Fukamachi"
   :license "BSD 2-Clause"
   :depends-on (:quickdocs-parser
                :quickdocs-util
