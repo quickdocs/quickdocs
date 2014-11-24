@@ -28,15 +28,14 @@
            (*error-output* (make-broadcast-stream))
            (system (with-retrying 3 (asdf:find-system system-name nil))))
       (when system
-        (prin1-to-string
-         (list
-          :author (emit-quote (asdf:system-author system))
-          :maintainer (emit-quote (asdf:system-maintainer system))
-          :version (slot-value system 'asdf:version)
-          :description (safety-princ-to-string (asdf:system-description system))
-          :long-description (safety-princ-to-string (asdf:system-long-description system))
-          :homepage (asdf:system-homepage system)
-          :license (asdf:system-license system)))))))
+        (list
+         :author (emit-quote (asdf:system-author system))
+         :maintainer (emit-quote (asdf:system-maintainer system))
+         :version (slot-value system 'asdf:version)
+         :description (safety-princ-to-string (asdf:system-description system))
+         :long-description (safety-princ-to-string (asdf:system-long-description system))
+         :homepage (asdf:system-homepage system)
+         :license (asdf:system-license system))))))
 
 @export
 (defun system-info-in-process (system-name)
