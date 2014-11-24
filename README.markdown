@@ -24,5 +24,3 @@
 ## Copyright
 
 Copyright (c) 2013 Eitarow Fukamachi (e.arrows@gmail.com)
-
-
