@@ -27,6 +27,7 @@
 
                :alexandria
                :flexi-streams)
+  :description "The Quickdocs server."
   :components ((:module "server/src"
                 :components
                 ((:file "server" :depends-on ("config"))
@@ -39,5 +40,4 @@
                   ((:file "project" :depends-on ("system"))
                    (:file "system"))
                   :depends-on ("config")))))
-  :description ""
   :in-order-to ((test-op (load-op quickdocs-server-test))))
