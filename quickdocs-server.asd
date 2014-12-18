@@ -7,6 +7,7 @@
   :version "0.1"
   :author "Eitaro Fukamachi"
   :license "BSD 2-Clause"
+  :description "The Quickdocs server."
   :depends-on (:clack
                :caveman2
                :envy
@@ -27,7 +28,6 @@
 
                :alexandria
                :flexi-streams)
-  :description "The Quickdocs server."
   :components ((:module "server/src"
                 :components
                 ((:file "server" :depends-on ("config"))
