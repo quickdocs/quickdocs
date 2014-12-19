@@ -7,6 +7,7 @@
   :version "0.1"
   :author "Eitaro Fukamachi"
   :license "BSD 2-Clause"
+  :description "The Quickdocs dist updater."
   :depends-on (:quickdocs-parser
                :quickdocs-util
                :lparallel

@@ -7,6 +7,7 @@
   :version "0.1"
   :author "Eitaro Fukamachi"
   :license "BSD 2-Clause"
+  :description "The Quickdocs documentation parser."
   :depends-on (:cl-annot
                :cl-ppcre
                :cl-fad
@@ -24,5 +25,4 @@
                  (:file "serialize" :depends-on ("util"))
                  (:file "asdf" :depends-on ("class"))
                  (:file "parser" :depends-on ("class" "asdf" "util" "serialize"))
-                 (:file "util"))))
-  :description "")
+                 (:file "util")))))

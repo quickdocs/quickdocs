@@ -7,6 +7,7 @@
   :version "0.1"
   :author "Eitaro Fukamachi"
   :license "BSD 2-Clause"
+  :description "The Quickdocs server."
   :depends-on (:clack
                :caveman2
                :envy
@@ -39,5 +40,4 @@
                   ((:file "project" :depends-on ("system"))
                    (:file "system"))
                   :depends-on ("config")))))
-  :description ""
   :in-order-to ((test-op (load-op quickdocs-server-test))))
