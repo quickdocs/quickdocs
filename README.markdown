@@ -2,27 +2,44 @@
 
 - http://quickdocs.org/
 
-## Setup
+## Umbrella Projects
 
-    $ make
-    $ shly update-dist
+### Quickdocs-Extracter
 
-## Updating
+"Extracter" extracts library informations which will be used for API references. This application is invoked by "Updater".
 
-    $ shly ql:update-all-dists --prompt nil
-    $ shly update-dist
+- [quickdocs-extracter](https://github.com/quickdocs/quickdocs-extracter)
+- [quickdocs-parser](https://github.com/quickdocs/quickdocs-parser)
+- [quickdocs-serializer](https://github.com/quickdocs/quickdocs-serializer)
 
-## Start a server
+### Quickdocs-Updater
 
-    $ shly start --port 8080 --server :fcgi
-    $ APP_ENV=production start_server --port 8080 -- shly start --server :fcgi
+"Updater" is a collection of update scripts for Quickdocs.
+
+- [quickdocs-updater](https://github.com/quickdocs/quickdocs-updater)
+
+### Quickdocs-Server
+
+"Server" is a web application running at http://quickdocs.org.
+
+- [quickdocs-server](https://github.com/quickdocs/quickdocs-server)
+
+### Quickdocs-Database
+
+"Database" provides a DB schema and utilities to manage it. This project is used from both of "Updater" and "Server"
+
+- [quickdocs-database](https://github.com/quickdocs/quickdocs-database)
+
+### Quickdocs-Playbooks
+
+"Playbooks" is [Ansible](http://www.ansible.com/) playbooks for setting up "Updater", "Server" and "Database" hosts.
+
+- [quickdocs-playbooks](https://github.com/quickdocs/quickdocs-playbooks)
 
 ## Author
 
-* Eitarow Fukamachi (e.arrows@gmail.com)
+* Eitaro Fukamachi (e.arrows@gmail.com)
 
 ## Copyright
 
-Copyright (c) 2013 Eitarow Fukamachi (e.arrows@gmail.com)
-
-
+Copyright (c) 2013-2015 Eitarow Fukamachi (e.arrows@gmail.com)
