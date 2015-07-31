@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "cl-rsvg2-pixbuf" :AUTHOR
- "Rörd Hinrichsen <roerdhh@gmail.com>" :MAINTAINER NIL :VERSION "0.4.1"
- :LICENCE "LLGPL" :DESCRIPTION "Using the RSVG Library with GdkPixbuf."
- :LONG-DESCRIPTION NIL :DEPENDS-ON ("CL-RSVG2" "CL-GTK2-GDK") :PACKAGE-LIST NIL)

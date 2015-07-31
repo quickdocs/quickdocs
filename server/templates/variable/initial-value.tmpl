@@ -1,8 +1,0 @@
-<% (let* ((unbound '#:unbound) (initial-value (getf env :initial-value unbound))) %>
-<span class="initial-value<%= (if (eq initial-value unbound) " unbound" "") %>">
-  <%= (emb::escape-for-xml
-        (if (eq initial-value unbound)
-            "#<Unbound>"
-            (princ-to-string initial-value))) %>
-</span>
-<% ) %>

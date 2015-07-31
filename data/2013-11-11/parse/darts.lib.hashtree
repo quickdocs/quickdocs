@@ -1,9 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "darts.lib.hashtree" :AUTHOR "Dirk Esser" :MAINTAINER
- "Dirk Esser" :VERSION "0.1" :LICENCE "MIT" :DESCRIPTION
- "Provides a few purely functional data structures" :LONG-DESCRIPTION
- "This system is provided for compatibility with older
-   code. For new projects, directly depend on the appropriate sub-system,
-   i.e., darts.lib.hashtrie or darts.lib.wbtree."
- :DEPENDS-ON ("darts.lib.hashtrie" "darts.lib.wbtree" "darts.lib.ptree")
- :PACKAGE-LIST NIL)

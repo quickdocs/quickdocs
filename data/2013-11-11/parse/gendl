@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "gendl" :AUTHOR "Dave Cooper <david.cooper@genworks.com>"
- :MAINTAINER NIL :VERSION "2013031600" :LICENCE
- "Affero Gnu General Public License (please see http://www.gnu.org/licenses/)"
- :DESCRIPTION "The Gendl Project" :LONG-DESCRIPTION NIL :DEPENDS-ON
- ("CL-LITE" "GWL-GRAPHICS" "TASTY" "ROBOT" "YADD") :PACKAGE-LIST NIL)

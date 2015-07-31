@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "cl-pdf-parser" :AUTHOR
- "Marc Battyani <marc.battyani@fractalconcept.com>" :MAINTAINER
- "Marc Battyani <marc.battyani@fractalconcept.com>" :VERSION NIL :LICENCE NIL
- :DESCRIPTION "PDF parser" :LONG-DESCRIPTION "PDF parser" :DEPENDS-ON
- ("CL-PDF") :PACKAGE-LIST NIL)

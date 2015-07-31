@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "cl-csv-data-table" :AUTHOR NIL :MAINTAINER NIL :VERSION
- "0.1" :LICENCE "BSD" :DESCRIPTION
- "Facilities for converting CSV data to data-tables" :LONG-DESCRIPTION NIL
- :DEPENDS-ON ("CL-CSV" "DATA-TABLE") :PACKAGE-LIST NIL)

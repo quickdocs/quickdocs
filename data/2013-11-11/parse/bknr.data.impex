@@ -1,8 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "bknr.data.impex" :AUTHOR
- "Hans Huebner <hans@huebner.org>" :MAINTAINER
- "Manuel Odendahl <manuel@bl0rg.net>" :VERSION "0" :LICENCE "BSD" :DESCRIPTION
- "baikonour - launchpad for lisp satellites" :LONG-DESCRIPTION NIL :DEPENDS-ON
- ("CL-INTERPOL" "UNIT-TEST" "BKNR.UTILS" "BKNR.INDICES" "BKNR.DATASTORE"
-  "BKNR.IMPEX")
- :PACKAGE-LIST NIL)

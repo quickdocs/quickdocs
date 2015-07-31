@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "lift-documentation" :AUTHOR
- "Gary King <gwking@metabang.com>" :MAINTAINER
- "Gary Warren King <gwking@metabang.com>" :VERSION NIL :LICENCE
- "MIT Style License" :DESCRIPTION "Documentation for LIFT" :LONG-DESCRIPTION
- NIL :DEPENDS-ON ("LIFT") :PACKAGE-LIST NIL)

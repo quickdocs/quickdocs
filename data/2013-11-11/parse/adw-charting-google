@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "adw-charting-google" :AUTHOR
- "Ryan Davis <ryan@acceleration.net>" :MAINTAINER NIL :VERSION "0.2" :LICENCE
- "LGPL (or talk to me)" :DESCRIPTION
- "Charting package to make graphs and charts using the Google chart API"
- :LONG-DESCRIPTION NIL :DEPENDS-ON ("DRAKMA" "ADW-CHARTING") :PACKAGE-LIST NIL)

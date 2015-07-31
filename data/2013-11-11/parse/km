@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "km" :AUTHOR "Peter Clark" :MAINTAINER NIL :VERSION
- "2.5.33" :LICENCE "GNU Lesser General Public Licence" :DESCRIPTION
- "THE KNOWLEDGE MACHINE - INFERENCE ENGINE" :LONG-DESCRIPTION
- "KM knowledge representation language. KM is a powerful, frame-based language with clear first-order logic semantics. It contains sophisticated machinery for reasoning, including selection by description, unification, classification, and reasoning about actions using a situations mechanism."
- :DEPENDS-ON NIL :PACKAGE-LIST NIL)

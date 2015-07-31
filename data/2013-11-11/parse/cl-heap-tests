@@ -1,7 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "cl-heap-tests" :AUTHOR
- "Rudy Neeser <rudy.neeser@gmail.com>" :MAINTAINER NIL :VERSION "0.1.6"
- :LICENCE "GPLv3" :DESCRIPTION
- "Tests for the CL-HEAP package, an implementation of
-    heap and priority queue data structures."
- :LONG-DESCRIPTION NIL :DEPENDS-ON ("XLUNIT" "CL-HEAP") :PACKAGE-LIST NIL)

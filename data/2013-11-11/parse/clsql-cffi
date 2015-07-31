@@ -1,7 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "clsql-cffi" :AUTHOR
- "Kevin Rosenberg <kevin@rosenberg.net>" :MAINTAINER
- "Kevin M. Rosenberg <kmr@debian.org>" :VERSION NIL :LICENCE
- "Lessor Lisp General Public License" :DESCRIPTION
- "CLSQL using CFFI-UFFI-COMPAT interface" :LONG-DESCRIPTION NIL :DEPENDS-ON
- ("CLSQL") :PACKAGE-LIST NIL)

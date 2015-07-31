@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "xml-render" :AUTHOR "Klaus Weidner <klaus@atsec.com>"
- :MAINTAINER "Klaus Weidner <klaus@atsec.com>" :VERSION "2.1.1" :LICENCE
- "BSD like license" :DESCRIPTION "none" :LONG-DESCRIPTION "" :DEPENDS-ON
- ("CL-TYPESETTING" "XMLS") :PACKAGE-LIST NIL)

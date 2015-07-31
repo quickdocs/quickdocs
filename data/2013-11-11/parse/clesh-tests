@@ -1,9 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "clesh-tests" :AUTHOR
- "Christian von Essen <christian@mvonessen.de>" :MAINTAINER NIL :VERSION NIL
- :LICENCE "GPL 2 (see LICENSE)" :DESCRIPTION
- ("Unit tests for clesn
-
-To run the tests, load this package and
-evaluate (lisp-unit:run-all-tests clesh)")
- :LONG-DESCRIPTION NIL :DEPENDS-ON ("CLESH" "LISP-UNIT") :PACKAGE-LIST NIL)

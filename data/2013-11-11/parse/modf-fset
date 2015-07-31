@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "modf-fset" :AUTHOR
- "Zachary Smith <zachkostsmith@gmail.com>" :MAINTAINER NIL :VERSION NIL
- :LICENCE "Modified BSD" :DESCRIPTION NIL :LONG-DESCRIPTION NIL :DEPENDS-ON
- ("MODF" "FSET") :PACKAGE-LIST NIL)

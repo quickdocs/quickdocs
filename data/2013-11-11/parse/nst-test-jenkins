@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "nst-test-jenkins" :AUTHOR NIL :MAINTAINER NIL :VERSION
- NIL :LICENCE NIL :DESCRIPTION
- "Test NST, and raise an error if tests do not pass." :LONG-DESCRIPTION NIL
- :DEPENDS-ON ("NST" "NST-TEST") :PACKAGE-LIST NIL)

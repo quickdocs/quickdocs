@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "cl-syntax-anonfun" :AUTHOR "Tomohiro Matsuyama"
- :MAINTAINER NIL :VERSION "0.2" :LICENCE "LLGPL" :DESCRIPTION
- "CL-Syntax Reader Syntax for cl-anonfun" :LONG-DESCRIPTION NIL :DEPENDS-ON
- ("CL-SYNTAX" "CL-ANONFUN") :PACKAGE-LIST NIL)

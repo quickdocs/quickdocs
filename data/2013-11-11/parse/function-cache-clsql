@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "function-cache-clsql" :AUTHOR
- "Acceleration.net <programmers@acceleration.net>" :MAINTAINER NIL :VERSION
- "1.0" :LICENCE "BSD" :DESCRIPTION "A Simple Caching Layer for functions"
- :LONG-DESCRIPTION NIL :DEPENDS-ON ("FUNCTION-CACHE" "CLSQL" "CLSQL-HELPER")
- :PACKAGE-LIST NIL)

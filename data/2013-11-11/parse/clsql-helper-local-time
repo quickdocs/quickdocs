@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "clsql-helper-local-time" :AUTHOR NIL :MAINTAINER NIL
- :VERSION "0.1" :LICENCE "BSD" :DESCRIPTION
- "A library providing a clutch of utilities to make working with clsql easier"
- :LONG-DESCRIPTION NIL :DEPENDS-ON ("CLSQL-HELPER" "LOCAL-TIME") :PACKAGE-LIST
- NIL)

@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "usocket-udp" :AUTHOR
- "Chun Tian (binghe) <binghe.lisp@gmail.com>" :MAINTAINER NIL :VERSION "2.4"
- :LICENCE NIL :DESCRIPTION "UDP support for the USOCKET project"
- :LONG-DESCRIPTION NIL :DEPENDS-ON ("USOCKET") :PACKAGE-LIST NIL)

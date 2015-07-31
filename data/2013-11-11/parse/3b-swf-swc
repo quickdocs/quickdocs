@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "3b-swf-swc" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL
- :LICENCE NIL :DESCRIPTION
- "Partial hacks for extracting data from flash .swc files." :LONG-DESCRIPTION
- NIL :DEPENDS-ON ("3b-swf" "zip" "cxml") :PACKAGE-LIST NIL)

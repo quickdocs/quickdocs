@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "cl-irregsexp-test" :AUTHOR
- "John Fremlin <john@fremlin.org>" :MAINTAINER NIL :VERSION NIL :LICENCE NIL
- :DESCRIPTION "Tests for cl-irregsexp" :LONG-DESCRIPTION NIL :DEPENDS-ON
- ("FIVEAM" "CL-IRREGSEXP") :PACKAGE-LIST NIL)

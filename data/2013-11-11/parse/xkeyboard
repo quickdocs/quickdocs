@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "xkeyboard" :AUTHOR
- "Michael Filonenko <filonenko.mikhail at gmail.com>, Eric Wolf <eric at boese-wolf.eu>"
- :MAINTAINER NIL :VERSION "0.1" :LICENCE "MIT" :DESCRIPTION
- "XKeyboard is X11 extension for clx of the same name." :LONG-DESCRIPTION NIL
- :DEPENDS-ON ("CLX") :PACKAGE-LIST NIL)

@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "quadpack" :AUTHOR NIL :MAINTAINER NIL :VERSION NIL
- :LICENCE NIL :DESCRIPTION
- "F2CL conversion of QUADPACK: Adaptive numerical integration"
- :LONG-DESCRIPTION NIL :DEPENDS-ON ("mach-par") :PACKAGE-LIST NIL)

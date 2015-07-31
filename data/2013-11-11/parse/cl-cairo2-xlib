@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "cl-cairo2-xlib" :AUTHOR "Tamas K Papp" :MAINTAINER NIL
- :VERSION "0.1" :LICENCE "BOOST 1.0" :DESCRIPTION
- "Cairo 1.8 bindings, xlib surface and GTK extension" :LONG-DESCRIPTION NIL
- :DEPENDS-ON ("CL-FREETYPE2" "CL-CAIRO2") :PACKAGE-LIST NIL)

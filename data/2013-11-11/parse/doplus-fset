@@ -1,5 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "doplus-fset" :AUTHOR
- "Alessio Stalla <alessiostalla@gmail.com>" :MAINTAINER NIL :VERSION NIL
- :LICENCE "GPLv3" :DESCRIPTION "Integration of FSet collections in doplus."
- :LONG-DESCRIPTION NIL :DEPENDS-ON ("DOPLUS" "FSET") :PACKAGE-LIST NIL)

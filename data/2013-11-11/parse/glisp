@@ -1,8 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "glisp" :AUTHOR "John McCarthy" :MAINTAINER NIL :VERSION
- "20130723" :LICENCE "Affero Gnu Public License (http://www.gnu.org/licenses/)"
- :DESCRIPTION "The Gendl™  Common Lisp Portability" :LONG-DESCRIPTION NIL
- :DEPENDS-ON
- ("BASE" "UIOP" "CL-TYPESETTING" "CL-PPCRE" "CL-WHO" "CL-BASE64" "BABEL"
-  "ACL-COMPAT")
- :PACKAGE-LIST NIL)

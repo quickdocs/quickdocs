@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "quickutil" :AUTHOR
- "Robert Smith <quad@symbo1ics.com>, Eitarow Fukamachi <e.arrows@gmail.com>"
- :MAINTAINER NIL :VERSION NIL :LICENCE "BSD 3-clause. See LICENSE file."
- :DESCRIPTION "The Quickutil client." :LONG-DESCRIPTION NIL :DEPENDS-ON
- ("quickutil-client") :PACKAGE-LIST NIL)

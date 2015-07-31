@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "trivial-features" :AUTHOR
- "Luis Oliveira <loliveira@common-lisp.net>" :MAINTAINER NIL :VERSION NIL
- :LICENCE "MIT" :DESCRIPTION
- "Ensures consistent *FEATURES* across multiple CLs." :LONG-DESCRIPTION NIL
- :DEPENDS-ON NIL :PACKAGE-LIST NIL)

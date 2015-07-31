@@ -1,3 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "cl-gpu" :AUTHOR ("Alexander Gavrilov <angavrilov@gmail.com>") :MAINTAINER NIL :VERSION NIL :LICENCE "LLGPL" :DESCRIPTION
- "A library for writing GPU kernels in a subset of CL" :LONG-DESCRIPTION NIL :DEPENDS-ON ("CL-GPU.CORE") :PACKAGE-LIST NIL)

@@ -1,4 +1,0 @@
-<% (let ((docstring (and env (string-left-trim '(#\Space #\Newline) env))))
-     (when (and docstring (not (string= docstring ""))) %>
-<div class="docstring"><pre><%= (emb::escape-for-xml docstring) %></pre></div>
-<% )) %>

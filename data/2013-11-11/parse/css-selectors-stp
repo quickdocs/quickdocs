@@ -1,6 +1,0 @@
-
-(:TYPE :SYSTEM :NAME "css-selectors-stp" :AUTHOR
- "<programmers@acceleration.net>" :MAINTAINER NIL :VERSION NIL :LICENCE "BSD"
- :DESCRIPTION "An implementation of css selectors that interacts with cxml-stp"
- :LONG-DESCRIPTION NIL :DEPENDS-ON ("CSS-SELECTORS" "CXML-STP") :PACKAGE-LIST
- NIL)
